@@ -174,7 +174,7 @@ int main() {
 	Model floor("floor/floor.dae");
 	Model floorBig("floor/floor.dae");
 
-	floor.setTranslation(glm::vec3(0.0f, 5.1f, 28.0f));
+	floor.setTranslation(glm::vec3(0.0f, 5.01f, 28.0f));
 	floor.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
 	floorBig.setTranslation(glm::vec3(0.0f, 5.0f, 28.0f));
