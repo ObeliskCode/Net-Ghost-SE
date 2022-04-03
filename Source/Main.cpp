@@ -25,8 +25,8 @@ glm::vec3 pos = glm::vec3(0.0f, 10.0f, 30.0f);
 
 Camera camera(screenWidth, screenHeight, pos); // create cam at pos
 
-const unsigned int skyWidth = 800; // cubeMap vars
-const unsigned int skyHeight = 800;
+const unsigned int skyWidth = 10000; // cubeMap vars
+const unsigned int skyHeight = 10000;
 
 /* Functions */
 
@@ -172,9 +172,13 @@ int main() {
 	Model sword("lamp/lamp.dae");
 	Model assim("bat/bat.dae");
 	Model floor("floor/floor.dae");
+	Model floorBig("floor/floor.dae");
 
-	floor.setTranslation(glm::vec3(0.0f, 5.0f, 28.0f));
+	floor.setTranslation(glm::vec3(0.0f, 5.1f, 28.0f));
 	floor.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+
+	floorBig.setTranslation(glm::vec3(0.0f, 5.0f, 28.0f));
+	floorBig.setScale(glm::vec3(100.0f, 100.0f, 100.0f));
 
 	sword.setTranslation(glm::vec3(-10.0f, 15.0f, 28.0f));
 	sword.setScale(glm::vec3(0.05f,0.05f,0.05f));
@@ -240,6 +244,7 @@ int main() {
 		sword.Draw(rigProgram, camera);
 		assim.Draw(rigProgram, camera);
 		floor.Draw(rigProgram, camera);
+		floorBig.Draw(rigProgram, camera);
 
 		light.Draw(lightShader, camera);
 
