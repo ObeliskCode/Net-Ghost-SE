@@ -41,6 +41,7 @@ void renderScene() {
 	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// TODO?
 
 }
 
@@ -127,7 +128,7 @@ void setup_callbacks(GLFWwindow* window) {
 
 int main() {
 
-	/* GLFW & GLEW Set Up*/
+	/* GLFW & GLEW Set Up */
 
 	glfwInit();
 
@@ -164,28 +165,37 @@ int main() {
 	//disable vsync if enabled
 	glfwSwapInterval(0);
 
-	/* Set Up */
+	/* GLFW & GLEW Set Up */
+
+	/* Model Set Up */
 	Shader shaderProgram = Shader("vertexShader.glsl", "fragmentShader.glsl"); // OLD
 
 	Shader rigProgram = Shader("rigVert.glsl", "rigFrag.glsl"); // NEW
 
-	Model sword("lamp/lamp.dae");
-	Model assim("bat/bat.dae");
-	Model floor("floor/floor.dae");
-	Model floorBig("floor/floor.dae");
+	//Model sword("lamp/lamp.dae");
+	//Model assim("bat/bat.dae");
+	//Model floor("floor/floor.dae");
+	//Model floorBig("floor/floor.dae");
+	Model panel("floor/floor.dae");
 
-	floor.setTranslation(glm::vec3(0.0f, 5.01f, 28.0f));
-	floor.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+	//floor.setTranslation(glm::vec3(0.0f, 5.01f, 28.0f));
+	//floor.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
-	floorBig.setTranslation(glm::vec3(0.0f, 5.0f, 28.0f));
-	floorBig.setScale(glm::vec3(100.0f, 100.0f, 100.0f));
+	panel.setTranslation(glm::vec3(0.0f, 5.01f, 28.0f));
+	panel.setRotation(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+	panel.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
-	sword.setTranslation(glm::vec3(-10.0f, 15.0f, 28.0f));
-	sword.setScale(glm::vec3(0.05f,0.05f,0.05f));
+	//floorBig.setTranslation(glm::vec3(0.0f, 5.0f, 28.0f));
+	//floorBig.setScale(glm::vec3(100.0f, 100.0f, 100.0f));
 
-	assim.setTranslation(glm::vec3(0.0f, 10.0f, 22.0f));
+	//sword.setTranslation(glm::vec3(-10.0f, 15.0f, 28.0f));
+	//sword.setScale(glm::vec3(0.05f,0.05f,0.05f));
+
+	//assim.setTranslation(glm::vec3(0.0f, 10.0f, 22.0f));
 	
-	/* light set up */
+	/* Model Set Up */
+
+	/* Light Set Up */
 
 	Shader lightShader = Shader("lightVert.glsl", "lightFrag.glsl"); // OLD
 
@@ -194,7 +204,7 @@ int main() {
 	light.setScale(glm::vec3(5.0f, 5.0f, 5.0f));
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.0f, 10.0f, 28.0f);
+	glm::vec3 lightPos = glm::vec3(0.0f, 10.0f, 32.0f);
 	glm::mat4 lightModel = glm::mat4(1.0f);
 	lightModel = glm::translate(lightModel, lightPos);
 
@@ -206,18 +216,19 @@ int main() {
 	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(rigProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-	/* Cube Map Set up */
+	/* Light Set Up */
 
-	Shader skyShader = Shader("skyVert.glsl", "skyFrag.glsl");
+	/* Cube Map Set Up */
+	//Shader skyShader = Shader("skyVert.glsl", "skyFrag.glsl");
+	//SkyBox sky = SkyBox(skyShader, skyWidth, skyHeight);
+	/* Cube Map Set Up */
 
-	SkyBox sky = SkyBox(skyShader, skyWidth, skyHeight);
-
-	/* FPS counter set up */
-
+	/* FPS counter Set Up */
 	double prevTime = 0.0;
 	double crntTime = 0.0;
 	double timeDiff;
 	unsigned int counter = 0;
+	/* FPS counter Set Up */
 
 	/* Main Game Loop */
 	while (!glfwWindowShouldClose(window)) {
@@ -241,14 +252,18 @@ int main() {
 
 		renderScene();
 
-		sword.Draw(rigProgram, camera);
-		assim.Draw(rigProgram, camera);
-		floor.Draw(rigProgram, camera);
-		floorBig.Draw(rigProgram, camera);
+		/* MODEL DRAW CALLS */
+		//sword.Draw(rigProgram, camera);
+		//assim.Draw(rigProgram, camera);
+		//floor.Draw(rigProgram, camera);
+		//floorBig.Draw(rigProgram, camera);
+		panel.Draw(rigProgram, camera);
 
 		light.Draw(lightShader, camera);
 
-		sky.Draw(skyShader, camera);
+		//sky.Draw(skyShader, camera);
+		/* MODEL DRAW CALLS */
+
 
 		glfwSwapBuffers(window);
 
