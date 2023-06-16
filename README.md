@@ -1,4 +1,4 @@
-# 3D-OpenGL-Engine
+# Obelisk Engine
 
 ### `3D Graphics Engine coded from scratch using C++ and GLFW/GLEW to utilize OpenGL.`
 
