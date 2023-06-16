@@ -6,11 +6,11 @@
 
 ## Features
 Graphics engine supports; 
-# importing fully textured 3D models using collada (.dae) file format,
-# multiple meshes & textures per file, 
-# Phong Lighting, 
-# Specular Maps, & 
-# SkyBoxes.
+#### importing fully textured 3D models using collada (.dae) file format,
+#### multiple meshes & textures per file, 
+#### Phong Lighting, 
+#### Specular Maps, & 
+#### SkyBoxes.
 
 ## How to Run
 To test out the engine download and run the .exe in the folder "Build".
