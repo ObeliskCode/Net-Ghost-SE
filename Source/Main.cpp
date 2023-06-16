@@ -172,10 +172,9 @@ int main() {
 
 	Shader rigProgram = Shader("rigVert.glsl", "rigFrag.glsl"); // NEW
 
-	//Model sword("lamp/lamp.dae");
-	//Model assim("bat/bat.dae");
+	Model lamp("lamp/lamp.dae");
+	Model bat("bat/bat.dae");
 	//Model floor("floor/floor.dae");
-	//Model floorBig("floor/floor.dae");
 	Model panel("floor/floor.dae");
 
 	//floor.setTranslation(glm::vec3(0.0f, 5.01f, 28.0f));
@@ -185,13 +184,10 @@ int main() {
 	panel.setRotation(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 	panel.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
-	//floorBig.setTranslation(glm::vec3(0.0f, 5.0f, 28.0f));
-	//floorBig.setScale(glm::vec3(100.0f, 100.0f, 100.0f));
+	lamp.setTranslation(glm::vec3(-10.0f, 15.0f, 28.0f));
+	lamp.setScale(glm::vec3(0.05f,0.05f,0.05f));
 
-	//sword.setTranslation(glm::vec3(-10.0f, 15.0f, 28.0f));
-	//sword.setScale(glm::vec3(0.05f,0.05f,0.05f));
-
-	//assim.setTranslation(glm::vec3(0.0f, 10.0f, 22.0f));
+	bat.setTranslation(glm::vec3(0.0f, 10.0f, 22.0f));
 	
 	/* Model Set Up */
 
@@ -253,10 +249,9 @@ int main() {
 		renderScene();
 
 		/* MODEL DRAW CALLS */
-		//sword.Draw(rigProgram, camera);
-		//assim.Draw(rigProgram, camera);
+		lamp.Draw(rigProgram, camera);
+		bat.Draw(rigProgram, camera);
 		//floor.Draw(rigProgram, camera);
-		//floorBig.Draw(rigProgram, camera);
 		panel.Draw(rigProgram, camera);
 
 		light.Draw(lightShader, camera);
