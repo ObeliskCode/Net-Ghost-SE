@@ -5,7 +5,7 @@
 ### Author: Noel Garcia - n6garcia@ucsd.edu - https://noeldev.site/
 
 ## Features
-# Graphics engine supports; 
+Graphics engine supports; 
 # importing fully textured 3D models using collada (.dae) file format,
 # multiple meshes & textures per file, 
 # Phong Lighting, 
