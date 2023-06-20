@@ -23,4 +23,5 @@ X: lock/unlock cursor for mouse panning
 ## How to Develop
 1. Download Visual Studio 2022.
 2. Open GLEW_GLFW.zip and install it so that Visual Studio 2022 recognizes it.
-3. Write Code!
+3. Install Assimp [https://assimp-docs.readthedocs.io/en/latest/about/installation.html]
+4. Write Code!
