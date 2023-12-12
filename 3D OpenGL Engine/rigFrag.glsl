@@ -65,5 +65,5 @@ vec4 direcLight()
 
 void main()
 {
-	FragmentColor = pointLight() + direcLight();
+	FragmentColor = pointLight(); // + direcLight()
 }

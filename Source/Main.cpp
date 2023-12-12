@@ -3,7 +3,7 @@
 #pragma comment(lib,"glfw3.lib")
 #pragma comment(lib,"glew32s.lib")
 #pragma comment(lib,"glew32.lib")
-#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // remove console
+//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // remove console
 #define GLEW_STATIC
 #include <GL/glew.h> 
 #include <GLFW/glfw3.h>
@@ -19,19 +19,16 @@ int screenWidth = 1024, screenHeight = 576;     // Width and height of window in
 float sensitivity = 1.0f; // mouse sens
 bool cursorLocked = false; // whether to lock cursor for first person mode
 double deltaAngle = 0.0005; // base angle we move in
+
 float moveSpeed = 1.0f; // position of camera move speed
 
-glm::vec3 pos = glm::vec3(0.0f, 10.0f, 30.0f);
+glm::vec3 camPos = glm::vec3(0.0f, 10.0f, 30.0f);
 
-Camera camera(screenWidth, screenHeight, pos); // create cam at pos
-
-const unsigned int skyWidth = 10000; // cubeMap vars
-const unsigned int skyHeight = 10000;
+Camera camera(screenWidth, screenHeight, camPos); // create cam at pos
 
 /* Functions */
 
 void gameTick() {
-
 
 
 }
@@ -40,8 +37,6 @@ void renderScene() {
 
 	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// TODO?
 
 }
 
@@ -85,6 +80,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	proj.y = 0.0f;
 	proj = glm::normalize(proj);
 
+	// must capture time when button is pressed and do movement logic in gameTick() for smooth movement
+
 	switch (key) {
 	case GLFW_KEY_ESCAPE:
 		glfwSetWindowShouldClose(window, true);
@@ -123,6 +120,7 @@ void setup_callbacks(GLFWwindow* window) {
 	glfwSetKeyCallback(window, key_callback);
 
 	glfwSetCursorPosCallback(window, cursor_pos_callback);
+
 	// glfwSetMouseButtonCallback(window, mouse_button_callback);
 }
 
@@ -168,17 +166,17 @@ int main() {
 	/* GLFW & GLEW Set Up */
 
 	/* Model Set Up */
-	Shader shaderProgram = Shader("vertexShader.glsl", "fragmentShader.glsl"); // OLD
 
 	Shader rigProgram = Shader("rigVert.glsl", "rigFrag.glsl"); // NEW
 
 	Model lamp("lamp/lamp.dae");
 	Model bat("bat/bat.dae");
-	//Model floor("floor/floor.dae");
 	Model panel("floor/floor.dae");
+	Model wolf("wolf/Wolf_One_dae.dae");
 
-	//floor.setTranslation(glm::vec3(0.0f, 5.01f, 28.0f));
-	//floor.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+
+	wolf.setScale(glm::vec3(10.0f,10.0f,10.0f));
+	wolf.setTranslation(glm::vec3(10.0f, 8.5f, 10.0f));
 
 	panel.setTranslation(glm::vec3(0.0f, 5.01f, 28.0f));
 	panel.setRotation(glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
@@ -188,10 +186,6 @@ int main() {
 	lamp.setScale(glm::vec3(0.05f,0.05f,0.05f));
 
 	bat.setTranslation(glm::vec3(0.0f, 10.0f, 22.0f));
-	
-	/* Model Set Up */
-
-	/* Light Set Up */
 
 	Shader lightShader = Shader("lightVert.glsl", "lightFrag.glsl"); // OLD
 
@@ -212,12 +206,7 @@ int main() {
 	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(rigProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-	/* Light Set Up */
-
-	/* Cube Map Set Up */
-	//Shader skyShader = Shader("skyVert.glsl", "skyFrag.glsl");
-	//SkyBox sky = SkyBox(skyShader, skyWidth, skyHeight);
-	/* Cube Map Set Up */
+	/* Model Set Up */
 
 	/* FPS counter Set Up */
 	double prevTime = 0.0;
@@ -243,26 +232,19 @@ int main() {
 		}
 		/* FPS counter */
 
+		glfwPollEvents();
 
 		gameTick();
 
 		renderScene();
 
-		/* MODEL DRAW CALLS */
 		lamp.Draw(rigProgram, camera);
 		bat.Draw(rigProgram, camera);
-		//floor.Draw(rigProgram, camera);
 		panel.Draw(rigProgram, camera);
-
 		light.Draw(lightShader, camera);
-
-		//sky.Draw(skyShader, camera);
-		/* MODEL DRAW CALLS */
-
+		wolf.Draw(rigProgram, camera);
 
 		glfwSwapBuffers(window);
-
-		glfwPollEvents();	
 
 	}
 

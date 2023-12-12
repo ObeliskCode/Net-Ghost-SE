@@ -1,5 +1,18 @@
-﻿  Main.cpp
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'W:\3D OpenGL Engine\x64\Debug\vc120.pdb'; linking object as if no debug info
+﻿  Camera.cpp
+  EBO.cpp
+  Main.cpp
+  Mesh.cpp
+W:\33\Obelisk-3D-Engine\Source\Mesh.cpp(81,65): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  Model.cpp
+W:\33\Obelisk-3D-Engine\Source\Model.cpp(105,47): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Shader.cpp
+  stb.cpp
+  Texture.cpp
+  VAO.cpp
+W:\33\Obelisk-3D-Engine\Source\VAO.cpp(13,63): warning C4244: 'argument': conversion from 'GLsizeiptr' to 'GLsizei', possible loss of data
+  VBO.cpp
+  Generating Code...
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'W:\33\Obelisk-3D-Engine\x64\Debug\vc120.pdb'; linking object as if no debug info
 MSVCRTD.lib(initializers.obj) : warning LNK4098: defaultlib 'msvcrt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
 MSVCRTD.lib(initializers.obj) : warning LNK4098: defaultlib 'libcmt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
-  3D OpenGL Engine.vcxproj -> W:\3D OpenGL Engine\x64\Debug\3D OpenGL Engine.exe
+  3D OpenGL Engine.vcxproj -> W:\33\Obelisk-3D-Engine\x64\Debug\3D OpenGL Engine.exe

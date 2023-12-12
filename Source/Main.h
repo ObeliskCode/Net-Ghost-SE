@@ -24,7 +24,6 @@
 #include "Camera.h"
 #include "Mesh.h"
 #include "Model.h"
-#include "SkyBox.h"
 
 
 void gameTick();

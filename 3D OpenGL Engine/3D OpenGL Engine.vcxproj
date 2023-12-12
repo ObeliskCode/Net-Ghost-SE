@@ -153,7 +153,6 @@
     <ClCompile Include="..\Source\Mesh.cpp" />
     <ClCompile Include="..\Source\Model.cpp" />
     <ClCompile Include="..\Source\Shader.cpp" />
-    <ClCompile Include="..\Source\SkyBox.cpp" />
     <ClCompile Include="..\Source\stb.cpp" />
     <ClCompile Include="..\Source\Texture.cpp" />
     <ClCompile Include="..\Source\VAO.cpp" />
@@ -166,7 +165,6 @@
     <ClInclude Include="..\Source\Mesh.h" />
     <ClInclude Include="..\Source\Model.h" />
     <ClInclude Include="..\Source\Shader.h" />
-    <ClInclude Include="..\Source\SkyBox.h" />
     <ClInclude Include="..\Source\stb_image.h" />
     <ClInclude Include="..\Source\Texture.h" />
     <ClInclude Include="..\Source\VAO.h" />

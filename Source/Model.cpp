@@ -7,7 +7,7 @@ void Model::loadModel(std::string path)
     //const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate);
 
-    /* some models need aiProcess_FlipUVs and some don't. why?
+    /* some models need aiProcess_FlipUVs and some don't.
        note: gltf files and dae files converted from gltf files don't require FlipUVs since STB already flips images
        so any models that come from gltf file format don't require FlipUVs
     */
@@ -113,8 +113,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> 
 }
 
 void Model::Draw(Shader& shader, Camera& camera){
-    for (unsigned int i = 0; i < meshes.size(); i++)
+    for (unsigned int i = 0; i < meshes.size(); i++) {
         meshes[i].Draw(shader, camera, matrix, translation, rotation, scale);
+    } 
 }
 
 
