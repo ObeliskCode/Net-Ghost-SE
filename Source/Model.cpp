@@ -130,6 +130,8 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 {
     std::vector<Texture> textures;
 
+    std::cout << mat->GetTextureCount(type) << std::endl;
+
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -137,6 +139,8 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
 
         const char* c_str = str.C_Str();
         std::string path = directory + "/" + c_str;
+
+        std::cout << path << std::endl;
 
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)

@@ -147,6 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\SkeletalMesh.cpp" />
+    <ClCompile Include="..\Source\SkeletalModel.cpp" />
     <ClCompile Include="..\Source\Camera.cpp" />
     <ClCompile Include="..\Source\EBO.cpp" />
     <ClCompile Include="..\Source\Main.cpp" />
@@ -160,6 +162,11 @@
     <ClCompile Include="..\Source\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\Animation.h" />
+    <ClInclude Include="..\Source\Animator.h" />
+    <ClInclude Include="..\Source\Bone.h" />
+    <ClInclude Include="..\Source\SkeletalMesh.h" />
+    <ClInclude Include="..\Source\SkeletalModel.h" />
     <ClInclude Include="..\Source\Camera.h" />
     <ClInclude Include="..\Source\EBO.h" />
     <ClInclude Include="..\Source\Main.h" />
@@ -173,6 +180,8 @@
     <ClInclude Include="..\Source\Wire.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="animFrag.glsl" />
+    <None Include="animVert.glsl" />
     <None Include="rigFrag.glsl" />
     <None Include="rigVert.glsl" />
     <None Include="wireFrag.glsl" />

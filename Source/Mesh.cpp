@@ -8,8 +8,6 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	Mesh::textures = textures;
 	Mesh::transform = transformation;
 
-	std::cout << glm::to_string(transform) << std::endl;
-
 	VAO.Bind();
 
 	VBO  VBO(vertices);

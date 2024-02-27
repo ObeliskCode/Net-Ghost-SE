@@ -81,11 +81,7 @@ int main() {
 	Model lamp("lamp/lamp.dae");
 	Model bat("bat/bat.dae");
 	Model panel("floor/floor.dae");
-	Model wolf("wolf/Wolf_One_dae.dae");
 	Model handBat("bat/bat.dae");
-
-	wolf.setScale(glm::vec3(10.0f,10.0f,10.0f));
-	wolf.setTranslation(glm::vec3(10.0f, 8.5f, 10.0f));
 
 	panel.setTranslation(glm::vec3(0.0f, 5.01f, 28.0f));
 	panel.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
@@ -100,6 +96,15 @@ int main() {
 	handBat.setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 	handBat.setTranslation(glm::vec3(2.0f,-2.0f,0.0f));
 
+	Shader animProgram = Shader("animVert.glsl", "animFrag.glsl");
+
+	SkeletalModel wolf("wolf/Wolf_One_dae.dae");
+	Animation wolfAnimation("wolf/Wolf_One_dae.dae", &wolf);
+	Animator animator(&wolfAnimation);
+
+	wolf.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+	wolf.setTranslation(glm::vec3(10.0f, 8.5f, 10.0f));
+
 	Model light("bulb/scene.gltf");
 
 	light.setScale(glm::vec3(5.0f, 5.0f, 5.0f));
@@ -112,6 +117,11 @@ int main() {
 	rigProgram.Activate();
 	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(rigProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+	animProgram.Activate();
+	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(rigProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
 
 	/* Model Set Up */
 
@@ -131,6 +141,10 @@ int main() {
 	double lastTick = 0.0;
 	double thisTick = 0.0;
 	double delta;
+
+	// timing
+	float deltaTime = 0.0f;
+	float lastFrame = 0.0f;
 
 	/* Main Game Loop */
 	while (!glfwWindowShouldClose(window)) {
@@ -158,15 +172,29 @@ int main() {
 			lastTick = thisTick;
 		}
 
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
+		animProgram.Activate();
+
+		animator.UpdateAnimation(deltaTime);
+
+		auto transforms = animator.GetFinalBoneMatrices();
+		for (int i = 0; i < transforms.size(); ++i)
+			glUniformMatrix4fv(glGetUniformLocation(animProgram.ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+
 		renderScene();
 
 		lamp.Draw(rigProgram, camera);
 		bat.Draw(rigProgram, camera);
 		panel.Draw(rigProgram, camera);
 		light.Draw(rigProgram, camera);
-		wolf.Draw(rigProgram, camera);
+		
 		handBat.Draw(rigProgram, handCam);
 
+		wolf.Draw(animProgram, camera);
+		
 		xaxis.Draw(wireProgram, camera);
 		yaxis.Draw(wireProgram, camera);
 		zaxis.Draw(wireProgram, camera);

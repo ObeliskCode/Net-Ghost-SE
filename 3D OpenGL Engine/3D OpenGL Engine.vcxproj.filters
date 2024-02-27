@@ -48,6 +48,12 @@
     <ClCompile Include="..\Source\Wire.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\SkeletalModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SkeletalMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Camera.h">
@@ -83,6 +89,21 @@
     <ClInclude Include="..\Source\Wire.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\SkeletalModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\SkeletalMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Animator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Bone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="rigFrag.glsl">
@@ -95,6 +116,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="wireFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="animVert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="animFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
