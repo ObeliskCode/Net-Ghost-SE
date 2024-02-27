@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include <glm/gtx/string_cast.hpp>
 
 Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4 transformation) {
 
@@ -7,18 +8,20 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	Mesh::textures = textures;
 	Mesh::transform = transformation;
 
+	std::cout << glm::to_string(transform) << std::endl;
+
 	VAO.Bind();
 
-	VBO VBO(vertices);
-	EBO EBO(indices);
+	VBO  VBO(vertices);
+	EBO  EBO(indices); // VBO & EBO bound during LinkAttrib links them to VAO!
 
-	VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0);
-	VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float)));
-	VAO.LinkAttrib(VBO, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float)));
-	VAO.LinkAttrib(VBO, 3, 2, GL_FLOAT, sizeof(Vertex), (void*)(9 * sizeof(float)));
+	VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0); // pos
+	VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float))); // normal
+	VAO.LinkAttrib(VBO, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float))); // color
+	VAO.LinkAttrib(VBO, 3, 2, GL_FLOAT, sizeof(Vertex), (void*)(9 * sizeof(float))); // texUV
 
 	VAO.Unbind();
-	VBO.Unbind();
+	VBO.Unbind(); // VBO already unbinded by LinkAttrib()
 	EBO.Unbind();
 }
 
@@ -26,7 +29,6 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 void Mesh::Draw(
 	Shader& shader,
 	Camera& camera,
-	glm::mat4 matrix,
 	glm::vec3 translation,
 	glm::quat rotation,
 	glm::vec3 scale
@@ -50,6 +52,8 @@ void Mesh::Draw(
 			num = std::to_string(numSpecular++);
 		}
 
+		// IF we add more types of textures this function breaks!
+
 		textures[i].texUnit(shader, (type + num).c_str(), i);
 		textures[i].Bind();
 	}
@@ -72,7 +76,6 @@ void Mesh::Draw(
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(matrix));
 
 	//send transform matrix to meshes shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));

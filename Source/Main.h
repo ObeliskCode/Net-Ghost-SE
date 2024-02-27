@@ -24,9 +24,10 @@
 #include "Camera.h"
 #include "Mesh.h"
 #include "Model.h"
+#include "Wire.h"
 
 
-void gameTick();
+void gameTick(double delta);
 void renderScene();
 
 

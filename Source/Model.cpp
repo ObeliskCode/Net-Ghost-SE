@@ -63,6 +63,9 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> 
         vector.z = mesh->mNormals[i].z;
         vertex.normal = vector;
 
+
+        // COLOR is useless , remove it.
+
         vector.x = 0.0f;
         vector.y = 0.0f;
         vector.z = 0.0f;
@@ -114,9 +117,11 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> 
 
 void Model::Draw(Shader& shader, Camera& camera){
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i].Draw(shader, camera, matrix, translation, rotation, scale);
+        meshes[i].Draw(shader, camera, translation, rotation, scale);
     } 
 }
+
+// POSSIBLY CHANGE type in Texture from string to aiTextureType?
 
 
 // BUG: .type member becomes corrupted when leaving loadMaterialTexture
@@ -178,10 +183,6 @@ glm::mat4 Model::aiMat4toGLM(aiMatrix4x4t<float> matrix) {
     m[3][3] = matrix.d4;
 
     return m;
-}
-
-void Model::setMatrix(glm::mat4 matrix) {
-    Model::matrix = matrix;
 }
 
 void Model::setTranslation(glm::vec3 translation) {

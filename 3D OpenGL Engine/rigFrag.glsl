@@ -3,7 +3,6 @@
 // Final color of pixel
 out vec4 FragmentColor;
 
-
 // Imports the current position we calculated
 in vec3 crntPos;
 
@@ -19,8 +18,11 @@ in vec2 texCoord;
 // light uniforms
 uniform vec4 lightColor;
 uniform vec3 lightPos;
+
+// Mesh uniform
 uniform vec3 camPos;
 
+// Textures
 uniform sampler2D diffuse0;
 uniform sampler2D specular0;
 

@@ -2,7 +2,6 @@
 
 Texture::Texture(const char* image, std::string texType, GLuint slot)
 {
-	//sets c_str texType to c_str type
 	type = texType;
 
 	//sets path to filepath input

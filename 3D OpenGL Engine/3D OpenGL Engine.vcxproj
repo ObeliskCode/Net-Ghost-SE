@@ -157,6 +157,7 @@
     <ClCompile Include="..\Source\Texture.cpp" />
     <ClCompile Include="..\Source\VAO.cpp" />
     <ClCompile Include="..\Source\VBO.cpp" />
+    <ClCompile Include="..\Source\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Camera.h" />
@@ -169,16 +170,13 @@
     <ClInclude Include="..\Source\Texture.h" />
     <ClInclude Include="..\Source\VAO.h" />
     <ClInclude Include="..\Source\VBO.h" />
+    <ClInclude Include="..\Source\Wire.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fragmentShader.glsl" />
-    <None Include="lightFrag.glsl" />
-    <None Include="lightVert.glsl" />
     <None Include="rigFrag.glsl" />
     <None Include="rigVert.glsl" />
-    <None Include="skyFrag.glsl" />
-    <None Include="skyVert.glsl" />
-    <None Include="vertexShader.glsl" />
+    <None Include="wireFrag.glsl" />
+    <None Include="wireVert.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

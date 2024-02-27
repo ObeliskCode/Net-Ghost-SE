@@ -21,22 +21,20 @@ out vec2 texCoord;
 uniform mat4 camMatrix;
 uniform mat4 transform;
 
-uniform mat4 model;
 uniform mat4 translation;
 uniform mat4 rotation;
 uniform mat4 scale;
 
 void main(){
-	// calculates current position
-	// what order should we be multiplying these matrices??
-	crntPos = vec3(model * translation * rotation * scale * transform * vec4(aPos, 1.0f));
+	// calculates physical position within world
+	crntPos = vec3(translation * rotation * scale * transform * vec4(aPos, 1.0f)); // is it ok to truncate w?
 	
-	// Outputs the positions/coordinates of all vertices
+	// camera/screen space coordinates
 	gl_Position = camMatrix * vec4(crntPos, 1.0);
 
 	// Normals need to be transformed aswell (will i need to apply model, rotations and non-uniform scales here too?)
 	// normals should be translation and uniform scaling safe.
-	Normal = vec3(transform * vec4(aNormal, 0.0));
+	Normal = normalize(vec3(rotation * scale * transform * vec4(aNormal, 0.0)));
 
 	color = aColor;
 	texCoord = aTex;
