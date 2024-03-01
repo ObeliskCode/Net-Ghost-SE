@@ -9,6 +9,7 @@
 #include <GLFW/glfw3.h>
 #include "Main.h"
 
+const double PI = 3.1415926535897932384626433832795028841971693993751058209;
 
 /* Global Variables */
 
@@ -21,13 +22,9 @@ double deltaAngle = 0.0005; // base angle we move in
 float order = 10.0f;
 float moveSpeed = 1.0f; // position of camera move speed
 
-glm::vec3 camPos = glm::vec3(0.0f, 10.0f, 30.0f);
+Camera camera(screenWidth, screenHeight, glm::vec3(0.0f, 10.0f, 30.0f)); // create cam at pos
 
-Camera camera(screenWidth, screenHeight, camPos); // create cam at pos
-
-glm::vec3 handCamPos = glm::vec3(0.0f, 0.0f, 2.0f);
-
-Camera handCam(screenWidth, screenHeight, handCamPos);
+Camera handCam(screenWidth, screenHeight, glm::vec3(0.0f, 0.0f, 2.0f));
 
 bool W, A, S, D = false;
 
@@ -74,14 +71,15 @@ int main() {
 
 	/* GLFW & GLEW Set Up */
 
-	/* Model Set Up */
+	/* Load Models/Shaders */
 
-	Shader rigProgram = Shader("rigVert.glsl", "rigFrag.glsl"); // NEW
+	Shader rigProgram = Shader("rigVert.glsl", "rigFrag.glsl"); // rigid bodies
 
 	Model lamp("lamp/lamp.dae");
 	Model bat("bat/bat.dae");
 	Model panel("floor/floor.dae");
 	Model handBat("bat/bat.dae");
+	Model bench("bench/bench.dae");
 
 	panel.setTranslation(glm::vec3(0.0f, 5.01f, 28.0f));
 	panel.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
@@ -96,7 +94,7 @@ int main() {
 	handBat.setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 	handBat.setTranslation(glm::vec3(2.0f,-2.0f,0.0f));
 
-	Shader animProgram = Shader("animVert.glsl", "animFrag.glsl");
+	Shader animProgram = Shader("animVert.glsl", "animFrag.glsl"); // animated models
 
 	SkeletalModel wolf("wolf/Wolf_One_dae.dae");
 	Animation wolfAnimation("wolf/Wolf_One_dae.dae", &wolf);
@@ -122,29 +120,119 @@ int main() {
 	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(rigProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
-
-	/* Model Set Up */
-
 	Wire xaxis(glm::vec3(-5.0f,0.0f,0.0f), glm::vec3(5.0f,0.0f,0.0f));
 	Wire yaxis(glm::vec3(0.0f,-5.0f,0.0f), glm::vec3(0.0f,5.0f,0.0f));
 	Wire zaxis(glm::vec3(0.0f,0.0f,-5.0f), glm::vec3(0.0f,0.0f,5.0f));
 
+	Wire xsphere(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	Wire ysphere(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	Wire zsphere(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
 	Shader wireProgram = Shader("wireVert.glsl", "wireFrag.glsl");
 
-	/* FPS counter Set Up */
+	/* Load Models/Shaders */
+
+	// bullet physics
+	int i;
+
+	///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
+	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+
+	///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
+	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+
+	///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
+	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
+
+	///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
+	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+
+	btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+
+	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+
+	//keep track of the shapes, we release memory at exit.
+	//make sure to re-use collision shapes among rigid bodies whenever possible!
+	btAlignedObjectArray<btCollisionShape*> collisionShapes;
+
+	///create a few basic rigid bodies
+
+	//the ground is a cube of side 100 at position y = -56.
+	//the sphere will hit it at y = -6, with center at -5
+	{
+		btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+
+		collisionShapes.push_back(groundShape);
+
+		btTransform groundTransform;
+		groundTransform.setIdentity();
+		groundTransform.setOrigin(btVector3(0, -42, 0));
+
+		btScalar mass(0.);
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			groundShape->calculateLocalInertia(mass, localInertia);
+
+		//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
+		btRigidBody* body = new btRigidBody(rbInfo);
+
+		//add the body to the dynamics world
+		dynamicsWorld->addRigidBody(body);
+	}
+
+	{
+		//create a dynamic rigidbody
+
+		//btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
+		btCollisionShape* colShape = new btSphereShape(btScalar(1.));
+		collisionShapes.push_back(colShape);
+
+		/// Create Dynamic Objects
+		btTransform startTransform;
+		startTransform.setIdentity();
+
+		btScalar mass(1.f);
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			colShape->calculateLocalInertia(mass, localInertia);
+
+		startTransform.setOrigin(btVector3(2, 20, 0));
+
+		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+		btRigidBody* body = new btRigidBody(rbInfo);
+
+		//bounciness [0,1]
+		body->setRestitution(1.0);
+
+		dynamicsWorld->addRigidBody(body);
+	}
+
+	// timing
 	double prevTime = 0.0;
 	double crntTime = 0.0;
 	double timeDiff;
 	unsigned int counter = 0;
-	/* FPS counter Set Up */
 
 	double lastTick = 0.0;
 	double thisTick = 0.0;
 	double delta;
 
-	// timing
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
+
+	float rot = 0.0f;
 
 	/* Main Game Loop */
 	while (!glfwWindowShouldClose(window)) {
@@ -163,15 +251,52 @@ int main() {
 		}
 		/* FPS counter */
 
-		glfwPollEvents();
+		glfwPollEvents(); // get inputs
 
+		// ~60 ticks per second
 		thisTick = glfwGetTime();
 		delta = thisTick - lastTick;
 		if (delta >= 1.0 / 60.0) {
 			gameTick(delta);
+			{
+				dynamicsWorld->stepSimulation(delta, 10);
+
+				//print positions of all objects
+				for (int j = dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+				{
+					btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
+					btRigidBody* body = btRigidBody::upcast(obj);
+					btTransform trans;
+					if (body && body->getMotionState())
+					{
+						body->getMotionState()->getWorldTransform(trans);
+					}
+					else
+					{
+						trans = obj->getWorldTransform();
+					}
+					printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+					if (j == 1) {
+						xsphere.setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
+						ysphere.setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
+						zsphere.setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
+					}
+				}
+			}
+			{
+				rot += delta;
+				if (rot > 2*PI) {
+					rot = rot - 2*PI;
+				}
+				float q1, q3;
+				q1 = cos(rot / 2);
+				q3 = sin(rot / 2);
+				handBat.setRotation(glm::quat(q1,0.0f,q3,0.0f));
+			}
 			lastTick = thisTick;
 		}
 
+		// calc time since last frame for animation
 		float currentFrame = glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
@@ -190,6 +315,7 @@ int main() {
 		bat.Draw(rigProgram, camera);
 		panel.Draw(rigProgram, camera);
 		light.Draw(rigProgram, camera);
+		bench.Draw(rigProgram, camera);
 		
 		handBat.Draw(rigProgram, handCam);
 
@@ -199,14 +325,59 @@ int main() {
 		yaxis.Draw(wireProgram, camera);
 		zaxis.Draw(wireProgram, camera);
 
+		xsphere.Draw(wireProgram, camera);
+		ysphere.Draw(wireProgram, camera);
+		zsphere.Draw(wireProgram, camera);
+
 		glfwSwapBuffers(window);
 
 	}
 
-	/* Application Closed */
+	// bullet physics cleanup
+
+	//remove the rigidbodies from the dynamics world and delete them
+	for (i = dynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
+	{
+		btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		if (body && body->getMotionState())
+		{
+			delete body->getMotionState();
+		}
+		dynamicsWorld->removeCollisionObject(obj);
+		delete obj;
+	}
+
+	//delete collision shapes
+	for (int j = 0; j < collisionShapes.size(); j++)
+	{
+		btCollisionShape* shape = collisionShapes[j];
+		collisionShapes[j] = 0;
+		delete shape;
+	}
+
+	//delete dynamics world
+	delete dynamicsWorld;
+
+	//delete solver
+	delete solver;
+
+	//delete broadphase
+	delete overlappingPairCache;
+
+	//delete dispatcher
+	delete dispatcher;
+
+	delete collisionConfiguration;
+
+	//next line is optional: it will be cleared by the destructor when the array goes out of scope
+	collisionShapes.clear();
+
+	/* Application Close */
 
 	glfwTerminate();
 	return 0;
+	
 }
 
 void gameTick(double delta) {

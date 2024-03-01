@@ -16,8 +16,12 @@
 #include "glm/gtc/type_ptr.hpp"
 
 #include <FileSystem>
+#include <math.h>
+#include <cmath>
 
 #include "stb_image.h"
+
+#include "btBulletDynamicsCommon.h"
 
 #include "Texture.h"
 #include "Shader.h"

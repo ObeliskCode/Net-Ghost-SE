@@ -36,5 +36,32 @@ void Wire::Draw(Shader& shader, Camera& camera) {
 
 	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
 
+	// Initialize matrices
+	glm::mat4 trans = glm::mat4(1.0f);
+	glm::mat4 rot = glm::mat4(1.0f);
+	glm::mat4 sca = glm::mat4(1.0f);
+
+	// Transform the matrices to their correct form
+	trans = glm::translate(trans, translation);
+	rot = glm::mat4_cast(rotation);
+	sca = glm::scale(sca, scale);
+
+	// Push the matrices to the vertex shader
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
+
 	glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
+}
+
+void Wire::setTranslation(glm::vec3 translation) {
+	Wire::translation = translation;
+}
+
+void Wire::setRotation(glm::quat rotation) {
+	Wire::rotation = rotation;
+}
+
+void Wire::setScale(glm::vec3 scale) {
+	Wire::scale = scale;
 }

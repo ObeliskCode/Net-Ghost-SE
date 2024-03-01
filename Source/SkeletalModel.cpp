@@ -183,8 +183,6 @@ std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, aiText
 {
     std::vector<Texture> textures;
 
-    std::cout << mat->GetTextureCount(type) << std::endl;
-
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
