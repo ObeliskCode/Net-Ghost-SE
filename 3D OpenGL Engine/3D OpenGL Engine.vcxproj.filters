@@ -54,6 +54,12 @@
     <ClCompile Include="..\Source\SkeletalMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Camera.h">
@@ -104,6 +110,12 @@
     <ClInclude Include="..\Source\Bone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="rigFrag.glsl">
@@ -122,6 +134,18 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="animFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="partVert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="partFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="skyVert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="skyFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

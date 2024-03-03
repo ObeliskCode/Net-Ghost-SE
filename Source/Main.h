@@ -32,6 +32,8 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "Wire.h"
+#include "Particle.h"
+#include "Skybox.h"
 #include "SkeletalModel.h"
 #include "Animation.h"
 #include "Animator.h"

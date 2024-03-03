@@ -1,27 +1,24 @@
 # Obelisk Engine
 
-### `3D Graphics Engine coded from scratch using C++ and GLFW/GLEW to utilize OpenGL.`
+### `3D Game Engine
 
 ### Author: Noel Garcia - n6garcia@ucsd.edu - https://noeldev.site/
 
-## Features
-Graphics engine supports; 
-#### importing fully textured 3D models using collada (.dae) file format,
-#### multiple meshes & textures per file, 
-#### Phong Lighting, 
-#### Specular Maps, & 
-#### SkyBoxes.
-
-## How to Run
-To test out the engine download and run the .exe in the folder "Build".
+## Implemented 
+#### Animated 3D models
+#### Particle System
+#### Rigid Body Physics
 
 ## Controls
 WASD: forward, left, back, right
 
 X: lock/unlock cursor for mouse panning
 
+P: emit smoke particles
+
 ## How to Develop
 1. Download Visual Studio 2022.
-2. Open GLEW_GLFW.zip and install it so that Visual Studio 2022 recognizes it.
-3. Install Assimp [https://assimp-docs.readthedocs.io/en/latest/about/installation.html]
+2. Open GLEW_GLFW.zip and install it such that Visual Studio 2022 recognizes it.
+3. Install Assimp [https://assimp-docs.readthedocs.io/en/latest/about/installation.html] to Libraries
+4. Install Bullet Physics to Libraries
 4. Write Code!

@@ -28,6 +28,12 @@ Camera handCam(screenWidth, screenHeight, glm::vec3(0.0f, 0.0f, 2.0f));
 
 bool W, A, S, D = false;
 
+bool P = false;
+
+struct {
+	bool operator()(Particle a, Particle b) const { return glm::length(camera.Position-a.getTranslation()) > glm::length(camera.Position - b.getTranslation()); }
+} Less;
+
 /* Functions */
 
 int main() {
@@ -54,6 +60,9 @@ int main() {
 	// enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 
+	// enable blending for transparency
+	//glEnable(GL_BLEND);
+
 	// enable 8x MSAA
 	glfwWindowHint(GLFW_SAMPLES, 8);
 	glEnable(GL_MULTISAMPLE);
@@ -69,6 +78,11 @@ int main() {
 	//disable vsync if enabled
 	glfwSwapInterval(0);
 
+	// transparency
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_BLEND);
+
 	/* GLFW & GLEW Set Up */
 
 	/* Load Models/Shaders */
@@ -76,7 +90,6 @@ int main() {
 	Shader rigProgram = Shader("rigVert.glsl", "rigFrag.glsl"); // rigid bodies
 
 	Model lamp("lamp/lamp.dae");
-	Model bat("bat/bat.dae");
 	Model panel("floor/floor.dae");
 	Model handBat("bat/bat.dae");
 	Model bench("bench/bench.dae");
@@ -88,8 +101,10 @@ int main() {
 	lamp.setScale(glm::vec3(0.05f,0.05f,0.05f));
 	lamp.setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 
-	bat.setTranslation(glm::vec3(0.0f, 10.0f, 22.0f));
-	bat.setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
+	bench.setScale(glm::vec3(5.f,5.f,5.f));
+	bench.setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
+	float emg = sqrt(2.f) / 2.f;
+	bench.setRotation(glm::quat(emg,0.f,-emg,0.f));
 
 	handBat.setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 	handBat.setTranslation(glm::vec3(2.0f,-2.0f,0.0f));
@@ -108,7 +123,7 @@ int main() {
 	light.setScale(glm::vec3(5.0f, 5.0f, 5.0f));
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(0.0f, 10.0f, 32.0f);
+	glm::vec3 lightPos = glm::vec3(-10.0f, 13.2f, 28.0f);
 
 	light.setTranslation(lightPos);
 
@@ -128,7 +143,28 @@ int main() {
 	Wire ysphere(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	Wire zsphere(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
+	Wire x2sphere(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	Wire y2sphere(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	Wire z2sphere(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
 	Shader wireProgram = Shader("wireVert.glsl", "wireFrag.glsl");
+
+	std::vector<Particle> particles;
+
+	Shader partProgram = Shader("partVert.glsl", "partFrag.glsl");
+
+	std::vector<std::string> faces =
+	{
+			"skybox/right.jpg",
+			"skybox/left.jpg",
+			"skybox/top.jpg",
+			"skybox/bottom.jpg",
+			"skybox/front.jpg",
+			"skybox/back.jpg"
+	};
+	Skybox sky = Skybox::Skybox(faces);
+
+	Shader skyProgram = Shader("skyVert.glsl", "skyFrag.glsl");
 
 	/* Load Models/Shaders */
 
@@ -213,8 +249,35 @@ int main() {
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 		btRigidBody* body = new btRigidBody(rbInfo);
 
-		//bounciness [0,1]
-		body->setRestitution(1.0);
+		dynamicsWorld->addRigidBody(body);
+	}
+
+	{
+		//create a dynamic rigidbody
+
+		//btCollisionShape* colShape = new btBoxShape(btVector3(1,1,1));
+		btCollisionShape* colShape = new btSphereShape(btScalar(1.));
+		collisionShapes.push_back(colShape);
+
+		/// Create Dynamic Objects
+		btTransform startTransform;
+		startTransform.setIdentity();
+
+		btScalar mass(1.f);
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			colShape->calculateLocalInertia(mass, localInertia);
+
+		startTransform.setOrigin(btVector3(0.0, 23, 0));
+
+		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+		btRigidBody* body = new btRigidBody(rbInfo);
 
 		dynamicsWorld->addRigidBody(body);
 	}
@@ -275,11 +338,15 @@ int main() {
 					{
 						trans = obj->getWorldTransform();
 					}
-					printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
 					if (j == 1) {
 						xsphere.setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
 						ysphere.setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
 						zsphere.setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
+					}
+					else if (j == 2) {
+						x2sphere.setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
+						y2sphere.setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
+						z2sphere.setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
 					}
 				}
 			}
@@ -293,6 +360,24 @@ int main() {
 				q3 = sin(rot / 2);
 				handBat.setRotation(glm::quat(q1,0.0f,q3,0.0f));
 			}
+			{
+				if (P) {
+					Particle p = Particle();
+					p.setTranslation(camera.Position - glm::vec3(0.f, 0.25f, 0.f));
+					p.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
+					p.vel = glm::normalize(camera.Orientation);
+					particles.push_back(p);
+				}
+
+				for (int i = 0; i < particles.size(); i++) {
+					particles[i].update(delta);
+					if (particles[i].life >= particles[i].expire) {
+						particles.erase(particles.begin() + i);
+						i--;
+					}
+				}
+				
+			}
 			lastTick = thisTick;
 		}
 
@@ -305,6 +390,7 @@ int main() {
 
 		animator.UpdateAnimation(deltaTime);
 
+		// why no transforms size so that leftover transforms don't get checked
 		auto transforms = animator.GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i)
 			glUniformMatrix4fv(glGetUniformLocation(animProgram.ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
@@ -312,7 +398,6 @@ int main() {
 		renderScene();
 
 		lamp.Draw(rigProgram, camera);
-		bat.Draw(rigProgram, camera);
 		panel.Draw(rigProgram, camera);
 		light.Draw(rigProgram, camera);
 		bench.Draw(rigProgram, camera);
@@ -328,6 +413,19 @@ int main() {
 		xsphere.Draw(wireProgram, camera);
 		ysphere.Draw(wireProgram, camera);
 		zsphere.Draw(wireProgram, camera);
+
+		x2sphere.Draw(wireProgram, camera);
+		y2sphere.Draw(wireProgram, camera);
+		z2sphere.Draw(wireProgram, camera);
+
+		sky.Draw(skyProgram, camera);
+
+		glEnable(GL_BLEND);
+		std::sort(particles.begin(),particles.end(),Less);
+		for (int i = 0; i < particles.size(); i++) {
+			particles[i].Draw(partProgram, camera);
+		}
+		glDisable(GL_BLEND);
 
 		glfwSwapBuffers(window);
 
@@ -467,6 +565,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_D:
 			D = false;
 			break;
+		case GLFW_KEY_P:
+			P = false;
+			break;
 		}
 		return;
 	}
@@ -486,6 +587,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		break;
 	case GLFW_KEY_D:
 		D = true;
+		break;
+	case GLFW_KEY_P:
+		P = true;
 		break;
 	case GLFW_KEY_X:
 		cursorLocked = !cursorLocked;

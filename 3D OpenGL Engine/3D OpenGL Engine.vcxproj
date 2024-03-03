@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\Particle.cpp" />
     <ClCompile Include="..\Source\SkeletalMesh.cpp" />
     <ClCompile Include="..\Source\SkeletalModel.cpp" />
     <ClCompile Include="..\Source\Camera.cpp" />
@@ -160,6 +161,7 @@
     <ClCompile Include="..\Source\Mesh.cpp" />
     <ClCompile Include="..\Source\Model.cpp" />
     <ClCompile Include="..\Source\Shader.cpp" />
+    <ClCompile Include="..\Source\Skybox.cpp" />
     <ClCompile Include="..\Source\stb.cpp" />
     <ClCompile Include="..\Source\Texture.cpp" />
     <ClCompile Include="..\Source\VAO.cpp" />
@@ -170,6 +172,7 @@
     <ClInclude Include="..\Source\Animation.h" />
     <ClInclude Include="..\Source\Animator.h" />
     <ClInclude Include="..\Source\Bone.h" />
+    <ClInclude Include="..\Source\Particle.h" />
     <ClInclude Include="..\Source\SkeletalMesh.h" />
     <ClInclude Include="..\Source\SkeletalModel.h" />
     <ClInclude Include="..\Source\Camera.h" />
@@ -178,6 +181,7 @@
     <ClInclude Include="..\Source\Mesh.h" />
     <ClInclude Include="..\Source\Model.h" />
     <ClInclude Include="..\Source\Shader.h" />
+    <ClInclude Include="..\Source\Skybox.h" />
     <ClInclude Include="..\Source\stb_image.h" />
     <ClInclude Include="..\Source\Texture.h" />
     <ClInclude Include="..\Source\VAO.h" />
@@ -187,8 +191,12 @@
   <ItemGroup>
     <None Include="animFrag.glsl" />
     <None Include="animVert.glsl" />
+    <None Include="partFrag.glsl" />
+    <None Include="partVert.glsl" />
     <None Include="rigFrag.glsl" />
     <None Include="rigVert.glsl" />
+    <None Include="skyFrag.glsl" />
+    <None Include="skyVert.glsl" />
     <None Include="wireFrag.glsl" />
     <None Include="wireVert.glsl" />
   </ItemGroup>
