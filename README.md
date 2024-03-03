@@ -1,13 +1,11 @@
 # Obelisk Engine
 
-### `3D Game Engine
+### 3D Game Engine - C++/OpenGL
 
 ### Author: Noel Garcia - n6garcia@ucsd.edu - https://noeldev.site/
 
-## Implemented 
-#### Animated 3D models
-#### Particle System
-#### Rigid Body Physics
+## Features Implemented 
+#### Animated 3D models, Particle System, Rigid Body Physics
 
 ## Controls
 WASD: forward, left, back, right
@@ -20,5 +18,5 @@ P: emit smoke particles
 1. Download Visual Studio 2022.
 2. Open GLEW_GLFW.zip and install it such that Visual Studio 2022 recognizes it.
 3. Install Assimp [https://assimp-docs.readthedocs.io/en/latest/about/installation.html] to Libraries
-4. Install Bullet Physics to Libraries
+4. Install Bullet Physics [https://github.com/bulletphysics/bullet3] to Libraries
 4. Write Code!
