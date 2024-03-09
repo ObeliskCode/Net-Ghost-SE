@@ -49,14 +49,14 @@ int main() {
 	panel->setTranslation(glm::vec3(0.0f, 5.0f, 20.0f));
 	panel->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
-	ECS.addEntity(Entity(panel, &rigProgram, &wireProgram, &camera));
+	ECS.addEntity(new Entity(panel, &rigProgram, &wireProgram, &camera));
 
 	Model* lamp = new Model("lamp/lamp.dae");
 	lamp->setTranslation(glm::vec3(-10.0f, 15.0f-0.1f, 28.0f));
 	lamp->setScale(glm::vec3(0.04f,0.04f,0.04f));
 	lamp->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 
-	ECS.addEntity(Entity(lamp, &rigProgram, &wireProgram, &camera));
+	ECS.addEntity(new Entity(lamp, &rigProgram, &wireProgram, &camera));
 
 	Model* bench = new Model("bench/bench.dae");
 	bench->setScale(glm::vec3(4.5f,4.5f,4.5f));
@@ -64,38 +64,38 @@ int main() {
 	float CosHalfPi = sqrt(2.f) / 2.f;
 	bench->setRotation(glm::quat(CosHalfPi,0.f,-CosHalfPi,0.f));
 
-	ECS.addEntity(Entity(bench, &rigProgram, &wireProgram, &camera));
+	ECS.addEntity(new Entity(bench, &rigProgram, &wireProgram, &camera));
 
 	Model* handBat = new Model("bat/bat.dae");
 	handBat->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 	handBat->setTranslation(glm::vec3(2.0f,-2.0f,0.0f));
 
-	ECS.addEntity(Entity(handBat, &rigProgram, &wireProgram, &handCam));
+	ECS.addEntity(new Entity(handBat, &rigProgram, &wireProgram, &handCam));
 
 	Model* cig = new Model("cig/cig.dae");
 	cig->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
 	cig->setRotation(glm::quat(0.0f,0.0f,1.0f,0.0f));
 
-	ECS.addEntity(Entity(cig, &rigProgram, &wireProgram, &handCam));
+	ECS.addEntity(new Entity(cig, &rigProgram, &wireProgram, &handCam));
 
 	Model* dumpster = new Model("dumpster/dumpster.dae");
 	dumpster->setTranslation(glm::vec3(25.0f, 5.0f, 35.0f));
 	dumpster->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
 	dumpster->setScale(glm::vec3(6.5f));
 
-	ECS.addEntity(Entity(dumpster, &rigProgram, &wireProgram, &camera));
+	ECS.addEntity(new Entity(dumpster, &rigProgram, &wireProgram, &camera));
 
 	Model* cart = new Model("cart/ShoppingCart.dae");
 	cart->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
 	cart->setScale(glm::vec3(7.f));
 
-	ECS.addEntity(Entity(cart, &rigProgram, &wireProgram, &camera));
+	ECS.addEntity(new Entity(cart, &rigProgram, &wireProgram, &camera));
 
 	Model* tent = new Model("tent/tent.dae");
 	tent->setTranslation(glm::vec3(-15.0f, 5.0f, 10.0f));
 	tent->setScale(glm::vec3(7.f));
 
-	ECS.addEntity(Entity(tent, &rigProgram, &wireProgram, &camera));
+	ECS.addEntity(new Entity(tent, &rigProgram, &wireProgram, &camera));
 
 	SkeletalModel* wolf = new SkeletalModel("wolf/Wolf_One_dae.dae");
 	wolf->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
@@ -103,7 +103,7 @@ int main() {
 	Animation* wolfAnimation = new Animation("wolf/Wolf_One_dae.dae", wolf);
 	Animator* animator = new Animator(wolfAnimation);
 
-	ECS.addEntity(Entity(wolf, wolfAnimation, animator, &animProgram, &wireProgram, &camera));
+	ECS.addEntity(new Entity(wolf, wolfAnimation, animator, &animProgram, &wireProgram, &camera));
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(-10.0f, 13.2f, 28.0f);
@@ -112,7 +112,7 @@ int main() {
 	light->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
 	light->setTranslation(lightPos);
 
-	ECS.addEntity(Entity(light, &rigProgram, &wireProgram, &camera));
+	ECS.addEntity(new Entity(light, &rigProgram, &wireProgram, &camera));
 
 	rigProgram.Activate();
 	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -123,52 +123,56 @@ int main() {
 	glUniform3f(glGetUniformLocation(rigProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	//QUAD
-	Entity e = Entity(&wireProgram, &camera);
-	e.addWire(new Wire(glm::vec3(50.0f, 50.0f, -50.0f), glm::vec3(-50.0f, 50.0f, -50.0f)));
-	e.addWire(new Wire(glm::vec3(-50.0f, 50.0f, -50.0f), glm::vec3(-50.0f, 50.0f, 50.0f)));
-	e.addWire(new Wire(glm::vec3(-50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, 50.0f)));
-	e.addWire(new Wire(glm::vec3(50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, -50.0f)));
-	e.addBody(sim->addShape1());
+	Entity* e = new Entity(&wireProgram, &camera);
+	e->addWire(new Wire(glm::vec3(50.0f, 50.0f, -50.0f), glm::vec3(-50.0f, 50.0f, -50.0f)));
+	e->addWire(new Wire(glm::vec3(-50.0f, 50.0f, -50.0f), glm::vec3(-50.0f, 50.0f, 50.0f)));
+	e->addWire(new Wire(glm::vec3(-50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, 50.0f)));
+	e->addWire(new Wire(glm::vec3(50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, -50.0f)));
 	ECS.addEntity(e);
+	e->addBody(sim->addShape1(e->getID()));
 	
 	//STAGING AXIS
-	e = Entity(&wireProgram, &camera);
-	e.addWire(new Wire(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
-	e.addWire(new Wire(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f)));
-	e.addWire(new Wire(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 5.0f)));
+	e = new Entity(&wireProgram, &camera);
+	e->addWire(new Wire(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
+	e->addWire(new Wire(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f)));
+	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 5.0f)));
 	ECS.addEntity(e);
 
 	//RIGID BODY 1
-	e = Entity(&wireProgram, &camera);
-	e.addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-	e.addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-	e.addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	e.addBody(sim->addShape2());
+	e = new Entity(&wireProgram, &camera);
+	e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	ECS.addEntity(e);
+	e->addBody(sim->addShape2(e->getID()));
+	e->setType("pickup");
 
-	//RIGID BODY 1
-	e = Entity(&wireProgram, &camera);
-	e.addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-	e.addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-	e.addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	e.addBody(sim->addShape3());
+	//RIGID BODY 2
+	e = new Entity(&wireProgram, &camera);
+	e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	ECS.addEntity(e);
+	e->addBody(sim->addShape3(e->getID()));
+	e->setType("pickup");
+	
 
 	//CONTROLLABLE BODY
-	Entity character = Entity(&wireProgram, &camera);
-	character.addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-	character.addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-	character.addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	character.addBody(sim->addShape4());
+	Entity* character = new Entity(&wireProgram, &camera);
+	character->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	character->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+	character->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	ECS.addEntity(character);
+	character->addBody(sim->addShape4(character->getID()));
 
 	// CAPSULE
-	e = Entity(&wireProgram, &camera);
-	e.addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-	e.addWire(new Wire(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
-	e.addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	e.addBody(sim->addShape5());
+	e = new Entity(&wireProgram, &camera);
+	e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	e->addWire(new Wire(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
+	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	ECS.addEntity(e);
+	e->addBody(sim->addShape5(e->getID()));
+	e->setType("pickup");
 	
 	std::vector<Particle> particles;
 
@@ -230,7 +234,7 @@ int main() {
 		delta = thisTick - lastTick;
 		if (delta >= 1.0 / 64.0) {
 			gameTick(delta);
-			// Physics:: deserves this!
+			// Physics:: deserves this! rayCollision
 			if (E) {
 				glm::vec3 ppp = camera.Position + (camera.Orientation * 3.0f);
 
@@ -240,15 +244,22 @@ int main() {
 				dynamicsWorld->rayTest(from, to, rrc);
 
 				if (rrc.hasHit()) {
-					//pretty sure this won't work lol
-					btCollisionObject sel = *rrc.m_collisionObject;
-					dynamicsWorld->removeCollisionObject(&sel);
+					btRigidBody* sel = btRigidBody::upcast(const_cast <btCollisionObject*>(rrc.m_collisionObject));
+					unsigned int entID = sim->m_EntityMap[sel];
+					if (entID != 0) {
+						if (ECS.getEntity(entID)->getType() == "pickup") {
+							std::cout << "success" << std::endl;
+							ECS.removeEntity(entID);
+							delete sel->getMotionState();
+							sim->getDynamicsWorld()->removeCollisionObject(sel);
+						}
+					}
 				}
 			}
 			sim->updateSim(delta);
 			ECS.updatePhysics();
 			{
-				btRigidBody* body = character.getBody();
+				btRigidBody* body = character->getBody();
 
 				float zVel = 0;
 				float xVel = 0;

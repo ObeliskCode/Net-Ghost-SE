@@ -42,7 +42,7 @@ void Physics::updateSim(float delta) {
 }
 
 
-btRigidBody* Physics::addShape1() {
+btRigidBody* Physics::addShape1(unsigned int ID) {
 	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
 
 	collisionShapes.push_back(groundShape);
@@ -70,10 +70,12 @@ btRigidBody* Physics::addShape1() {
 	//add the body to the dynamics world
 	dynamicsWorld->addRigidBody(body);
 
+	m_EntityMap[body] = ID;
+
 	return body;
 }
 
-btRigidBody* Physics::addShape2() {
+btRigidBody* Physics::addShape2(unsigned int ID) {
 	btCollisionShape* colShape = new btSphereShape(btScalar(1.));
 	collisionShapes.push_back(colShape);
 
@@ -101,10 +103,12 @@ btRigidBody* Physics::addShape2() {
 
 	dynamicsWorld->addRigidBody(body);
 
+	m_EntityMap[body] = ID;
+
 	return body;
 }
 
-btRigidBody* Physics::addShape3() {
+btRigidBody* Physics::addShape3(unsigned int ID) {
 	btCollisionShape* colShape = new btSphereShape(btScalar(1.));
 	collisionShapes.push_back(colShape);
 
@@ -132,10 +136,12 @@ btRigidBody* Physics::addShape3() {
 
 	dynamicsWorld->addRigidBody(body);
 
+	m_EntityMap[body] = ID;
+
 	return body;
 }
 
-btRigidBody* Physics::addShape4() {
+btRigidBody* Physics::addShape4(unsigned int ID) {
 	btCollisionShape* colShape = new btBoxShape(btVector3(1, 1, 1));
 	//btCollisionShape* colShape = new btSphereShape(btScalar(1.));
 	collisionShapes.push_back(colShape);
@@ -168,10 +174,12 @@ btRigidBody* Physics::addShape4() {
 
 	dynamicsWorld->addRigidBody(body);
 
+	m_EntityMap[body] = ID;
+
 	return body;
 }
 
-btRigidBody* Physics::addShape5() {
+btRigidBody* Physics::addShape5(unsigned int ID) {
 	btCollisionShape* colShape = new btCapsuleShape(btScalar(1.), btScalar(2.));
 	collisionShapes.push_back(colShape);
 
@@ -196,6 +204,8 @@ btRigidBody* Physics::addShape5() {
 	btRigidBody* body = new btRigidBody(rbInfo);
 
 	dynamicsWorld->addRigidBody(body);
+
+	m_EntityMap[body] = ID;
 
 	return body;
 }

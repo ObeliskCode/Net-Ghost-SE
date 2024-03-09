@@ -42,6 +42,14 @@ Entity::Entity(Shader* ws, Camera* c) {
 	camera = c;
 }
 
+Entity::~Entity(){
+	for (int i = 0; i < wires.size(); ++i) {
+		delete wires[i];
+	}
+	wires.clear();
+	// what should be deleted here!?
+}
+
 void Entity::addBody(btRigidBody* b) {
 	m_dynamic = true;
 	body = b;
@@ -52,12 +60,29 @@ btRigidBody* Entity::getBody() {
 	return body;
 }
 
+void Entity::setType(std::string type) {
+	m_type = type;
+}
+
+std::string Entity::getType() {
+	return m_type;
+}
+
+void Entity::setID(unsigned int ID) {
+	m_id = ID;
+}
+
+unsigned int Entity::getID() {
+	return m_id;
+}
+
 void Entity::addWire(Wire* w) {
 	wires.push_back(w);
 }
 
 void Entity::Draw(float delta) {
 	if (m_animated) {
+		shader->Activate();
 		mator->UpdateAnimation(delta);
 
 		auto transforms = mator->GetFinalBoneMatrices();

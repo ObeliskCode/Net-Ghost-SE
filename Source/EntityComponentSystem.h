@@ -3,15 +3,17 @@
 
 #include "Entity.h"
 #include "Physics.h"
+#include <map>
 
 class EntityComponentSystem {
 	public:
-		void addEntity(Entity e);
+		void addEntity(Entity* e);
 		void updatePhysics();
 		void DrawEntities(float delta);
-		//remEnt? 
+		void removeEntity(unsigned int ID);
+		Entity* getEntity(unsigned int ID);
 	private:
-		std::vector<Entity> entities;
+		std::map<int, Entity*> entds2;
 };
 
 #endif

@@ -26,6 +26,7 @@ private:
     std::vector<Mesh> meshes;
     std::string directory;
 
+    // this is bad for instancing!? should be kept in a higher level class
     glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);

@@ -14,14 +14,20 @@ class Entity {
 		Entity(Shader* ws, Camera* c);
 		Entity(Model* m, Shader* s, Shader* ws, Camera* c);
 		Entity(SkeletalModel* sm, Animation* a, Animator* m, Shader* s, Shader* ws, Camera* c);
+		~Entity();
 
+		void setType(std::string type);
+		std::string getType();
+		void setID(unsigned int ID);
+		unsigned int getID();
 		void addWire(Wire* w);
 		void updatePhysics();
 		void Draw(float delta);
 		void addBody(btRigidBody* b);
 		btRigidBody* getBody();
 	private:
-		// ID? name?
+		unsigned int m_id;
+		std::string m_type;
 		bool m_animated;
 		bool m_modeled;
 		bool m_dynamic;
