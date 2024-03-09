@@ -6,6 +6,8 @@ GLuint Particle::VAO, Particle::VBO, Particle::EBO;
 
 Texture* Particle::sprite;
 
+const double PI = 3.1415926535897932384626433832795028841971693993751058209;
+
 Particle::Particle() {
 
 	if (Vert.empty()) {
@@ -49,22 +51,22 @@ Particle::Particle() {
 	}
 
 	if (VAO == 0 || VBO == 0 || EBO == 0) {
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, Vert.size() * sizeof(float), Vert.data(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Ind.size() * sizeof(GLuint), Ind.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 *sizeof(float)));
-	glEnableVertexAttribArray(1);
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &EBO);
+		glBindVertexArray(VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, Vert.size() * sizeof(float), Vert.data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, Ind.size() * sizeof(GLuint), Ind.data(), GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 *sizeof(float)));
+		glEnableVertexAttribArray(1);
 
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 	if (sprite == 0) {
@@ -74,6 +76,7 @@ Particle::Particle() {
 };
 
 
+// instance this!!
 void Particle::Draw(Shader& shader, Camera& camera) {
 	shader.Activate();
 	glBindVertexArray(VAO);
@@ -82,8 +85,6 @@ void Particle::Draw(Shader& shader, Camera& camera) {
 	sprite->Bind();
 
 	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
-
-	glm::vec3 up = glm::vec3(0.f, 1.f, 0.f);
 
 	glm::vec3 vec2cam = camera.Position - translation;
 	vec2cam.y = 0.f;
@@ -119,6 +120,15 @@ void Particle::Draw(Shader& shader, Camera& camera) {
 	rotation2.z = rotation2.z / len;
 	rotation2.w = rotation2.w / len;
 
+	float theta = rotMag * 2.0f * PI/expire;
+	float q1 = cos(theta / 2.0f);
+	float q2 = vec2cam2.x * sin(theta / 2.0f);
+	float q3 = vec2cam2.y * sin(theta / 2.0f);
+	float q4 = vec2cam2.z * sin(theta / 2.0f);
+	glm::quat rotation3 = glm::quat(q1, q2, q3, q4);
+
+	glm::quat rotCombine = rotation3 * rotation2 * rotation;
+
 	// Initialize matrices
 	glm::mat4 trans = glm::mat4(1.0f);
 	glm::mat4 rot;
@@ -126,7 +136,7 @@ void Particle::Draw(Shader& shader, Camera& camera) {
 
 	// Transform the matrices to their correct form
 	trans = glm::translate(trans, translation);
-	rot = glm::mat4_cast(rotation2) * glm::mat4_cast(rotation);
+	rot = glm::mat4_cast(rotCombine);
 	sca = glm::scale(sca, scale);
 
 	// Push the matrices to the vertex shader
@@ -142,22 +152,17 @@ void Particle::Draw(Shader& shader, Camera& camera) {
 
 void Particle::update(float delta) {
 	life += delta;
-	float dt;
-	if (life == -1.0f) {
-		dt = 0.0f;
-	}
-	else {
-		// zero at 3.0f 
-		dt = -2.0f * sin(0.5f * life) + 2;
-	}
+	float dt = -2.0f * sin(0.5f * life) + 2;
 
-	glm::vec3 randVec = glm::normalize(glm::vec3(((float)rand() / RAND_MAX) - 0.5f, ((float)rand() / RAND_MAX) - 0.5f, ((float)rand() / RAND_MAX) - 0.5f)) * 0.025f;
+	glm::vec3 randVec = glm::normalize(glm::vec3(((float)rand() / RAND_MAX) - 0.5f, ((float)rand() / RAND_MAX) - 0.5f, ((float)rand() / RAND_MAX) - 0.5f)) * 0.03f;
 	vel += randVec;
 	vel.y += lift;
 	
 	translation = translation + vel * dt * delta;
 
-	scale = scale + delta * (scale.x * 2.5f / expire);
+	// the only one that looks good like this
+	scale = scale + delta * scale.x * 1.1f;
+	//scale = glm::vec3(scalar) + (glm::vec3(scalar) * 10.0f * sin(0.5f * life));
 	
 }
 
@@ -173,6 +178,7 @@ void Particle::setRotation(glm::quat rotation) {
 	Particle::rotation = rotation;
 }
 
-void Particle::setScale(glm::vec3 scale) {
-	Particle::scale = scale;
+void Particle::setScale(float scalar) {
+	Particle::scale = glm::vec3(scalar);
+	Particle::scalar = scalar;
 }

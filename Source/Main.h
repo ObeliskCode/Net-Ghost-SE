@@ -25,6 +25,8 @@
 
 #include "Texture.h"
 #include "Shader.h"
+#include "Entity.h"
+#include "EntityComponentSystem.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
@@ -33,21 +35,20 @@
 #include "Model.h"
 #include "Wire.h"
 #include "Particle.h"
+#include "Physics.h"
 #include "Skybox.h"
 #include "SkeletalModel.h"
 #include "Animation.h"
 #include "Animator.h"
 
-
+GLFWwindow* initApp();
 void gameTick(double delta);
 void renderScene();
-
 
 /*Event Callback Functions*/
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 void window_size_callback(GLFWwindow* window, int width, int height);
 void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
 void setup_callbacks(GLFWwindow* window);
-
 
 #endif

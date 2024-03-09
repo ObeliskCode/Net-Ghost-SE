@@ -11,7 +11,7 @@ void main()
 {
     vec4 texColor = texture(sprite, TexCoords);
     float half = 1.0f/2.0f;
-    float halfN = pow(half,4.0);
+    float halfN = pow(half,3.0);
     texColor.a = texColor.a * ( -halfN*sin( half*life ) + halfN );
     color = texColor;
 }

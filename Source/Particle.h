@@ -16,13 +16,14 @@ class Particle {
 		void update(float delta);
 
 		float expire = 3.0f;
+		float lift = 0.006f;
 		float life = 0.0f;
-		float lift = 0.002f;
+		
 		glm::vec3 vel = glm::vec3(1.f,0.f,0.f);
 
 		glm::vec3 getTranslation();
 		void setTranslation(glm::vec3 translation);
-		void setScale(glm::vec3 scale);
+		void setScale(float scalar);
 
 	private:
 		static std::vector <float> Vert;
@@ -30,6 +31,9 @@ class Particle {
 		static GLuint VAO, VBO, EBO;
 
 		static Texture* sprite;
+
+		float scalar = 1.0f;
+		float rotMag = ((float)rand() / RAND_MAX) - 0.5f;
 
 		void setRotation(glm::quat rotation);
 

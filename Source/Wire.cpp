@@ -30,6 +30,12 @@ Wire::Wire(glm::vec3 x_0, glm::vec3 x_1) {
 
 };
 
+Wire::~Wire() {
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+}
+
 void Wire::Draw(Shader& shader, Camera& camera) {
 	shader.Activate();
 	glBindVertexArray(VAO);

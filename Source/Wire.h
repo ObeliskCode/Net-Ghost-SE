@@ -8,7 +8,7 @@
 class Wire {
 	public:
 		Wire(glm::vec3 x_0, glm::vec3 x_1);
-		//~Wire() TODO
+		~Wire();
 		void Draw(Shader& shader, Camera& camera);
 
 		void setTranslation(glm::vec3 translation);
