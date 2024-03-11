@@ -7,7 +7,7 @@
 #pragma comment(lib,"glew32s.lib")
 #pragma comment(lib,"glew32.lib")
 #define GLEW_STATIC
-#include <GL/glew.h> 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "glm/glm.hpp"
@@ -26,7 +26,7 @@
 #include "Texture.h"
 #include "Shader.h"
 #include "Entity.h"
-#include "EntityComponentSystem.h"
+#include "ECS.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
@@ -40,6 +40,7 @@
 #include "SkeletalModel.h"
 #include "Animation.h"
 #include "Animator.h"
+#include "Input.h"
 
 GLFWwindow* initApp();
 void gameTick(double delta);

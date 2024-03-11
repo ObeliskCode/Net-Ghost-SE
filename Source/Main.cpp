@@ -6,7 +6,7 @@ const double PI = 3.1415926535897932384626433832795028841971693993751058209;
 
 /* Global Variables */
 
-int screenWidth = 1024, screenHeight = 576;     // Width and height of window in pixels.
+int screenWidth = 1600, screenHeight = 900; // Width and height of window in pixels.
 
 float sensitivity = 1.0f; // mouse sens
 bool cursorLocked = false; // whether to lock cursor for first person mode
@@ -20,14 +20,6 @@ Camera camera(screenWidth, screenHeight, glm::vec3(0.0f, 11.0f, 30.0f)); // crea
 
 Camera handCam(screenWidth, screenHeight, glm::vec3(0.0f, 0.0f, 2.0f));
 
-bool W, A, S, D;
-
-bool P;
-
-bool E;
-
-bool I, J, K, L;
-
 struct {
 	bool operator()(Particle a, Particle b) const { return glm::length(camera.Position-a.getTranslation()) > glm::length(camera.Position - b.getTranslation()); }
 } Less;
@@ -37,26 +29,22 @@ struct {
 int main() {
 	GLFWwindow* window = initApp();
 
-	Physics* sim = new Physics();
-
 	Shader rigProgram = Shader("rigVert.glsl", "rigFrag.glsl");
 	Shader wireProgram = Shader("wireVert.glsl", "wireFrag.glsl");
 	Shader animProgram = Shader("animVert.glsl", "animFrag.glsl");
-
-	EntityComponentSystem ECS = EntityComponentSystem();
 
 	Model* panel = new Model("floor/floor.dae");
 	panel->setTranslation(glm::vec3(0.0f, 5.0f, 20.0f));
 	panel->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
-	ECS.addEntity(new Entity(panel, &rigProgram, &wireProgram, &camera));
+	ECS::get().addEntity(new Entity(panel, &rigProgram, &wireProgram, &camera));
 
 	Model* lamp = new Model("lamp/lamp.dae");
 	lamp->setTranslation(glm::vec3(-10.0f, 15.0f-0.1f, 28.0f));
-	lamp->setScale(glm::vec3(0.04f,0.04f,0.04f));
+	lamp->setScale(glm::vec3(0.05f,0.05f,0.05f));
 	lamp->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 
-	ECS.addEntity(new Entity(lamp, &rigProgram, &wireProgram, &camera));
+	ECS::get().addEntity(new Entity(lamp, &rigProgram, &wireProgram, &camera));
 
 	Model* bench = new Model("bench/bench.dae");
 	bench->setScale(glm::vec3(4.5f,4.5f,4.5f));
@@ -64,38 +52,38 @@ int main() {
 	float CosHalfPi = sqrt(2.f) / 2.f;
 	bench->setRotation(glm::quat(CosHalfPi,0.f,-CosHalfPi,0.f));
 
-	ECS.addEntity(new Entity(bench, &rigProgram, &wireProgram, &camera));
+	ECS::get().addEntity(new Entity(bench, &rigProgram, &wireProgram, &camera));
 
 	Model* handBat = new Model("bat/bat.dae");
 	handBat->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 	handBat->setTranslation(glm::vec3(2.0f,-2.0f,0.0f));
 
-	ECS.addEntity(new Entity(handBat, &rigProgram, &wireProgram, &handCam));
+	ECS::get().addEntity(new Entity(handBat, &rigProgram, &wireProgram, &handCam));
 
 	Model* cig = new Model("cig/cig.dae");
 	cig->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
 	cig->setRotation(glm::quat(0.0f,0.0f,1.0f,0.0f));
 
-	ECS.addEntity(new Entity(cig, &rigProgram, &wireProgram, &handCam));
+	ECS::get().addEntity(new Entity(cig, &rigProgram, &wireProgram, &handCam));
 
 	Model* dumpster = new Model("dumpster/dumpster.dae");
 	dumpster->setTranslation(glm::vec3(25.0f, 5.0f, 35.0f));
 	dumpster->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
 	dumpster->setScale(glm::vec3(6.5f));
 
-	ECS.addEntity(new Entity(dumpster, &rigProgram, &wireProgram, &camera));
+	ECS::get().addEntity(new Entity(dumpster, &rigProgram, &wireProgram, &camera));
 
 	Model* cart = new Model("cart/ShoppingCart.dae");
 	cart->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
 	cart->setScale(glm::vec3(7.f));
 
-	ECS.addEntity(new Entity(cart, &rigProgram, &wireProgram, &camera));
+	ECS::get().addEntity(new Entity(cart, &rigProgram, &wireProgram, &camera));
 
 	Model* tent = new Model("tent/tent.dae");
 	tent->setTranslation(glm::vec3(-15.0f, 5.0f, 10.0f));
 	tent->setScale(glm::vec3(7.f));
 
-	ECS.addEntity(new Entity(tent, &rigProgram, &wireProgram, &camera));
+	ECS::get().addEntity(new Entity(tent, &rigProgram, &wireProgram, &camera));
 
 	SkeletalModel* wolf = new SkeletalModel("wolf/Wolf_One_dae.dae");
 	wolf->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
@@ -103,7 +91,7 @@ int main() {
 	Animation* wolfAnimation = new Animation("wolf/Wolf_One_dae.dae", wolf);
 	Animator* animator = new Animator(wolfAnimation);
 
-	ECS.addEntity(new Entity(wolf, wolfAnimation, animator, &animProgram, &wireProgram, &camera));
+	ECS::get().addEntity(new Entity(wolf, wolfAnimation, animator, &animProgram, &wireProgram, &camera));
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(-10.0f, 13.2f, 28.0f);
@@ -112,7 +100,7 @@ int main() {
 	light->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
 	light->setTranslation(lightPos);
 
-	ECS.addEntity(new Entity(light, &rigProgram, &wireProgram, &camera));
+	ECS::get().addEntity(new Entity(light, &rigProgram, &wireProgram, &camera));
 
 	rigProgram.Activate();
 	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -128,23 +116,23 @@ int main() {
 	e->addWire(new Wire(glm::vec3(-50.0f, 50.0f, -50.0f), glm::vec3(-50.0f, 50.0f, 50.0f)));
 	e->addWire(new Wire(glm::vec3(-50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, 50.0f)));
 	e->addWire(new Wire(glm::vec3(50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, -50.0f)));
-	ECS.addEntity(e);
-	e->addBody(sim->addShape1(e->getID()));
+	ECS::get().addEntity(e);
+	e->addBody(Physics::get().addShape1(e->getID()));
 	
 	//STAGING AXIS
 	e = new Entity(&wireProgram, &camera);
 	e->addWire(new Wire(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 5.0f)));
-	ECS.addEntity(e);
+	ECS::get().addEntity(e);
 
 	//RIGID BODY 1
 	e = new Entity(&wireProgram, &camera);
 	e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	ECS.addEntity(e);
-	e->addBody(sim->addShape2(e->getID()));
+	ECS::get().addEntity(e);
+	e->addBody(Physics::get().addShape2(e->getID()));
 	e->setType("pickup");
 
 	//RIGID BODY 2
@@ -152,8 +140,8 @@ int main() {
 	e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	ECS.addEntity(e);
-	e->addBody(sim->addShape3(e->getID()));
+	ECS::get().addEntity(e);
+	e->addBody(Physics::get().addShape3(e->getID()));
 	e->setType("pickup");
 	
 
@@ -162,17 +150,34 @@ int main() {
 	character->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	character->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	character->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	ECS.addEntity(character);
-	character->addBody(sim->addShape4(character->getID()));
+	ECS::get().addEntity(character);
+	character->addBody(Physics::get().addShape4(character->getID()));
 
 	// CAPSULE
 	e = new Entity(&wireProgram, &camera);
 	e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-	ECS.addEntity(e);
-	e->addBody(sim->addShape5(e->getID()));
+	ECS::get().addEntity(e);
+	e->addBody(Physics::get().addShape5(e->getID()));
 	e->setType("pickup");
+
+	//TEST CIGS
+	for (int i = 0; i < 5; i++) {
+		e = new Entity(new Model("cig/cig.dae"), &rigProgram, &wireProgram, &camera);
+		ECS::get().addEntity(e);
+		e->addWire(new Wire(glm::vec3(-0.06f, 0.0f, 0.0f), glm::vec3(0.06f, 0.0f, 0.0f)));
+		e->addWire(new Wire(glm::vec3(0.0f, -0.06f, 0.0f), glm::vec3(0.0f, 0.06f, 0.0f)));
+		e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -0.685f), glm::vec3(0.0f, 0.0f, 0.685f)));
+		e->addBody(Physics::get().addShape6(e->getID()));
+		e->setType("pickup");
+	}
+
+	//CROSSHAIR HACK (class required)
+	e = new Entity(&wireProgram, &handCam);
+	e->addWire(new Wire(glm::vec3(-0.04f, 0.0f, 0.0f), glm::vec3(0.04f, 0.0f, 0.0f)));
+	e->addWire(new Wire(glm::vec3(0.0f, -0.04f, 0.0f), glm::vec3(0.0f, 0.04f, 0.0f)));
+	ECS::get().addEntity(e);
 	
 	std::vector<Particle> particles;
 
@@ -190,8 +195,6 @@ int main() {
 	Skybox sky = Skybox::Skybox(faces);
 
 	Shader skyProgram = Shader("skyVert.glsl", "skyFrag.glsl");
-
-	btDiscreteDynamicsWorld* dynamicsWorld = sim->getDynamicsWorld();
 
 	// loop vars
 	double prevTime = 0.0;
@@ -233,47 +236,22 @@ int main() {
 		thisTick = glfwGetTime();
 		delta = thisTick - lastTick;
 		if (delta >= 1.0 / 64.0) {
-			gameTick(delta);
-			// Physics:: deserves this! rayCollision
-			if (E) {
-				glm::vec3 ppp = camera.Position + (camera.Orientation * 3.0f);
-
-				btVector3 from = btVector3(camera.Position.x, camera.Position.y, camera.Position.z);
-				btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
-				btCollisionWorld::ClosestRayResultCallback rrc = btCollisionWorld::ClosestRayResultCallback(from, to);
-				dynamicsWorld->rayTest(from, to, rrc);
-
-				if (rrc.hasHit()) {
-					btRigidBody* sel = btRigidBody::upcast(const_cast <btCollisionObject*>(rrc.m_collisionObject));
-					unsigned int entID = sim->m_EntityMap[sel];
-					if (entID != 0) {
-						if (ECS.getEntity(entID)->getType() == "pickup") {
-							std::cout << "success" << std::endl;
-							ECS.removeEntity(entID);
-							delete sel->getMotionState();
-							sim->getDynamicsWorld()->removeCollisionObject(sel);
-						}
-					}
-				}
-			}
-			sim->updateSim(delta);
-			ECS.updatePhysics();
-			{
+			{ // set character body velocity b4 sim update
 				btRigidBody* body = character->getBody();
 
 				float zVel = 0;
 				float xVel = 0;
 				float accel = delta * 20.0f;
-				if (I) {
+				if (Input::get().getValue(GLFW_KEY_I)) {
 					zVel += -accel;
 				}
-				if (J) {
+				if (Input::get().getValue(GLFW_KEY_J)) {
 					xVel += -accel;
 				}
-				if (K) {
+				if (Input::get().getValue(GLFW_KEY_K)) {
 					zVel += accel;
 				}
-				if (L) {
+				if (Input::get().getValue(GLFW_KEY_L)) {
 					xVel += accel;
 				}
 				btVector3 linVel = body->getLinearVelocity();
@@ -282,11 +260,36 @@ int main() {
 					linVel = linVel * (10.0f / linVel.length());
 				}
 				body->setLinearVelocity(linVel);
-				
+
 			}
-			{
+			gameTick(delta); // move cam pos
+			Physics::get().updateSim(delta); // move sim forward
+			ECS::get().updatePhysics(); // update entities with physics state
+			{ // is this part of character if so b4 or after gameTick
+				if (Input::get().getValue(GLFW_KEY_E)) {
+					glm::vec3 ppp = camera.Position + (camera.Orientation * 7.0f);
+
+					btVector3 from = btVector3(camera.Position.x, camera.Position.y, camera.Position.z);
+					btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
+					btCollisionWorld::ClosestRayResultCallback rrc = btCollisionWorld::ClosestRayResultCallback(from, to);
+					Physics::get().getDynamicsWorld()->rayTest(from, to, rrc);
+
+					if (rrc.hasHit()) {
+						btRigidBody* sel = btRigidBody::upcast(const_cast <btCollisionObject*>(rrc.m_collisionObject));
+						unsigned int entID = Physics::get().m_EntityMap[sel];
+						if (entID != 0) {
+							if (ECS::get().getEntity(entID)->getType() == "pickup") {
+								// only deletes wires, rigid body & not model / skel model
+								ECS::get().deleteEntity(entID);
+
+							}
+						}
+					}
+				}
+			}
+			{ // needs to be after camera update (gameTick)
 				// UPDATE so that it shows cig first then blows smoke after it dissapears
-				if (P) {
+				if (Input::get().getValue(GLFW_KEY_P)) {
 					Particle p = Particle();
 					p.setTranslation(camera.Position - glm::vec3(0.f, 0.25f, 0.f));
 					p.setScale(0.1f);
@@ -320,7 +323,7 @@ int main() {
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-		{
+		{ // pls do not make this a function
 			batRot += deltaTime;
 			if (batRot > 2 * PI) {
 				batRot = batRot - (2 * PI);
@@ -335,10 +338,11 @@ int main() {
 		/* RENDERING */
 		renderScene();
 
-		ECS.DrawEntities(deltaTime);
+		ECS::get().DrawEntities(deltaTime);
 
 		sky.Draw(skyProgram, camera);
 
+		// emitter->drawparticles()
 		glEnable(GL_BLEND);
 		std::sort(particles.begin(),particles.end(),Less);
 		for (int i = 0; i < particles.size(); i++) {
@@ -351,7 +355,9 @@ int main() {
 
 	}
 
-	delete sim;
+	// careful with these! not well written!
+	ECS::destruct();
+	Physics::destruct();
 
 	/* Application Close */
 
@@ -412,16 +418,16 @@ void gameTick(double delta) {
 
 	glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	if (W) {
+	if (Input::get().getValue(GLFW_KEY_W)) {
 		velocity += camera.Orientation;
 	}
-	if (A) {
+	if (Input::get().getValue(GLFW_KEY_A)) {
 		velocity += proj;
 	}
-	if (S) {
+	if (Input::get().getValue(GLFW_KEY_S)) {
 		velocity -= camera.Orientation;
 	}
-	if (D) {
+	if (Input::get().getValue(GLFW_KEY_D)) {
 		velocity -= proj;
 	}
 
@@ -476,78 +482,18 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_RELEASE) {
-		switch (key) {
-		case GLFW_KEY_W:
-			W = false;
-			break;
-		case GLFW_KEY_A:
-			A = false;
-			break;
-		case GLFW_KEY_S:
-			S = false;
-			break;
-		case GLFW_KEY_D:
-			D = false;
-			break;
-		case GLFW_KEY_P:
-			P = false;
-			break;
-		case GLFW_KEY_E:
-			E = false;
-			break;
-		case GLFW_KEY_I:
-			I = false;
-			break;
-		case GLFW_KEY_J:
-			J = false;
-			break;
-		case GLFW_KEY_K:
-			K = false;
-			break;
-		case GLFW_KEY_L:
-			L = false;
-			break;
-		}
+		Input::get().setValue(key, false);
 		return;
 	}
 
+	Input::get().setValue(key, true);
 	switch (key) {
-	case GLFW_KEY_ESCAPE:
-		glfwSetWindowShouldClose(window, true);
-		break;
-	case GLFW_KEY_W:
-		W = true;
-		break;
-	case GLFW_KEY_A:
-		A = true;
-		break;
-	case GLFW_KEY_S:
-		S = true;
-		break;
-	case GLFW_KEY_D:
-		D = true;
-		break;
-	case GLFW_KEY_P:
-		P = true;
-		break;
-	case GLFW_KEY_E:
-		E = true;
-		break;
-	case GLFW_KEY_I:
-		I = true;
-		break;
-	case GLFW_KEY_J:
-		J = true;
-		break;
-	case GLFW_KEY_K:
-		K = true;
-		break;
-	case GLFW_KEY_L:
-		L = true;
-		break;
-	case GLFW_KEY_X:
-		cursorLocked = !cursorLocked;
-		break;
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, true);
+			break;
+		case GLFW_KEY_X:
+			cursorLocked = !cursorLocked;
+			break;
 	}
 }
 

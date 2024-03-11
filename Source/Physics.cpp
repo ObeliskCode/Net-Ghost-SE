@@ -1,5 +1,7 @@
 #include "Physics.h"
 
+Physics* Physics::instance = nullptr; // definition class variable
+
 Physics::Physics() {
 	collisionConfiguration = new btDefaultCollisionConfiguration();
 	dispatcher = new btCollisionDispatcher(collisionConfiguration);
@@ -202,6 +204,41 @@ btRigidBody* Physics::addShape5(unsigned int ID) {
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
+
+	dynamicsWorld->addRigidBody(body);
+
+	m_EntityMap[body] = ID;
+
+	return body;
+}
+
+btRigidBody* Physics::addShape6(unsigned int ID) {
+	btCollisionShape* colShape = new btCapsuleShapeZ(btScalar(.06f), btScalar(1.25f));
+	collisionShapes.push_back(colShape);
+
+	/// Create Dynamic Objects
+	btTransform startTransform;
+	startTransform.setIdentity();
+	//float CosHalfPi = sqrt(2.f) / 2.f;
+	//startTransform.setRotation(btQuaternion(CosHalfPi, -CosHalfPi, 0.f, 0.f));
+
+	btScalar mass(1.f);
+
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool isDynamic = (mass != 0.f);
+
+	btVector3 localInertia(0, 0, 0);
+	if (isDynamic)
+		colShape->calculateLocalInertia(mass, localInertia);
+
+	startTransform.setOrigin(btVector3(-5, 10, 32));
+
+	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+	btRigidBody* body = new btRigidBody(rbInfo);
+
+	body->setRollingFriction(btScalar(0.2f));
 
 	dynamicsWorld->addRigidBody(body);
 

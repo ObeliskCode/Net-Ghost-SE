@@ -42,12 +42,16 @@ Entity::Entity(Shader* ws, Camera* c) {
 	camera = c;
 }
 
+// unexpected behavior if entity is deleted without using ECS::deleteEntity();
 Entity::~Entity(){
 	for (int i = 0; i < wires.size(); ++i) {
 		delete wires[i];
 	}
 	wires.clear();
-	// what should be deleted here!?
+	if (body) {
+		delete body->getMotionState();
+		delete body;
+	}
 }
 
 void Entity::addBody(btRigidBody* b) {

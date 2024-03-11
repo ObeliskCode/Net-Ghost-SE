@@ -152,8 +152,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\ECS.cpp" />
     <ClCompile Include="..\Source\Entity.cpp" />
-    <ClCompile Include="..\Source\EntityComponentSystem.cpp" />
     <ClCompile Include="..\Source\Particle.cpp" />
     <ClCompile Include="..\Source\Physics.cpp" />
     <ClCompile Include="..\Source\SkeletalMesh.cpp" />
@@ -176,7 +176,8 @@
     <ClInclude Include="..\Source\Animator.h" />
     <ClInclude Include="..\Source\Bone.h" />
     <ClInclude Include="..\Source\Entity.h" />
-    <ClInclude Include="..\Source\EntityComponentSystem.h" />
+    <ClInclude Include="..\Source\ECS.h" />
+    <ClInclude Include="..\Source\Input.h" />
     <ClInclude Include="..\Source\Particle.h" />
     <ClInclude Include="..\Source\Physics.h" />
     <ClInclude Include="..\Source\SkeletalMesh.h" />

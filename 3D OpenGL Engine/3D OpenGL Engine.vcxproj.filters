@@ -63,10 +63,10 @@
     <ClCompile Include="..\Source\Physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\Entity.cpp">
+    <ClCompile Include="..\Source\ECS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\EntityComponentSystem.cpp">
+    <ClCompile Include="..\Source\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -131,7 +131,10 @@
     <ClInclude Include="..\Source\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\EntityComponentSystem.h">
+    <ClInclude Include="..\Source\ECS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
