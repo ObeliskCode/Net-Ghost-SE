@@ -37,6 +37,7 @@ public:
 
 	~Animation()
 	{
+		std::cout << "deleted" << std::endl;
 	}
 
 	Bone* FindBone(const std::string& name)

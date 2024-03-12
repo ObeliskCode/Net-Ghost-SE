@@ -6,16 +6,12 @@ layout (location = 0) in vec3 aPos;
 // Normals
 layout (location = 1) in vec3 aNormal;
 
-// Colors
-layout (location = 2) in vec3 aColor;
-
 // Texture Coordinates
-layout (location = 3) in vec2 aTex;
+layout (location = 2) in vec2 aTex;
 
 
 out vec3 crntPos;
 out vec3 Normal;
-out vec3 color;
 out vec2 texCoord;
 
 uniform mat4 camMatrix;
@@ -36,6 +32,5 @@ void main(){
 	// normals should be translation and uniform scaling safe.
 	Normal = normalize(vec3(rotation * scale * transform * vec4(aNormal, 0.0)));
 
-	color = aColor;
 	texCoord = aTex;
 }

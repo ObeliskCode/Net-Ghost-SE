@@ -6,7 +6,6 @@ Entity::Entity(Model* m, Shader* s, Shader* ws, Camera* c) {
 	m_dynamic = false;
 	mdl = m;
 	skMdl = nullptr;
-	anim = nullptr;
 	mator = nullptr;
 	body = nullptr;
 	shader = s;
@@ -14,13 +13,12 @@ Entity::Entity(Model* m, Shader* s, Shader* ws, Camera* c) {
 	camera = c;
 }
 
-Entity::Entity(SkeletalModel* sm, Animation* a, Animator* m, Shader* s, Shader* ws, Camera* c) {
+Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Shader* ws, Camera* c) {
 	m_modeled = false;
 	m_animated = true;
 	m_dynamic = false;
 	mdl = nullptr;
 	skMdl = sm;
-	anim = a;
 	mator = m;
 	body = nullptr;
 	shader = s;
@@ -34,7 +32,6 @@ Entity::Entity(Shader* ws, Camera* c) {
 	m_dynamic = false;
 	mdl = nullptr;
 	skMdl = nullptr;
-	anim = nullptr;
 	mator = nullptr;
 	body = nullptr;
 	shader = nullptr;
@@ -51,6 +48,13 @@ Entity::~Entity(){
 	if (body) {
 		delete body->getMotionState();
 		delete body;
+	}
+	if (m_animated) {
+		delete skMdl;
+		delete mator;
+	}
+	else if (m_modeled) {
+		delete mdl;
 	}
 }
 

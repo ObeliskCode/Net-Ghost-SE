@@ -34,5 +34,4 @@ private:
     std::map<int, Entity*> entds2;
 };
 
-
 #endif

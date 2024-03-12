@@ -42,15 +42,10 @@ void Wire::Draw(Shader& shader, Camera& camera) {
 
 	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
 
-	// Initialize matrices
-	glm::mat4 trans = glm::mat4(1.0f);
-	glm::mat4 rot = glm::mat4(1.0f);
-	glm::mat4 sca = glm::mat4(1.0f);
-
-	// Transform the matrices to their correct form
-	trans = glm::translate(trans, translation);
-	rot = glm::mat4_cast(rotation);
-	sca = glm::scale(sca, scale);
+	// Transform the matrices to their correct form //ifi
+	glm::mat4 trans = glm::translate(glm::mat4(1.0f), translation);
+	glm::mat4 rot = glm::mat4_cast(rotation);
+	glm::mat4 sca = glm::scale(glm::mat4(1.0f), scale);
 
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));

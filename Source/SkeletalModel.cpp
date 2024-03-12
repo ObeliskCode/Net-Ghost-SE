@@ -1,5 +1,17 @@
 #include "SkeletalModel.h"
 
+SkeletalModel::~SkeletalModel() {
+    for (unsigned int i = 0; i < textures_loaded.size(); i++)
+    {
+        textures_loaded[i].Delete();
+    }
+    textures_loaded.clear();
+    for (unsigned int i = 0; i < meshes.size(); i++)
+    {
+        delete meshes[i];
+    }
+    meshes.clear();
+}
 
 void SkeletalModel::loadModel(std::string path)
 {
@@ -99,7 +111,7 @@ void SkeletalModel::ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& ve
     }
 }
 
-SkeletalMesh SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> transformation)
+SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> transformation)
 {
     std::vector<SkeletalVertex> vertices;
     std::vector<unsigned int> indices;
@@ -165,12 +177,12 @@ SkeletalMesh SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMa
 
     ExtractBoneWeightForVertices(vertices, mesh, scene);
 
-    return SkeletalMesh(vertices, indices, textures, transform);
+    return new SkeletalMesh(vertices, indices, textures, transform);
 }
 
 void SkeletalModel::Draw(Shader& shader, Camera& camera) {
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i].Draw(shader, camera, translation, rotation, scale);
+        meshes[i]->Draw(shader, camera, translation, rotation, scale);
     }
 }
 

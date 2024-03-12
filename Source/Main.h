@@ -1,6 +1,8 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // remove console
+
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glu32.lib")
 #pragma comment(lib,"glfw3.lib")
@@ -23,6 +25,7 @@
 
 #include "btBulletDynamicsCommon.h"
 
+#include "Globals.h"
 #include "Texture.h"
 #include "Shader.h"
 #include "Entity.h"

@@ -137,6 +137,9 @@
     <ClInclude Include="..\Source\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\Globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="rigFrag.glsl">

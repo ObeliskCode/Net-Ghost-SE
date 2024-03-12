@@ -8,28 +8,38 @@ SkeletalMesh::SkeletalMesh(std::vector <SkeletalVertex>& vertices, std::vector <
 	SkeletalMesh::textures = textures;
 	SkeletalMesh::transform = transformation;
 
-	VAO.Bind();
+	m_VAO = new SkeletalVAO();
 
-	SkeletalVBO  VBO(vertices);
-	EBO  EBO(indices); // VBO & EBO bound during LinkAttrib links them to VAO!
+	m_VAO->Bind();
 
-	VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(SkeletalVertex), (void*)0);
-	VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, normal));
-	VAO.LinkAttrib(VBO, 2, 2, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, texUV)); 
+	m_VBO = new SkeletalVBO(vertices);
+	m_EBO = new EBO(indices);
 
-	//VAO.LinkAttrib(VBO, 3, 4, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_BoneIDs));
-	VBO.Bind();
+	m_VAO->LinkAttrib(*m_VBO, 0, 3, GL_FLOAT, sizeof(SkeletalVertex), (void*)0);
+	m_VAO->LinkAttrib(*m_VBO, 1, 3, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, normal));
+	m_VAO->LinkAttrib(*m_VBO, 2, 2, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, texUV));
+
+	//m_VAO->LinkAttrib(m_VBO, 3, 4, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_BoneIDs));
+	m_VBO->Bind();
 	glVertexAttribIPointer(3, 4, GL_INT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_BoneIDs)); //AttribI function used instead!
 	glEnableVertexAttribArray(3);
-	VBO.Unbind();
+	m_VBO->Unbind();
 
-	VAO.LinkAttrib(VBO, 4, 4, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_Weights));
+	m_VAO->LinkAttrib(*m_VBO, 4, 4, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_Weights));
 
-	VAO.Unbind();
-	VBO.Unbind(); // VBO already unbinded by LinkAttrib()
-	EBO.Unbind();
+	m_VAO->Unbind();
+	m_VBO->Unbind(); // m_VBO already unbinded by LinkAttrib()
+	m_EBO->Unbind();
 }
 
+SkeletalMesh::~SkeletalMesh() {
+	m_VAO->Delete();
+	delete m_VAO;
+	m_VBO->Delete();
+	delete m_VBO;
+	m_EBO->Delete();
+	delete m_EBO;
+}
 
 void SkeletalMesh::Draw(
 	Shader& shader,
@@ -39,7 +49,7 @@ void SkeletalMesh::Draw(
 	glm::vec3 scale
 ) {
 	shader.Activate();
-	VAO.Bind();
+	m_VAO->Bind();
 
 	unsigned int numDiffuse = 0;
 	unsigned int numSpecular = 0;

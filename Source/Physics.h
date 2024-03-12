@@ -47,5 +47,4 @@ private:
 	btAlignedObjectArray<btCollisionShape*> collisionShapes;
 };
 
-
 #endif

@@ -24,6 +24,10 @@ public:
 			m_FinalBoneMatrices.push_back(glm::mat4(1.0f));
 	}
 
+	~Animator() {
+		delete m_CurrentAnimation;
+	}
+
 	void UpdateAnimation(float dt)
 	{
 		m_DeltaTime = dt;

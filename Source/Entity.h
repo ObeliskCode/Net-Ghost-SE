@@ -9,11 +9,12 @@
 
 #include "btBulletDynamicsCommon.h"
 
+// FIX so entity has ID at creation!
 class Entity {
 	public:
 		Entity(Shader* ws, Camera* c);
 		Entity(Model* m, Shader* s, Shader* ws, Camera* c);
-		Entity(SkeletalModel* sm, Animation* a, Animator* m, Shader* s, Shader* ws, Camera* c);
+		Entity(SkeletalModel* sm, Animator* m, Shader* s, Shader* ws, Camera* c);
 		~Entity();
 
 		void setType(std::string type);
@@ -33,7 +34,6 @@ class Entity {
 		bool m_dynamic;
 		Model* mdl;
 		SkeletalModel* skMdl;
-		Animation* anim;
 		Animator* mator;
 		std::vector<Wire*> wires;
 		btRigidBody* body;
@@ -41,6 +41,5 @@ class Entity {
 		Shader* wireShader;
 		Camera* camera;
 };
-
 
 #endif

@@ -1,5 +1,17 @@
 #include "Model.h"
 
+Model::~Model() {
+    for (unsigned int i = 0; i < textures_loaded.size(); i++)
+    {
+        textures_loaded[i].Delete();
+    }
+    textures_loaded.clear();
+    for (unsigned int i = 0; i < meshes.size(); i++)
+    {
+        delete meshes[i];
+    }
+    meshes.clear();
+}
 
 void Model::loadModel(std::string path)
 {
@@ -41,7 +53,7 @@ void Model::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> 
     }
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> transformation)
+Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> transformation)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -62,15 +74,6 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> 
         vector.y = mesh->mNormals[i].y;
         vector.z = mesh->mNormals[i].z;
         vertex.normal = vector;
-
-
-        // COLOR is useless , remove it.
-
-        vector.x = 0.0f;
-        vector.y = 0.0f;
-        vector.z = 0.0f;
-
-        vertex.color = vector;
 
         if (mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
         {
@@ -112,12 +115,12 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> 
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
-    return Mesh(vertices, indices, textures, transform);
+    return new Mesh(vertices, indices, textures, transform);
 }
 
 void Model::Draw(Shader& shader, Camera& camera){
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i].Draw(shader, camera, translation, rotation, scale);
+        meshes[i]->Draw(shader, camera, translation, rotation, scale);
     } 
 }
 

@@ -48,5 +48,4 @@ class Shader
         }
 };
 
-
 #endif

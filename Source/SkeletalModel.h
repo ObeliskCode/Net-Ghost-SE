@@ -27,6 +27,7 @@ public:
     {
         loadModel(path);
     }
+    ~SkeletalModel();
     void Draw(Shader& shader, Camera& camera);
 
     void setTranslation(glm::vec3 translation);
@@ -38,8 +39,8 @@ public:
 
 private:
     // model data
-    std::vector<Texture> textures_loaded; // can be main textures vector but not used rn.
-    std::vector<SkeletalMesh> meshes;
+    std::vector<Texture> textures_loaded; // all textures
+    std::vector<SkeletalMesh*> meshes;
     std::string directory;
 
     glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -51,11 +52,12 @@ private:
 
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation);
-    SkeletalMesh processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> transformation);
+    SkeletalMesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> transformation);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
         std::string typeName, int slotInc);
     glm::mat4 aiMat4toGLM(aiMatrix4x4t<float> matrix);
 
     void ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& vertices, aiMesh* mesh, const aiScene* scene);
 };
+
 #endif

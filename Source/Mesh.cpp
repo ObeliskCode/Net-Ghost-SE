@@ -8,21 +8,30 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	Mesh::textures = textures;
 	Mesh::transform = transformation;
 
-	VAO.Bind();
+	m_VAO = new VAO();
 
-	VBO  VBO(vertices);
-	EBO  EBO(indices); // VBO & EBO bound during LinkAttrib links them to VAO!
+	m_VAO->Bind();
 
-	VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0); // pos
-	VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float))); // normal
-	VAO.LinkAttrib(VBO, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float))); // color
-	VAO.LinkAttrib(VBO, 3, 2, GL_FLOAT, sizeof(Vertex), (void*)(9 * sizeof(float))); // texUV
+	m_VBO = new VBO(vertices);
+	m_EBO = new EBO(indices);
 
-	VAO.Unbind();
-	VBO.Unbind(); // VBO already unbinded by LinkAttrib()
-	EBO.Unbind();
+	m_VAO->LinkAttrib(*m_VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0); // pos
+	m_VAO->LinkAttrib(*m_VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float))); // normal
+	m_VAO->LinkAttrib(*m_VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float))); // texUV
+
+	m_VAO->Unbind();
+	m_VBO->Unbind(); // VBO already unbinded by LinkAttrib()
+	m_EBO->Unbind();
 }
 
+Mesh::~Mesh() {
+	m_VAO->Delete();
+	delete m_VAO;
+	m_VBO->Delete();
+	delete m_VBO;
+	m_EBO->Delete();
+	delete m_EBO;
+}
 
 void Mesh::Draw(
 	Shader& shader,
@@ -32,7 +41,7 @@ void Mesh::Draw(
 	glm::vec3 scale
 ) {
 	shader.Activate();
-	VAO.Bind();
+	m_VAO->Bind();
 	
 	unsigned int numDiffuse = 0;
 	unsigned int numSpecular = 0;
@@ -60,15 +69,10 @@ void Mesh::Draw(
 	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
 
-	// Initialize matrices
-	glm::mat4 trans = glm::mat4(1.0f);
-	glm::mat4 rot = glm::mat4(1.0f);
-	glm::mat4 sca = glm::mat4(1.0f);
-
 	// Transform the matrices to their correct form
-	trans = glm::translate(trans, translation);
-	rot = glm::mat4_cast(rotation);
-	sca = glm::scale(sca, scale);
+	glm::mat4 trans = glm::translate(glm::mat4(1.0f), translation);
+	glm::mat4 rot = glm::mat4_cast(rotation);
+	glm::mat4 sca = glm::scale(glm::mat4(1.0f), scale);
 
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));

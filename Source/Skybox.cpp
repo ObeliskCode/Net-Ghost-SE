@@ -43,6 +43,13 @@ Skybox::Skybox(std::vector<std::string> faces)
 }
 
 
+Skybox::~Skybox()
+{
+	glDeleteVertexArrays(1, &skyboxVAO);
+	glDeleteBuffers(1, &skyboxVBO);
+	glDeleteTextures(1, &textureID);
+}
+
 void Skybox::Draw(Shader& shader, Camera& camera) {
 	// draw skybox as last
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content

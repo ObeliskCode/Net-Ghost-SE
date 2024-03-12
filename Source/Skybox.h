@@ -17,6 +17,7 @@
 class Skybox {
 public:
 	Skybox(std::vector<std::string> faces);
+    ~Skybox();
 
 	void Draw(Shader& shader, Camera& camera);
 private:
@@ -68,6 +69,5 @@ private:
          1.0f, -1.0f,  1.0f
     };
 };
-
 
 #endif
