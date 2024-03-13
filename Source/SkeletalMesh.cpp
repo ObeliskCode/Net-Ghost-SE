@@ -1,7 +1,7 @@
 #include "SkeletalMesh.h"
 #include <glm/gtx/string_cast.hpp>
 
-SkeletalMesh::SkeletalMesh(std::vector <SkeletalVertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4 transformation) {
+SkeletalMesh::SkeletalMesh(std::vector <SkeletalVertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& transformation) {
 
 	SkeletalMesh::vertices = vertices;
 	SkeletalMesh::indices = indices;
@@ -44,9 +44,9 @@ SkeletalMesh::~SkeletalMesh() {
 void SkeletalMesh::Draw(
 	Shader& shader,
 	Camera& camera,
-	glm::vec3 translation,
-	glm::quat rotation,
-	glm::vec3 scale
+	glm::vec3& translation,
+	glm::quat& rotation,
+	glm::vec3& scale
 ) {
 	shader.Activate();
 	m_VAO->Bind();
@@ -77,15 +77,10 @@ void SkeletalMesh::Draw(
 	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
 
-	// Initialize matrices
-	glm::mat4 trans = glm::mat4(1.0f);
-	glm::mat4 rot = glm::mat4(1.0f);
-	glm::mat4 sca = glm::mat4(1.0f);
-
 	// Transform the matrices to their correct form
-	trans = glm::translate(trans, translation);
-	rot = glm::mat4_cast(rotation);
-	sca = glm::scale(sca, scale);
+	glm::mat4 trans = glm::translate(glm::mat4(1.0f), translation);
+	glm::mat4 rot = glm::mat4_cast(rotation);
+	glm::mat4 sca = glm::scale(glm::mat4(1.0f), scale);
 
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));

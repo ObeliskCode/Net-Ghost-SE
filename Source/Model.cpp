@@ -53,7 +53,7 @@ void Model::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> 
     }
 }
 
-Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> transformation)
+Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -162,7 +162,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
     return textures;
 }
 
-glm::mat4 Model::aiMat4toGLM(aiMatrix4x4t<float> matrix) {
+glm::mat4 Model::aiMat4toGLM(aiMatrix4x4t<float>& matrix) {
 
     glm::mat4 m = glm::mat4(0.0f);
     m[0][0] = matrix.a1;

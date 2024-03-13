@@ -111,7 +111,7 @@ void SkeletalModel::ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& ve
     }
 }
 
-SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> transformation)
+SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation)
 {
     std::vector<SkeletalVertex> vertices;
     std::vector<unsigned int> indices;
@@ -224,7 +224,7 @@ std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, aiText
     return textures;
 }
 
-glm::mat4 SkeletalModel::aiMat4toGLM(aiMatrix4x4t<float> matrix) {
+glm::mat4 SkeletalModel::aiMat4toGLM(aiMatrix4x4t<float>& matrix) {
 
     glm::mat4 m = glm::mat4(0.0f);
     m[0][0] = matrix.a1;

@@ -16,22 +16,22 @@ public:
 	std::vector <Vertex> vertices;
 	std::vector <GLuint> indices;
 	std::vector <Texture> textures; // texture class is already sudo-pointer
-	glm::mat4 transform; // sends mesh to default model position (same as in blender)
+	glm::mat4 transform; // sends mesh to default model position (same as in blender) AKA model matrix
 
 	VAO* m_VAO;
 	VBO* m_VBO;
 	EBO* m_EBO;
 
-	Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4 transformation = glm::mat4(1.0f));
+	Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& transformation);
 	~Mesh();
 
 	void Draw
 	(
 		Shader& shader,
 		Camera& camera,
-		glm::vec3 translation,
-		glm::quat rotation,
-		glm::vec3 scale
+		glm::vec3& translation,
+		glm::quat& rotation,
+		glm::vec3& scale
 	);
 };
 

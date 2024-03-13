@@ -34,10 +34,10 @@ private:
 
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation);
-    Mesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float> transformation);
+    Mesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
         std::string typeName, int slotInc);
-    glm::mat4 aiMat4toGLM(aiMatrix4x4t<float> matrix);
+    glm::mat4 aiMat4toGLM(aiMatrix4x4t<float>& matrix);
 };
 
 #endif

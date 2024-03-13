@@ -1,7 +1,7 @@
 #include "Mesh.h"
 #include <glm/gtx/string_cast.hpp>
 
-Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4 transformation) {
+Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& transformation) {
 
 	Mesh::vertices = vertices;
 	Mesh::indices = indices;
@@ -36,9 +36,9 @@ Mesh::~Mesh() {
 void Mesh::Draw(
 	Shader& shader,
 	Camera& camera,
-	glm::vec3 translation,
-	glm::quat rotation,
-	glm::vec3 scale
+	glm::vec3& translation,
+	glm::quat& rotation,
+	glm::vec3& scale
 ) {
 	shader.Activate();
 	m_VAO->Bind();
@@ -65,7 +65,7 @@ void Mesh::Draw(
 		textures[i].Bind();
 	}
 
-	// Take care of the camera Matrix
+	// Take care of the camera Matrix  // ONLY needs to be sent once for shader!! (instancing)
 	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
 

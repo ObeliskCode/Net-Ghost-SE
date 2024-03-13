@@ -47,6 +47,10 @@ int main() {
 
 	ECS::get().addEntity(new Entity(cig, &rigProgram, &wireProgram, Globals::get().handCam));
 
+	Model* taunt = new Model("Taunt/Taunt.dae");
+
+	ECS::get().addEntity(new Entity(taunt, &rigProgram, &wireProgram, Globals::get().camera));
+
 	Model* dumpster = new Model("dumpster/dumpster.dae");
 	dumpster->setTranslation(glm::vec3(25.0f, 5.0f, 35.0f));
 	dumpster->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
