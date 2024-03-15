@@ -4,7 +4,7 @@
 #include "Model.h"
 #include "SkeletalModel.h"
 #include "Wire.h"
-#include "Animation.h"
+#include "Skeleton.h"
 #include "Animator.h"
 
 #include "btBulletDynamicsCommon.h"

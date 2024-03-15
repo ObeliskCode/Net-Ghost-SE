@@ -113,7 +113,7 @@
     <ClInclude Include="..\Source\Animator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Animation.h">
+    <ClInclude Include="..\Source\Skeleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Bone.h">

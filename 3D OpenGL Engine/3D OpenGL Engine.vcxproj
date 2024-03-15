@@ -173,7 +173,7 @@
     <ClCompile Include="..\Source\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Source\Animation.h" />
+    <ClInclude Include="..\Source\Skeleton.h" />
     <ClInclude Include="..\Source\Animator.h" />
     <ClInclude Include="..\Source\Bone.h" />
     <ClInclude Include="..\Source\Entity.h" />
