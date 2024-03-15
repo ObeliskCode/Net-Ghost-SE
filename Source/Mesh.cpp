@@ -6,7 +6,7 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	Mesh::vertices = vertices;
 	Mesh::indices = indices;
 	Mesh::textures = textures;
-	Mesh::transform = transformation;
+	Mesh::model = transformation;
 
 	m_VAO = new VAO();
 
@@ -61,7 +61,7 @@ void Mesh::Draw(
 
 		// IF we add more types of textures this function breaks!
 
-		textures[i].texUnit(shader, (type + num).c_str(), i);
+		textures[i].texUnit(shader, (type + num).c_str());
 		textures[i].Bind();
 	}
 
@@ -80,7 +80,7 @@ void Mesh::Draw(
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
 
 	//send transform matrix to meshes shader
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

@@ -10,22 +10,24 @@ struct {
 int main() {
 	GLFWwindow* window = initApp();
 
-	Shader rigProgram = Shader("rigVert.glsl", "rigFrag.glsl");
+	Shader rigProgram = Shader("rigVert.glsl", "mdlFrag.glsl");
 	Shader wireProgram = Shader("wireVert.glsl", "wireFrag.glsl");
-	Shader animProgram = Shader("animVert.glsl", "animFrag.glsl");
+	Shader lightProgram = Shader("rigVert.glsl", "lightFrag.glsl");
+	Shader animProgram = Shader("animVert.glsl", "mdlFrag.glsl");
+	Shader noTexAnimProgram = Shader("animVert.glsl", "noTexFrag.glsl");
 
 	Model* panel = new Model("floor/floor.dae");
-	panel->setTranslation(glm::vec3(0.0f, 5.0f, 20.0f));
-	panel->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+	panel->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
+	panel->setScale(glm::vec3(20.0f));
 
 	ECS::get().addEntity(new Entity(panel, &rigProgram, &wireProgram, Globals::get().camera));
 
 	Model* lamp = new Model("lamp/lamp.dae");
-	lamp->setTranslation(glm::vec3(-10.0f, 15.0f-0.1f, 28.0f));
+	lamp->setTranslation(glm::vec3(-20.0f, 15.0f-0.1f, 28.0f));
 	lamp->setScale(glm::vec3(0.05f,0.05f,0.05f));
 	lamp->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 
-	ECS::get().addEntity(new Entity(lamp, &rigProgram, &wireProgram, Globals::get().camera));
+	ECS::get().addEntity(new Entity(lamp, &lightProgram, &wireProgram, Globals::get().camera));
 
 	Model* bench = new Model("bench/bench.dae");
 	bench->setScale(glm::vec3(4.5f,4.5f,4.5f));
@@ -46,10 +48,6 @@ int main() {
 	cig->setRotation(glm::quat(0.0f,0.0f,1.0f,0.0f));
 
 	ECS::get().addEntity(new Entity(cig, &rigProgram, &wireProgram, Globals::get().handCam));
-
-	Model* taunt = new Model("Taunt/Taunt.dae");
-
-	ECS::get().addEntity(new Entity(taunt, &rigProgram, &wireProgram, Globals::get().camera));
 
 	Model* dumpster = new Model("dumpster/dumpster.dae");
 	dumpster->setTranslation(glm::vec3(25.0f, 5.0f, 35.0f));
@@ -73,27 +71,71 @@ int main() {
 	SkeletalModel* wolf = new SkeletalModel("wolf/Wolf_One_dae.dae");
 	wolf->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 	wolf->setTranslation(glm::vec3(10.0f, 5.0f, 10.0f));
-	Animation* wolfAnimation = new Animation("wolf/Wolf_One_dae.dae", wolf);
+	Skeleton* wolfAnimation = new Skeleton("wolf/Wolf_One_dae.dae", wolf);
 	Animator* animator = new Animator(wolfAnimation);
 
-	ECS::get().addEntity(new Entity(wolf, animator, &animProgram, &wireProgram, Globals::get().camera));
+	ECS::get().addEntity(new Entity(wolf, animator, &noTexAnimProgram, &wireProgram, Globals::get().camera));
+
+	/*
+	SkeletalModel* dbTest = new SkeletalModel("model-db/fbx/sphere_blend_shape_animation/sphereBlendShapeAnimation.fbx");
+	//dbTest->setScale(glm::vec3(0.1f, 0.1f, 0.1f));
+	//dbTest->setTranslation(glm::vec3(-15.0f, 5.0f, -5.0f));
+	Skeleton* dbTestAnimation = new Skeleton("model-db/fbx/sphere_blend_shape_animation/sphereBlendShapeAnimation.fbx", dbTest);
+	Animator* dbTestMator = new Animator(dbTestAnimation);
+
+	ECS::get().addEntity(new Entity(dbTest, dbTestMator, &noTexAnimProgram, &wireProgram, Globals::get().camera));
+	*/
+
+	SkeletalModel* sit = new SkeletalModel("sit/Sitting Clap.dae");
+	sit->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	sit->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
+	sit->setRotation(glm::quat(CosHalfPi, 0.0f, -CosHalfPi, 0.0f));
+	Skeleton* sitAnimation = new Skeleton("sit/Sitting Clap.dae", sit);
+	Animator* sitMator = new Animator(sitAnimation);
+
+	ECS::get().addEntity(new Entity(sit, sitMator, &animProgram, &wireProgram, Globals::get().camera));
+
+	
+	SkeletalModel* taunt = new SkeletalModel("jjong/Walking.dae");
+	taunt->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	taunt->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
+	Skeleton* tauntAnimation = new Skeleton("jjong/Walking.dae", taunt);
+	Animator* mator = new Animator(tauntAnimation);
+
+	ECS::get().addEntity(new Entity(taunt, mator, &animProgram, &wireProgram, Globals::get().camera));
+
+	SkeletalModel* talking = new SkeletalModel("jjong/Talking.dae");
+	talking->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	talking->setTranslation(glm::vec3(12.0f, 5.0f, -5.0f));
+	Skeleton* talkingAnimation = new Skeleton("jjong/Talking.dae", talking);
+	Animator* talkingMator = new Animator(talkingAnimation);
+
+	ECS::get().addEntity(new Entity(talking, talkingMator, &animProgram, &wireProgram, Globals::get().camera));
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(-10.0f, 13.2f, 28.0f);
+	glm::vec3 lightPos = glm::vec3(-20.0f, 13.2f, 28.0f);
 
 	Model* light = new Model("bulb/scene.gltf");
 	light->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
 	light->setTranslation(lightPos);
 
-	ECS::get().addEntity(new Entity(light, &rigProgram, &wireProgram, Globals::get().camera));
+	ECS::get().addEntity(new Entity(light, &lightProgram, &wireProgram, Globals::get().camera));
 
 	rigProgram.Activate();
 	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
 	glUniform3f(glGetUniformLocation(rigProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	animProgram.Activate();
-	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(rigProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform4f(glGetUniformLocation(animProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(animProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+	noTexAnimProgram.Activate();
+	glUniform4f(glGetUniformLocation(noTexAnimProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(noTexAnimProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+
+	lightProgram.Activate();
+	glUniform4f(glGetUniformLocation(lightProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(lightProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	//QUAD
 	Entity* e = new Entity(&wireProgram, Globals::get().camera);
@@ -128,7 +170,6 @@ int main() {
 	ECS::get().addEntity(e);
 	e->addBody(Physics::get().addShape3(e->getID()));
 	e->setType("pickup");
-	
 
 	//CONTROLLABLE BODY
 	Entity* character = new Entity(&wireProgram, Globals::get().camera);
@@ -214,7 +255,7 @@ int main() {
 		/* FPS counter */
 
 		glfwPollEvents(); // get inputs
-
+		
 		/* TICK BASED EVENTS */ // 1. calc physics update -> 2. game logic
 		thisTick = glfwGetTime();
 		delta = thisTick - lastTick;
@@ -245,14 +286,22 @@ int main() {
 				body->setLinearVelocity(linVel);
 
 			} // character.physicsProcess(delta)
+
 			Physics::get().updateSim(delta); // move sim forward by delta
 			ECS::get().updatePhysics(); // update entities with physics state
+			/*{
+				btTransform trans;
+				btRigidBody* body = character->getBody();
+				body->getMotionState()->getWorldTransform(trans);
+				glm::vec3 pos = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()) + 5.0f, float(trans.getOrigin().getZ()));
+				Globals::get().camera->Position = pos;
+			}*/
 			gameTick(delta); // post-physics game logic
 			
 			lastTick = thisTick;
 		}
 		/* TICK BASED EVENTS */
-
+		
 		/* ANIMATION UPDATES / RENDERING */
 		// calc time since last frame for animation
 		float currentFrame = glfwGetTime();
@@ -290,7 +339,6 @@ int main() {
 	}
 
 	delete sky;
-	sky = nullptr;
 
 	Globals::get().particles.clear();
 
@@ -400,7 +448,8 @@ GLFWwindow* initApp() {
 
 	glfwInit();
 
-	GLFWwindow* window = glfwCreateWindow(Globals::get().screenWidth, Globals::get().screenHeight, "Obelisk Engine", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(Globals::get().screenWidth, Globals::get().screenHeight, "Obelisk Engine", NULL, NULL); // windowed
+	//GLFWwindow* window = glfwCreateWindow(Globals::get().screenWidth, Globals::get().screenHeight, "Obelisk Engine", glfwGetPrimaryMonitor(), NULL); // fullscreen
 	if (window == NULL) {
 		printf("Failed to create GLFW window!\n");
 		return nullptr;
@@ -412,6 +461,9 @@ GLFWwindow* initApp() {
 		printf("Failed to initialize GLEW!.\n");
 		return nullptr;
 	}
+
+	//refresh rate
+	//glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0,0, Globals::get().screenWidth, Globals::get().screenHeight, 120);
 
 	setup_callbacks(window);
 

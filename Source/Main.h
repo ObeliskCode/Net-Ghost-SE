@@ -41,7 +41,7 @@
 #include "Physics.h"
 #include "Skybox.h"
 #include "SkeletalModel.h"
-#include "Animation.h"
+#include "Skeleton.h"
 #include "Animator.h"
 #include "Input.h"
 

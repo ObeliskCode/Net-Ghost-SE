@@ -17,7 +17,7 @@ void SkeletalModel::loadModel(std::string path)
 {
     Assimp::Importer import;
     //const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate);
+    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_LimitBoneWeights);// | aiProcess_RemoveRedundantMaterials | aiProcess_OptimizeMeshes | aiProcess_FindInvalidData);
 
     /* some models need aiProcess_FlipUVs and some don't.
        note: gltf files and dae files converted from gltf files don't require FlipUVs since STB already flips images
@@ -30,6 +30,7 @@ void SkeletalModel::loadModel(std::string path)
         return;
     }
     directory = path.substr(0, path.find_last_of('/'));
+    fileType = path.substr(path.find_last_of('.'), path.back());
 
     aiMatrix4x4t<float> identity = aiMatrix4x4t<float>();
     processNode(scene->mRootNode, scene, identity);
@@ -75,6 +76,55 @@ void SetVertexBoneData(SkeletalVertex& vertex, int boneID, float weight)
     }
 }
 
+void NormalizeBoneData(std::vector<SkeletalVertex>& vertices)
+{
+    for (int k = 0; k < vertices.size(); k++) {
+        //std::cerr << "vertex[" << k << "]" << std::endl;
+        float totalWeight = 0;
+        int i;
+        for (i = 0; i < MAX_BONE_INFLUENCE; ++i) // for loop until i == (first index with nil value)
+        {
+            if (vertices[k].m_BoneIDs[i] != -1)
+            {
+                totalWeight += vertices[k].m_Weights[i];
+            }
+            else break;
+        }
+
+        float nTerm = 1 / totalWeight;
+
+        for (int j = 0; j < i; ++j) // for loop through all weights to be normalized
+        {
+            vertices[k].m_Weights[j] = vertices[k].m_Weights[j] * nTerm;
+            //std::cerr << vertices[k].m_Weights[j] << std::endl;
+        }
+    }
+}
+
+void testBoneData(std::vector<SkeletalVertex>& vertices)
+{
+    uint64_t ct = 0;
+    for (int k = 0; k < vertices.size(); k++) {
+        //std::cerr << "vertex[" << k << "]" << std::endl;
+        float totalWeight = 0;
+        int i;
+        for (i = 0; i < MAX_BONE_INFLUENCE; ++i) // for loop until i == (first index with nil value)
+        {
+            if (vertices[k].m_BoneIDs[i] != -1)
+            {
+                totalWeight += vertices[k].m_Weights[i];
+            }
+            else break;
+        }
+
+        if (totalWeight < .99f || totalWeight > 1.01f) {
+            ct++;
+        }
+    }
+    if (ct != 0) std::cerr << "WARNING: " << ct << " vertices have malformed/null bone weights" << std::endl;
+}
+
+
 void SkeletalModel::ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& vertices, aiMesh* mesh, const aiScene* scene)
 {
     auto& boneInfoMap = m_BoneInfoMap;
@@ -84,6 +134,7 @@ void SkeletalModel::ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& ve
     {
         int boneID = -1;
         std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+
         if (boneInfoMap.find(boneName) == boneInfoMap.end())
         {
             BoneInfo newBoneInfo;
@@ -118,7 +169,6 @@ SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiM
     std::vector<Texture> textures;
     glm::mat4 transform = aiMat4toGLM(transformation);
 
-
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         SkeletalVertex vertex;
@@ -141,14 +191,15 @@ SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiM
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
             vertex.texUV = vec;
+            //std::cout << vec.x << " " << vec.y << std::endl;
         }
         else
             vertex.texUV = glm::vec2(0.0f, 0.0f);
 
         vertices.push_back(vertex);
     }
-    // process indices
 
+    // process indices
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];
@@ -164,24 +215,28 @@ SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiM
 
         int slotInc = 0;
 
-        std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
+        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, scene,
             aiTextureType_DIFFUSE, "diffuse", slotInc);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
         slotInc = slotInc + diffuseMaps.size();
+        //std::cerr << "test " << slotInc <<  std::endl;
 
-        std::vector<Texture> specularMaps = loadMaterialTextures(material,
+        std::vector<Texture> specularMaps = loadMaterialTextures(material, scene,
             aiTextureType_SPECULAR, "specular", slotInc);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-    }
+    }// hmmm
 
     ExtractBoneWeightForVertices(vertices, mesh, scene);
+    testBoneData(vertices);
 
     return new SkeletalMesh(vertices, indices, textures, transform);
 }
 
 void SkeletalModel::Draw(Shader& shader, Camera& camera) {
     for (unsigned int i = 0; i < meshes.size(); i++) {
+        //std::cerr << "mesh ptr: " << meshes[i] << std::endl;
+        //if (i == 0) continue;
         meshes[i]->Draw(shader, camera, translation, rotation, scale);
     }
 }
@@ -191,7 +246,7 @@ void SkeletalModel::Draw(Shader& shader, Camera& camera) {
 
 // BUG: .type member becomes corrupted when leaving loadMaterialTexture
 // not really sure why adding int slotInc(rement) makes this work perfectly, was having issue where specular sampler was overriding diffuse sampler
-std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, int slotInc)
+std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type, std::string typeName, int slotInc)
 {
     std::vector<Texture> textures;
 
@@ -202,6 +257,7 @@ std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, aiText
 
         const char* c_str = str.C_Str();
         std::string path = directory + "/" + c_str;
+        std::cerr << path << std::endl;
 
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)
@@ -215,9 +271,16 @@ std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, aiText
         }
         if (!skip)
         {   // if texture hasn't been loaded already, load it
-            Texture texture = Texture(path.c_str(), typeName, i + slotInc);
-            textures.push_back(texture);
-            textures_loaded.push_back(texture);
+            if (fileType == ".fbx") {
+                Texture texture = Texture(scene->GetEmbeddedTexture(path.c_str()), typeName, i + slotInc);
+                textures.push_back(texture);
+                textures_loaded.push_back(texture);
+            }
+            else {
+                Texture texture = Texture(path.c_str(), typeName, i + slotInc);
+                textures.push_back(texture);
+                textures_loaded.push_back(texture);
+            }
         }
     }
 

@@ -6,7 +6,7 @@ SkeletalMesh::SkeletalMesh(std::vector <SkeletalVertex>& vertices, std::vector <
 	SkeletalMesh::vertices = vertices;
 	SkeletalMesh::indices = indices;
 	SkeletalMesh::textures = textures;
-	SkeletalMesh::transform = transformation;
+	SkeletalMesh::model = transformation;
 
 	m_VAO = new SkeletalVAO();
 
@@ -19,7 +19,6 @@ SkeletalMesh::SkeletalMesh(std::vector <SkeletalVertex>& vertices, std::vector <
 	m_VAO->LinkAttrib(*m_VBO, 1, 3, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, normal));
 	m_VAO->LinkAttrib(*m_VBO, 2, 2, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, texUV));
 
-	//m_VAO->LinkAttrib(m_VBO, 3, 4, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_BoneIDs));
 	m_VBO->Bind();
 	glVertexAttribIPointer(3, 4, GL_INT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_BoneIDs)); //AttribI function used instead!
 	glEnableVertexAttribArray(3);
@@ -54,6 +53,8 @@ void SkeletalMesh::Draw(
 	unsigned int numDiffuse = 0;
 	unsigned int numSpecular = 0;
 
+	//numTextures uniform? tex array?
+	//how to tell which tex to use?
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		std::string num;
@@ -67,9 +68,7 @@ void SkeletalMesh::Draw(
 			num = std::to_string(numSpecular++);
 		}
 
-		// IF we add more types of textures this function breaks!
-
-		textures[i].texUnit(shader, (type + num).c_str(), i);
+		textures[i].texUnit(shader, (type + num).c_str()); 
 		textures[i].Bind();
 	}
 
@@ -88,7 +87,7 @@ void SkeletalMesh::Draw(
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
 
 	//send transform matrix to meshes shader
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

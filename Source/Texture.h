@@ -6,6 +6,8 @@
 #include <GL/glew.h> 
 #include <GLFW/glfw3.h>
 
+#include <assimp/scene.h>
+
 #include "stb_image.h"
 #include"shader.h"
 
@@ -18,8 +20,10 @@ public:
 	std::string path;
 
 	Texture(const char* image, std::string texType, GLuint slot);
+	Texture(const aiTexture* aiTex, std::string texType, GLuint slot);
 
-	void texUnit(Shader& shader, const char* uniform, GLuint unit);
+	void print();
+	void texUnit(Shader& shader, const char* uniform);
 	void Bind();
 	void Unbind();
 	void Delete();

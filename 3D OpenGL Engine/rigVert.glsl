@@ -15,7 +15,7 @@ out vec3 Normal;
 out vec2 texCoord;
 
 uniform mat4 camMatrix;
-uniform mat4 transform;
+uniform mat4 model;
 
 uniform mat4 translation;
 uniform mat4 rotation;
@@ -23,14 +23,14 @@ uniform mat4 scale;
 
 void main(){
 	// calculates physical position within world
-	crntPos = vec3(translation * rotation * scale * transform * vec4(aPos, 1.0f)); // is it ok to truncate w?
+	crntPos = vec3(translation * rotation * scale * model * vec4(aPos, 1.0f)); // is it ok to truncate w?
 	
 	// camera/screen space coordinates
 	gl_Position = camMatrix * vec4(crntPos, 1.0);
 
 	// Normals need to be transformed aswell (will i need to apply model, rotations and non-uniform scales here too?)
 	// normals should be translation and uniform scaling safe.
-	Normal = normalize(vec3(rotation * scale * transform * vec4(aNormal, 0.0)));
+	Normal = normalize(vec3(rotation * scale * model * vec4(aNormal, 0.0)));
 
 	texCoord = aTex;
 }

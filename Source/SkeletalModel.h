@@ -15,6 +15,7 @@ struct BoneInfo
     /*id is index in finalBoneMatrices*/
     int id;
 
+    //WARNING: default value is 0.0f matrix
     /*offset matrix transforms vertex from model space to bone space*/
     glm::mat4 offset;
 
@@ -42,6 +43,7 @@ private:
     std::vector<Texture> textures_loaded; // all textures
     std::vector<SkeletalMesh*> meshes;
     std::string directory;
+    std::string fileType;
 
     glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
@@ -53,7 +55,7 @@ private:
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation);
     SkeletalMesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation);
-    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
+    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type,
         std::string typeName, int slotInc);
     glm::mat4 aiMat4toGLM(aiMatrix4x4t<float>& matrix);
 

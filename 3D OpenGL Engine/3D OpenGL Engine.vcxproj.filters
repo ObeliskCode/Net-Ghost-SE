@@ -142,7 +142,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="rigFrag.glsl">
+    <None Include="mdlFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="rigVert.glsl">
@@ -157,9 +157,6 @@
     <None Include="animVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="animFrag.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="partVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
@@ -170,6 +167,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="skyFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="noTexFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="lightFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

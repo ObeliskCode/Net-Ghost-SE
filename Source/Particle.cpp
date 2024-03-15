@@ -81,7 +81,7 @@ void Particle::Draw(Shader& shader, Camera& camera) {
 	shader.Activate();
 	glBindVertexArray(VAO);
 
-	sprite->texUnit(shader, "sprite", 0);
+	sprite->texUnit(shader, "sprite");
 	sprite->Bind();
 
 	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
@@ -129,15 +129,10 @@ void Particle::Draw(Shader& shader, Camera& camera) {
 
 	glm::quat rotCombine = rotation3 * rotation2 * rotation;
 
-	// Initialize matrices
-	glm::mat4 trans = glm::mat4(1.0f);
-	glm::mat4 rot;
-	glm::mat4 sca = glm::mat4(1.0f);
-
 	// Transform the matrices to their correct form
-	trans = glm::translate(trans, translation);
-	rot = glm::mat4_cast(rotCombine);
-	sca = glm::scale(sca, scale);
+	glm::mat4 trans = glm::translate(glm::mat4(1.0f), translation);
+	glm::mat4 rot = glm::mat4_cast(rotCombine);
+	glm::mat4 sca = glm::scale(glm::mat4(1.0f), scale);
 
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));

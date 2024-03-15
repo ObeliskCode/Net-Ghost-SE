@@ -30,6 +30,7 @@ void Model::loadModel(std::string path)
         return;
     }
     directory = path.substr(0, path.find_last_of('/'));
+    fileType = path.substr(path.find_last_of('.'), path.back());
 
     aiMatrix4x4t<float> identity = aiMatrix4x4t<float>();
     processNode(scene->mRootNode, scene, identity);
@@ -37,7 +38,6 @@ void Model::loadModel(std::string path)
 
 void Model::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> pTransform)
 {
-
     aiMatrix4x4t<float> transform = pTransform * node->mTransformation;
 
     // process all the node's meshes (if any)
@@ -96,7 +96,6 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>
             indices.push_back(face.mIndices[j]);
     }
 
-
     // process material
     if (mesh->mMaterialIndex >= 0)
     {
@@ -104,13 +103,13 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>
 
         int slotInc = 0;
 
-        std::vector<Texture> diffuseMaps = loadMaterialTextures(material,
+        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, scene,
             aiTextureType_DIFFUSE, "diffuse", slotInc);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
         
         slotInc = slotInc + diffuseMaps.size();
 
-        std::vector<Texture> specularMaps = loadMaterialTextures(material,
+        std::vector<Texture> specularMaps = loadMaterialTextures(material, scene,
             aiTextureType_SPECULAR, "specular", slotInc);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
@@ -129,7 +128,7 @@ void Model::Draw(Shader& shader, Camera& camera){
 
 // BUG: .type member becomes corrupted when leaving loadMaterialTexture
 // not really sure why adding int slotInc(rement) makes this work perfectly, was having issue where specular sampler was overriding diffuse sampler
-std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, int slotInc)
+std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type, std::string typeName, int slotInc)
 {
     std::vector<Texture> textures;
 
@@ -153,9 +152,17 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType 
         }
         if (!skip)
         {   // if texture hasn't been loaded already, load it
-            Texture texture = Texture(path.c_str(), typeName, i+slotInc);
-            textures.push_back(texture);
-            textures_loaded.push_back(texture);
+            if (fileType == ".fbx") {
+                Texture texture = Texture(scene->GetEmbeddedTexture(path.c_str()), typeName, i + slotInc);
+                textures.push_back(texture);
+                textures_loaded.push_back(texture);
+            }
+            else {
+                Texture texture = Texture(path.c_str(), typeName, i + slotInc);
+                textures.push_back(texture);
+                textures_loaded.push_back(texture);
+            }
+
         }
     }
 

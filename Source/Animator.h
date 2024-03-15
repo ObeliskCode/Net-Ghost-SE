@@ -5,16 +5,19 @@
 #include <vector>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
-#include <Animation.h>
+#include <Skeleton.h>
 #include <Bone.h>
 
 class Animator
 {
 public:
-	Animator(Animation* animation)
+	Animator(Skeleton* skeleton)
 	{
 		m_CurrentTime = 0.0;
-		m_CurrentAnimation = animation;
+		m_DeltaTime = 0.0;
+		m_Skeleton = skeleton;
+		m_AnimationIndex = 0;
+		m_CurrentAnimation = m_Skeleton->GetAnimation(m_AnimationIndex);
 
 		#define MAX_BONES 200
 
@@ -25,23 +28,24 @@ public:
 	}
 
 	~Animator() {
-		delete m_CurrentAnimation;
+		delete m_Skeleton;
 	}
 
 	void UpdateAnimation(float dt)
 	{
 		m_DeltaTime = dt;
-		if (m_CurrentAnimation)
+		if (m_Skeleton)
 		{
 			m_CurrentTime += m_CurrentAnimation->GetTicksPerSecond() * dt;
 			m_CurrentTime = fmod(m_CurrentTime, m_CurrentAnimation->GetDuration());
-			CalculateBoneTransform(&m_CurrentAnimation->GetRootNode(), glm::mat4(1.0f));
+			CalculateBoneTransform(&m_Skeleton->GetRootNode(), glm::mat4(1.0f));
 		}
 	}
 
-	void PlayAnimation(Animation* pAnimation)
+	void PlayAnimation(unsigned int index)
 	{
-		m_CurrentAnimation = pAnimation;
+		m_AnimationIndex = index;
+		m_CurrentAnimation = m_Skeleton->GetAnimation(m_AnimationIndex);
 		m_CurrentTime = 0.0f;
 	}
 
@@ -60,7 +64,7 @@ public:
 
 		glm::mat4 globalTransformation = parentTransform * nodeTransform;
 
-		auto boneInfoMap = m_CurrentAnimation->GetBoneIDMap();
+		auto boneInfoMap = m_Skeleton->GetBoneIDMap();
 		if (boneInfoMap.find(nodeName) != boneInfoMap.end())
 		{
 			int index = boneInfoMap[nodeName].id;
@@ -79,7 +83,9 @@ public:
 
 private:
 	std::vector<glm::mat4> m_FinalBoneMatrices;
+	Skeleton* m_Skeleton;
 	Animation* m_CurrentAnimation;
+	unsigned int m_AnimationIndex;
 	float m_CurrentTime;
 	float m_DeltaTime;
 

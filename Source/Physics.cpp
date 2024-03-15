@@ -231,7 +231,7 @@ btRigidBody* Physics::addShape6(unsigned int ID) {
 	if (isDynamic)
 		colShape->calculateLocalInertia(mass, localInertia);
 
-	startTransform.setOrigin(btVector3(-5, 10, 32));
+	startTransform.setOrigin(btVector3(17, 10, 32));
 
 	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);

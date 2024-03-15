@@ -149,7 +149,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\assimp\lib;$(SolutionDir)\Libraries\bullet\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc142-mtd.lib;LinearMath.lib;BulletDynamics.lib;BulletCollision.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;LinearMath.lib;BulletDynamics.lib;BulletCollision.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -198,11 +198,12 @@
     <ClInclude Include="..\Source\Wire.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="animFrag.glsl" />
     <None Include="animVert.glsl" />
+    <None Include="lightFrag.glsl" />
+    <None Include="noTexFrag.glsl" />
     <None Include="partFrag.glsl" />
     <None Include="partVert.glsl" />
-    <None Include="rigFrag.glsl" />
+    <None Include="mdlFrag.glsl" />
     <None Include="rigVert.glsl" />
     <None Include="skyFrag.glsl" />
     <None Include="skyVert.glsl" />

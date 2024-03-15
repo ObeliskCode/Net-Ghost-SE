@@ -1,5 +1,57 @@
 #include"Texture.h"
 
+Texture::Texture(const aiTexture* aiTex, std::string texType, GLuint slot) {
+
+	type = texType;
+
+	//sets path to filepath input
+	path = aiTex->mFilename.C_Str();
+
+	int widthImg, heightImg, numColCh;
+	unsigned char* bytes;
+
+	//flip image setting
+	stbi_set_flip_vertically_on_load(true);
+
+	if (aiTex->mHeight == 0)
+	{
+		bytes = stbi_load_from_memory(reinterpret_cast<const uint8_t*>(aiTex->pcData), aiTex->mWidth, &widthImg, &heightImg, &numColCh, 0);
+	}
+	else
+	{   // shouldn't it already be in memory?
+		bytes = stbi_load_from_memory(reinterpret_cast<const uint8_t*>(aiTex->pcData), aiTex->mWidth * aiTex->mHeight, &widthImg, &heightImg, &numColCh, 0);
+	}
+
+	//generate 1 new texture ID and set to ID
+	glGenTextures(1, &ID);
+	//select active texture unit GL_TEXTURE(Slot)
+	glActiveTexture(GL_TEXTURE0 + slot);
+	//set texture "unit" to slot
+	unit = slot;
+	//bind texture to its target
+	glBindTexture(GL_TEXTURE_2D, ID);
+	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	if (numColCh == 3)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
+	}
+	else if (numColCh == 4)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+	}
+
+	//generate mip map (what does this do?)
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	//unbind texture
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 Texture::Texture(const char* image, std::string texType, GLuint slot)
 {
 	type = texType;
@@ -83,7 +135,8 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::texUnit(Shader& shader, const char* uniform, GLuint unit)
+// get rid of unit parameter
+void Texture::texUnit(Shader& shader, const char* uniform)
 {
 	GLuint texUni = glGetUniformLocation(shader.ID, uniform);
 
@@ -106,4 +159,9 @@ void Texture::Unbind()
 void Texture::Delete()
 {
 	glDeleteTextures(1, &ID);
+}
+
+void Texture::print() 
+{
+	std::cerr << "ID " << ID << " type " << type << " unit " << unit << " path " << path << std::endl;
 }

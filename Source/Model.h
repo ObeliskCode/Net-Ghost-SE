@@ -26,6 +26,7 @@ private:
     std::vector<Texture> textures_loaded; // all textures
     std::vector<Mesh*> meshes;
     std::string directory;
+    std::string fileType;
 
     // this is bad for instancing!? should be kept in a higher level class like Entity
     glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -35,7 +36,7 @@ private:
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation);
     Mesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation);
-    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
+    std::vector<Texture> loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type,
         std::string typeName, int slotInc);
     glm::mat4 aiMat4toGLM(aiMatrix4x4t<float>& matrix);
 };

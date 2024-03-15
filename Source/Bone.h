@@ -38,9 +38,12 @@ public:
 	{
 		m_NumPositions = channel->mNumPositionKeys;
 
+		//std::cerr << name << std::endl;
+
 		for (int positionIndex = 0; positionIndex < m_NumPositions; ++positionIndex)
 		{
 			aiVector3D aiPosition = channel->mPositionKeys[positionIndex].mValue;
+			//std::cout << positionIndex << ". " << GetGLMVec(aiPosition).x << " " << GetGLMVec(aiPosition).y << " " << GetGLMVec(aiPosition).z << std::endl;
 			float timeStamp = channel->mPositionKeys[positionIndex].mTime;
 			KeyPosition data;
 			data.position = GetGLMVec(aiPosition);
@@ -52,6 +55,7 @@ public:
 		for (int rotationIndex = 0; rotationIndex < m_NumRotations; ++rotationIndex)
 		{
 			aiQuaternion aiOrientation = channel->mRotationKeys[rotationIndex].mValue;
+			//std::cout << rotationIndex << ". " << GetGLMQuat(aiOrientation).w << " " << GetGLMQuat(aiOrientation).x << " " << GetGLMQuat(aiOrientation).y << " " << GetGLMQuat(aiOrientation).z << std::endl;
 			float timeStamp = channel->mRotationKeys[rotationIndex].mTime;
 			KeyRotation data;
 			data.orientation = GetGLMQuat(aiOrientation);
@@ -63,6 +67,7 @@ public:
 		for (int keyIndex = 0; keyIndex < m_NumScalings; ++keyIndex)
 		{
 			aiVector3D scale = channel->mScalingKeys[keyIndex].mValue;
+			//std::cout << keyIndex << ". " << GetGLMVec(scale).x << " " << GetGLMVec(scale).y << " " << GetGLMVec(scale).z << std::endl;
 			float timeStamp = channel->mScalingKeys[keyIndex].mTime;
 			KeyScale data;
 			data.scale = GetGLMVec(scale);
@@ -77,6 +82,7 @@ public:
 		glm::mat4 rotation = InterpolateRotation(animationTime);
 		glm::mat4 scale = InterpolateScaling(animationTime);
 		m_LocalTransform = translation * rotation * scale;
+		//m_LocalTransform = glm::mat4(1.0f);
 	}
 	glm::mat4 GetLocalTransform() { return m_LocalTransform; }
 	std::string GetBoneName() const { return m_Name; }
@@ -170,6 +176,7 @@ private:
 			m_Scales[p1Index].timeStamp, animationTime);
 		glm::vec3 finalScale = glm::mix(m_Scales[p0Index].scale, m_Scales[p1Index].scale
 			, scaleFactor);
+		//std::cout << finalScale.x << " " << finalScale.y << " " << finalScale.z << std::endl;
 		return glm::scale(glm::mat4(1.0f), finalScale);
 	}
 
