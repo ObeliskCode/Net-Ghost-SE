@@ -160,9 +160,6 @@
     <None Include="partVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="partFrag.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="skyVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
@@ -173,6 +170,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="lightFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="partFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

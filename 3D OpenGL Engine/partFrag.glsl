@@ -13,5 +13,9 @@ void main()
     float half = 1.0f/2.0f;
     float halfN = pow(half,3.0);
     texColor.a = texColor.a * ( -halfN*sin( half*life ) + halfN );
-    color = texColor;
+
+    float gamma = 1.05f;
+	vec4 sample = texColor;
+    sample.rgb = pow(sample.rgb, vec3(1.0f/gamma));
+    color = sample;
 }

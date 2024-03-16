@@ -66,6 +66,24 @@ public:
 
 	}
 
+	void addAnimation(const std::string animationPath, SkeletalModel* model) 
+	{
+		Assimp::Importer importer;
+		const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate | aiProcess_LimitBoneWeights);
+		assert(scene && scene->mRootNode);
+
+		// ON faith we do not import skeleton!
+		for (int i = 0; i < scene->mNumAnimations; i++) {
+			Animation newAnim;
+			auto animation = scene->mAnimations[i];
+			newAnim.m_Duration = animation->mDuration;
+			newAnim.m_TicksPerSecond = animation->mTicksPerSecond;
+			ReadBones(newAnim, animation, *model);
+			if (animation->mNumMeshChannels != 0) std::cerr << "UNSUPPORTED ANIMATION KEYS! mNumMeshChannels: " << animation->mNumMeshChannels << std::endl;
+			if (animation->mNumMorphMeshChannels != 0) std::cerr << "UNSUPPORTED ANIMATION KEYS! mNumMorphMeshChannels: " << animation->mNumMorphMeshChannels << std::endl;
+		}
+	}
+
 	Animation* GetAnimation(unsigned int index)
 	{
 		if (index >= m_Animations.size()) return nullptr;

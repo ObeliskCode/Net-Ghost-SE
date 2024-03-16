@@ -4,6 +4,7 @@ Entity::Entity(Model* m, Shader* s, Shader* ws, Camera* c) {
 	m_modeled = true;
 	m_animated = false;
 	m_dynamic = false;
+	m_visible = true;
 	mdl = m;
 	skMdl = nullptr;
 	mator = nullptr;
@@ -17,6 +18,7 @@ Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Shader* ws, Camera* c)
 	m_modeled = false;
 	m_animated = true;
 	m_dynamic = false;
+	m_visible = true;
 	mdl = nullptr;
 	skMdl = sm;
 	mator = m;
@@ -30,6 +32,7 @@ Entity::Entity(Shader* ws, Camera* c) {
 	m_modeled = false;
 	m_animated = false;
 	m_dynamic = false;
+	m_visible = true;
 	mdl = nullptr;
 	skMdl = nullptr;
 	mator = nullptr;
@@ -89,6 +92,7 @@ void Entity::addWire(Wire* w) {
 }
 
 void Entity::Draw(float delta) {
+	if (!m_visible) return;
 	if (m_animated) {
 		shader->Activate();
 		mator->UpdateAnimation(delta);

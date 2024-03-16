@@ -26,6 +26,9 @@ class Entity {
 		void Draw(float delta);
 		void addBody(btRigidBody* b);
 		btRigidBody* getBody();
+
+		bool m_visible;
+
 	private:
 		unsigned int m_id;
 		std::string m_type;

@@ -47,7 +47,9 @@ int main() {
 	cig->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
 	cig->setRotation(glm::quat(0.0f,0.0f,1.0f,0.0f));
 
-	ECS::get().addEntity(new Entity(cig, &rigProgram, &wireProgram, Globals::get().handCam));
+	Entity* cigEnt = new Entity(cig, &rigProgram, &wireProgram, Globals::get().handCam);
+
+	ECS::get().addEntity(cigEnt);
 
 	Model* dumpster = new Model("dumpster/dumpster.dae");
 	dumpster->setTranslation(glm::vec3(25.0f, 5.0f, 35.0f));
@@ -95,22 +97,15 @@ int main() {
 
 	ECS::get().addEntity(new Entity(sit, sitMator, &animProgram, &wireProgram, Globals::get().camera));
 
-	
-	SkeletalModel* taunt = new SkeletalModel("jjong/Walking.dae");
-	taunt->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-	taunt->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
-	Skeleton* tauntAnimation = new Skeleton("jjong/Walking.dae", taunt);
-	Animator* mator = new Animator(tauntAnimation);
+	SkeletalModel* walk = new SkeletalModel("jjong/Idle.dae");
+	walk->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	walk->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
+	Skeleton* walkAnimation = new Skeleton("jjong/Idle.dae", walk);
+	walkAnimation->addAnimation("jjong/Walking.dae", walk);
+	Animator* mator = new Animator(walkAnimation);
+	mator->QueueAnimation(1);
 
-	ECS::get().addEntity(new Entity(taunt, mator, &animProgram, &wireProgram, Globals::get().camera));
-
-	SkeletalModel* talking = new SkeletalModel("jjong/Talking.dae");
-	talking->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-	talking->setTranslation(glm::vec3(12.0f, 5.0f, -5.0f));
-	Skeleton* talkingAnimation = new Skeleton("jjong/Talking.dae", talking);
-	Animator* talkingMator = new Animator(talkingAnimation);
-
-	ECS::get().addEntity(new Entity(talking, talkingMator, &animProgram, &wireProgram, Globals::get().camera));
+	ECS::get().addEntity(new Entity(walk, mator, &animProgram, &wireProgram, Globals::get().camera));
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(-20.0f, 13.2f, 28.0f);
@@ -235,7 +230,11 @@ int main() {
 
 	float batRot = 0.0f;
 
+	float bf = 0.0f;
+
 	bool cig_anim = false;
+	bool is_smoking = false;
+	float cig_anim_time = 0.0f;
 
 	/* Main Game Loop */
 	while (!glfwWindowShouldClose(window)) {
@@ -296,7 +295,58 @@ int main() {
 				glm::vec3 pos = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()) + 5.0f, float(trans.getOrigin().getZ()));
 				Globals::get().camera->Position = pos;
 			}*/
-			gameTick(delta); // post-physics game logic
+			{
+				if (Input::get().getValue(GLFW_KEY_RIGHT)) bf += 0.05f;
+				if (Input::get().getValue(GLFW_KEY_LEFT)) bf -= 0.05f;
+				if (bf < 0.0f) bf = 0.0f;
+				if (bf > 1.0f) bf = 1.0f;
+				mator->SetBlendFactor(bf);
+			}
+			gameTick(delta); // post-physics game logic.
+
+			{ // particles
+			// UPDATE so that it shows cig first then blows smoke after it dissapears
+				if (Input::get().getValue(GLFW_KEY_P) && !is_smoking) {
+					is_smoking = true;
+					cig_anim = true;
+					cig_anim_time = 0.0f;
+				}				
+				
+				if (is_smoking) {
+					cig_anim_time += delta;
+					if (cig_anim_time >= 2.0f) cig_anim = false;
+					if (cig_anim_time >= 3.0f) is_smoking = false;
+				}
+				
+				if (cig_anim) {
+					cigEnt->m_visible = true;
+				} else cigEnt->m_visible = false;
+
+
+				if  (cig_anim == false && is_smoking == true) {
+					Particle p = Particle();
+					p.setTranslation(Globals::get().camera->Position - glm::vec3(0.f, 0.25f, 0.f));
+					p.setScale(0.1f);
+					p.vel = glm::normalize(Globals::get().camera->Orientation);
+					Globals::get().particles.push_back(p);
+
+					Particle p2 = Particle();
+					p2.setTranslation(Globals::get().camera->Position - glm::vec3(0.f, 0.25f, 0.f));
+					p2.setScale(0.1f);
+					p2.vel = glm::normalize(Globals::get().camera->Orientation);
+					Globals::get().particles.push_back(p2);
+				}
+
+				// how slow is this? (update/cleanup particles)
+				for (int i = 0; i < Globals::get().particles.size(); i++) {
+					Globals::get().particles[i].update(delta);
+					if (Globals::get().particles[i].life >= Globals::get().particles[i].expire) {
+						Globals::get().particles.erase(Globals::get().particles.begin() + i);
+						i--;
+					}
+				}
+
+			}
 			
 			lastTick = thisTick;
 		}
@@ -409,32 +459,7 @@ void gameTick(double delta) {
 			}
 		}
 	}
-	{ // particles
-	// UPDATE so that it shows cig first then blows smoke after it dissapears
-		if (Input::get().getValue(GLFW_KEY_P)) {
-			Particle p = Particle();
-			p.setTranslation(Globals::get().camera->Position - glm::vec3(0.f, 0.25f, 0.f));
-			p.setScale(0.1f);
-			p.vel = glm::normalize(Globals::get().camera->Orientation);
-			Globals::get().particles.push_back(p);
 
-			Particle p2 = Particle();
-			p2.setTranslation(Globals::get().camera->Position - glm::vec3(0.f, 0.25f, 0.f));
-			p2.setScale(0.1f);
-			p2.vel = glm::normalize(Globals::get().camera->Orientation);
-			Globals::get().particles.push_back(p2);
-		}
-
-		// how slow is this? (update/cleanup particles)
-		for (int i = 0; i < Globals::get().particles.size(); i++) {
-			Globals::get().particles[i].update(delta);
-			if (Globals::get().particles[i].life >= Globals::get().particles[i].expire) {
-				Globals::get().particles.erase(Globals::get().particles.begin() + i);
-				i--;
-			}
-		}
-
-	}
 }
 
 void renderScene() {
@@ -473,6 +498,9 @@ GLFWwindow* initApp() {
 	// enable 8x MSAA
 	glfwWindowHint(GLFW_SAMPLES, 8);
 	glEnable(GL_MULTISAMPLE);
+
+	// default gamma correction
+	//glEnable(GL_FRAMEBUFFER_SRGB);
 
 	// enable smooth shading vs flat
 	glShadeModel(GL_SMOOTH);
