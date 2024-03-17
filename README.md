@@ -8,11 +8,12 @@
 #### Animated 3D models, Particle System, Rigid Body Physics
 
 ## Controls
-WASD: forward, left, back, right
-
-X: lock/unlock cursor for mouse panning
-
-P: emit smoke particles
+WASD: Camera movement
+IJKL: Controllable body movement
+X: Lock/Unlock cursor for mouse panning
+P: Emit smoke particles
+E: Pick up Rigid Bodies
+LEFT/RIGHT ARROW KEYS: Decrease/Increase blend factor of two animations 
 
 ## Build Instructions 
 1. Download Visual Studio 2022.
@@ -35,7 +36,7 @@ cp lib/Debug/assimp-vc143-mtd.exp OBELISK_DIR//Libraries/assimp/lib/assimp-vc143
 #Change Build to Release x64
 #Edit C/C++->Code Generation so that Runtime Library is set to Multi-threaded/MT
 #Right Click and Build only projects BulletCollision,BulletDynamics & LinearMath
-#copy lib files to Libraries/bullet/lib/ and include folder to Libraries/bullet/
+#Copy lib files to Libraries/bullet/lib/ and source files to Libraries/bullet/include/ (files within lib/ and src/ folders)
 ```
 5. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
 6. Write Code!

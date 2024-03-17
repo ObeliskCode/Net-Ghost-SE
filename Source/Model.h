@@ -23,7 +23,7 @@ public:
 
 private:
     // model data
-    std::vector<Texture> textures_loaded; // all textures
+    std::vector<Texture> textures_loaded; // all textures for all meshes
     std::vector<Mesh*> meshes;
     std::string directory;
     std::string fileType;

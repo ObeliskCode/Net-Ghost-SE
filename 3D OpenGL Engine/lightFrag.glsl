@@ -68,8 +68,5 @@ vec4 direcLight()
 
 void main()
 {
-    float gamma = 1.05f;
-	vec4 sample = pointLight() + direcLight();
-    sample.rgb = pow(sample.rgb, vec3(1.0/gamma));
-	FragmentColor = sample;
+	FragmentColor = pointLight() + direcLight();
 }
