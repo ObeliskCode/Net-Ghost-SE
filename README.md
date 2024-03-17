@@ -9,10 +9,15 @@
 
 ## Controls
 WASD: Camera movement
+
 IJKL: Controllable body movement
+
 X: Lock/Unlock cursor for mouse panning
+
 P: Emit smoke particles
+
 E: Pick up Rigid Bodies
+
 LEFT/RIGHT ARROW KEYS: Decrease/Increase blend factor of two animations 
 
 ## Build Instructions 
