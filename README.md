@@ -31,8 +31,8 @@ cmake CMakeLists.txt
 cmake --build .
 cp -r include OBELISK_DIR/Libraries/assimp/
 cp bin/Debug/assimp-vc143-mtd.dll "OBELISK_DIR/3D OpenGL Engine/assimp-vc143-mtd.dll"
-cp lib/Debug/assimp-vc143-mtd.lib OBELISK_DIR//Libraries/assimp/lib/assimp-vc143-mtd.lib
-cp lib/Debug/assimp-vc143-mtd.exp OBELISK_DIR//Libraries/assimp/lib/assimp-vc143-mtd.exp
+cp lib/Debug/assimp-vc143-mtd.lib OBELISK_DIR/Libraries/assimp/lib/assimp-vc143-mtd.lib
+cp lib/Debug/assimp-vc143-mtd.exp OBELISK_DIR/Libraries/assimp/lib/assimp-vc143-mtd.exp
 ```
 4. Install Bullet Physics [https://github.com/bulletphysics/bullet3] to Libraries
 ```bash
