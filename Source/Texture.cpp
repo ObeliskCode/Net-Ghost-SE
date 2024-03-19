@@ -66,8 +66,8 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 	//load bytes in and widthImg, heightImg and numColCh
 	unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
 
-	if (stbi_failure_reason())
-		std::cout << stbi_failure_reason() << std::endl;
+	if (!bytes)
+		std::cout << "STBI FAILURE::" << path << "::" << stbi_failure_reason() << std::endl;
 
 	//generate 1 new texture ID and set to ID
 	glGenTextures(1, &ID);

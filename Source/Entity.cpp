@@ -152,7 +152,11 @@ void Entity::Draw() {
 		for (int i = 0; i < transforms.size(); ++i)
 			glUniformMatrix4fv(glGetUniformLocation(shader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
 		skMdl->Draw(*shader, *camera, translation, rotation, scale);
+		glStencilFunc(GL_ALWAYS, 0, 0xFF);
+		glStencilMask(0xFF);
 	}
 	else if (m_modeled) {
 		if (m_surface) {

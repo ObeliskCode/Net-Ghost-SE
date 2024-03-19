@@ -21,6 +21,8 @@ int main() {
 	Globals::get().animShadowShader = &animShadowProgram;
 	Shader cellProgram = Shader("rigVert.glsl", "cellFrag.glsl");
 	Globals::get().cellShader = &cellProgram;
+	Shader animCellProgram = Shader("animVert.glsl", "cellFrag.glsl");
+	Globals::get().animCellShader = &animCellProgram;
 
 	Entity* e;
 

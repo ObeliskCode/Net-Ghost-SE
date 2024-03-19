@@ -30,6 +30,7 @@ public:
     std::vector <Particle> particles;
     Shader * shadowShader;
     Shader * animShadowShader;
+    Shader * animCellShader;
     Shader * cellShader;
     Camera * camera;
     Camera * handCam;

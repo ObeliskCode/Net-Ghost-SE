@@ -40,7 +40,7 @@ Physics::~Physics() {
 }
 
 void Physics::updateSim(float delta) {
-	dynamicsWorld->stepSimulation(delta, 30, 0.0078125f);
+	dynamicsWorld->stepSimulation(delta, 10);
 }
 
 btRigidBody* Physics::addUnitBoxStaticBody(unsigned int ID, float halfWidth, float halfHeight, float halfLength, float x, float y, float z) {

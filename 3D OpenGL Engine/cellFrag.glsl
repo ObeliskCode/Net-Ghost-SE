@@ -4,5 +4,6 @@ out vec4 FragColor;
 void main()
 {
     //todo rainbow frag
-    FragColor = vec4(0.04, 0.28, 0.26, 1.0);
+    FragColor = vec4(1.0, 0.82421875, 0.0, 1.0);
+
 }
