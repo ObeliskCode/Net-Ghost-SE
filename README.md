@@ -16,6 +16,8 @@ Z: Lock camera to rigid body
 
 X: Lock/Unlock cursor for mouse panning
 
+O: toggle draw wires
+
 P: Emit smoke particles
 
 E: Select Physics Object
