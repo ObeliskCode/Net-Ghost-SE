@@ -19,6 +19,8 @@ int main() {
 	Globals::get().shadowShader = &shadowProgram;
 	Shader animShadowProgram = Shader("animShadowVert.glsl", "shadowFrag.glsl");
 	Globals::get().animShadowShader = &animShadowProgram;
+	Shader cellProgram = Shader("rigVert.glsl", "cellFrag.glsl");
+	Globals::get().cellShader = &cellProgram;
 
 	Entity* e;
 
@@ -27,6 +29,7 @@ int main() {
 	ECS::get().addEntity(e);
 	e->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
 	e->setScale(glm::vec3(20.0f));
+	e->m_surface = true;
 
 	Model* lamp = new Model("lamp/lamp.dae");
 	lamp->setUnitConversion(0.05f);
@@ -48,13 +51,11 @@ int main() {
 
 	Model* handBat = new Model("bat/bat.dae");
 	Entity* batEnt = new Entity(handBat, &rigProgram, &wireProgram, Globals::get().handCam);
-	ECS::get().addEntity(batEnt);
 	batEnt->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 	batEnt->setTranslation(glm::vec3(2.0f, -2.0f, 0.0f));
 
 	Model* cig = new Model("cig/cig.dae");
 	Entity* cigEnt = new Entity(cig, &rigProgram, &wireProgram, Globals::get().handCam);
-	ECS::get().addEntity(cigEnt);
 	cigEnt->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
 	cigEnt->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 
@@ -135,10 +136,10 @@ int main() {
 
 	//QUAD
 	e = new Entity(&wireProgram, Globals::get().camera);
-	e->addWire(new Wire(glm::vec3(50.0f, 50.0f, -50.0f), glm::vec3(-50.0f, 50.0f, -50.0f)));
-	e->addWire(new Wire(glm::vec3(-50.0f, 50.0f, -50.0f), glm::vec3(-50.0f, 50.0f, 50.0f)));
-	e->addWire(new Wire(glm::vec3(-50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, 50.0f)));
-	e->addWire(new Wire(glm::vec3(50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, -50.0f)));
+	e->addWire(new Wire(glm::vec3(60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, -60.0f)));
+	e->addWire(new Wire(glm::vec3(-60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, 60.0f)));
+	e->addWire(new Wire(glm::vec3(-60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, 60.0f)));
+	e->addWire(new Wire(glm::vec3(60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, -60.0f)));
 	ECS::get().addEntity(e);
 	e->addBody(Physics::get().addShape1(e->getID()));
 
@@ -255,21 +256,23 @@ int main() {
 	glUniformMatrix4fv(glGetUniformLocation(shadowProgram.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
 	// loop vars
-	double prevTime = 0.0;
 	double crntTime = 0.0;
+
+	double prevTime = 0.0;
 	double timeDiff;
 	unsigned int counter = 0;
 
 	double lastTick = 0.0;
-	double thisTick = 0.0;
 	double delta;
 
-	float deltaTime = 0.0f;
-	float lastFrame = 0.0f;
+	double deltaTime = 0.0f;
+	double lastFrame = 0.0f;
 
-	float batRot = 0.0f;
+	double batRot = 0.0f;
 
 	float bf = 0.0f;
+
+	unsigned int prevID = 0;
 
 	bool cig_anim = false;
 	bool is_smoking = false;
@@ -297,8 +300,7 @@ int main() {
 		glfwPollEvents(); // get inputs
 		
 		/* TICK BASED EVENTS */ // 1. calc physics update -> 2. game logic
-		thisTick = glfwGetTime();
-		delta = thisTick - lastTick;
+		delta = crntTime - lastTick;
 		if (delta >= 1.0 / 64.0) {
 			{ // character, delta
 				if (Globals::get().camLock) {
@@ -370,6 +372,48 @@ int main() {
 				mator->SetBlendFactor(bf);
 			}
 			gameTick(delta); // post-physics game logic.
+			{ // do rayCast
+
+				glm::vec3 ppp = Globals::get().camera->Position + (Globals::get().camera->Orientation * 12.5f);
+
+				btVector3 from = btVector3(Globals::get().camera->Position.x, Globals::get().camera->Position.y, Globals::get().camera->Position.z);
+				btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
+				btCollisionWorld::ClosestRayResultCallback rrc = btCollisionWorld::ClosestRayResultCallback(from, to);
+				Physics::get().getDynamicsWorld()->rayTest(from, to, rrc);
+
+				if (rrc.hasHit()) {
+					btRigidBody* sel = btRigidBody::upcast(const_cast <btCollisionObject*>(rrc.m_collisionObject));
+					unsigned int entID = Physics::get().m_EntityMap[sel];
+					if (entID != 0) {
+						if (prevID != 0 && prevID != entID) {
+							Entity* prevEnt = ECS::get().getEntity(prevID);
+							if (prevEnt) {
+								prevEnt->m_stenciled = false;
+							}
+							prevID = 0;
+						}
+						if (Input::get().getValue(GLFW_KEY_E)) {
+							if (ECS::get().getEntity(entID)->getType() == "pickup") {
+								// only deletes wires, rigid body & not model / skel model
+								ECS::get().deleteEntity(entID);
+								prevID = 0;
+
+							}
+						}
+						else if (!ECS::get().getEntity(entID)->m_surface) {
+							ECS::get().getEntity(entID)->m_stenciled = true;
+							prevID = entID;
+						}
+					}
+				} else if (prevID != 0) {
+					Entity* prevEnt = ECS::get().getEntity(prevID);
+					if (prevEnt) {
+						prevEnt->m_stenciled = false;
+					}
+					prevID = 0;
+				}
+
+			}
 
 			{ // particles
 			// UPDATE so that it shows cig first then blows smoke after it dissapears
@@ -415,15 +459,14 @@ int main() {
 
 			}
 			
-			lastTick = thisTick;
+			lastTick = crntTime;
 		}
 		/* TICK BASED EVENTS */
 		
 		/* ANIMATION UPDATES / RENDERING */
 		// calc time since last frame for animation
-		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+		deltaTime = crntTime - lastFrame;
+		lastFrame = crntTime;
 
 		{ // pls do not make this a function
 			batRot += deltaTime;
@@ -437,12 +480,12 @@ int main() {
 		}
 
 		renderScene();
-		{ // shadow draw pass!
-			glEnable(GL_DEPTH_TEST);
 
+
+		{ // shadow draw pass!
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
-			glClear(GL_DEPTH_BUFFER_BIT);// we clear already?
+			glClear(GL_DEPTH_BUFFER_BIT);// clears this framebuffers depth bit!
 
 			ECS::get().DrawEntityShadows(deltaTime);
 
@@ -454,6 +497,11 @@ int main() {
 		ECS::get().DrawEntities();
 
 		sky->Draw(skyProgram, *Globals::get().camera);
+
+		ECS::get().DrawEntityStencils();
+
+		batEnt->Draw();
+		cigEnt->Draw();
 
 		// emitter->drawparticles()
 		glEnable(GL_BLEND);
@@ -519,36 +567,12 @@ void gameTick(double delta) {
 			Globals::get().camera->Position += velocity;
 		}
 	}
-	{ // do rayCast
-		if (Input::get().getValue(GLFW_KEY_E)) {
-			glm::vec3 ppp = Globals::get().camera->Position + (Globals::get().camera->Orientation * 10.0f);
 
-			btVector3 from = btVector3(Globals::get().camera->Position.x, Globals::get().camera->Position.y, Globals::get().camera->Position.z);
-			btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
-			btCollisionWorld::ClosestRayResultCallback rrc = btCollisionWorld::ClosestRayResultCallback(from, to);
-			Physics::get().getDynamicsWorld()->rayTest(from, to, rrc);
-
-			if (rrc.hasHit()) {
-				btRigidBody* sel = btRigidBody::upcast(const_cast <btCollisionObject*>(rrc.m_collisionObject));
-				unsigned int entID = Physics::get().m_EntityMap[sel];
-				if (entID != 0) {
-					if (ECS::get().getEntity(entID)->getType() == "pickup") {
-						// only deletes wires, rigid body & not model / skel model
-						ECS::get().deleteEntity(entID);
-
-					}
-				}
-			}
-		}
-	}
 
 }
 
 void renderScene() {
-
-	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 GLFWwindow* initApp() {
@@ -577,6 +601,14 @@ GLFWwindow* initApp() {
 	// enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 
+	// emable stencil test
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glStencilMask(0xFF);
+
 	// enable 8x MSAA
 	glfwWindowHint(GLFW_SAMPLES, 8);
 	glEnable(GL_MULTISAMPLE);
@@ -591,6 +623,8 @@ GLFWwindow* initApp() {
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CW);
+
+	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 
 	//disable vsync if enabled
 	glfwSwapInterval(0);

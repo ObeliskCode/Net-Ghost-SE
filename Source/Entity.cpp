@@ -4,6 +4,8 @@ Entity::Entity(Model* m, Shader* s, Shader* ws, Camera* c) {
 	m_modeled = true;
 	m_animated = false;
 	m_dynamic = false;
+	m_stenciled = false;
+	m_surface = false;
 	m_visible = true;
 	mdl = m;
 	skMdl = nullptr;
@@ -18,6 +20,8 @@ Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Shader* ws, Camera* c)
 	m_modeled = false;
 	m_animated = true;
 	m_dynamic = false;
+	m_stenciled = false;
+	m_surface = false;
 	m_visible = true;
 	mdl = nullptr;
 	skMdl = sm;
@@ -32,6 +36,8 @@ Entity::Entity(Shader* ws, Camera* c) {
 	m_modeled = false;
 	m_animated = false;
 	m_dynamic = false;
+	m_stenciled = false;
+	m_surface = false;
 	m_visible = true;
 	mdl = nullptr;
 	skMdl = nullptr;
@@ -126,6 +132,17 @@ void Entity::DrawShadow(float delta) {
 }
 
 
+void Entity::DrawStencil() {
+	if (!m_visible) return;
+	if (m_stenciled) {
+		if (m_modeled) {
+			glm::vec3 upScale = scale * 1.025f;
+			mdl->Draw(*Globals::get().cellShader, *camera, translation, rotation, upScale);
+		}
+	}
+}
+
+
 void Entity::Draw() {
 	if (!m_visible) return;
 	if (m_animated) {
@@ -138,7 +155,16 @@ void Entity::Draw() {
 		skMdl->Draw(*shader, *camera, translation, rotation, scale);
 	}
 	else if (m_modeled) {
-		mdl->Draw(*shader, *camera, translation, rotation, scale);
+		if (m_surface) {
+			mdl->Draw(*shader, *camera, translation, rotation, scale);
+		}
+		else {
+			glStencilFunc(GL_ALWAYS, 1, 0xFF);
+			glStencilMask(0xFF);
+			mdl->Draw(*shader, *camera, translation, rotation, scale);
+			glStencilFunc(GL_ALWAYS, 0, 0xFF);
+			glStencilMask(0xFF);
+		}
 	}
 
 	if (Globals::get().drawWires) {

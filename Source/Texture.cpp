@@ -61,8 +61,6 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 
 	int widthImg, heightImg, numColCh;
 
-	std::cout << "b4load" << std::endl;
-	std::cout << path << std::endl;
 	//flip image setting
 	stbi_set_flip_vertically_on_load(true);
 	//load bytes in and widthImg, heightImg and numColCh
@@ -70,8 +68,6 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 
 	if (stbi_failure_reason())
 		std::cout << stbi_failure_reason() << std::endl;
-
-	std::cout << "afterload" << std::endl;
 
 	//generate 1 new texture ID and set to ID
 	glGenTextures(1, &ID);
@@ -87,8 +83,6 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	std::cout << numColCh << std::endl;
 
 	//load bytes into shader depending number of color channels
 	if (numColCh == 4)
@@ -136,8 +130,6 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 	else
 		throw std::invalid_argument("Automatic Texture type recognition failed");
 	
-	std::cout << "ok" << std::endl;
-
 	//generate mip map (what does this do?)
 	glGenerateMipmap(GL_TEXTURE_2D);
 

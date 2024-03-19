@@ -40,7 +40,7 @@ Physics::~Physics() {
 }
 
 void Physics::updateSim(float delta) {
-	dynamicsWorld->stepSimulation(delta, 10);
+	dynamicsWorld->stepSimulation(delta, 30, 0.0078125f);
 }
 
 btRigidBody* Physics::addUnitBoxStaticBody(unsigned int ID, float halfWidth, float halfHeight, float halfLength, float x, float y, float z) {
@@ -77,7 +77,7 @@ btRigidBody* Physics::addUnitBoxStaticBody(unsigned int ID, float halfWidth, flo
 
 
 btRigidBody* Physics::addShape1(unsigned int ID) {
-	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(60.), btScalar(50.), btScalar(60.)));
 
 	collisionShapes.push_back(groundShape);
 

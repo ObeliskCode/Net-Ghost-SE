@@ -202,6 +202,7 @@
   <ItemGroup>
     <None Include="animShadowVert.glsl" />
     <None Include="animVert.glsl" />
+    <None Include="cellFrag.glsl" />
     <None Include="shadowFrag.glsl" />
     <None Include="shadowVert.glsl" />
     <None Include="lightFrag.glsl" />

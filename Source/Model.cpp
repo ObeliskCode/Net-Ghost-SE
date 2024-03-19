@@ -60,8 +60,6 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>
     std::vector<Texture> textures;
     glm::mat4 transform = aiMat4toGLM(transformation);
 
-    std::cout << "mesh" << std::endl;
-
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         Vertex vertex;
@@ -139,8 +137,6 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, const aiScene*
 {
     std::vector<Texture> textures;
 
-    std::cout << "tex" << std::endl;
-
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -148,8 +144,6 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, const aiScene*
 
         const char* c_str = str.C_Str();
         std::string path = directory + "/" + c_str;
-
-        std::cout << path << std::endl;
 
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)

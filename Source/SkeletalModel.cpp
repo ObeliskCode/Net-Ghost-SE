@@ -263,7 +263,6 @@ std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, const 
 
         const char* c_str = str.C_Str();
         std::string path = directory + "/" + c_str;
-        std::cerr << path << std::endl;
 
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)

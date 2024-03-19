@@ -23,6 +23,7 @@ public:
     void addEntity(Entity* e);
     void updatePhysics();
     void DrawEntityShadows(float delta);
+    void DrawEntityStencils();
     void DrawEntities();
     void deleteEntity(unsigned int ID);
     Entity* getEntity(unsigned int ID);

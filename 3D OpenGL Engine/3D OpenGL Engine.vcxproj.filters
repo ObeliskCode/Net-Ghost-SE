@@ -190,5 +190,8 @@
     <None Include="animShadowVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="cellFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -26,6 +26,7 @@ class Entity {
 		void addWireFrame(float halfWidth, float halfHeight, float halfLength);
 		void updatePhysics();
 		void DrawShadow(float delta);
+		void DrawStencil();
 		void Draw();
 		void addBody(btRigidBody* b);
 		btRigidBody* getBody();
@@ -36,6 +37,8 @@ class Entity {
 		void setScale(glm::vec3 scale);
 
 		bool m_visible;
+		bool m_stenciled;
+		bool m_surface;
 
 	private:
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);

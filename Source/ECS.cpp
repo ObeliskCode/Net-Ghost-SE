@@ -44,7 +44,12 @@ void ECS::deleteEntity(unsigned int ID) {
 }
 
 Entity* ECS::getEntity(unsigned int ID) {
-	return entds2[ID];
+	auto iter = entds2.find(ID);
+	if (iter != entds2.end())
+	{
+		return iter->second;
+	}
+	return nullptr;
 }
 
 
@@ -60,5 +65,20 @@ void ECS::DrawEntityShadows(float delta) {
 	for (auto it = entds2.begin(); it != entds2.end(); it++)
 	{
 		it->second->DrawShadow(delta);
+	}
+}
+
+void ECS::DrawEntityStencils() {
+	for (auto it = entds2.begin(); it != entds2.end(); it++)
+	{
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+
+		it->second->DrawStencil();
+
+		glEnable(GL_DEPTH_TEST);
+		glStencilFunc(GL_ALWAYS, 0, 0xFF);
+		glStencilMask(0xFF);
 	}
 }
