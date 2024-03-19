@@ -61,10 +61,17 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 
 	int widthImg, heightImg, numColCh;
 
+	std::cout << "b4load" << std::endl;
+	std::cout << path << std::endl;
 	//flip image setting
 	stbi_set_flip_vertically_on_load(true);
 	//load bytes in and widthImg, heightImg and numColCh
 	unsigned char* bytes = stbi_load(image, &widthImg, &heightImg, &numColCh, 0);
+
+	if (stbi_failure_reason())
+		std::cout << stbi_failure_reason() << std::endl;
+
+	std::cout << "afterload" << std::endl;
 
 	//generate 1 new texture ID and set to ID
 	glGenTextures(1, &ID);
@@ -81,6 +88,7 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+	std::cout << numColCh << std::endl;
 
 	//load bytes into shader depending number of color channels
 	if (numColCh == 4)
@@ -96,7 +104,8 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 			GL_UNSIGNED_BYTE,
 			bytes
 		);
-	else if (numColCh == 3)
+	else if (numColCh == 3) {
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glTexImage2D
 		(
 			GL_TEXTURE_2D,
@@ -109,6 +118,8 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 			GL_UNSIGNED_BYTE,
 			bytes
 		);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	}
 	else if (numColCh == 1)
 		glTexImage2D
 		(
@@ -125,6 +136,8 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 	else
 		throw std::invalid_argument("Automatic Texture type recognition failed");
 	
+	std::cout << "ok" << std::endl;
+
 	//generate mip map (what does this do?)
 	glGenerateMipmap(GL_TEXTURE_2D);
 

@@ -26,10 +26,9 @@
 #include "btBulletDynamicsCommon.h"
 
 #include "Globals.h"
-#include "Texture.h"
 #include "Shader.h"
-#include "Entity.h"
 #include "ECS.h"
+#include "Entity.h"
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"

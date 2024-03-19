@@ -72,6 +72,12 @@ void SkeletalMesh::Draw(
 		textures[i].Bind();
 	}
 
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(Globals::get().lightSpaceMatrix));
+
+	glActiveTexture(GL_TEXTURE0 + 6);
+	glBindTexture(GL_TEXTURE_2D, Globals::get().depthMap);
+	glUniform1i(glGetUniformLocation(shader.ID, "shadowMap"), 6);
+
 	// Take care of the camera Matrix
 	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");

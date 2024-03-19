@@ -233,11 +233,17 @@ SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiM
     return new SkeletalMesh(vertices, indices, textures, transform);
 }
 
-void SkeletalModel::Draw(Shader& shader, Camera& camera) {
+void SkeletalModel::Draw(Shader& shader, Camera& camera,
+    glm::vec3& translation,
+    glm::quat& rotation,
+    glm::vec3& scale) {
+    glm::vec3 finalTrans = translation + offset;
+    glm::vec3 finalScale = scale * unitConversion;
+    glm::quat finalRot = rotation * orientation; // left or right multiply?
     for (unsigned int i = 0; i < meshes.size(); i++) {
         //std::cerr << "mesh ptr: " << meshes[i] << std::endl;
         //if (i == 0) continue;
-        meshes[i]->Draw(shader, camera, translation, rotation, scale);
+        meshes[i]->Draw(shader, camera, finalTrans, finalRot, finalScale);
     }
 }
 
@@ -313,14 +319,14 @@ glm::mat4 SkeletalModel::aiMat4toGLM(aiMatrix4x4t<float>& matrix) {
     return m;
 }
 
-void SkeletalModel::setTranslation(glm::vec3 translation) {
-    SkeletalModel::translation = translation;
+void SkeletalModel::setUnitConversion(float uc) {
+    SkeletalModel::unitConversion = uc;
 }
 
-void SkeletalModel::setRotation(glm::quat rotation) {
-    SkeletalModel::rotation = rotation;
+void SkeletalModel::setOffset(glm::vec3 offset) {
+    SkeletalModel::offset = offset;
 }
 
-void SkeletalModel::setScale(glm::vec3 scale) {
-    SkeletalModel::scale = scale;
+void SkeletalModel::setOrientation(glm::quat orientation) {
+    SkeletalModel::orientation = orientation;
 }

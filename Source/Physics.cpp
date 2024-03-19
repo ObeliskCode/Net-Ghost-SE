@@ -43,6 +43,38 @@ void Physics::updateSim(float delta) {
 	dynamicsWorld->stepSimulation(delta, 10);
 }
 
+btRigidBody* Physics::addUnitBoxStaticBody(unsigned int ID, float halfWidth, float halfHeight, float halfLength, float x, float y, float z) {
+	btCollisionShape* colShape = new btBoxShape(btVector3(halfWidth, halfHeight, halfLength));
+	collisionShapes.push_back(colShape);
+
+	/// Create Dynamic Objects
+	btTransform startTransform;
+	startTransform.setIdentity();
+
+	btScalar mass(0.f);
+
+	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	bool isDynamic = (mass != 0.f);
+
+	btVector3 localInertia(0, 0, 0);
+	if (isDynamic)
+		colShape->calculateLocalInertia(mass, localInertia);
+
+	startTransform.setOrigin(btVector3(x, y, z));
+
+	//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
+	btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+	btRigidBody* body = new btRigidBody(rbInfo);
+
+	dynamicsWorld->addRigidBody(body);
+
+	m_EntityMap[body] = ID;
+
+	return body;
+
+}
+
 
 btRigidBody* Physics::addShape1(unsigned int ID) {
 	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
@@ -67,7 +99,7 @@ btRigidBody* Physics::addShape1(unsigned int ID) {
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
 
-	body->setFriction(btScalar(0.9f));
+	body->setFriction(btScalar(1.f));
 
 	//add the body to the dynamics world
 	dynamicsWorld->addRigidBody(body);
@@ -172,7 +204,7 @@ btRigidBody* Physics::addShape4(unsigned int ID) {
 	body->setActivationState(DISABLE_DEACTIVATION);
 	body->setAngularFactor(btScalar(0));
 
-	body->setFriction(btScalar(0.7f));
+	body->setFriction(btScalar(3.f));
 
 	dynamicsWorld->addRigidBody(body);
 
@@ -222,7 +254,7 @@ btRigidBody* Physics::addShape6(unsigned int ID) {
 	//float CosHalfPi = sqrt(2.f) / 2.f;
 	//startTransform.setRotation(btQuaternion(CosHalfPi, -CosHalfPi, 0.f, 0.f));
 
-	btScalar mass(1.f);
+	btScalar mass(0.5f);
 
 	//rigidbody is dynamic if and only if mass is non zero, otherwise static
 	bool isDynamic = (mass != 0.f);

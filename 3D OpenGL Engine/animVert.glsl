@@ -16,6 +16,7 @@ layout(location = 4) in vec4 weights;
 out vec3 crntPos;
 out vec3 Normal;
 out vec2 texCoord;
+out vec4 fragPosLight;
 
 uniform mat4 camMatrix;
 uniform mat4 model;
@@ -23,6 +24,8 @@ uniform mat4 model;
 uniform mat4 translation;
 uniform mat4 rotation;
 uniform mat4 scale;
+
+uniform mat4 lightSpaceMatrix;
 
 const int MAX_BONES = 200;
 const int MAX_BONE_INFLUENCE = 4; // change this to 8? // maybe uniform int boneIds[] like finalBonesMatrices[]
@@ -60,7 +63,10 @@ void main(){
     vec4 worldPos = translation * rotation * scale * totalPosition;
      
     // transform not used since baked into bone transforms? w truncated!
-    crntPos = vec3(worldPos);
+    crntPos = worldPos.xyz / worldPos.w;
+    //crntPos = vec3(worldPos);
+
+	fragPosLight = lightSpaceMatrix * vec4(crntPos, 1.0f);
 
     // TAKING OFF W COMPONENT MESSES WITH ACCURACY BY A LOT! e.g. vec3(vec4Object)
 

@@ -69,6 +69,12 @@
     <ClCompile Include="..\Source\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Globals.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Input.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Camera.h">
@@ -173,6 +179,15 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="partFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shadowVert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shadowFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="animShadowVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

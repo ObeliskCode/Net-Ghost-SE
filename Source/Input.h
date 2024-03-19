@@ -36,7 +36,4 @@ private:
 
     bool keys[GLFW_KEY_LAST] = { false };
 };
-
-Input* Input::instance = nullptr; // definition class variable
-
 #endif

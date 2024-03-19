@@ -23,7 +23,13 @@ public:
     
     int screenWidth = 1600, screenHeight = 900; // Width and height of window in pixels.
     bool cursorLocked = false; // whether to lock cursor for first person mode
+    bool camLock = false;
+    bool drawWires = true;
+    unsigned int depthMap;
+    glm::mat4 lightSpaceMatrix;
     std::vector <Particle> particles;
+    Shader * shadowShader;
+    Shader * animShadowShader;
     Camera * camera;
     Camera * handCam;
 
@@ -36,9 +42,5 @@ private:
     ~Globals() = default; // no public destructor
     static Globals* instance; // declaration class variable
 
-    //HERE
 };
-
-Globals* Globals::instance = nullptr; // definition class variable
-
 #endif

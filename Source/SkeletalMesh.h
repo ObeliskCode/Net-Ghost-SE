@@ -7,6 +7,7 @@
 #include "VAO.h"
 #include "EBO.h"
 #include "Camera.h"
+#include "Globals.h"
 #include "Texture.h"
 
 

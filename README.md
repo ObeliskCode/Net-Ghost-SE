@@ -8,17 +8,23 @@
 #### Animated 3D models, Particle System, Rigid Body Physics
 
 ## Controls
-WASD: Camera movement
+WASD: Camera movement / walk
 
-IJKL: Controllable body movement
+Space: Jump (when controlling rigid body)
+
+Z: Lock camera to rigid body
 
 X: Lock/Unlock cursor for mouse panning
 
 P: Emit smoke particles
 
-E: Pick up Rigid Bodies
+E: Select Physics Object
 
-LEFT/RIGHT ARROW KEYS: Decrease/Increase blend factor of two animations 
+LEFT/RIGHT ARROW KEYS: Decrease/Increase interpolation between animations
+
+F9: windowed
+
+F10: fullscreen
 
 ## Build Instructions 
 1. Download Visual Studio 2022.

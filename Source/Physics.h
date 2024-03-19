@@ -21,6 +21,8 @@ public:
     }
 
 	void updateSim(float delta);
+	
+	btRigidBody* addUnitBoxStaticBody(unsigned int ID, float halfWidth, float halfHeight, float halfLength, float x, float y, float z);
 
 	btRigidBody* addShape1(unsigned int ID);
 	btRigidBody* addShape2(unsigned int ID);

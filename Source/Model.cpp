@@ -60,6 +60,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>
     std::vector<Texture> textures;
     glm::mat4 transform = aiMat4toGLM(transformation);
 
+    std::cout << "mesh" << std::endl;
 
     for (unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
@@ -117,9 +118,15 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>
     return new Mesh(vertices, indices, textures, transform);
 }
 
-void Model::Draw(Shader& shader, Camera& camera){
+void Model::Draw(Shader& shader, Camera& camera,
+    glm::vec3& translation,
+    glm::quat& rotation,
+    glm::vec3& scale){
+    glm::vec3 finalTrans = translation + offset;
+    glm::vec3 finalScale = scale * unitConversion;
+    glm::quat finalRot = rotation * orientation; // left or right multiply?
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i]->Draw(shader, camera, translation, rotation, scale);
+        meshes[i]->Draw(shader, camera, finalTrans, finalRot, finalScale);
     } 
 }
 
@@ -132,6 +139,8 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, const aiScene*
 {
     std::vector<Texture> textures;
 
+    std::cout << "tex" << std::endl;
+
     for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
@@ -139,6 +148,8 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, const aiScene*
 
         const char* c_str = str.C_Str();
         std::string path = directory + "/" + c_str;
+
+        std::cout << path << std::endl;
 
         bool skip = false;
         for (unsigned int j = 0; j < textures_loaded.size(); j++)
@@ -195,14 +206,14 @@ glm::mat4 Model::aiMat4toGLM(aiMatrix4x4t<float>& matrix) {
     return m;
 }
 
-void Model::setTranslation(glm::vec3 translation) {
-    Model::translation = translation;
+void Model::setUnitConversion(float uc) {
+    Model::unitConversion = uc;
 }
 
-void Model::setRotation(glm::quat rotation) {
-    Model::rotation = rotation;
+void Model::setOffset(glm::vec3 offset) {
+    Model::offset = offset;
 }
 
-void Model::setScale(glm::vec3 scale) {
-    Model::scale = scale;
+void Model::setOrientation(glm::quat orientation) {
+    Model::orientation = orientation;
 }

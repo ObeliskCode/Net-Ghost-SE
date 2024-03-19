@@ -49,9 +49,16 @@ Entity* ECS::getEntity(unsigned int ID) {
 
 
 // WARNING: advances animations by delta!
-void ECS::DrawEntities(float delta) {
+void ECS::DrawEntities() {
 	for (auto it = entds2.begin(); it != entds2.end(); it++)
 	{
-		it->second->Draw(delta);
+		it->second->Draw();
+	}
+}
+
+void ECS::DrawEntityShadows(float delta) {
+	for (auto it = entds2.begin(); it != entds2.end(); it++)
+	{
+		it->second->DrawShadow(delta);
 	}
 }

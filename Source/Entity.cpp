@@ -91,24 +91,60 @@ void Entity::addWire(Wire* w) {
 	wires.push_back(w);
 }
 
-void Entity::Draw(float delta) {
+void Entity::addWireFrame(float halfWidth, float halfHeight, float halfLength) {
+	wires.push_back(new Wire(glm::vec3(-halfWidth, halfHeight, -halfLength), glm::vec3(halfWidth, halfHeight, -halfLength)));
+	wires.push_back(new Wire(glm::vec3(halfWidth, halfHeight, -halfLength), glm::vec3(halfWidth, halfHeight, halfLength)));
+	wires.push_back(new Wire(glm::vec3(halfWidth, halfHeight, halfLength), glm::vec3(-halfWidth, halfHeight, halfLength)));
+	wires.push_back(new Wire(glm::vec3(-halfWidth, halfHeight, halfLength), glm::vec3(-halfWidth, halfHeight, -halfLength)));
+
+	wires.push_back(new Wire(glm::vec3(-halfWidth, -halfHeight, -halfLength), glm::vec3(halfWidth, -halfHeight, -halfLength)));
+	wires.push_back(new Wire(glm::vec3(halfWidth, -halfHeight, -halfLength), glm::vec3(halfWidth, -halfHeight, halfLength)));
+	wires.push_back(new Wire(glm::vec3(halfWidth, -halfHeight, halfLength), glm::vec3(-halfWidth, -halfHeight, halfLength)));
+	wires.push_back(new Wire(glm::vec3(-halfWidth, -halfHeight, halfLength), glm::vec3(-halfWidth, -halfHeight, -halfLength)));
+
+	wires.push_back(new Wire(glm::vec3(-halfWidth, -halfHeight, -halfLength), glm::vec3(-halfWidth, halfHeight, -halfLength)));
+	wires.push_back(new Wire(glm::vec3(halfWidth, -halfHeight, -halfLength), glm::vec3(halfWidth, halfHeight, -halfLength)));
+	wires.push_back(new Wire(glm::vec3(halfWidth, -halfHeight, halfLength), glm::vec3(halfWidth, halfHeight, halfLength)));
+	wires.push_back(new Wire(glm::vec3(-halfWidth, -halfHeight, halfLength), glm::vec3(-halfWidth, halfHeight, halfLength)));
+}
+
+void Entity::DrawShadow(float delta) {
+	if (!m_visible) return;
+	if (m_animated) {
+		mator->UpdateAnimation(delta);
+
+		Globals::get().animShadowShader->Activate();
+		auto transforms = mator->GetFinalBoneMatrices();
+		for (int i = 0; i < transforms.size(); ++i)
+			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+		skMdl->Draw(*Globals::get().animShadowShader, *camera, translation, rotation, scale);
+	}
+	else if (m_modeled) {
+		mdl->Draw(*Globals::get().shadowShader, *camera, translation, rotation, scale);
+	}
+
+}
+
+
+void Entity::Draw() {
 	if (!m_visible) return;
 	if (m_animated) {
 		shader->Activate();
-		mator->UpdateAnimation(delta);
-
+	
 		auto transforms = mator->GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i)
 			glUniformMatrix4fv(glGetUniformLocation(shader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 
-		skMdl->Draw(*shader, *camera);
+		skMdl->Draw(*shader, *camera, translation, rotation, scale);
 	}
 	else if (m_modeled) {
-		mdl->Draw(*shader, *camera);
+		mdl->Draw(*shader, *camera, translation, rotation, scale);
 	}
 
-	for (int i = 0; i < wires.size(); i++) {
-		wires[i]->Draw(*wireShader, *camera);
+	if (Globals::get().drawWires) {
+		for (int i = 0; i < wires.size(); i++) {
+			wires[i]->Draw(*wireShader, *camera, translation, rotation, scale);
+		}
 	}
 
 }
@@ -120,21 +156,19 @@ void Entity::updatePhysics() {
 		//if (body && body->getMotionState())
 		body->getMotionState()->getWorldTransform(trans);
 
-		glm::vec3 pos = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-		glm::quat rot = glm::quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ());
-
-		for (int i = 0; i < wires.size(); ++i) {
-			wires[i]->setTranslation(pos);
-			wires[i]->setRotation(rot);
-		}
-
-		if (m_animated) {
-			skMdl->setTranslation(pos);
-			skMdl->setRotation(rot);
-		}
-		else if (m_modeled) {
-			mdl->setTranslation(pos);
-			mdl->setRotation(rot);
-		}
+		translation = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+		rotation = glm::quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ());
 	}
+}
+
+void Entity::setTranslation(glm::vec3 translation) {
+	if (!m_dynamic) Entity::translation = translation;
+}
+
+void Entity::setRotation(glm::quat rotation) {
+	if (!m_dynamic) Entity::rotation = rotation;
+}
+
+void Entity::setScale(glm::vec3 scale) {
+	if (!m_dynamic) Entity::scale = scale;
 }

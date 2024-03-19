@@ -155,6 +155,8 @@
   <ItemGroup>
     <ClCompile Include="..\Source\ECS.cpp" />
     <ClCompile Include="..\Source\Entity.cpp" />
+    <ClCompile Include="..\Source\Globals.cpp" />
+    <ClCompile Include="..\Source\Input.cpp" />
     <ClCompile Include="..\Source\Particle.cpp" />
     <ClCompile Include="..\Source\Physics.cpp" />
     <ClCompile Include="..\Source\SkeletalMesh.cpp" />
@@ -198,7 +200,10 @@
     <ClInclude Include="..\Source\Wire.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="animShadowVert.glsl" />
     <None Include="animVert.glsl" />
+    <None Include="shadowFrag.glsl" />
+    <None Include="shadowVert.glsl" />
     <None Include="lightFrag.glsl" />
     <None Include="noTexFrag.glsl" />
     <None Include="partFrag.glsl" />

@@ -15,106 +15,107 @@ int main() {
 	Shader lightProgram = Shader("rigVert.glsl", "lightFrag.glsl");
 	Shader animProgram = Shader("animVert.glsl", "mdlFrag.glsl");
 	Shader noTexAnimProgram = Shader("animVert.glsl", "noTexFrag.glsl");
+	Shader shadowProgram = Shader("shadowVert.glsl", "shadowFrag.glsl");
+	Globals::get().shadowShader = &shadowProgram;
+	Shader animShadowProgram = Shader("animShadowVert.glsl", "shadowFrag.glsl");
+	Globals::get().animShadowShader = &animShadowProgram;
+
+	Entity* e;
 
 	Model* panel = new Model("floor/floor.dae");
-	panel->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
-	panel->setScale(glm::vec3(20.0f));
-
-	ECS::get().addEntity(new Entity(panel, &rigProgram, &wireProgram, Globals::get().camera));
+	e = new Entity(panel, &rigProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
+	e->setScale(glm::vec3(20.0f));
 
 	Model* lamp = new Model("lamp/lamp.dae");
-	lamp->setTranslation(glm::vec3(-20.0f, 15.0f-0.1f, 28.0f));
-	lamp->setScale(glm::vec3(0.05f,0.05f,0.05f));
-	lamp->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
-
-	ECS::get().addEntity(new Entity(lamp, &lightProgram, &wireProgram, Globals::get().camera));
+	lamp->setUnitConversion(0.05f);
+	lamp->setOffset(glm::vec3(0.0f, 5.0f, 0.0f));
+	e = new Entity(lamp, &lightProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
+	e->addWireFrame(2.0f, 5.0f, 2.0f);
 
 	Model* bench = new Model("bench/bench.dae");
-	bench->setScale(glm::vec3(4.5f,4.5f,4.5f));
-	bench->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
+	bench->setUnitConversion(4.5f);
+	bench->setOffset(glm::vec3(0.0f, -2.5f, 0.0f)); // since updatePhysics puts object bottom at middle of physics object, translate by halfHeight
 	float CosHalfPi = sqrt(2.f) / 2.f;
-	bench->setRotation(glm::quat(CosHalfPi,0.f,-CosHalfPi,0.f));
-
-	ECS::get().addEntity(new Entity(bench, &rigProgram, &wireProgram, Globals::get().camera));
+	bench->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
+	e = new Entity(bench, &rigProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 2.5f, 5.0f, 5.0f, 5.0f + 2.5f, 28.f)); // whole lot of maths
+	e->addWireFrame(2.0f, 2.5f, 5.0f);
 
 	Model* handBat = new Model("bat/bat.dae");
-	handBat->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
-	handBat->setTranslation(glm::vec3(2.0f,-2.0f,0.0f));
-
-	ECS::get().addEntity(new Entity(handBat, &rigProgram, &wireProgram, Globals::get().handCam));
+	Entity* batEnt = new Entity(handBat, &rigProgram, &wireProgram, Globals::get().handCam);
+	ECS::get().addEntity(batEnt);
+	batEnt->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
+	batEnt->setTranslation(glm::vec3(2.0f, -2.0f, 0.0f));
 
 	Model* cig = new Model("cig/cig.dae");
-	cig->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
-	cig->setRotation(glm::quat(0.0f,0.0f,1.0f,0.0f));
-
 	Entity* cigEnt = new Entity(cig, &rigProgram, &wireProgram, Globals::get().handCam);
-
 	ECS::get().addEntity(cigEnt);
+	cigEnt->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
+	cigEnt->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 
 	Model* dumpster = new Model("dumpster/dumpster.dae");
-	dumpster->setTranslation(glm::vec3(25.0f, 5.0f, 35.0f));
-	dumpster->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
-	dumpster->setScale(glm::vec3(6.5f));
-
-	ECS::get().addEntity(new Entity(dumpster, &rigProgram, &wireProgram, Globals::get().camera));
+	dumpster->setUnitConversion(6.5f);
+	dumpster->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
+	dumpster->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
+	e = new Entity(dumpster, &rigProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 3.0f, 4.0f, 6.0f, 25.0f, 5.0f + 4.0f, 35.f)); // whole lot of maths
+	e->addWireFrame(3.0f, 4.0f, 6.0f);
 
 	Model* cart = new Model("cart/ShoppingCart.dae");
-	cart->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
-	cart->setScale(glm::vec3(7.f));
-
-	ECS::get().addEntity(new Entity(cart, &rigProgram, &wireProgram, Globals::get().camera));
+	e = new Entity(cart, &rigProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
+	e->setScale(glm::vec3(7.f));
 
 	Model* tent = new Model("tent/tent.dae");
-	tent->setTranslation(glm::vec3(-15.0f, 5.0f, 10.0f));
-	tent->setScale(glm::vec3(7.f));
-
-	ECS::get().addEntity(new Entity(tent, &rigProgram, &wireProgram, Globals::get().camera));
+	tent->setUnitConversion(7.f);
+	tent->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
+	e = new Entity(tent, &rigProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 6.0f, 4.0f, 6.0f, -15.0f, 5.0f + 4.0f, 10.0f)); // whole lot of maths
+	e->addWireFrame(6.0f, 4.0f, 6.0f);
 
 	SkeletalModel* wolf = new SkeletalModel("wolf/Wolf_One_dae.dae");
-	wolf->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
-	wolf->setTranslation(glm::vec3(10.0f, 5.0f, 10.0f));
 	Skeleton* wolfAnimation = new Skeleton("wolf/Wolf_One_dae.dae", wolf);
 	Animator* animator = new Animator(wolfAnimation);
-
-	ECS::get().addEntity(new Entity(wolf, animator, &noTexAnimProgram, &wireProgram, Globals::get().camera));
-
-	/*
-	SkeletalModel* dbTest = new SkeletalModel("model-db/fbx/sphere_blend_shape_animation/sphereBlendShapeAnimation.fbx");
-	//dbTest->setScale(glm::vec3(0.1f, 0.1f, 0.1f));
-	//dbTest->setTranslation(glm::vec3(-15.0f, 5.0f, -5.0f));
-	Skeleton* dbTestAnimation = new Skeleton("model-db/fbx/sphere_blend_shape_animation/sphereBlendShapeAnimation.fbx", dbTest);
-	Animator* dbTestMator = new Animator(dbTestAnimation);
-
-	ECS::get().addEntity(new Entity(dbTest, dbTestMator, &noTexAnimProgram, &wireProgram, Globals::get().camera));
-	*/
+	e = new Entity(wolf, animator, &noTexAnimProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+	e->setTranslation(glm::vec3(10.0f, 5.0f, 10.0f));
 
 	SkeletalModel* sit = new SkeletalModel("sit/Sitting Clap.dae");
-	sit->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-	sit->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
-	sit->setRotation(glm::quat(CosHalfPi, 0.0f, -CosHalfPi, 0.0f));
 	Skeleton* sitAnimation = new Skeleton("sit/Sitting Clap.dae", sit);
 	Animator* sitMator = new Animator(sitAnimation);
-
-	ECS::get().addEntity(new Entity(sit, sitMator, &animProgram, &wireProgram, Globals::get().camera));
+	e = new Entity(sit, sitMator, &animProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	e->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
+	e->setRotation(glm::quat(CosHalfPi, 0.0f, -CosHalfPi, 0.0f));
 
 	SkeletalModel* walk = new SkeletalModel("jjong/Idle.dae");
-	walk->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-	walk->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
 	Skeleton* walkAnimation = new Skeleton("jjong/Idle.dae", walk);
 	walkAnimation->addAnimation("jjong/Walking.dae", walk);
 	Animator* mator = new Animator(walkAnimation);
 	mator->QueueAnimation(1);
-
-	ECS::get().addEntity(new Entity(walk, mator, &animProgram, &wireProgram, Globals::get().camera));
+	e = new Entity(walk, mator, &animProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	e->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(-20.0f, 13.2f, 28.0f);
 
 	Model* light = new Model("bulb/scene.gltf");
-	light->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-	light->setTranslation(lightPos);
-
-	ECS::get().addEntity(new Entity(light, &lightProgram, &wireProgram, Globals::get().camera));
+	e = new Entity(light, &lightProgram, &wireProgram, Globals::get().camera);
+	ECS::get().addEntity(e);
+	e->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	e->setTranslation(lightPos);
 
 	rigProgram.Activate();
 	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -133,14 +134,14 @@ int main() {
 	glUniform3f(glGetUniformLocation(lightProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	//QUAD
-	Entity* e = new Entity(&wireProgram, Globals::get().camera);
+	e = new Entity(&wireProgram, Globals::get().camera);
 	e->addWire(new Wire(glm::vec3(50.0f, 50.0f, -50.0f), glm::vec3(-50.0f, 50.0f, -50.0f)));
 	e->addWire(new Wire(glm::vec3(-50.0f, 50.0f, -50.0f), glm::vec3(-50.0f, 50.0f, 50.0f)));
 	e->addWire(new Wire(glm::vec3(-50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, 50.0f)));
 	e->addWire(new Wire(glm::vec3(50.0f, 50.0f, 50.0f), glm::vec3(50.0f, 50.0f, -50.0f)));
 	ECS::get().addEntity(e);
 	e->addBody(Physics::get().addShape1(e->getID()));
-	
+
 	//STAGING AXIS
 	e = new Entity(&wireProgram, Globals::get().camera);
 	e->addWire(new Wire(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
@@ -215,6 +216,44 @@ int main() {
 
 	Shader skyProgram = Shader("skyVert.glsl", "skyFrag.glsl");
 
+	unsigned int depthMapFBO;
+	glGenFramebuffers(1, &depthMapFBO);
+
+	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+
+	unsigned int depthMap;
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+		SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float clampColor[] = { 1.0f,1.0f,1.0f,1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, clampColor);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	Globals::get().depthMap = depthMap;
+
+	float near_plane = 0.1f, far_plane = 200.0f;
+	glm::mat4 lightProjection = glm::ortho(-60.0f, 60.0f, -60.0f, 60.0f, near_plane, far_plane);
+
+	glm::mat4 lightView = glm::lookAt(glm::vec3(-4.0f, 10.0f, -6.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 1.0f, 0.0f));
+
+	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+	Globals::get().lightSpaceMatrix = lightSpaceMatrix;
+
+	shadowProgram.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(shadowProgram.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+
 	// loop vars
 	double prevTime = 0.0;
 	double crntTime = 0.0;
@@ -236,6 +275,8 @@ int main() {
 	bool is_smoking = false;
 	float cig_anim_time = 0.0f;
 
+	int cd = 0;
+
 	/* Main Game Loop */
 	while (!glfwWindowShouldClose(window)) {
 
@@ -243,7 +284,7 @@ int main() {
 		crntTime = glfwGetTime();
 		timeDiff = crntTime - prevTime;
 		counter++;
-		if (timeDiff >= 1.0 / 30.0) {
+		if (timeDiff >= 1.0) {
 			std::string FPS = std::to_string((1.0 / timeDiff) * counter);
 			std::string ms = std::to_string((timeDiff / counter) * 1000);
 			std::string newTitle = "Obelisk Engine - " + FPS + "FPS / " + ms + "ms";
@@ -260,41 +301,67 @@ int main() {
 		delta = thisTick - lastTick;
 		if (delta >= 1.0 / 64.0) {
 			{ // character, delta
-				btRigidBody* body = character->getBody();
+				if (Globals::get().camLock) {
+					btRigidBody* body = character->getBody();
 
-				float zVel = 0;
-				float xVel = 0;
-				float accel = delta * 20.0f;
-				if (Input::get().getValue(GLFW_KEY_I)) {
-					zVel += -accel;
-				}
-				if (Input::get().getValue(GLFW_KEY_J)) {
-					xVel += -accel;
-				}
-				if (Input::get().getValue(GLFW_KEY_K)) {
-					zVel += accel;
-				}
-				if (Input::get().getValue(GLFW_KEY_L)) {
-					xVel += accel;
-				}
-				btVector3 linVel = body->getLinearVelocity();
-				linVel = btVector3(linVel.getX() + xVel, linVel.getY(), linVel.getZ() + zVel);
-				if (linVel.length() > 10.0f) {
-					linVel = linVel * (10.0f / linVel.length());
-				}
-				body->setLinearVelocity(linVel);
+					glm::vec2 camOri = glm::vec2(Globals::get().camera->Orientation.x, Globals::get().camera->Orientation.z);
 
+					glm::vec2 proj = glm::rotate(camOri, glm::radians(-90.0f));
+
+					glm::vec2 vel = glm::vec2(0.0f);
+
+
+					if (Input::get().getValue(GLFW_KEY_W)) {
+						vel += camOri;
+					}
+					if (Input::get().getValue(GLFW_KEY_A)) {
+						vel += proj;
+					}
+					if (Input::get().getValue(GLFW_KEY_S)) {
+						vel -= camOri;
+					}
+					if (Input::get().getValue(GLFW_KEY_D)) {
+						vel -= proj;
+					}
+
+
+					if (cd > 0) cd--;
+					// code character->canJump()
+					if (Input::get().getValue(GLFW_KEY_SPACE)) {
+						if (cd == 0) {
+							cd = 192;
+							body->applyCentralImpulse(btVector3(0.0f,7.0f,0.0f));
+						}
+					}
+					
+
+					float accel = delta * 60.0f;
+					if (glm::length(vel) > 0) {
+						vel = glm::normalize(vel);
+						vel *= accel;
+					}
+
+					btVector3 linVel = body->getLinearVelocity();
+					btVector3 horizVel = btVector3(linVel.getX() + vel.x, 0.0f, linVel.getZ() + vel.y);
+					if (horizVel.length() > 12.0f) {
+						horizVel = horizVel * (12.0f / horizVel.length());
+					}
+					linVel = btVector3(horizVel.getX(), linVel.getY(), horizVel.getZ());
+					body->setLinearVelocity(linVel);
+				}
 			} // character.physicsProcess(delta)
 
 			Physics::get().updateSim(delta); // move sim forward by delta
 			ECS::get().updatePhysics(); // update entities with physics state
-			/*{
-				btTransform trans;
-				btRigidBody* body = character->getBody();
-				body->getMotionState()->getWorldTransform(trans);
-				glm::vec3 pos = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()) + 5.0f, float(trans.getOrigin().getZ()));
-				Globals::get().camera->Position = pos;
-			}*/
+			{
+				if (Globals::get().camLock) {
+					btTransform trans;
+					btRigidBody* body = character->getBody();
+					body->getMotionState()->getWorldTransform(trans);
+					glm::vec3 pos = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()) + 7.0f, float(trans.getOrigin().getZ()));
+					Globals::get().camera->Position = pos;
+				}
+			}
 			{
 				if (Input::get().getValue(GLFW_KEY_RIGHT)) bf += 0.05f;
 				if (Input::get().getValue(GLFW_KEY_LEFT)) bf -= 0.05f;
@@ -366,12 +433,25 @@ int main() {
 			float q1, q3;
 			q1 = cos(batRot / 2);
 			q3 = sin(batRot / 2);
-			handBat->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
+			batEnt->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
 		}
 
 		renderScene();
+		{ // shadow draw pass!
+			glEnable(GL_DEPTH_TEST);
 
-		ECS::get().DrawEntities(deltaTime);
+			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+			glClear(GL_DEPTH_BUFFER_BIT);// we clear already?
+
+			ECS::get().DrawEntityShadows(deltaTime);
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			glViewport(0, 0, Globals::get().screenWidth, Globals::get().screenHeight);
+		}
+
+		ECS::get().DrawEntities();
 
 		sky->Draw(skyProgram, *Globals::get().camera);
 
@@ -405,41 +485,43 @@ int main() {
 
 void gameTick(double delta) {
 	{ // update cam pos
-		glm::vec3 proj = glm::rotate(Globals::get().camera->Orientation, glm::radians(90.0f), Globals::get().camera->Up);
-		proj.y = 0.0f;
-		proj = glm::normalize(proj);
+		if (!Globals::get().camLock) {
+			glm::vec3 proj = glm::rotate(Globals::get().camera->Orientation, glm::radians(90.0f), Globals::get().camera->Up);
+			proj.y = 0.0f;
+			proj = glm::normalize(proj);
 
-		float moveSpeed = 1.0f; // position of camera move speed
-		float order = 10.0f;
+			float moveSpeed = 1.0f; // position of camera move speed
+			float order = 10.0f;
 
-		glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+			glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
-		if (Input::get().getValue(GLFW_KEY_W)) {
-			velocity += Globals::get().camera->Orientation;
+			if (Input::get().getValue(GLFW_KEY_W)) {
+				velocity += Globals::get().camera->Orientation;
+			}
+			if (Input::get().getValue(GLFW_KEY_A)) {
+				velocity += proj;
+			}
+			if (Input::get().getValue(GLFW_KEY_S)) {
+				velocity -= Globals::get().camera->Orientation;
+			}
+			if (Input::get().getValue(GLFW_KEY_D)) {
+				velocity -= proj;
+			}
+
+			if (glm::length(velocity) > 0) {
+				velocity = glm::normalize(velocity);
+
+				velocity.x *= delta * order * moveSpeed;
+				velocity.y *= delta * order * moveSpeed;
+				velocity.z *= delta * order * moveSpeed;
+			}
+
+			Globals::get().camera->Position += velocity;
 		}
-		if (Input::get().getValue(GLFW_KEY_A)) {
-			velocity += proj;
-		}
-		if (Input::get().getValue(GLFW_KEY_S)) {
-			velocity -= Globals::get().camera->Orientation;
-		}
-		if (Input::get().getValue(GLFW_KEY_D)) {
-			velocity -= proj;
-		}
-
-		if (glm::length(velocity) > 0) {
-			velocity = glm::normalize(velocity);
-
-			velocity.x *= delta * order * moveSpeed;
-			velocity.y *= delta * order * moveSpeed;
-			velocity.z *= delta * order * moveSpeed;
-		}
-
-		Globals::get().camera->Position += velocity;
 	}
 	{ // do rayCast
 		if (Input::get().getValue(GLFW_KEY_E)) {
-			glm::vec3 ppp = Globals::get().camera->Position + (Globals::get().camera->Orientation * 7.0f);
+			glm::vec3 ppp = Globals::get().camera->Position + (Globals::get().camera->Orientation * 10.0f);
 
 			btVector3 from = btVector3(Globals::get().camera->Position.x, Globals::get().camera->Position.y, Globals::get().camera->Position.z);
 			btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
@@ -569,6 +651,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_X:
 			Globals::get().cursorLocked = !Globals::get().cursorLocked;
 			break;
+		case GLFW_KEY_Z:
+			Globals::get().camLock = !Globals::get().camLock;
+			break;
+		case GLFW_KEY_O:
+			Globals::get().drawWires = !Globals::get().drawWires;
+			break;
+		case GLFW_KEY_F10:
+			glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+			break;
+		case GLFW_KEY_F9:
+			glfwSetWindowMonitor(window, NULL, 100, 100, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+			break;
+
 	}
 }
 

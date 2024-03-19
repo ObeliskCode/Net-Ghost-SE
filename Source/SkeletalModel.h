@@ -29,11 +29,14 @@ public:
         loadModel(path);
     }
     ~SkeletalModel();
-    void Draw(Shader& shader, Camera& camera);
+    void Draw(Shader& shader, Camera& camera,
+        glm::vec3& translation,
+        glm::quat& rotation,
+        glm::vec3& scale);
 
-    void setTranslation(glm::vec3 translation);
-    void setRotation(glm::quat rotation);
-    void setScale(glm::vec3 scale);
+    void setUnitConversion(float uc);
+    void setOffset(glm::vec3 offset);
+    void setOrientation(glm::quat orientation);
 
     auto& GetBoneInfoMap() { return m_BoneInfoMap; }
     int& GetBoneCount() { return m_BoneCounter; }
@@ -45,9 +48,9 @@ private:
     std::string directory;
     std::string fileType;
 
-    glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 offset = glm::vec3(0.0f, 0.0f, 0.0f);
+    float unitConversion = 1.0f;
+    glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
     std::map<std::string, BoneInfo> m_BoneInfoMap;
     int m_BoneCounter = 0;

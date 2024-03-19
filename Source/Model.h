@@ -15,11 +15,14 @@ public:
         loadModel(path);
     }
     ~Model();
-    void Draw(Shader& shader, Camera& camera);
+    void Draw(Shader& shader, Camera& camera,
+        glm::vec3& translation,
+        glm::quat& rotation,
+        glm::vec3& scale);
 
-    void setTranslation(glm::vec3 translation);
-    void setRotation(glm::quat rotation);
-    void setScale(glm::vec3 scale);
+    void setUnitConversion(float uc);
+    void setOffset(glm::vec3 offset);
+    void setOrientation(glm::quat orientation);
 
 private:
     // model data
@@ -28,10 +31,9 @@ private:
     std::string directory;
     std::string fileType;
 
-    // this is bad for instancing!? should be kept in a higher level class like Entity
-    glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-    glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 offset = glm::vec3(0.0f, 0.0f, 0.0f);
+    float unitConversion = 1.0f;
+    glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation);

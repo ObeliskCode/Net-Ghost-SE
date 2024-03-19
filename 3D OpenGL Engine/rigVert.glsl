@@ -13,6 +13,7 @@ layout (location = 2) in vec2 aTex;
 out vec3 crntPos;
 out vec3 Normal;
 out vec2 texCoord;
+out vec4 fragPosLight;
 
 uniform mat4 camMatrix;
 uniform mat4 model;
@@ -21,12 +22,18 @@ uniform mat4 translation;
 uniform mat4 rotation;
 uniform mat4 scale;
 
+uniform mat4 lightSpaceMatrix;
+
 void main(){
 	// calculates physical position within world
-	crntPos = vec3(translation * rotation * scale * model * vec4(aPos, 1.0f)); // is it ok to truncate w?
-	
+	vec4 trunc = translation * rotation * scale * model * vec4(aPos, 1.0f);
+	crntPos =  trunc.xyz / trunc.w;
+	//crntPos = vec3(trunc);
+
 	// camera/screen space coordinates
 	gl_Position = camMatrix * vec4(crntPos, 1.0);
+
+	fragPosLight = lightSpaceMatrix * vec4(crntPos, 1.0f);
 
 	// Normals need to be transformed aswell (will i need to apply model, rotations and non-uniform scales here too?)
 	// normals should be translation and uniform scaling safe.

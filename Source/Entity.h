@@ -6,6 +6,7 @@
 #include "Wire.h"
 #include "Skeleton.h"
 #include "Animator.h"
+#include "Globals.h"
 
 #include "btBulletDynamicsCommon.h"
 
@@ -22,14 +23,25 @@ class Entity {
 		void setID(unsigned int ID);
 		unsigned int getID();
 		void addWire(Wire* w);
+		void addWireFrame(float halfWidth, float halfHeight, float halfLength);
 		void updatePhysics();
-		void Draw(float delta);
+		void DrawShadow(float delta);
+		void Draw();
 		void addBody(btRigidBody* b);
 		btRigidBody* getBody();
+
+		// do not use these if entity is dynamic!!
+		void setTranslation(glm::vec3 translation);
+		void setRotation(glm::quat rotation);
+		void setScale(glm::vec3 scale);
 
 		bool m_visible;
 
 	private:
+		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+		glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
 		unsigned int m_id;
 		std::string m_type;
 		bool m_animated;

@@ -36,7 +36,10 @@ Wire::~Wire() {
 	glDeleteBuffers(1, &EBO);
 }
 
-void Wire::Draw(Shader& shader, Camera& camera) {
+void Wire::Draw(Shader& shader, Camera& camera,
+	glm::vec3& translation,
+	glm::quat& rotation,
+	glm::vec3& scale) {
 	shader.Activate();
 	glBindVertexArray(VAO);
 
@@ -53,16 +56,4 @@ void Wire::Draw(Shader& shader, Camera& camera) {
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
 
 	glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
-}
-
-void Wire::setTranslation(glm::vec3 translation) {
-	Wire::translation = translation;
-}
-
-void Wire::setRotation(glm::quat rotation) {
-	Wire::rotation = rotation;
-}
-
-void Wire::setScale(glm::vec3 scale) {
-	Wire::scale = scale;
 }
