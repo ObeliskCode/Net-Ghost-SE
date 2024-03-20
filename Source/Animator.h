@@ -107,9 +107,9 @@ private:
 		}
 	}
 
-	void CalculateBoneTransform(const AssimpNodeData* node, glm::mat4 parentTransform)
+	void CalculateBoneTransform(const AssimpNodeData* node, const glm::mat4& parentTransform)
 	{
-		std::string nodeName = node->name;
+		const std::string nodeName = node->name;
 		glm::mat4 nodeTransform = node->transformation;
 
 		Bone* Bone = m_CurrentAnimation->FindBone(nodeName);
@@ -122,11 +122,11 @@ private:
 
 		glm::mat4 globalTransformation = parentTransform * nodeTransform;
 
-		auto boneInfoMap = m_Skeleton->GetBoneIDMap();
+		const auto& boneInfoMap = m_Skeleton->GetBoneIDMap();
 		if (boneInfoMap.find(nodeName) != boneInfoMap.end())
 		{
-			int index = boneInfoMap[nodeName].id;
-			glm::mat4 offset = boneInfoMap[nodeName].offset;
+			const int index = boneInfoMap.at(nodeName).id;
+			const glm::mat4 offset = boneInfoMap.at(nodeName).offset;
 			m_FinalBoneMatrices[index] = globalTransformation * offset;
 		}
 
