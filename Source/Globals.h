@@ -29,6 +29,7 @@ public:
     glm::mat4 lightSpaceMatrix;
     std::vector <Particle> particles;
     Shader * shadowShader;
+    Shader * wireShader;
     Shader * animShadowShader;
     Shader * animCellShader;
     Shader * cellShader;

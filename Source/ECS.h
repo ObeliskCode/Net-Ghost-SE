@@ -6,6 +6,21 @@
 #include <unordered_map>
 #include <queue>
 
+class ComponentSet {
+    public:
+        void linkEntity(Entity* e) {
+            componentMap[e->getID()] = e;
+        }
+        void unlinkEntity(unsigned int ID) {
+            componentMap.erase(ID);
+        }
+        const auto& getMap() {
+            return componentMap;
+        }
+    private:
+        std::unordered_map<unsigned int, Entity*> componentMap;
+};
+
 class ECS {
 public:
     // defines an class operation that lets clients access its unique instance.
@@ -29,14 +44,22 @@ public:
     void deleteEntity(unsigned int ID);
     Entity* getEntity(unsigned int ID);
 
+    void registerComponents(Entity* e);
+    void registerComponent(Entity* e, unsigned int bit);
+    void unregisterComponent(Entity* e, unsigned int bit);
+
 private:
     ECS(); // no public constructor
     ~ECS(); // no public destructor
     static ECS* instance; // declaration class variable
 
+    ComponentSet componentSets[COMPONENT_BIT_COUNT];
+
     std::queue<unsigned int> availableIDs;
     std::unordered_map<unsigned int, Entity*> entMap;
 };
+
+
 
 #define MAX_ENTITIES 5000
 

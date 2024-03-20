@@ -17,6 +17,22 @@ ECS::~ECS() {
 	entMap.clear();
 }
 
+void ECS::registerComponents(Entity* e) {
+	for (unsigned int i = 0; i < COMPONENT_BIT_COUNT; i++) {
+		if (e->getBit(i)) {
+			componentSets[i].linkEntity(e);
+		}
+	}
+}
+
+void ECS::registerComponent(Entity* e, unsigned int bit) {
+	componentSets[bit].linkEntity(e);
+}
+
+void ECS::unregisterComponent(Entity* e, unsigned int bit) {
+	componentSets[bit].unlinkEntity(e->getID());
+}
+
 Entity* ECS::linkEntity(Entity* e) {
 	if (availableIDs.empty()) return nullptr;
 	unsigned int id = availableIDs.front();
@@ -34,6 +50,10 @@ void ECS::updatePhysics() {
 }
 
 void ECS::deleteEntity(unsigned int ID) {
+	for (unsigned int i = 0; i < COMPONENT_BIT_COUNT; i++) {
+		componentSets[i].unlinkEntity(ID);
+	}
+
 	auto iter = entMap.find(ID);
 	if (iter != entMap.end())
 	{
@@ -76,7 +96,10 @@ void ECS::DrawEntityStencils() {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
 	glDisable(GL_DEPTH_TEST);
-	for (auto it = entMap.begin(); it != entMap.end(); it++)
+
+	const auto& componentMap = componentSets[COMPONENT_BIT_STENCIL].getMap();
+
+	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
 	{
 		it->second->DrawStencil();
 	}

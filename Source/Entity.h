@@ -11,12 +11,14 @@
 
 #include "btBulletDynamicsCommon.h"
 
+#include <bitset>
+
 // FIX so entity has ID at creation!
 class Entity {
 	public:
-		Entity(Shader* ws, Camera* c);
-		Entity(Model* m, Shader* s, Shader* ws, Camera* c);
-		Entity(SkeletalModel* sm, Animator* m, Shader* s, Shader* ws, Camera* c);
+		Entity(Camera* c);
+		Entity(Model* m, Shader* s, Camera* c);
+		Entity(SkeletalModel* sm, Animator* m, Shader* s, Camera* c);
 		~Entity();
 
 		void setType(std::string type);
@@ -32,13 +34,16 @@ class Entity {
 		void addBody(btRigidBody* b);
 		btRigidBody* getBody();
 
+		void setBit(std::size_t pos);
+		void resetBit(std::size_t pos);
+		const bool& getBit(std::size_t pos); // should this be const reference lol
+
 		// do not use these if entity is dynamic!!
 		void setTranslation(glm::vec3 translation);
 		void setRotation(glm::quat rotation);
 		void setScale(glm::vec3 scale);
 
 		bool m_visible;
-		bool m_stenciled;
 		bool m_surface;
 
 	private:
@@ -46,18 +51,21 @@ class Entity {
 		glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
+		#define COMPONENT_BIT_MODEL 0
+		#define COMPONENT_BIT_ANIMATED 1
+		#define COMPONENT_BIT_DYNAMIC 2
+		#define COMPONENT_BIT_STENCIL 3
+		#define COMPONENT_BIT_COUNT 4
+		std::bitset<COMPONENT_BIT_COUNT> m_signature;
+
 		unsigned int m_id;
 		std::string m_type;
-		bool m_animated;
-		bool m_modeled;
-		bool m_dynamic;
 		Model* mdl;
 		SkeletalModel* skMdl;
 		Animator* mator;
 		std::vector<Wire*> wires;
 		btRigidBody* body;
 		Shader* shader;
-		Shader* wireShader;
 		Camera* camera;
 };
 

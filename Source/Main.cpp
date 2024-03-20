@@ -12,6 +12,7 @@ int main() {
 
 	Shader rigProgram = Shader("rigVert.glsl", "mdlFrag.glsl");
 	Shader wireProgram = Shader("wireVert.glsl", "wireFrag.glsl");
+	Globals::get().wireShader = &wireProgram;
 	Shader lightProgram = Shader("rigVert.glsl", "lightFrag.glsl");
 	Shader animProgram = Shader("animVert.glsl", "mdlFrag.glsl");
 	Shader noTexAnimProgram = Shader("animVert.glsl", "noTexFrag.glsl");
@@ -27,88 +28,100 @@ int main() {
 	Entity* e;
 
 	Model* panel = new Model("floor/floor.dae");
-	e = ECS::get().linkEntity(new Entity(panel, &rigProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(panel, &rigProgram, Globals::get().camera));
 	e->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
 	e->setScale(glm::vec3(20.0f));
 	e->m_surface = true;
+	ECS::get().registerComponents(e);
 
 	Model* lamp = new Model("lamp/lamp.dae");
 	lamp->setUnitConversion(0.05f);
 	lamp->setOffset(glm::vec3(0.0f, 5.0f, 0.0f));
-	e = ECS::get().linkEntity(new Entity(lamp, &lightProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(lamp, &lightProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
 	e->addWireFrame(2.0f, 5.0f, 2.0f);
+	ECS::get().registerComponents(e);
 
 	Model* bench = new Model("bench/bench.dae");
 	bench->setUnitConversion(4.5f);
 	bench->setOffset(glm::vec3(0.0f, -2.5f, 0.0f)); // since updatePhysics puts object bottom at middle of physics object, translate by halfHeight
 	float CosHalfPi = sqrt(2.f) / 2.f;
 	bench->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
-	e = ECS::get().linkEntity(new Entity(bench, &rigProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(bench, &rigProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 2.5f, 5.0f, 5.0f, 5.0f + 2.5f, 28.f)); // whole lot of maths
 	e->addWireFrame(2.0f, 2.5f, 5.0f);
+	ECS::get().registerComponents(e);
 
 	Model* handBat = new Model("bat/bat.dae");
-	Entity* batEnt = new Entity(handBat, &rigProgram, &wireProgram, Globals::get().handCam);
+	Entity* batEnt = new Entity(handBat, &rigProgram, Globals::get().handCam);
 	batEnt->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 	batEnt->setTranslation(glm::vec3(2.0f, -2.0f, 0.0f));
+	ECS::get().registerComponents(batEnt);
 
 	Model* cig = new Model("cig/cig.dae");
-	Entity* cigEnt = new Entity(cig, &rigProgram, &wireProgram, Globals::get().handCam);
+	Entity* cigEnt = new Entity(cig, &rigProgram, Globals::get().handCam);
 	cigEnt->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
 	cigEnt->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
+	ECS::get().registerComponents(cigEnt);
 
 	Model* dumpster = new Model("dumpster/dumpster.dae");
 	dumpster->setUnitConversion(6.5f);
 	dumpster->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
 	dumpster->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
-	e = ECS::get().linkEntity(new Entity(dumpster, &rigProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(dumpster, &rigProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 3.0f, 4.0f, 6.0f, 25.0f, 5.0f + 4.0f, 35.f)); // whole lot of maths
 	e->addWireFrame(3.0f, 4.0f, 6.0f);
+	ECS::get().registerComponents(e);
 
 	Model* cart = new Model("cart/ShoppingCart.dae");
-	e = ECS::get().linkEntity(new Entity(cart, &rigProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(cart, &rigProgram, Globals::get().camera));
 	e->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
 	e->setScale(glm::vec3(7.f));
+	ECS::get().registerComponents(e);
 
 	Model* tent = new Model("tent/tent.dae");
 	tent->setUnitConversion(7.f);
 	tent->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
-	e = ECS::get().linkEntity(new Entity(tent, &rigProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(tent, &rigProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 6.0f, 4.0f, 6.0f, -15.0f, 5.0f + 4.0f, 10.0f)); // whole lot of maths
 	e->addWireFrame(6.0f, 4.0f, 6.0f);
+	ECS::get().registerComponents(e);
 
 	SkeletalModel* wolf = new SkeletalModel("wolf/Wolf_One_dae.dae");
 	Skeleton* wolfAnimation = new Skeleton("wolf/Wolf_One_dae.dae", wolf);
 	Animator* animator = new Animator(wolfAnimation);
-	e = ECS::get().linkEntity(new Entity(wolf, animator, &noTexAnimProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(wolf, animator, &noTexAnimProgram, Globals::get().camera));
 	e->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 	e->setTranslation(glm::vec3(10.0f, 5.0f, 10.0f));
+	ECS::get().registerComponents(e);
 
 	SkeletalModel* sit = new SkeletalModel("sit/Sitting Clap.dae");
 	Skeleton* sitAnimation = new Skeleton("sit/Sitting Clap.dae", sit);
 	Animator* sitMator = new Animator(sitAnimation);
-	e = ECS::get().linkEntity(new Entity(sit, sitMator, &animProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(sit, sitMator, &animProgram, Globals::get().camera));
 	e->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
 	e->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
 	e->setRotation(glm::quat(CosHalfPi, 0.0f, -CosHalfPi, 0.0f));
+	ECS::get().registerComponents(e);
 
 	SkeletalModel* walk = new SkeletalModel("jjong/Idle.dae");
 	Skeleton* walkAnimation = new Skeleton("jjong/Idle.dae", walk);
 	walkAnimation->addAnimation("jjong/Walking.dae", walk);
 	Animator* mator = new Animator(walkAnimation);
 	mator->QueueAnimation(1);
-	e = ECS::get().linkEntity(new Entity(walk, mator, &animProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(walk, mator, &animProgram, Globals::get().camera));
 	e->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
 	e->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
+	ECS::get().registerComponents(e);
 
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(-20.0f, 13.2f, 28.0f);
 
 	Model* light = new Model("bulb/scene.gltf");
-	e = ECS::get().linkEntity(new Entity(light, &lightProgram, &wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(light, &lightProgram, Globals::get().camera));
 	e->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
 	e->setTranslation(lightPos);
+	ECS::get().registerComponents(e);
 
 	rigProgram.Activate();
 	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
@@ -127,64 +140,72 @@ int main() {
 	glUniform3f(glGetUniformLocation(lightProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 	//QUAD
-	e = ECS::get().linkEntity(new Entity(&wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(Globals::get().camera));
 	e->addWire(new Wire(glm::vec3(60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, -60.0f)));
 	e->addWire(new Wire(glm::vec3(-60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, 60.0f)));
 	e->addWire(new Wire(glm::vec3(-60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, 60.0f)));
 	e->addWire(new Wire(glm::vec3(60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, -60.0f)));
 	e->addBody(Physics::get().addShape1(e->getID()));
+	ECS::get().registerComponents(e);
 
 	//STAGING AXIS
-	e = ECS::get().linkEntity(new Entity(&wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(Globals::get().camera));
 	e->addWire(new Wire(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 5.0f)));
+	ECS::get().registerComponents(e);
 
 	//RIGID BODY 1
-	e = ECS::get().linkEntity(new Entity(&wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(Globals::get().camera));
 	e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	e->addBody(Physics::get().addShape2(e->getID()));
 	e->setType("pickup");
+	ECS::get().registerComponents(e);
 
 	//RIGID BODY 2
-	e = ECS::get().linkEntity(new Entity(&wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(Globals::get().camera));
 	e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	e->addBody(Physics::get().addShape3(e->getID()));
 	e->setType("pickup");
+	ECS::get().registerComponents(e);
 
 	//CONTROLLABLE BODY
-	Entity* character = ECS::get().linkEntity(new Entity(&wireProgram, Globals::get().camera));
+	Entity* character = ECS::get().linkEntity(new Entity(Globals::get().camera));
 	character->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	character->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	character->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	character->addBody(Physics::get().addShape4(character->getID()));
+	ECS::get().registerComponents(character);
 
 	// CAPSULE
-	e = ECS::get().linkEntity(new Entity(&wireProgram, Globals::get().camera));
+	e = ECS::get().linkEntity(new Entity(Globals::get().camera));
 	e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	e->addBody(Physics::get().addShape5(e->getID()));
 	e->setType("pickup");
+	ECS::get().registerComponents(e);
 
 	//TEST CIGS
 	for (int i = 0; i < 5; i++) {
-		e = ECS::get().linkEntity(new Entity(new Model("cig/cig.dae"), &rigProgram, &wireProgram, Globals::get().camera));
+		e = ECS::get().linkEntity(new Entity(new Model("cig/cig.dae"), &rigProgram, Globals::get().camera));
 		e->addWire(new Wire(glm::vec3(-0.06f, 0.0f, 0.0f), glm::vec3(0.06f, 0.0f, 0.0f)));
 		e->addWire(new Wire(glm::vec3(0.0f, -0.06f, 0.0f), glm::vec3(0.0f, 0.06f, 0.0f)));
 		e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -0.685f), glm::vec3(0.0f, 0.0f, 0.685f)));
 		e->addBody(Physics::get().addShape6(e->getID()));
 		e->setType("pickup");
+		ECS::get().registerComponents(e);
 	}
 
 	//CROSSHAIR HACK (class required)
-	e = ECS::get().linkEntity(new Entity(&wireProgram, Globals::get().handCam));
+	e = ECS::get().linkEntity(new Entity(Globals::get().handCam));
 	e->addWire(new Wire(glm::vec3(-0.04f, 0.0f, 0.0f), glm::vec3(0.04f, 0.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, -0.04f, 0.0f), glm::vec3(0.0f, 0.04f, 0.0f)));
+	ECS::get().registerComponents(e);
 
 	Shader partProgram = Shader("partVert.glsl", "partFrag.glsl");
 
@@ -372,7 +393,8 @@ int main() {
 						if (prevID != 0 && prevID != entID) {
 							Entity* prevEnt = ECS::get().getEntity(prevID);
 							if (prevEnt) {
-								prevEnt->m_stenciled = false;
+								prevEnt->resetBit(COMPONENT_BIT_STENCIL);
+								ECS::get().unregisterComponent(prevEnt, COMPONENT_BIT_STENCIL);
 							}
 							prevID = 0;
 						}
@@ -385,14 +407,17 @@ int main() {
 							}
 						}
 						else if (!ECS::get().getEntity(entID)->m_surface) {
-							ECS::get().getEntity(entID)->m_stenciled = true;
+							Entity* selEnt = ECS::get().getEntity(entID);
+							selEnt->setBit(COMPONENT_BIT_STENCIL);
+							ECS::get().registerComponent(selEnt, COMPONENT_BIT_STENCIL);
 							prevID = entID;
 						}
 					}
 				} else if (prevID != 0) {
 					Entity* prevEnt = ECS::get().getEntity(prevID);
 					if (prevEnt) {
-						prevEnt->m_stenciled = false;
+						prevEnt->resetBit(COMPONENT_BIT_STENCIL);
+						ECS::get().unregisterComponent(prevEnt, COMPONENT_BIT_STENCIL);
 					}
 					prevID = 0;
 				}

@@ -1,10 +1,7 @@
 #include "Entity.h"
 
-Entity::Entity(Model* m, Shader* s, Shader* ws, Camera* c) {
-	m_modeled = true;
-	m_animated = false;
-	m_dynamic = false;
-	m_stenciled = false;
+Entity::Entity(Model* m, Shader* s, Camera* c) {
+	setBit(COMPONENT_BIT_MODEL);
 	m_surface = false;
 	m_visible = true;
 	mdl = m;
@@ -12,15 +9,11 @@ Entity::Entity(Model* m, Shader* s, Shader* ws, Camera* c) {
 	mator = nullptr;
 	body = nullptr;
 	shader = s;
-	wireShader = ws;
 	camera = c;
 }
 
-Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Shader* ws, Camera* c) {
-	m_modeled = false;
-	m_animated = true;
-	m_dynamic = false;
-	m_stenciled = false;
+Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Camera* c) {
+	setBit(COMPONENT_BIT_ANIMATED);
 	m_surface = false;
 	m_visible = true;
 	mdl = nullptr;
@@ -28,15 +21,10 @@ Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Shader* ws, Camera* c)
 	mator = m;
 	body = nullptr;
 	shader = s;
-	wireShader = ws;
 	camera = c;
 }
 
-Entity::Entity(Shader* ws, Camera* c) {
-	m_modeled = false;
-	m_animated = false;
-	m_dynamic = false;
-	m_stenciled = false;
+Entity::Entity(Camera* c) {
 	m_surface = false;
 	m_visible = true;
 	mdl = nullptr;
@@ -44,7 +32,6 @@ Entity::Entity(Shader* ws, Camera* c) {
 	mator = nullptr;
 	body = nullptr;
 	shader = nullptr;
-	wireShader = ws;
 	camera = c;
 }
 
@@ -54,27 +41,27 @@ Entity::~Entity(){
 		delete wires[i];
 	}
 	wires.clear();
-	if (m_dynamic) {
+	if (m_signature[COMPONENT_BIT_DYNAMIC]) {
 		Physics::get().getDynamicsWorld()->removeCollisionObject(body);
 		delete body->getMotionState();
 		delete body;
 	}
-	if (m_animated) {
+	if (m_signature[COMPONENT_BIT_ANIMATED]) {
 		delete skMdl;
 		delete mator;
 	}
-	else if (m_modeled) {
+	else if (m_signature[COMPONENT_BIT_MODEL]) {
 		delete mdl;
 	}
 }
 
 void Entity::addBody(btRigidBody* b) {
-	m_dynamic = true;
+	setBit(COMPONENT_BIT_DYNAMIC);
 	body = b;
 }
 
 btRigidBody* Entity::getBody() {
-	if (!m_dynamic) return nullptr;
+	if (!m_signature[COMPONENT_BIT_DYNAMIC]) return nullptr;
 	return body;
 }
 
@@ -92,6 +79,18 @@ void Entity::setID(unsigned int ID) {
 
 unsigned int Entity::getID() {
 	return m_id;
+}
+
+void Entity::setBit(std::size_t pos) {
+	m_signature.set(pos);
+}
+
+void Entity::resetBit(std::size_t pos) {
+	m_signature.reset(pos);
+}
+
+const bool& Entity::getBit(std::size_t pos) {
+	return m_signature[pos];
 }
 
 void Entity::addWire(Wire* w) {
@@ -117,7 +116,7 @@ void Entity::addWireFrame(float halfWidth, float halfHeight, float halfLength) {
 
 void Entity::DrawShadow(float delta) {
 	if (!m_visible) return;
-	if (m_animated) {
+	if (m_signature[COMPONENT_BIT_ANIMATED]) {
 		mator->UpdateAnimation(delta);
 
 		Globals::get().animShadowShader->Activate();
@@ -126,7 +125,7 @@ void Entity::DrawShadow(float delta) {
 			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		skMdl->Draw(*Globals::get().animShadowShader, *camera, translation, rotation, scale);
 	}
-	else if (m_modeled) {
+	else if (m_signature[COMPONENT_BIT_MODEL]) {
 		mdl->Draw(*Globals::get().shadowShader, *camera, translation, rotation, scale);
 	}
 
@@ -135,8 +134,8 @@ void Entity::DrawShadow(float delta) {
 
 void Entity::DrawStencil() {
 	if (!m_visible) return;
-	if (m_stenciled) {
-		if (m_modeled) {
+	if (m_signature[COMPONENT_BIT_STENCIL]) {
+		if (m_signature[COMPONENT_BIT_MODEL]) {
 			glm::vec3 upScale = scale * 1.05f;
 			mdl->Draw(*Globals::get().cellShader, *camera, translation, rotation, upScale);
 		}
@@ -146,14 +145,14 @@ void Entity::DrawStencil() {
 
 void Entity::Draw() {
 	if (!m_visible) return;
-	if (m_animated) {
+	if (m_signature[COMPONENT_BIT_ANIMATED]) {
 		shader->Activate();
 		const auto& transforms = mator->GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i)
 			glUniformMatrix4fv(glGetUniformLocation(shader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		skMdl->Draw(*shader, *camera, translation, rotation, scale);
 	}
-	else if (m_modeled) {
+	else if (m_signature[COMPONENT_BIT_MODEL]) {
 		if (m_surface) {
 			glStencilFunc(GL_ALWAYS, 0, 0xFF);
 			glStencilMask(0xFF);
@@ -168,14 +167,14 @@ void Entity::Draw() {
 
 	if (Globals::get().drawWires) {
 		for (int i = 0; i < wires.size(); i++) {
-			wires[i]->Draw(*wireShader, *camera, translation, rotation, scale);
+			wires[i]->Draw(*Globals::get().wireShader, *camera, translation, rotation, scale);
 		}
 	}
 
 }
 
 void Entity::updatePhysics() {
-	if (m_dynamic) {
+	if (m_signature[COMPONENT_BIT_DYNAMIC]) {
 		btTransform trans;
 
 		//if (body && body->getMotionState())
@@ -187,13 +186,13 @@ void Entity::updatePhysics() {
 }
 
 void Entity::setTranslation(glm::vec3 translation) {
-	if (!m_dynamic) Entity::translation = translation;
+	if (!m_signature[COMPONENT_BIT_DYNAMIC]) Entity::translation = translation;
 }
 
 void Entity::setRotation(glm::quat rotation) {
-	if (!m_dynamic) Entity::rotation = rotation;
+	if (!m_signature[COMPONENT_BIT_DYNAMIC]) Entity::rotation = rotation;
 }
 
 void Entity::setScale(glm::vec3 scale) {
-	if (!m_dynamic) Entity::scale = scale;
+	if (!m_signature[COMPONENT_BIT_DYNAMIC]) Entity::scale = scale;
 }
