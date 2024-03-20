@@ -55,10 +55,14 @@ Entity* ECS::getEntity(unsigned int ID) {
 
 // WARNING: advances animations by delta!
 void ECS::DrawEntities() {
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilMask(0xFF);
 	for (auto it = entds2.begin(); it != entds2.end(); it++)
 	{
 		it->second->Draw();
 	}
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glStencilMask(0xFF);
 }
 
 void ECS::DrawEntityShadows(float delta) {
@@ -69,16 +73,14 @@ void ECS::DrawEntityShadows(float delta) {
 }
 
 void ECS::DrawEntityStencils() {
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilMask(0x00);
+	glDisable(GL_DEPTH_TEST);
 	for (auto it = entds2.begin(); it != entds2.end(); it++)
 	{
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		glStencilMask(0x00);
-		glDisable(GL_DEPTH_TEST);
-
 		it->second->DrawStencil();
-
-		glEnable(GL_DEPTH_TEST);
-		glStencilFunc(GL_ALWAYS, 0, 0xFF);
-		glStencilMask(0xFF);
 	}
+	glEnable(GL_DEPTH_TEST);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glStencilMask(0xFF);
 }
