@@ -303,7 +303,7 @@ int main() {
 		
 		/* TICK BASED EVENTS */ // 1. calc physics update -> 2. game logic
 		delta = crntTime - lastTick;
-		if (delta >= 1.0 / 64.0) {
+		if (delta >= 1.0 / 192.0) {
 			{ // character, delta
 				if (Globals::get().camLock) {
 					btRigidBody* body = character->getBody();

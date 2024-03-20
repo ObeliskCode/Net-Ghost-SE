@@ -6,7 +6,7 @@
 #include <assimp/postprocess.h>
 
 #include <string>
-#include <map>
+#include <unordered_map> 
 
 #include "SkeletalMesh.h"
 
@@ -52,7 +52,7 @@ private:
     float unitConversion = 1.0f;
     glm::quat orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
-    std::map<std::string, BoneInfo> m_BoneInfoMap;
+    std::unordered_map<std::string, BoneInfo> m_BoneInfoMap;
     int m_BoneCounter = 0;
 
     void loadModel(std::string path);

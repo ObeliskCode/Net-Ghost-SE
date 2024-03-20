@@ -33,7 +33,7 @@ private:
     ~ECS(); // no public destructor
     static ECS* instance; // declaration class variable
 
-    std::map<int, Entity*> entds2;
+    std::map<int, Entity*> entds2; // change ds to unordered_map
 };
 
 #endif

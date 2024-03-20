@@ -120,7 +120,7 @@ void Entity::DrawShadow(float delta) {
 		mator->UpdateAnimation(delta);
 
 		Globals::get().animShadowShader->Activate();
-		auto transforms = mator->GetFinalBoneMatrices();
+		const auto& transforms = mator->GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i)
 			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		skMdl->Draw(*Globals::get().animShadowShader, *camera, translation, rotation, scale);
@@ -147,7 +147,7 @@ void Entity::Draw() {
 	if (!m_visible) return;
 	if (m_animated) {
 		shader->Activate();
-		auto transforms = mator->GetFinalBoneMatrices();
+		const auto& transforms = mator->GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i)
 			glUniformMatrix4fv(glGetUniformLocation(shader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		skMdl->Draw(*shader, *camera, translation, rotation, scale);

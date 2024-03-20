@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <map>
+#include <unordered_map> 
 #include <glm/glm.hpp>
 #include <assimp/scene.h>
 #include <Bone.h>
@@ -91,7 +91,7 @@ public:
 	}
 
 	inline const AssimpNodeData& GetRootNode() { return m_RootNode; }
-	inline const std::map<std::string, BoneInfo>& GetBoneIDMap()
+	inline const std::unordered_map<std::string, BoneInfo>& GetBoneIDMap()
 	{
 		return m_BoneInfoMap;
 	}
@@ -145,7 +145,7 @@ private:
 	}
 
 
-	glm::mat4 aiMat4toGLM(aiMatrix4x4t<float> matrix) {
+	glm::mat4 aiMat4toGLM(const aiMatrix4x4t<float>& matrix) {
 
 		glm::mat4 m = glm::mat4(0.0f);
 		m[0][0] = matrix.a1;
@@ -173,6 +173,5 @@ private:
 
 	std::vector<Animation> m_Animations;
 	AssimpNodeData m_RootNode;
-	std::map<std::string, BoneInfo> m_BoneInfoMap;
+	std::unordered_map<std::string, BoneInfo> m_BoneInfoMap;
 };
-

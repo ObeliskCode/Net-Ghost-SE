@@ -90,7 +90,7 @@ public:
 		m_BlendFactor = bf;
 	}
 
-	std::vector<glm::mat4> GetFinalBoneMatrices()
+	std::vector<glm::mat4>& GetFinalBoneMatrices()
 	{
 		return m_FinalBoneMatrices;
 	}
