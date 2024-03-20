@@ -3,7 +3,8 @@
 
 #include "Entity.h"
 #include "Physics.h"
-#include <map>
+#include <unordered_map>
+#include <queue>
 
 class ECS {
 public:
@@ -20,7 +21,7 @@ public:
         instance = nullptr;
     }
 
-    void addEntity(Entity* e);
+    Entity* linkEntity(Entity* e);
     void updatePhysics();
     void DrawEntityShadows(float delta);
     void DrawEntityStencils();
@@ -29,11 +30,14 @@ public:
     Entity* getEntity(unsigned int ID);
 
 private:
-    ECS() = default; // no public constructor
+    ECS(); // no public constructor
     ~ECS(); // no public destructor
     static ECS* instance; // declaration class variable
 
-    std::map<int, Entity*> entds2; // change ds to unordered_map
+    std::queue<unsigned int> availableIDs;
+    std::unordered_map<unsigned int, Entity*> entMap;
 };
+
+#define MAX_ENTITIES 5000
 
 #endif

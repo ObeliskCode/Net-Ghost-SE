@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include "Model.h"
+#include "Physics.h"
 #include "SkeletalModel.h"
 #include "Wire.h"
 #include "Skeleton.h"

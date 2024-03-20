@@ -54,7 +54,8 @@ Entity::~Entity(){
 		delete wires[i];
 	}
 	wires.clear();
-	if (body) {
+	if (m_dynamic) {
+		Physics::get().getDynamicsWorld()->removeCollisionObject(body);
 		delete body->getMotionState();
 		delete body;
 	}

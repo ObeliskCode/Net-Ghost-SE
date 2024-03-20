@@ -2,50 +2,50 @@
 
 ECS* ECS::instance = nullptr; // definition class variable
 
-ECS::~ECS() {
-	for (auto it = entds2.begin(); it != entds2.end(); it++)
-	{
-		Entity* ret = it->second;
-		if (ret) {
-			delete ret;
-		}
+ECS::ECS() {
+	for (unsigned int i = 1; i <= MAX_ENTITIES; i++) {
+		availableIDs.push(i);
 	}
-	entds2.clear();
 }
 
-void ECS::addEntity(Entity* e) {
-	unsigned int i = 1; // or whatever your smallest admissable key value is
-	for (auto it = entds2.cbegin(), end = entds2.cend();
-		it != end && i == it->first; ++it, ++i)
+ECS::~ECS() {
+	for (auto it = entMap.begin(); it != entMap.end(); it++)
 	{
+		Entity* ret = it->second;
+		if (ret) delete ret;
 	}
-	e->setID(i);
-	entds2[i] = e;
+	entMap.clear();
+}
+
+Entity* ECS::linkEntity(Entity* e) {
+	if (availableIDs.empty()) return nullptr;
+	unsigned int id = availableIDs.front();
+	availableIDs.pop();
+	e->setID(id);
+	entMap[id] = e;
+	return e;
 }
 
 void ECS::updatePhysics() {
-	for (auto it = entds2.begin(); it != entds2.end(); it++)
+	for (auto it = entMap.begin(); it != entMap.end(); it++)
 	{
 		it->second->updatePhysics();
 	}
 }
 
 void ECS::deleteEntity(unsigned int ID) {
-	Entity* ret = entds2[ID];
-	if (ret) {
-		btRigidBody* bd = ret->getBody();
-		if (bd) {
-			Physics::get().getDynamicsWorld()->removeCollisionObject(bd);
-		}
-		delete ret;
-		entds2.erase(ID);
-	}
-
+	auto iter = entMap.find(ID);
+	if (iter != entMap.end())
+	{
+		Entity* ret = iter->second;
+		if (ret) delete ret;
+		entMap.erase(ID);
+	} 
 }
 
 Entity* ECS::getEntity(unsigned int ID) {
-	auto iter = entds2.find(ID);
-	if (iter != entds2.end())
+	auto iter = entMap.find(ID);
+	if (iter != entMap.end())
 	{
 		return iter->second;
 	}
@@ -57,7 +57,7 @@ Entity* ECS::getEntity(unsigned int ID) {
 void ECS::DrawEntities() {
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
-	for (auto it = entds2.begin(); it != entds2.end(); it++)
+	for (auto it = entMap.begin(); it != entMap.end(); it++)
 	{
 		it->second->Draw();
 	}
@@ -66,7 +66,7 @@ void ECS::DrawEntities() {
 }
 
 void ECS::DrawEntityShadows(float delta) {
-	for (auto it = entds2.begin(); it != entds2.end(); it++)
+	for (auto it = entMap.begin(); it != entMap.end(); it++)
 	{
 		it->second->DrawShadow(delta);
 	}
@@ -76,7 +76,7 @@ void ECS::DrawEntityStencils() {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);
 	glDisable(GL_DEPTH_TEST);
-	for (auto it = entds2.begin(); it != entds2.end(); it++)
+	for (auto it = entMap.begin(); it != entMap.end(); it++)
 	{
 		it->second->DrawStencil();
 	}
