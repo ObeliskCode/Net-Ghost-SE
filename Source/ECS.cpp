@@ -15,6 +15,7 @@ ECS::~ECS() {
 		if (ret) delete ret;
 	}
 	entMap.clear();
+	//clear component maps?
 }
 
 void ECS::registerComponents(Entity* e) {
@@ -43,7 +44,9 @@ Entity* ECS::linkEntity(Entity* e) {
 }
 
 void ECS::updatePhysics() {
-	for (auto it = entMap.begin(); it != entMap.end(); it++)
+	const auto& componentMap = componentSets[COMPONENT_BIT_DYNAMIC].getMap();
+
+	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
 	{
 		it->second->updatePhysics();
 	}
@@ -60,6 +63,7 @@ void ECS::deleteEntity(unsigned int ID) {
 		Entity* ret = iter->second;
 		if (ret) delete ret;
 		entMap.erase(ID);
+		availableIDs.push(ID);
 	} 
 }
 

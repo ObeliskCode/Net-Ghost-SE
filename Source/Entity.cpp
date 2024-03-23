@@ -41,7 +41,7 @@ Entity::~Entity(){
 		delete wires[i];
 	}
 	wires.clear();
-	if (m_signature[COMPONENT_BIT_DYNAMIC]) {
+	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
 		Physics::get().getDynamicsWorld()->removeCollisionObject(body);
 		delete body->getMotionState();
 		delete body;
@@ -56,12 +56,19 @@ Entity::~Entity(){
 }
 
 void Entity::addBody(btRigidBody* b) {
-	setBit(COMPONENT_BIT_DYNAMIC);
+	if (body || !b) return;
+	if (b->getMass() == 0.0f) {
+		setBit(COMPONENT_BIT_STATIC);
+	}
+	else {
+		setBit(COMPONENT_BIT_DYNAMIC);
+	}
 	body = b;
+	updatePhysics();
 }
 
 btRigidBody* Entity::getBody() {
-	if (!m_signature[COMPONENT_BIT_DYNAMIC]) return nullptr;
+	if (!m_signature[COMPONENT_BIT_DYNAMIC] && !m_signature[COMPONENT_BIT_STATIC]) return nullptr;
 	return body;
 }
 
@@ -174,7 +181,7 @@ void Entity::Draw() {
 }
 
 void Entity::updatePhysics() {
-	if (m_signature[COMPONENT_BIT_DYNAMIC]) {
+	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
 		btTransform trans;
 
 		//if (body && body->getMotionState())
@@ -186,13 +193,13 @@ void Entity::updatePhysics() {
 }
 
 void Entity::setTranslation(glm::vec3 translation) {
-	if (!m_signature[COMPONENT_BIT_DYNAMIC]) Entity::translation = translation;
+	if (!m_signature[COMPONENT_BIT_DYNAMIC] && !m_signature[COMPONENT_BIT_STATIC]) Entity::translation = translation;
 }
 
 void Entity::setRotation(glm::quat rotation) {
-	if (!m_signature[COMPONENT_BIT_DYNAMIC]) Entity::rotation = rotation;
+	if (!m_signature[COMPONENT_BIT_DYNAMIC] && !m_signature[COMPONENT_BIT_STATIC]) Entity::rotation = rotation;
 }
 
 void Entity::setScale(glm::vec3 scale) {
-	if (!m_signature[COMPONENT_BIT_DYNAMIC]) Entity::scale = scale;
+	if (!m_signature[COMPONENT_BIT_DYNAMIC] && !m_signature[COMPONENT_BIT_STATIC]) Entity::scale = scale;
 }

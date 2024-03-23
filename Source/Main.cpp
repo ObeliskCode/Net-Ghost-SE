@@ -263,15 +263,15 @@ int main() {
 	// loop vars
 	double crntTime = 0.0;
 
-	double prevTime = 0.0;
+	double prevTime = glfwGetTime();
 	double timeDiff;
 	unsigned int counter = 0;
 
-	double lastTick = 0.0;
-	double delta;
+	float delta = (float)(1.0 / (60.0 * 3.0));
+	double accumulator = 0.0;
 
 	double deltaTime = 0.0f;
-	double lastFrame = 0.0f;
+	double lastFrame = prevTime;
 
 	double batRot = 0.0f;
 
@@ -305,8 +305,12 @@ int main() {
 		glfwPollEvents(); // get inputs
 		
 		/* TICK BASED EVENTS */ // 1. calc physics update -> 2. game logic
-		delta = crntTime - lastTick;
-		if (delta >= 1.0 / 192.0) {
+		deltaTime = crntTime - lastFrame;
+		lastFrame = crntTime;
+
+		accumulator += deltaTime;
+		while (accumulator >= delta) {
+			accumulator -= delta;
 			{ // character, delta
 				if (Globals::get().camLock) {
 					btRigidBody* body = character->getBody();
@@ -337,7 +341,7 @@ int main() {
 					if (Input::get().getValue(GLFW_KEY_SPACE)) {
 						if (cd == 0) {
 							cd = 192;
-							body->applyCentralImpulse(btVector3(0.0f,7.0f,0.0f));
+							body->applyCentralImpulse(btVector3(0.0f,9.0f,0.0f));
 						}
 					}
 					
@@ -468,14 +472,12 @@ int main() {
 
 			}
 			
-			lastTick = crntTime;
 		}
 		/* TICK BASED EVENTS */
 		
 		/* ANIMATION UPDATES / RENDERING */
 		// calc time since last frame for animation
-		deltaTime = crntTime - lastFrame;
-		lastFrame = crntTime;
+
 
 		{ // pls do not make this a function
 			batRot += deltaTime;

@@ -18,7 +18,8 @@ class ComponentSet {
             return componentMap;
         }
     private:
-        std::unordered_map<unsigned int, Entity*> componentMap;
+        std::unordered_map<unsigned int, Entity*> componentMap; // possible make <unsigned int, std::pair<Entity*, Component>> for seperate component memory
+        // also make system for grouping entities like ComponentSet does orignally?
 };
 
 class ECS {

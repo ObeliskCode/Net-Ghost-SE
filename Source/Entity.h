@@ -54,12 +54,16 @@ class Entity {
 		#define COMPONENT_BIT_MODEL 0
 		#define COMPONENT_BIT_ANIMATED 1
 		#define COMPONENT_BIT_DYNAMIC 2
-		#define COMPONENT_BIT_STENCIL 3
-		#define COMPONENT_BIT_COUNT 4
+		#define COMPONENT_BIT_STATIC 3
+		#define COMPONENT_BIT_STENCIL 4
+		#define COMPONENT_BIT_COUNT 5
 		std::bitset<COMPONENT_BIT_COUNT> m_signature;
 
 		unsigned int m_id;
 		std::string m_type;
+
+		//std::unordered_map<unsigned int, void*> pointerBuffer; // make entity class into typless pointer container? <pointer_type_enum, void_casted_pointer>
+		
 		Model* mdl;
 		SkeletalModel* skMdl;
 		Animator* mator;

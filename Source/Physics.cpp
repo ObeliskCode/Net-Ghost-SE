@@ -8,7 +8,7 @@ Physics::Physics() {
 	overlappingPairCache = new btDbvtBroadphase();
 	solver = new btSequentialImpulseConstraintSolver;
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	dynamicsWorld->setGravity(btVector3(0, -20, 0));
 }
 
 Physics::~Physics() {
@@ -40,7 +40,7 @@ Physics::~Physics() {
 }
 
 void Physics::updateSim(float delta) {
-	dynamicsWorld->stepSimulation(delta, 10);
+	dynamicsWorld->stepSimulation(delta, 0);
 }
 
 btRigidBody* Physics::addUnitBoxStaticBody(unsigned int ID, float halfWidth, float halfHeight, float halfLength, float x, float y, float z) {
@@ -98,8 +98,6 @@ btRigidBody* Physics::addShape1(unsigned int ID) {
 	btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, groundShape, localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
-
-	body->setFriction(btScalar(1.f));
 
 	//add the body to the dynamics world
 	dynamicsWorld->addRigidBody(body);
