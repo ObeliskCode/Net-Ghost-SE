@@ -264,15 +264,16 @@ int main() {
 	double crntTime = 0.0;
 
 	double prevTime = glfwGetTime();
+	double lastFrame = prevTime;
+
 	double timeDiff;
 	unsigned int counter = 0;
 
-	float delta = (float)(1.0 / (60.0 * 3.0));
+	float delta = (float)(1.0 / (61.0));
 	double accumulator = 0.0;
 
 	double deltaTime = 0.0f;
-	double lastFrame = prevTime;
-
+	
 	double batRot = 0.0f;
 
 	float bf = 0.0f;
@@ -282,6 +283,12 @@ int main() {
 	bool cig_anim = false;
 	bool is_smoking = false;
 	float cig_anim_time = 0.0f;
+
+	int tickCounter = 1;
+
+	const double magicDbl = 1.0 / 60.0;
+
+	bool _skip = false;
 
 	int cd = 0;
 
@@ -308,9 +315,19 @@ int main() {
 		deltaTime = crntTime - lastFrame;
 		lastFrame = crntTime;
 
+
+		// Note: floating point should be renamed to floating transform point because subratction isn't guarenteed
+		// a real floating point is impossible. accumulator thus accumulutas lag which must be offloaded. 61st half step, break after gameTick() if lag accumuluated. 45321!
+
+
 		accumulator += deltaTime;
-		while (accumulator >= delta) {
+		const double lag = 1 + accumulator / delta;
+		while (accumulator >= delta || (lag >= 1.0/60.0 && tickCounter == 61) ) {
 			accumulator -= delta;
+			if (tickCounter == 61 && lag >= 1.0 / 60.0) {
+				tickCounter = 1;
+				_skip = true;
+			}
 			{ // character, delta
 				if (Globals::get().camLock) {
 					btRigidBody* body = character->getBody();
@@ -361,8 +378,14 @@ int main() {
 					body->setLinearVelocity(linVel);
 				}
 			} // character.physicsProcess(delta)
-
-			Physics::get().updateSim(delta); // move sim forward by delta
+			if (_skip) {
+				Physics::get().updateSim(magicDbl); // magical time advance
+			}
+			else {
+				Physics::get().updateSim(delta); // regular time advance
+			}
+			
+			 // move sim forward by delta
 			ECS::get().updatePhysics(); // update entities with physics state
 			{
 				if (Globals::get().camLock) {
@@ -373,9 +396,10 @@ int main() {
 					Globals::get().camera->Position = pos;
 				}
 			}
+			if (lag >= magicDbl) break;
 			{
-				if (Input::get().getValue(GLFW_KEY_RIGHT)) bf += 0.05f;
-				if (Input::get().getValue(GLFW_KEY_LEFT)) bf -= 0.05f;
+				if (Input::get().getValue(GLFW_KEY_RIGHT)) bf += 0.02f;
+				if (Input::get().getValue(GLFW_KEY_LEFT)) bf -= 0.02f;
 				if (bf < 0.0f) bf = 0.0f;
 				if (bf > 1.0f) bf = 1.0f;
 				mator->SetBlendFactor(bf);
@@ -412,9 +436,11 @@ int main() {
 						}
 						else if (!ECS::get().getEntity(entID)->m_surface) {
 							Entity* selEnt = ECS::get().getEntity(entID);
-							selEnt->setBit(COMPONENT_BIT_STENCIL);
-							ECS::get().registerComponent(selEnt, COMPONENT_BIT_STENCIL);
-							prevID = entID;
+							if (selEnt) {
+								selEnt->setBit(COMPONENT_BIT_STENCIL);
+								ECS::get().registerComponent(selEnt, COMPONENT_BIT_STENCIL);
+								prevID = entID;
+							}
 						}
 					}
 				} else if (prevID != 0) {
@@ -474,6 +500,8 @@ int main() {
 			
 		}
 		/* TICK BASED EVENTS */
+
+
 		
 		/* ANIMATION UPDATES / RENDERING */
 		// calc time since last frame for animation
