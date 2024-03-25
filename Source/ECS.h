@@ -7,7 +7,8 @@
 #include <queue>
 
 // unraveling of conjectives, conjective function means combinatorially complex boolean statement.
-// unraveling them means transformations break the continuity of the entire conjective. 
+// unraveling them means transformations break the continuity of the entire conjective. //SAT is a conjective
+// do not unravel/combine SATs instead compose them and transform to a different space
 
 class ComponentSet {
     public:
