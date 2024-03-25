@@ -6,6 +6,9 @@
 #include <unordered_map>
 #include <queue>
 
+// unraveling of conjectives, conjective function means combinatorially complex boolean statement.
+// unraveling them means transformations break the continuity of the entire conjective. 
+
 class ComponentSet {
     public:
         void linkEntity(Entity* e) {

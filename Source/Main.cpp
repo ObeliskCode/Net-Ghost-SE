@@ -1,6 +1,7 @@
 #include "Main.h"
 
 const double PI = 3.1415926535897932384626433832795028841971693993751058209;
+const double magicalTickRate = 187.0;
 
 // todo move to particle class?
 struct {
@@ -26,7 +27,7 @@ int main() {
 	Globals::get().animCellShader = &animCellProgram;
 
 	Entity* e;
-
+	
 	Model* panel = new Model("floor/floor.dae");
 	e = ECS::get().linkEntity(new Entity(panel, &rigProgram, Globals::get().camera));
 	e->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
@@ -292,6 +293,8 @@ int main() {
 
 	int cd = 0;
 
+	//unraveling of conjectives, conjective function means combinatorially complex bollean
+
 	/* Main Game Loop */
 	while (!glfwWindowShouldClose(window)) {
 
@@ -315,10 +318,8 @@ int main() {
 		deltaTime = crntTime - lastFrame;
 		lastFrame = crntTime;
 
-
 		// Note: floating point should be renamed to floating transform point because subratction isn't guarenteed
 		// a real floating point is impossible. accumulator thus accumulutas lag which must be offloaded. 61st half step, break after gameTick() if lag accumuluated. 45321!
-
 
 		accumulator += deltaTime;
 		const double lag = 1 + accumulator / delta;
