@@ -9,6 +9,8 @@
 // unraveling of conjectives, conjective function means combinatorially complex boolean statement.
 // unraveling them means transformations break the continuity of the entire conjective. //SAT is a conjective
 // do not unravel/combine SATs instead compose them and transform to a different space
+// For example of a conjecture function is a transform matrix because it does not require a special matrix
+// h(x) = T1[x1] + T2[x2], o(T) = T', oh(x) = o(T1[x1] + T2[x2])
 
 class ComponentSet {
     public:

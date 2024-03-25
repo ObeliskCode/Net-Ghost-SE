@@ -293,8 +293,6 @@ int main() {
 
 	int cd = 0;
 
-	//unraveling of conjectives, conjective function means combinatorially complex bollean
-
 	/* Main Game Loop */
 	while (!glfwWindowShouldClose(window)) {
 
