@@ -6,11 +6,35 @@
 #include <unordered_map>
 #include <queue>
 
+// Conjective Theory
 // unraveling of conjectives, conjective function means combinatorially complex boolean statement.
 // unraveling them means transformations break the continuity of the entire conjective. //SAT is a conjective
 // do not unravel/combine SATs instead compose them and transform to a different space
 // For example of a conjecture function is a transform matrix because it does not require a special matrix
 // h(x) = T1[x1] + T2[x2], o(T) = T', oh(x) = o(T1[x1] + T2[x2])
+
+//imagine simulating our reality
+//you cannot simulate our infinity
+//yet you may simulate a smaller infinity
+//inf^ x = inf; x != 0
+//contradictively
+//yet both facts are true
+//how is this possible
+
+//what is 2m in a smaller simulated infinity, ... 2m
+
+//within a point there is everything
+//that is why we have no area to them
+//we have 0 space to them yet infinitely much space to us(edited)
+//everything is within a point
+
+//i may be wrong on my corollary
+//inf^ x = inf; x is real
+//i believe that inf ^ 0 = inf
+//i dont wanna fact check stuff with other fields too much
+//until all the ideas are out
+//inf ^ 0 = inf explains infinite space in a point!oblivion!
+//inf ^ 0 = inf must to be pushed!!
 
 class ComponentSet {
     public:
@@ -65,8 +89,6 @@ private:
     std::queue<unsigned int> availableIDs;
     std::unordered_map<unsigned int, Entity*> entMap;
 };
-
-
 
 #define MAX_ENTITIES 5000
 
