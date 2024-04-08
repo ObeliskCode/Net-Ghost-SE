@@ -271,10 +271,9 @@ int main() {
 
 	double lastFrame = timeStart;
 	float delta = (float)(1.0 / (187.0));
-	const double magicDbl = 1.0 / 186.0;
+	const double magicDbl = 1.0 / 183.0;
 	double accumulator = 0.0;
 	const double magicalTickRate = 187.0;
-	const double magicalTickminus = 186.0;
 	double deltaTime = 0.0f;
 	int tickCounter = 1;
 	bool _skip = false;
@@ -314,22 +313,28 @@ int main() {
 		lastFrame = crntTime;
 
 		// Note: floating point should be renamed to floating transform point because subratction isn't guarenteed
-		// a real floating point is impossible. accumulator thus accumulutas lag which must be offloaded. 61st half step, break after gameTick() if lag accumuluated. 45321!
+		// a real floating point is impossible. accumulator thus accumulutas ERROR which should be accounted for! 45321!
 
 		accumulator += deltaTime;
-		const double lag = 1 + accumulator / delta;
-		while (accumulator >= delta || (lag >= 1.0 / 186.0 && tickCounter == 187.0)) {
-			if (tickCounter == 187.0 && lag >= 1.0 / 186.0) {
+		while (accumulator >= delta || (accumulator >= magicDbl && tickCounter == 187.0)) {
+			if (tickCounter == 187.0 && accumulator >= magicDbl) {
 				tickCounter = 1;
+				std::cout << "true" << std::endl;
+				std::cout << "ACCUM " << accumulator << std::endl;
+				accumulator -= magicDbl;
 				_skip = true;
 			}
 			else if (tickCounter == 187) {
 				tickCounter = 1;
+				std::cout << "false" << std::endl;
+				std::cout << "ACCUM " << accumulator << std::endl;
 				accumulator -= delta;
 			}
 			else {
 				accumulator -= delta;
+				tickCounter++;
 			}
+
 
 
 			{ // character, delta
@@ -543,11 +548,11 @@ int main() {
 			batEnt->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
 		}
 
+
 		if (_skip) {
 			_skip = false;
-			break;
+			continue;
 		} // skip rendering on lag tick
-
 
 		/* RENDERING */
 
