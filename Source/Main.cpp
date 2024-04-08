@@ -270,12 +270,10 @@ int main() {
 	unsigned int counter = 0;
 
 	double lastFrame = timeStart;
-	float delta = (float)(1.0 / (187.0));
-	const double magicDbl = 1.0 / 183.0;
-	double accumulator = 0.0;
-	const double magicalTickRate = 187.0;
+	double delta = 1.0 / 187.0;
+	long double accumulator = 0.0; // guarantees atleast double precision
 	double deltaTime = 0.0f;
-	int tickCounter = 1;
+	int tickCounter = 0;
 	bool _skip = false;
 
 	double batRot = 0.0f;
@@ -314,28 +312,19 @@ int main() {
 
 		// Note: floating point should be renamed to floating transform point because subratction isn't guarenteed
 		// a real floating point is impossible. accumulator thus accumulutas ERROR which should be accounted for! 45321!
+		// Quad Precision is necessary for accumulator, TODO find lib. (boost?)
 
 		accumulator += deltaTime;
-		while (accumulator >= delta || (accumulator >= magicDbl && tickCounter == 187.0)) {
-			if (tickCounter == 187.0 && accumulator >= magicDbl) {
-				tickCounter = 1;
-				std::cout << "true" << std::endl;
-				std::cout << "ACCUM " << accumulator << std::endl;
-				accumulator -= magicDbl;
-				_skip = true;
-			}
-			else if (tickCounter == 187) {
-				tickCounter = 1;
-				std::cout << "false" << std::endl;
-				std::cout << "ACCUM " << accumulator << std::endl;
+		while (accumulator >= delta) {
+			tickCounter++;
+			if (tickCounter == 187.0) {
+				tickCounter = 0;
 				accumulator -= delta;
+				_skip = true;
 			}
 			else {
 				accumulator -= delta;
-				tickCounter++;
 			}
-
-
 
 			{ // character, delta
 				if (Globals::get().camLock) {
@@ -372,12 +361,7 @@ int main() {
 					}
 
 					float accel;
-					if (_skip) {
-						accel = magicDbl * 60.0f;
-					}
-					else {
-						accel = delta * 60.0f;
-					}
+					accel = delta * 60.0f;
 
 					if (glm::length(vel) > 0) {
 						vel = glm::normalize(vel);
@@ -393,13 +377,9 @@ int main() {
 					body->setLinearVelocity(linVel);
 				}
 			} // character.physicsProcess(delta)
-			if (_skip) {
-				Physics::get().updateSim(magicDbl); // magical time advance
-
-			}
-			else {
-				Physics::get().updateSim(delta); // regular time advance
-			}
+			
+			Physics::get().updateSim(delta); // regular time advance
+			
 			// move sim forward by delta
 			ECS::get().updatePhysics(); // update entities with physics state
 			{
@@ -418,14 +398,10 @@ int main() {
 				if (bf > 1.0f) bf = 1.0f;
 				mator->SetBlendFactor(bf);
 			}
-			if (_skip) {
-				gameTick(magicDbl); // post-physics game logic.
-			}
-			else {
-				gameTick(delta); // post-physics game logic.
-			}
 
-			{ // do rayCast
+			gameTick(delta); // post-physics game logic.
+
+			{ // do rayCast 
 
 				glm::vec3 ppp = Globals::get().camera->Position + (Globals::get().camera->Orientation * 12.5f);
 
@@ -484,12 +460,7 @@ int main() {
 				}
 
 				if (is_smoking) {
-					if (_skip) {
-						cig_anim_time += magicDbl;
-					}
-					else {
-						cig_anim_time += delta;
-					}
+					cig_anim_time += delta;
 					if (cig_anim_time >= 2.0f) cig_anim = false;
 					if (cig_anim_time >= 3.0f) is_smoking = false;
 				}
@@ -516,12 +487,7 @@ int main() {
 
 				// how slow is this? (update/cleanup particles)
 				for (int i = 0; i < Globals::get().particles.size(); i++) {
-					if (_skip) {
-						Globals::get().particles[i].update(magicDbl);
-					}
-					else {
-						Globals::get().particles[i].update(delta);
-					}
+					Globals::get().particles[i].update(delta);
 
 					if (Globals::get().particles[i].life >= Globals::get().particles[i].expire) {
 						Globals::get().particles.erase(Globals::get().particles.begin() + i);

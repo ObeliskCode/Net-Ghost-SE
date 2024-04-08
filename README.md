@@ -5,7 +5,7 @@
 ### Author: Noel Garcia - n6garcia@ucsd.edu - https://noeldev.site/
 
 ## Features Implemented 
-#### Animated 3D models, Particle System, Rigid Body Physics, Lighting/Shadows, Lag Step Tick System, Cell Shading
+#### Animated 3D models, Particle System, Rigid Body Physics, Lighting/Shadows, Errorless FP Tick System, Cell Shading
 
 ## Controls
 WASD: Camera movement / walk
