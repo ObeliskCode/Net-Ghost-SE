@@ -1,7 +1,6 @@
 #include "Main.h"
 
 const double PI = 3.1415926535897932384626433832795028841971693993751058209;
-const double magicalTickRate = 187.0;
 
 // todo move to particle class?
 struct {
@@ -264,16 +263,21 @@ int main() {
 	// loop vars
 	double crntTime = 0.0;
 
-	double prevTime = glfwGetTime();
-	double lastFrame = prevTime;
+	const double timeStart = glfwGetTime();
 
+	double prevTime = timeStart;
 	double timeDiff;
 	unsigned int counter = 0;
 
-	float delta = (float)(1.0 / (61.0));
+	double lastFrame = timeStart;
+	float delta = (float)(1.0 / (187.0));
+	const double magicDbl = 1.0 / 186.0;
 	double accumulator = 0.0;
-
+	const double magicalTickRate = 187.0;
+	const double magicalTickminus = 186.0;
 	double deltaTime = 0.0f;
+	int tickCounter = 1;
+	bool _skip = false;
 	
 	double batRot = 0.0f;
 
@@ -284,12 +288,6 @@ int main() {
 	bool cig_anim = false;
 	bool is_smoking = false;
 	float cig_anim_time = 0.0f;
-
-	int tickCounter = 1;
-
-	const double magicDbl = 1.0 / 60.0;
-
-	bool _skip = false;
 
 	int cd = 0;
 
@@ -321,11 +319,14 @@ int main() {
 
 		accumulator += deltaTime;
 		const double lag = 1 + accumulator / delta;
-		while (accumulator >= delta || (lag >= 1.0/60.0 && tickCounter == 61) ) {
+		while (accumulator >= delta || (lag >= 1.0/186.0 && tickCounter == 187.0) ) {
 			accumulator -= delta;
-			if (tickCounter == 61 && lag >= 1.0 / 60.0) {
+			if (tickCounter == 187.0 && lag >= 1.0 / 186.0) {
 				tickCounter = 1;
 				_skip = true;
+			}
+			else if (tickCounter == 187) {
+				tickCounter = 1;
 			}
 			{ // character, delta
 				if (Globals::get().camLock) {
@@ -379,11 +380,11 @@ int main() {
 			} // character.physicsProcess(delta)
 			if (_skip) {
 				Physics::get().updateSim(magicDbl); // magical time advance
+
 			}
 			else {
 				Physics::get().updateSim(delta); // regular time advance
 			}
-			
 			 // move sim forward by delta
 			ECS::get().updatePhysics(); // update entities with physics state
 			{
@@ -395,7 +396,10 @@ int main() {
 					Globals::get().camera->Position = pos;
 				}
 			}
-			if (lag >= magicDbl) break;
+			if (_skip) {
+				_skip = false; 
+				break;
+			}
 			{
 				if (Input::get().getValue(GLFW_KEY_RIGHT)) bf += 0.02f;
 				if (Input::get().getValue(GLFW_KEY_LEFT)) bf -= 0.02f;
