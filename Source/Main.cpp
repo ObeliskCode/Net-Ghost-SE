@@ -26,7 +26,7 @@ int main() {
 	Globals::get().animCellShader = &animCellProgram;
 
 	Entity* e;
-	
+
 	Model* panel = new Model("floor/floor.dae");
 	e = ECS::get().linkEntity(new Entity(panel, &rigProgram, Globals::get().camera));
 	e->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
@@ -278,7 +278,7 @@ int main() {
 	double deltaTime = 0.0f;
 	int tickCounter = 1;
 	bool _skip = false;
-	
+
 	double batRot = 0.0f;
 
 	float bf = 0.0f;
@@ -306,10 +306,9 @@ int main() {
 			prevTime = crntTime;
 			counter = 0;
 		}
-		/* FPS counter */
 
 		glfwPollEvents(); // get inputs
-		
+
 		/* TICK BASED EVENTS */ // 1. calc physics update -> 2. game logic
 		deltaTime = crntTime - lastFrame;
 		lastFrame = crntTime;
@@ -319,15 +318,20 @@ int main() {
 
 		accumulator += deltaTime;
 		const double lag = 1 + accumulator / delta;
-		while (accumulator >= delta || (lag >= 1.0/186.0 && tickCounter == 187.0) ) {
-			accumulator -= delta;
+		while (accumulator >= delta || (lag >= 1.0 / 186.0 && tickCounter == 187.0)) {
 			if (tickCounter == 187.0 && lag >= 1.0 / 186.0) {
 				tickCounter = 1;
 				_skip = true;
 			}
 			else if (tickCounter == 187) {
 				tickCounter = 1;
+				accumulator -= delta;
 			}
+			else {
+				accumulator -= delta;
+			}
+
+
 			{ // character, delta
 				if (Globals::get().camLock) {
 					btRigidBody* body = character->getBody();
@@ -358,12 +362,18 @@ int main() {
 					if (Input::get().getValue(GLFW_KEY_SPACE)) {
 						if (cd == 0) {
 							cd = 192;
-							body->applyCentralImpulse(btVector3(0.0f,9.0f,0.0f));
+							body->applyCentralImpulse(btVector3(0.0f, 9.0f, 0.0f));
 						}
 					}
-					
 
-					float accel = delta * 60.0f;
+					float accel;
+					if (_skip) {
+						accel = magicDbl * 60.0f;
+					}
+					else {
+						accel = delta * 60.0f;
+					}
+
 					if (glm::length(vel) > 0) {
 						vel = glm::normalize(vel);
 						vel *= accel;
@@ -385,7 +395,7 @@ int main() {
 			else {
 				Physics::get().updateSim(delta); // regular time advance
 			}
-			 // move sim forward by delta
+			// move sim forward by delta
 			ECS::get().updatePhysics(); // update entities with physics state
 			{
 				if (Globals::get().camLock) {
@@ -396,10 +406,6 @@ int main() {
 					Globals::get().camera->Position = pos;
 				}
 			}
-			if (_skip) {
-				_skip = false; 
-				break;
-			}
 			{
 				if (Input::get().getValue(GLFW_KEY_RIGHT)) bf += 0.02f;
 				if (Input::get().getValue(GLFW_KEY_LEFT)) bf -= 0.02f;
@@ -407,7 +413,13 @@ int main() {
 				if (bf > 1.0f) bf = 1.0f;
 				mator->SetBlendFactor(bf);
 			}
-			gameTick(delta); // post-physics game logic.
+			if (_skip) {
+				gameTick(magicDbl); // post-physics game logic.
+			}
+			else {
+				gameTick(delta); // post-physics game logic.
+			}
+
 			{ // do rayCast
 
 				glm::vec3 ppp = Globals::get().camera->Position + (Globals::get().camera->Orientation * 12.5f);
@@ -446,7 +458,8 @@ int main() {
 							}
 						}
 					}
-				} else if (prevID != 0) {
+				}
+				else if (prevID != 0) {
 					Entity* prevEnt = ECS::get().getEntity(prevID);
 					if (prevEnt) {
 						prevEnt->resetBit(COMPONENT_BIT_STENCIL);
@@ -463,20 +476,26 @@ int main() {
 					is_smoking = true;
 					cig_anim = true;
 					cig_anim_time = 0.0f;
-				}				
-				
+				}
+
 				if (is_smoking) {
-					cig_anim_time += delta;
+					if (_skip) {
+						cig_anim_time += magicDbl;
+					}
+					else {
+						cig_anim_time += delta;
+					}
 					if (cig_anim_time >= 2.0f) cig_anim = false;
 					if (cig_anim_time >= 3.0f) is_smoking = false;
 				}
-				
+
 				if (cig_anim) {
 					cigEnt->m_visible = true;
-				} else cigEnt->m_visible = false;
+				}
+				else cigEnt->m_visible = false;
 
 
-				if  (cig_anim == false && is_smoking == true) {
+				if (cig_anim == false && is_smoking == true) {
 					Particle p = Particle();
 					p.setTranslation(Globals::get().camera->Position - glm::vec3(0.f, 0.25f, 0.f));
 					p.setScale(0.1f);
@@ -492,7 +511,13 @@ int main() {
 
 				// how slow is this? (update/cleanup particles)
 				for (int i = 0; i < Globals::get().particles.size(); i++) {
-					Globals::get().particles[i].update(delta);
+					if (_skip) {
+						Globals::get().particles[i].update(magicDbl);
+					}
+					else {
+						Globals::get().particles[i].update(delta);
+					}
+
 					if (Globals::get().particles[i].life >= Globals::get().particles[i].expire) {
 						Globals::get().particles.erase(Globals::get().particles.begin() + i);
 						i--;
@@ -500,13 +525,10 @@ int main() {
 				}
 
 			}
-			
+
 		}
-		/* TICK BASED EVENTS */
 
-
-		
-		/* ANIMATION UPDATES / RENDERING */
+		/* ANIMATION UPDATES */
 		// calc time since last frame for animation
 
 
@@ -520,6 +542,14 @@ int main() {
 			q3 = sin(batRot / 2);
 			batEnt->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
 		}
+
+		if (_skip) {
+			_skip = false;
+			break;
+		} // skip rendering on lag tick
+
+
+		/* RENDERING */
 
 		renderScene();
 
@@ -547,7 +577,7 @@ int main() {
 
 		// emitter->drawparticles()
 		glEnable(GL_BLEND);
-		std::sort(Globals::get().particles.begin(), Globals::get().particles.end(),Less);
+		std::sort(Globals::get().particles.begin(), Globals::get().particles.end(), Less);
 		for (int i = 0; i < Globals::get().particles.size(); i++) {
 			Globals::get().particles[i].Draw(partProgram, *Globals::get().camera);
 		}
@@ -570,7 +600,7 @@ int main() {
 
 	glfwTerminate();
 	return 0;
-	
+
 }
 
 void gameTick(double delta) {
@@ -721,24 +751,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	Input::get().setValue(key, true);
 	switch (key) {
-		case GLFW_KEY_ESCAPE:
-			glfwSetWindowShouldClose(window, true);
-			break;
-		case GLFW_KEY_X:
-			Globals::get().cursorLocked = !Globals::get().cursorLocked;
-			break;
-		case GLFW_KEY_Z:
-			Globals::get().camLock = !Globals::get().camLock;
-			break;
-		case GLFW_KEY_O:
-			Globals::get().drawWires = !Globals::get().drawWires;
-			break;
-		case GLFW_KEY_F10:
-			glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
-			break;
-		case GLFW_KEY_F9:
-			glfwSetWindowMonitor(window, NULL, 100, 100, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
-			break;
+	case GLFW_KEY_ESCAPE:
+		glfwSetWindowShouldClose(window, true);
+		break;
+	case GLFW_KEY_X:
+		Globals::get().cursorLocked = !Globals::get().cursorLocked;
+		break;
+	case GLFW_KEY_Z:
+		Globals::get().camLock = !Globals::get().camLock;
+		break;
+	case GLFW_KEY_O:
+		Globals::get().drawWires = !Globals::get().drawWires;
+		break;
+	case GLFW_KEY_F10:
+		glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+		break;
+	case GLFW_KEY_F9:
+		glfwSetWindowMonitor(window, NULL, 100, 100, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+		break;
 
 	}
 }
