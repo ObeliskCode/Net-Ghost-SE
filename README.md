@@ -5,7 +5,7 @@
 ### Author: Noel Garcia - n6garcia@ucsd.edu - https://noeldev.site/
 
 ## Features Implemented 
-#### Animated 3D models, Particle System, Rigid Body Physics, Lighting/Shadows
+#### Animated 3D models, Particle System, Rigid Body Physics, Lighting/Shadows, Float Error Tick System, Cell Shading
 
 ## Controls
 WASD: Camera movement / walk
