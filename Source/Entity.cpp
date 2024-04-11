@@ -133,6 +133,7 @@ void Entity::DrawShadow(float delta) {
 		skMdl->Draw(*Globals::get().animShadowShader, *camera, translation, rotation, scale);
 	}
 	else if (m_signature[COMPONENT_BIT_MODEL]) {
+		Globals::get().shadowShader->Activate();
 		mdl->Draw(*Globals::get().shadowShader, *camera, translation, rotation, scale);
 	}
 
