@@ -9,7 +9,7 @@
 #include "Animator.h"
 #include "Globals.h"
 
-#include "btBulletDynamicsCommon.h"
+#include "bullet/btBulletDynamicsCommon.h"
 
 #include <bitset>
 
