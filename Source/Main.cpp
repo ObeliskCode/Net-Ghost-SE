@@ -211,12 +211,12 @@ int main() {
 
 	std::vector<std::string> faces =
 	{
-			"skybox/right.jpg",
-			"skybox/left.jpg",
-			"skybox/top.jpg",
-			"skybox/bottom.jpg",
-			"skybox/front.jpg",
-			"skybox/back.jpg"
+			"models/skybox/right.jpg",
+			"models/skybox/left.jpg",
+			"models/skybox/top.jpg",
+			"models/skybox/bottom.jpg",
+			"models/skybox/front.jpg",
+			"models/skybox/back.jpg"
 	};
 	Skybox* sky = new Skybox(faces);
 
@@ -269,6 +269,9 @@ int main() {
 	double timeDiff;
 	unsigned int counter = 0;
 
+	boost::accumulators::accumulator_set<double, boost::accumulators::features<>> accum;
+	accum(1.54);
+
 	double lastFrame = timeStart;
 	double delta = 1.0 / 187.0;
 	long double accumulator = 0.0; // guarantees atleast double precision
@@ -277,7 +280,6 @@ int main() {
 	bool _skip = false;
 
 	double batRot = 0.0f;
-
 	float bf = 0.0f;
 
 	unsigned int prevID = 0;

@@ -44,7 +44,8 @@ public:
 	Skeleton(const std::string animationPath, SkeletalModel* model)
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate | aiProcess_LimitBoneWeights);
+		std::string path = "models/" + animationPath;
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_LimitBoneWeights);
 		assert(scene && scene->mRootNode);
 
 		aiMatrix4x4 globalTransformation = scene->mRootNode->mTransformation;
@@ -69,7 +70,8 @@ public:
 	void addAnimation(const std::string animationPath, SkeletalModel* model) 
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate | aiProcess_LimitBoneWeights);
+		std::string path = "models/" + animationPath;
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_LimitBoneWeights);
 		assert(scene && scene->mRootNode);
 
 		// ON faith we do not import skeleton!

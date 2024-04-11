@@ -16,6 +16,7 @@ SkeletalModel::~SkeletalModel() {
 void SkeletalModel::loadModel(std::string path)
 {
     Assimp::Importer import;
+    path = "models/" + path;
     //const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_LimitBoneWeights);// | aiProcess_RemoveRedundantMaterials | aiProcess_OptimizeMeshes | aiProcess_FindInvalidData);
 

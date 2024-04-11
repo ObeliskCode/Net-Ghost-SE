@@ -14,10 +14,13 @@ std::string get_file_contents(const char* filename) {
 	throw(errno);
 }
 
-Shader::Shader(const char* vertexFile, const char* fragmentFile) {
+Shader::Shader(std::string vertexFile, std::string fragmentFile) {
 
-	std::string vertexCode = get_file_contents(vertexFile);
-	std::string fragmentCode = get_file_contents(fragmentFile);
+	const char* vertSrc = ("shaders/" + vertexFile).c_str();
+	const char* fragSrc = ("shaders/" + fragmentFile).c_str();
+
+	std::string vertexCode = get_file_contents(vertSrc);
+	std::string fragmentCode = get_file_contents(fragSrc);
 
 	const char* vertexSource = vertexCode.c_str();
 	const char* fragmentSource = fragmentCode.c_str();
