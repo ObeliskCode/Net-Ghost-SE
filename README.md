@@ -37,10 +37,10 @@ git clone https://github.com/assimp/assimp.git
 cd assimp
 cmake CMakeLists.txt 
 cmake --build .
-cp -r include OBELISK_DIR/Libraries/assimp/
+cp -r include OBELISK_DIR/Libraries/include/
 cp bin/Debug/assimp-vc143-mtd.dll "OBELISK_DIR/3D OpenGL Engine/assimp-vc143-mtd.dll"
-cp lib/Debug/assimp-vc143-mtd.lib OBELISK_DIR/Libraries/assimp/lib/assimp-vc143-mtd.lib
-cp lib/Debug/assimp-vc143-mtd.exp OBELISK_DIR/Libraries/assimp/lib/assimp-vc143-mtd.exp
+cp lib/Debug/assimp-vc143-mtd.lib OBELISK_DIR/Libraries/lib/assimp-vc143-mtd.lib
+cp lib/Debug/assimp-vc143-mtd.exp OBELISK_DIR/Libraries/lib/assimp-vc143-mtd.exp
 ```
 4. Install Bullet Physics [https://github.com/bulletphysics/bullet3] to Libraries
 ```bash
@@ -49,7 +49,8 @@ cp lib/Debug/assimp-vc143-mtd.exp OBELISK_DIR/Libraries/assimp/lib/assimp-vc143-
 #Change Build to Release x64
 #Edit C/C++->Code Generation so that Runtime Library is set to Multi-threaded/MT
 #Right Click and Build only projects BulletCollision,BulletDynamics & LinearMath
-#Copy lib files to Libraries/bullet/lib/ and source files to Libraries/bullet/include/ (files within lib/ and src/ folders)
+#Copy lib files to Libraries/lib/ and source folder to Libraries/include/ (files within lib/ and src/ folders)
 ```
-5. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
-6. Write Code!
+5. install Boost to Libraries/boost_x_xx_x
+6. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
+7. Write Code!
