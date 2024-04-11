@@ -52,5 +52,6 @@ cp lib/Debug/assimp-vc143-mtd.exp OBELISK_DIR/Libraries/lib/assimp-vc143-mtd.exp
 #Copy lib files to Libraries/lib/ and source folder to Libraries/include/ (files within lib/ and src/ folders)
 ```
 5. install Boost to Libraries/boost_x_xx_x
-6. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
-7. Write Code!
+6. install glm to Libraries/include/
+7. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
+8. Write Code!
