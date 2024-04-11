@@ -311,8 +311,7 @@ int main() {
 		lastFrame = crntTime;
 
 		// Note: floating point should be renamed to floating transform point because subratction isn't guarenteed
-		// a real floating point is impossible. accumulator thus accumulutas ERROR which should be accounted for! 45321!
-		// Quad Precision is necessary for accumulator, TODO find lib. (boost?)
+		// a real floating point is impossible. accumulator as a double thus accumulutas ERROR which should be accounted for! 45321!
 
 		accum(deltaTime);
 		while (boost::accumulators::sum(accum) >= delta) {
