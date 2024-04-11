@@ -269,12 +269,10 @@ int main() {
 	double timeDiff;
 	unsigned int counter = 0;
 
-	boost::accumulators::accumulator_set<double, boost::accumulators::features<>> accum;
-	accum(1.54);
+	boost::accumulators::accumulator_set<double, boost::accumulators::stats<boost::accumulators::tag::sum>> accum;
 
 	double lastFrame = timeStart;
 	double delta = 1.0 / 187.0;
-	long double accumulator = 0.0; // guarantees atleast double precision
 	double deltaTime = 0.0f;
 	int tickCounter = 0;
 	bool _skip = false;
@@ -316,16 +314,16 @@ int main() {
 		// a real floating point is impossible. accumulator thus accumulutas ERROR which should be accounted for! 45321!
 		// Quad Precision is necessary for accumulator, TODO find lib. (boost?)
 
-		accumulator += deltaTime;
-		while (accumulator >= delta) {
+		accum(deltaTime);
+		while (boost::accumulators::sum(accum) >= delta) {
 			tickCounter++;
 			if (tickCounter == 187.0) {
 				tickCounter = 0;
-				accumulator -= delta;
+				accum(-delta);
 				_skip = true;
 			}
 			else {
-				accumulator -= delta;
+				accum(-delta);
 			}
 
 			{ // character, delta

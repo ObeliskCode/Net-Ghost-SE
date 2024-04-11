@@ -25,7 +25,9 @@
 
 #include "bullet/btBulletDynamicsCommon.h"
 
-#include "boost/accumulators/accumulators.hpp"
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
+#include <boost/accumulators/statistics/sum.hpp>
 
 #include "Globals.h"
 #include "Shader.h"
