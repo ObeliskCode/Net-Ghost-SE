@@ -28,8 +28,8 @@ F9: windowed
 
 F10: fullscreen
 
-Note: Older versions of every library but Boost are included.
 ## Build Instructions 
+Note: Older versions of every library but Boost are included.
 1. Download Visual Studio 2022.
 2. Open GLEW_GLFW.zip and install both GLEW & GLFW on your system, Instructions inside Zip folder.
 3. Install Assimp [https://assimp-docs.readthedocs.io/en/latest/about/installation.html] to Libraries
