@@ -38,7 +38,7 @@ cd assimp
 cmake CMakeLists.txt 
 cmake --build .
 cp -r include OBELISK_DIR/Libraries/include/
-cp bin/Debug/assimp-vcxxx-mtd.dll "OBELISK_DIR/3D OpenGL Engine/assimp-vcxxx-mtd.dll"
+cp bin/Debug/assimp-vcxxx-mtd.dll "OBELISK_DIR/3D_OpenGL_Engine/assimp-vcxxx-mtd.dll"
 cp lib/Debug/assimp-vcxxx-mtd.lib OBELISK_DIR/Libraries/lib/assimp-vcxxx-mtd.lib
 ```
 4. Install Bullet Physics [https://github.com/bulletphysics/bullet3] to Libraries
@@ -53,4 +53,5 @@ cp lib/Debug/assimp-vcxxx-mtd.lib OBELISK_DIR/Libraries/lib/assimp-vcxxx-mtd.lib
 5. install Boost to Libraries/boost_x_xx_x
 6. install glm to Libraries/include/
 7. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
-8. Write Code!
+8. Download models from Obelisk-Models repo and copy to OBELISK_DIR/3D_OpenGL_Enginge/models/
+9. Write Code!
