@@ -70,7 +70,7 @@ Particle::Particle() {
 	}
 
 	if (sprite == 0) {
-		sprite = new Texture("smoke/smoke.png", "diffuse", 0);
+		sprite = new Texture("models/smoke/smoke.png", "diffuse", 0);
 	}
 
 };
