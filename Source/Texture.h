@@ -9,7 +9,7 @@
 #include <assimp/scene.h>
 
 #include "stb_image.h"
-#include"shader.h"
+#include "Shader.h"
 
 class Texture
 {

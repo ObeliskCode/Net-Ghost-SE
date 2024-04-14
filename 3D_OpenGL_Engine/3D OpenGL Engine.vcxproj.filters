@@ -148,49 +148,49 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="mdlFrag.glsl">
+    <None Include="shaders\animShadowVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="rigVert.glsl">
+    <None Include="shaders\animVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="wireVert.glsl">
+    <None Include="shaders\cellFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="wireFrag.glsl">
+    <None Include="shaders\lightFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="animVert.glsl">
+    <None Include="shaders\mdlFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="partVert.glsl">
+    <None Include="shaders\noTexFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="skyVert.glsl">
+    <None Include="shaders\partFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="skyFrag.glsl">
+    <None Include="shaders\partVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="noTexFrag.glsl">
+    <None Include="shaders\rigVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="lightFrag.glsl">
+    <None Include="shaders\shadowFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="partFrag.glsl">
+    <None Include="shaders\shadowVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="shadowVert.glsl">
+    <None Include="shaders\skyFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="shadowFrag.glsl">
+    <None Include="shaders\skyVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="animShadowVert.glsl">
+    <None Include="shaders\wireFrag.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="cellFrag.glsl">
+    <None Include="shaders\wireVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

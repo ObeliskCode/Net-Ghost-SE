@@ -200,21 +200,21 @@
     <ClInclude Include="..\Source\Wire.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="animShadowVert.glsl" />
-    <None Include="animVert.glsl" />
-    <None Include="cellFrag.glsl" />
-    <None Include="shadowFrag.glsl" />
-    <None Include="shadowVert.glsl" />
-    <None Include="lightFrag.glsl" />
-    <None Include="noTexFrag.glsl" />
-    <None Include="partFrag.glsl" />
-    <None Include="partVert.glsl" />
-    <None Include="mdlFrag.glsl" />
-    <None Include="rigVert.glsl" />
-    <None Include="skyFrag.glsl" />
-    <None Include="skyVert.glsl" />
-    <None Include="wireFrag.glsl" />
-    <None Include="wireVert.glsl" />
+    <None Include="shaders\animShadowVert.glsl" />
+    <None Include="shaders\animVert.glsl" />
+    <None Include="shaders\cellFrag.glsl" />
+    <None Include="shaders\lightFrag.glsl" />
+    <None Include="shaders\mdlFrag.glsl" />
+    <None Include="shaders\noTexFrag.glsl" />
+    <None Include="shaders\partFrag.glsl" />
+    <None Include="shaders\partVert.glsl" />
+    <None Include="shaders\rigVert.glsl" />
+    <None Include="shaders\shadowFrag.glsl" />
+    <None Include="shaders\shadowVert.glsl" />
+    <None Include="shaders\skyFrag.glsl" />
+    <None Include="shaders\skyVert.glsl" />
+    <None Include="shaders\wireFrag.glsl" />
+    <None Include="shaders\wireVert.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
