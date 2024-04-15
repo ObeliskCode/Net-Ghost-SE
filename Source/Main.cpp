@@ -43,12 +43,12 @@ int main() {
 	ECS::get().registerComponents(e);
 
 	Model* bench = new Model("bench/bench.dae");
-	//bench->setUnitConversion(4.5f);
-	//bench->setOffset(glm::vec3(0.0f, -2.5f, 0.0f)); // since updatePhysics puts object bottom at middle of physics object, translate by halfHeight
 	float CosHalfPi = sqrt(2.f) / 2.f;
-	//bench->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
 	e = ECS::get().linkEntity(new Entity(bench, &rigProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 2.5f, 5.0f, 5.0f, 5.0f + 2.5f, 28.f)); // whole lot of maths
+	e->transform->setScale(glm::vec3(4.5f));
+	e->transform->setTranslation(glm::vec3(0.0f, -2.5f, 0.0f));
+	e->transform->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
 	e->addWireFrame(2.0f, 2.5f, 5.0f);
 	ECS::get().registerComponents(e);
 
@@ -65,11 +65,11 @@ int main() {
 	ECS::get().registerComponents(cigEnt);
 
 	Model* dumpster = new Model("dumpster/dumpster.dae");
-	//dumpster->setUnitConversion(6.5f);
-	//dumpster->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
-	//dumpster->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
 	e = ECS::get().linkEntity(new Entity(dumpster, &rigProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 3.0f, 4.0f, 6.0f, 25.0f, 5.0f + 4.0f, 35.f)); // whole lot of maths
+	e->transform->setScale(glm::vec3(6.5f));
+	e->transform->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
+	e->transform->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
 	e->addWireFrame(3.0f, 4.0f, 6.0f);
 	ECS::get().registerComponents(e);
 
@@ -80,10 +80,10 @@ int main() {
 	ECS::get().registerComponents(e);
 
 	Model* tent = new Model("tent/tent.dae");
-	//tent->setUnitConversion(7.f);
-	//tent->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
 	e = ECS::get().linkEntity(new Entity(tent, &rigProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 6.0f, 4.0f, 6.0f, -15.0f, 5.0f + 4.0f, 10.0f)); // whole lot of maths
+	e->transform->setScale(glm::vec3(7.f));
+	e->transform->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
 	e->addWireFrame(6.0f, 4.0f, 6.0f);
 	ECS::get().registerComponents(e);
 

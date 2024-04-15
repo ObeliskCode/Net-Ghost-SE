@@ -108,6 +108,11 @@ class Entity {
 		std::string getType();
 		void setID(unsigned int ID);
 		unsigned int getID();
+
+		void setBit(std::size_t pos);
+		void resetBit(std::size_t pos);
+		const bool& getBit(std::size_t pos); // should this be const reference lol
+
 		void addWire(Wire* w);
 		void addWireFrame(float halfWidth, float halfHeight, float halfLength);
 		void updatePhysics();
@@ -116,20 +121,8 @@ class Entity {
 		void Draw();
 		void addBody(btRigidBody* b);
 		btRigidBody* getBody();
-
-		void setBit(std::size_t pos);
-		void resetBit(std::size_t pos);
-		const bool& getBit(std::size_t pos); // should this be const reference lol
-
+		
 		Transform* transform;
-		Transform* phystransform;
-		Model* mdl;
-		SkeletalModel* skMdl;
-		Animator* mator;
-		std::vector<Wire*> wires;
-		btRigidBody* body;
-		Shader* shader;
-		Camera* camera;
 
 		bool m_visible;
 		bool m_surface;
@@ -150,6 +143,14 @@ class Entity {
 
 		//std::unordered_map<unsigned int, void*> pointerBuffer; // make entity class into typless pointer container? <pointer_type_enum, void_casted_pointer>
 
+		Transform* phystransform;
+		Model* mdl;
+		SkeletalModel* skMdl;
+		Animator* mator;
+		std::vector<Wire*> wires;
+		btRigidBody* body;
+		Shader* shader;
+		Camera* camera;
 };
 
 
