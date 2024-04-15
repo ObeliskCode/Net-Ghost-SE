@@ -157,6 +157,7 @@
     <ClCompile Include="..\Source\Entity.cpp" />
     <ClCompile Include="..\Source\Globals.cpp" />
     <ClCompile Include="..\Source\Input.cpp" />
+    <ClCompile Include="..\Source\Light.cpp" />
     <ClCompile Include="..\Source\Particle.cpp" />
     <ClCompile Include="..\Source\Physics.cpp" />
     <ClCompile Include="..\Source\SkeletalMesh.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="..\Source\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\Light.h" />
     <ClInclude Include="..\Source\Skeleton.h" />
     <ClInclude Include="..\Source\Animator.h" />
     <ClInclude Include="..\Source\Bone.h" />

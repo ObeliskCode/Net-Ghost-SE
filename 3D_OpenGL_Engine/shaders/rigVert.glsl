@@ -18,15 +18,14 @@ out vec4 fragPosLight;
 uniform mat4 camMatrix;
 uniform mat4 model;
 
-uniform mat4 translation;
-uniform mat4 rotation;
-uniform mat4 scale;
+uniform mat4 transform;
+uniform mat4 ntransform;
 
 uniform mat4 lightSpaceMatrix;
 
 void main(){
 	// calculates physical position within world
-	vec4 trunc = translation * rotation * scale * model * vec4(aPos, 1.0f);
+	vec4 trunc = transform * model * vec4(aPos, 1.0f);
 	crntPos =  trunc.xyz / trunc.w;
 	//crntPos = vec3(trunc);
 
@@ -37,7 +36,7 @@ void main(){
 
 	// Normals need to be transformed aswell (will i need to apply model, rotations and non-uniform scales here too?)
 	// normals should be translation and uniform scaling safe.
-	Normal = normalize(vec3(rotation * scale * model * vec4(aNormal, 0.0)));
+	Normal = normalize(vec3(ntransform * model * vec4(aNormal, 0.0)));
 
 	texCoord = aTex;
 }

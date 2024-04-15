@@ -22,16 +22,15 @@ public:
 	SkeletalVBO* m_VBO;
 	EBO* m_EBO;
 
-	SkeletalMesh(std::vector <SkeletalVertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& transformation);
+	SkeletalMesh(std::vector <SkeletalVertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& model);
 	~SkeletalMesh();
 
 	void Draw
 	(
 		Shader& shader,
 		Camera& camera,
-		glm::vec3& translation,
-		glm::quat& rotation,
-		glm::vec3& scale
+		glm::mat4 transform,
+		glm::mat4 ntransform
 	);
 };
 

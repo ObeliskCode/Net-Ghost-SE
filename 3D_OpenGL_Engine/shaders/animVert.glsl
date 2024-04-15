@@ -21,9 +21,8 @@ out vec4 fragPosLight;
 uniform mat4 camMatrix;
 uniform mat4 model;
 
-uniform mat4 translation;
-uniform mat4 rotation;
-uniform mat4 scale;
+uniform mat4 transform;
+uniform mat4 ntransform;
 
 uniform mat4 lightSpaceMatrix;
 
@@ -58,9 +57,9 @@ void main(){
     }
 
     // fix later, is this correct?
-    Normal = vec3(rotation * scale * vec4(totalNormal,0.0f));
+    Normal = vec3(ntransform * vec4(totalNormal,0.0f));
 
-    vec4 worldPos = translation * rotation * scale * totalPosition;
+    vec4 worldPos = transform * totalPosition;
      
     // transform not used since baked into bone transforms? w truncated!
     crntPos = worldPos.xyz / worldPos.w;

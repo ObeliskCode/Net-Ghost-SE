@@ -37,23 +37,14 @@ Wire::~Wire() {
 }
 
 void Wire::Draw(Shader& shader, Camera& camera,
-	glm::vec3& translation,
-	glm::quat& rotation,
-	glm::vec3& scale) {
+	glm::mat4 transform) {
 	shader.Activate();
 	glBindVertexArray(VAO);
 
 	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
 
-	// Transform the matrices to their correct form //ifi
-	glm::mat4 trans = glm::translate(glm::mat4(1.0f), translation);
-	glm::mat4 rot = glm::mat4_cast(rotation);
-	glm::mat4 sca = glm::scale(glm::mat4(1.0f), scale);
-
 	// Push the matrices to the vertex shader
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 
 	glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
 }

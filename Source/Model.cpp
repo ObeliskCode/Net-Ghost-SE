@@ -118,14 +118,9 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>
 }
 
 void Model::Draw(Shader& shader, Camera& camera,
-    glm::vec3& translation,
-    glm::quat& rotation,
-    glm::vec3& scale){
-    glm::vec3 finalTrans = translation + offset;
-    glm::vec3 finalScale = scale * unitConversion;
-    glm::quat finalRot = rotation * orientation; // left or right multiply?
+    glm::mat4& transform, glm::mat4& ntransform){
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i]->Draw(shader, camera, finalTrans, finalRot, finalScale);
+        meshes[i]->Draw(shader, camera, transform, ntransform);
     } 
 }
 
@@ -199,16 +194,4 @@ glm::mat4 Model::aiMat4toGLM(aiMatrix4x4t<float>& matrix) {
     m[3][3] = matrix.d4;
 
     return m;
-}
-
-void Model::setUnitConversion(float uc) {
-    Model::unitConversion = uc;
-}
-
-void Model::setOffset(glm::vec3 offset) {
-    Model::offset = offset;
-}
-
-void Model::setOrientation(glm::quat orientation) {
-    Model::orientation = orientation;
 }

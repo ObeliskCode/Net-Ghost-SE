@@ -10,9 +10,7 @@ class Wire {
 		Wire(glm::vec3 x_0, glm::vec3 x_1);
 		~Wire();
 		void Draw(Shader& shader, Camera& camera,
-			glm::vec3& translation,
-			glm::quat& rotation,
-			glm::vec3& scale);
+			glm::mat4 transform);
 
 	private:
 		std::vector <float> Vert;

@@ -45,6 +45,7 @@
 #include "Skybox.h"
 #include "SkeletalModel.h"
 #include "Skeleton.h"
+#include "Light.h"
 #include "Animator.h"
 #include "Input.h"
 

@@ -10,6 +10,7 @@ Entity::Entity(Model* m, Shader* s, Camera* c) {
 	body = nullptr;
 	shader = s;
 	camera = c;
+	transform = new Transform();
 }
 
 Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Camera* c) {
@@ -22,6 +23,7 @@ Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Camera* c) {
 	body = nullptr;
 	shader = s;
 	camera = c;
+	transform = new Transform();
 }
 
 Entity::Entity(Camera* c) {
@@ -33,6 +35,7 @@ Entity::Entity(Camera* c) {
 	body = nullptr;
 	shader = nullptr;
 	camera = c;
+	transform = new Transform();
 }
 
 // unexpected behavior if entity is deleted without using ECS::deleteEntity();
@@ -64,6 +67,7 @@ void Entity::addBody(btRigidBody* b) {
 		setBit(COMPONENT_BIT_DYNAMIC);
 	}
 	body = b;
+	phystransform = new Transform();
 	updatePhysics();
 }
 
@@ -123,18 +127,29 @@ void Entity::addWireFrame(float halfWidth, float halfHeight, float halfLength) {
 
 void Entity::DrawShadow(float delta) {
 	if (!m_visible) return;
+	glm::mat4 finaltransform;
+	glm::mat4 finalntransform;
+	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+		finaltransform = phystransform->getMatrix() * transform->getMatrix();
+		finalntransform = phystransform->getNormalMatrix() * transform->getNormalMatrix();
+	}
+	else {
+		finaltransform = transform->getMatrix();
+		finalntransform = transform->getNormalMatrix();
+	}
 	if (m_signature[COMPONENT_BIT_ANIMATED]) {
 		mator->UpdateAnimation(delta);
 
 		Globals::get().animShadowShader->Activate();
 		const auto& transforms = mator->GetFinalBoneMatrices();
-		for (int i = 0; i < transforms.size(); ++i)
+		for (int i = 0; i < transforms.size(); ++i) {
 			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
-		skMdl->Draw(*Globals::get().animShadowShader, *camera, translation, rotation, scale);
+		}
+		skMdl->Draw(*Globals::get().animShadowShader, *camera, finaltransform, finalntransform);
 	}
 	else if (m_signature[COMPONENT_BIT_MODEL]) {
 		Globals::get().shadowShader->Activate();
-		mdl->Draw(*Globals::get().shadowShader, *camera, translation, rotation, scale);
+		mdl->Draw(*Globals::get().shadowShader, *camera, finaltransform, finalntransform);
 	}
 
 }
@@ -144,8 +159,21 @@ void Entity::DrawStencil() {
 	if (!m_visible) return;
 	if (m_signature[COMPONENT_BIT_STENCIL]) {
 		if (m_signature[COMPONENT_BIT_MODEL]) {
-			glm::vec3 upScale = scale * 1.05f;
-			mdl->Draw(*Globals::get().cellShader, *camera, translation, rotation, upScale);
+			glm::vec3 oldScale = transform->getScale();
+			glm::vec3 upScale = oldScale * 1.05f;
+			transform->setScale(upScale);
+			glm::mat4 finaltransform;
+			glm::mat4 finalntransform;
+			if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+				finaltransform = phystransform->getMatrix() * transform->getMatrix();
+				finalntransform = phystransform->getNormalMatrix() * transform->getNormalMatrix();
+			}
+			else {
+				finaltransform = transform->getMatrix();
+				finalntransform = transform->getNormalMatrix();
+			}
+			mdl->Draw(*Globals::get().cellShader, *camera, finaltransform, finalntransform);
+			transform->setScale(oldScale);
 		}
 	}
 }
@@ -153,31 +181,52 @@ void Entity::DrawStencil() {
 
 void Entity::Draw() {
 	if (!m_visible) return;
+	glm::mat4 finaltransform;
+	glm::mat4 finalntransform;
+	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+		finaltransform = phystransform->getMatrix() * transform->getMatrix();
+		finalntransform = phystransform->getNormalMatrix() * transform->getNormalMatrix();
+	}
+	else {
+		finaltransform = transform->getMatrix();
+		finalntransform = transform->getNormalMatrix();
+	}
 	if (m_signature[COMPONENT_BIT_ANIMATED]) {
 		shader->Activate();
 		const auto& transforms = mator->GetFinalBoneMatrices();
-		for (int i = 0; i < transforms.size(); ++i)
+		for (int i = 0; i < transforms.size(); ++i) {
 			glUniformMatrix4fv(glGetUniformLocation(shader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
-		skMdl->Draw(*shader, *camera, translation, rotation, scale);
+		}
+		skMdl->Draw(*shader, *camera, finaltransform, finalntransform);
 	}
 	else if (m_signature[COMPONENT_BIT_MODEL]) {
 		if (m_surface) {
 			glStencilFunc(GL_ALWAYS, 0, 0xFF);
 			glStencilMask(0xFF);
-			mdl->Draw(*shader, *camera, translation, rotation, scale);
+			mdl->Draw(*shader, *camera, finaltransform, finalntransform);
 			glStencilFunc(GL_ALWAYS, 1, 0xFF);
 			glStencilMask(0xFF);
 		}
 		else {
-			mdl->Draw(*shader, *camera, translation, rotation, scale);
+			mdl->Draw(*shader, *camera, finaltransform, finalntransform);
+		}
+	}
+	if (m_signature[COMPONENT_BIT_STATIC]) {
+		if (Globals::get().drawWires) {
+			for (int i = 0; i < wires.size(); i++) {
+				glm::mat4 tran = phystransform->getMatrix();
+				wires[i]->Draw(*Globals::get().wireShader, *camera, tran);
+			}
+		}
+	}
+	else {
+		if (Globals::get().drawWires) {
+			for (int i = 0; i < wires.size(); i++) {
+				wires[i]->Draw(*Globals::get().wireShader, *camera, finaltransform);
+			}
 		}
 	}
 
-	if (Globals::get().drawWires) {
-		for (int i = 0; i < wires.size(); i++) {
-			wires[i]->Draw(*Globals::get().wireShader, *camera, translation, rotation, scale);
-		}
-	}
 
 }
 
@@ -188,19 +237,8 @@ void Entity::updatePhysics() {
 		//if (body && body->getMotionState())
 		body->getMotionState()->getWorldTransform(trans);
 
-		translation = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
-		rotation = glm::quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ());
+		phystransform->setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
+		phystransform->setRotation(glm::quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ()));
 	}
 }
 
-void Entity::setTranslation(glm::vec3 translation) {
-	if (!m_signature[COMPONENT_BIT_DYNAMIC] && !m_signature[COMPONENT_BIT_STATIC]) Entity::translation = translation;
-}
-
-void Entity::setRotation(glm::quat rotation) {
-	if (!m_signature[COMPONENT_BIT_DYNAMIC] && !m_signature[COMPONENT_BIT_STATIC]) Entity::rotation = rotation;
-}
-
-void Entity::setScale(glm::vec3 scale) {
-	if (!m_signature[COMPONENT_BIT_DYNAMIC] && !m_signature[COMPONENT_BIT_STATIC]) Entity::scale = scale;
-}

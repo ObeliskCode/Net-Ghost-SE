@@ -7,9 +7,7 @@ layout(location = 4) in vec4 weights;
 
 uniform mat4 model;
 
-uniform mat4 translation;
-uniform mat4 rotation;
-uniform mat4 scale;
+uniform mat4 transform;
 
 uniform mat4 lightSpaceMatrix;
 
@@ -39,5 +37,5 @@ void main(){
         } 
     }
 
-    gl_Position =  lightSpaceMatrix * translation * rotation * scale * totalPosition;
+    gl_Position =  lightSpaceMatrix * transform * totalPosition;
 }

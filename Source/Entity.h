@@ -13,6 +13,89 @@
 
 #include <bitset>
 
+class Transform {
+public:
+	Transform() {
+		_stale = true;
+		_nstale = true;
+		transform = getMatrix();
+		ntransform = getNormalMatrix();
+	}
+	glm::mat4 transform;
+	glm::mat4 ntransform;
+
+	bool _stale;
+	bool _nstale;
+
+	void setTranslation(glm::vec3 trans) {
+		_stale = true;
+		translation = trans;
+	}
+
+	void setRotation(glm::quat rot) {
+		_stale = true;
+		_nstale = true;
+		rotation = rot;
+	}
+
+	void setScale(glm::vec3 sca) {
+		_stale = true;
+		_nstale = true;
+		scale = sca;
+	}
+
+	glm::vec3 getTranslation() {
+		return translation;
+	}
+
+	glm::quat getRotation() {
+		return rotation;
+	}
+
+	glm::vec3 getScale() {
+		return scale;
+	}
+
+
+	glm::mat4 getMatrix() {
+		if (_stale) {
+			glm::mat4 trans = glm::translate(glm::mat4(1.0f), translation);
+			glm::mat4 rot = glm::mat4_cast(rotation);
+			glm::mat4 sca = glm::scale(glm::mat4(1.0f), scale);
+
+			glm::mat4 tran = trans * rot * sca;
+
+			_stale = false;
+			transform = tran;
+			return tran;
+		}
+		else {
+			return transform;
+		}
+	}
+
+	glm::mat4 getNormalMatrix() {
+		if (_nstale) {
+			glm::mat4 rot = glm::mat4_cast(rotation);
+			glm::mat4 sca = glm::scale(glm::mat4(1.0f), scale);
+
+			glm::mat4 tran = rot * sca;
+
+			_nstale = false; 
+			ntransform = tran;
+			return tran;
+		}
+		else {
+			return ntransform;
+		}
+	}
+
+private:
+	glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+	glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+};
+
 // FIX so entity has ID at creation!
 class Entity {
 	public:
@@ -38,18 +121,21 @@ class Entity {
 		void resetBit(std::size_t pos);
 		const bool& getBit(std::size_t pos); // should this be const reference lol
 
-		// do not use these if entity is dynamic!!
-		void setTranslation(glm::vec3 translation);
-		void setRotation(glm::quat rotation);
-		void setScale(glm::vec3 scale);
+		Transform* transform;
+		Transform* phystransform;
+		Model* mdl;
+		SkeletalModel* skMdl;
+		Animator* mator;
+		std::vector<Wire*> wires;
+		btRigidBody* body;
+		Shader* shader;
+		Camera* camera;
 
 		bool m_visible;
 		bool m_surface;
 
 	private:
-		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::quat rotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
 
 		#define COMPONENT_BIT_MODEL 0
 		#define COMPONENT_BIT_ANIMATED 1
@@ -63,14 +149,10 @@ class Entity {
 		std::string m_type;
 
 		//std::unordered_map<unsigned int, void*> pointerBuffer; // make entity class into typless pointer container? <pointer_type_enum, void_casted_pointer>
-		
-		Model* mdl;
-		SkeletalModel* skMdl;
-		Animator* mator;
-		std::vector<Wire*> wires;
-		btRigidBody* body;
-		Shader* shader;
-		Camera* camera;
+
 };
+
+
+
 
 #endif

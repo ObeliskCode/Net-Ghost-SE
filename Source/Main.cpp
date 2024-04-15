@@ -29,24 +29,24 @@ int main() {
 
 	Model* panel = new Model("floor/floor.dae");
 	e = ECS::get().linkEntity(new Entity(panel, &rigProgram, Globals::get().camera));
-	e->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
-	e->setScale(glm::vec3(20.0f));
+	e->transform->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
+	e->transform->setScale(glm::vec3(20.0f));
 	e->m_surface = true;
 	ECS::get().registerComponents(e);
 
 	Model* lamp = new Model("lamp/lamp.dae");
-	lamp->setUnitConversion(0.05f);
-	lamp->setOffset(glm::vec3(0.0f, 5.0f, 0.0f));
 	e = ECS::get().linkEntity(new Entity(lamp, &lightProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
+	e->transform->setScale(glm::vec3(0.05f));
+	e->transform->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
 	e->addWireFrame(2.0f, 5.0f, 2.0f);
 	ECS::get().registerComponents(e);
 
 	Model* bench = new Model("bench/bench.dae");
-	bench->setUnitConversion(4.5f);
-	bench->setOffset(glm::vec3(0.0f, -2.5f, 0.0f)); // since updatePhysics puts object bottom at middle of physics object, translate by halfHeight
+	//bench->setUnitConversion(4.5f);
+	//bench->setOffset(glm::vec3(0.0f, -2.5f, 0.0f)); // since updatePhysics puts object bottom at middle of physics object, translate by halfHeight
 	float CosHalfPi = sqrt(2.f) / 2.f;
-	bench->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
+	//bench->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
 	e = ECS::get().linkEntity(new Entity(bench, &rigProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 2.5f, 5.0f, 5.0f, 5.0f + 2.5f, 28.f)); // whole lot of maths
 	e->addWireFrame(2.0f, 2.5f, 5.0f);
@@ -54,20 +54,20 @@ int main() {
 
 	Model* handBat = new Model("bat/bat.dae");
 	Entity* batEnt = new Entity(handBat, &rigProgram, Globals::get().handCam);
-	batEnt->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
-	batEnt->setTranslation(glm::vec3(2.0f, -2.0f, 0.0f));
+	batEnt->transform->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
+	batEnt->transform->setTranslation(glm::vec3(2.0f, -2.0f, 0.0f));
 	ECS::get().registerComponents(batEnt);
 
 	Model* cig = new Model("cig/cig.dae");
 	Entity* cigEnt = new Entity(cig, &rigProgram, Globals::get().handCam);
-	cigEnt->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
-	cigEnt->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
+	cigEnt->transform->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
+	cigEnt->transform->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
 	ECS::get().registerComponents(cigEnt);
 
 	Model* dumpster = new Model("dumpster/dumpster.dae");
-	dumpster->setUnitConversion(6.5f);
-	dumpster->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
-	dumpster->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
+	//dumpster->setUnitConversion(6.5f);
+	//dumpster->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
+	//dumpster->setOrientation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
 	e = ECS::get().linkEntity(new Entity(dumpster, &rigProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 3.0f, 4.0f, 6.0f, 25.0f, 5.0f + 4.0f, 35.f)); // whole lot of maths
 	e->addWireFrame(3.0f, 4.0f, 6.0f);
@@ -75,13 +75,13 @@ int main() {
 
 	Model* cart = new Model("cart/ShoppingCart.dae");
 	e = ECS::get().linkEntity(new Entity(cart, &rigProgram, Globals::get().camera));
-	e->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
-	e->setScale(glm::vec3(7.f));
+	e->transform->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
+	e->transform->setScale(glm::vec3(7.f));
 	ECS::get().registerComponents(e);
 
 	Model* tent = new Model("tent/tent.dae");
-	tent->setUnitConversion(7.f);
-	tent->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
+	//tent->setUnitConversion(7.f);
+	//tent->setOffset(glm::vec3(0.0f, -4.0f, 0.0f));
 	e = ECS::get().linkEntity(new Entity(tent, &rigProgram, Globals::get().camera));
 	e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 6.0f, 4.0f, 6.0f, -15.0f, 5.0f + 4.0f, 10.0f)); // whole lot of maths
 	e->addWireFrame(6.0f, 4.0f, 6.0f);
@@ -91,17 +91,17 @@ int main() {
 	Skeleton* wolfAnimation = new Skeleton("wolf/Wolf_One_dae.dae", wolf);
 	Animator* animator = new Animator(wolfAnimation);
 	e = ECS::get().linkEntity(new Entity(wolf, animator, &noTexAnimProgram, Globals::get().camera));
-	e->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
-	e->setTranslation(glm::vec3(10.0f, 5.0f, 10.0f));
+	e->transform->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+	e->transform->setTranslation(glm::vec3(10.0f, 5.0f, 10.0f));
 	ECS::get().registerComponents(e);
 
 	SkeletalModel* sit = new SkeletalModel("sit/Sitting Clap.dae");
 	Skeleton* sitAnimation = new Skeleton("sit/Sitting Clap.dae", sit);
 	Animator* sitMator = new Animator(sitAnimation);
 	e = ECS::get().linkEntity(new Entity(sit, sitMator, &animProgram, Globals::get().camera));
-	e->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-	e->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
-	e->setRotation(glm::quat(CosHalfPi, 0.0f, -CosHalfPi, 0.0f));
+	e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	e->transform->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
+	e->transform->setRotation(glm::quat(CosHalfPi, 0.0f, -CosHalfPi, 0.0f));
 	ECS::get().registerComponents(e);
 
 	SkeletalModel* walk = new SkeletalModel("jjong/Idle.dae");
@@ -110,34 +110,22 @@ int main() {
 	Animator* mator = new Animator(walkAnimation);
 	mator->QueueAnimation(1);
 	e = ECS::get().linkEntity(new Entity(walk, mator, &animProgram, Globals::get().camera));
-	e->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-	e->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
+	e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	e->transform->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
 	ECS::get().registerComponents(e);
 
-	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	glm::vec3 lightPos = glm::vec3(-20.0f, 13.2f, 28.0f);
-
+	Light lampLight = Light(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(-20.0f, 13.2f, 28.0f));
+	
 	Model* light = new Model("bulb/scene.gltf");
 	e = ECS::get().linkEntity(new Entity(light, &lightProgram, Globals::get().camera));
-	e->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-	e->setTranslation(lightPos);
+	e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	e->transform->setTranslation(glm::vec3(-20.0f, 13.2f, 28.0f));
 	ECS::get().registerComponents(e);
 
-	rigProgram.Activate();
-	glUniform4f(glGetUniformLocation(rigProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(rigProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
-	animProgram.Activate();
-	glUniform4f(glGetUniformLocation(animProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(animProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
-	noTexAnimProgram.Activate();
-	glUniform4f(glGetUniformLocation(noTexAnimProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(noTexAnimProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-
-	lightProgram.Activate();
-	glUniform4f(glGetUniformLocation(lightProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(lightProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	lampLight.linkShader(rigProgram);
+	lampLight.linkShader(animProgram);
+	lampLight.linkShader(noTexAnimProgram);
+	lampLight.linkShader(lightProgram);
 
 	//QUAD
 	e = ECS::get().linkEntity(new Entity(Globals::get().camera));
@@ -510,7 +498,7 @@ int main() {
 			float q1, q3;
 			q1 = cos(batRot / 2);
 			q3 = sin(batRot / 2);
-			batEnt->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
+			batEnt->transform->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
 		}
 
 
