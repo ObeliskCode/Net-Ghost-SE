@@ -32,7 +32,7 @@
 //inf^ x = inf; x is real
 //i believe that inf ^ 0 = inf
 //inf ^ 0 = inf explains infinite space in a point!oblivion!
-//inf ^ 0 = inf should to be pushed!!
+//inf ^ 0 = inf should be pushed!!
 
 class ComponentSet {
     public:
