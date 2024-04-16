@@ -1,5 +1,6 @@
 #include"Texture.h"
 
+// not working not used
 Texture::Texture(const aiTexture* aiTex, std::string texType, GLuint slot) {
 
 	type = texType;
@@ -38,11 +39,11 @@ Texture::Texture(const aiTexture* aiTex, std::string texType, GLuint slot) {
 
 	if (numColCh == 3)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB_ARB, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, widthImg, heightImg, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes);
 	}
 	else if (numColCh == 4)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGBA_ARB, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
 	}
 
 	//generate mip map (what does this do?)
@@ -90,7 +91,7 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 		(
 			GL_TEXTURE_2D,
 			0,
-			GL_COMPRESSED_RGBA_ARB,
+			GL_RGBA,
 			widthImg,
 			heightImg,
 			0,
@@ -104,7 +105,7 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 		(
 			GL_TEXTURE_2D,
 			0,
-			GL_COMPRESSED_RGBA_ARB,
+			GL_RGBA,
 			widthImg,
 			heightImg,
 			0,
@@ -119,7 +120,7 @@ Texture::Texture(const char* image, std::string texType, GLuint slot)
 		(
 			GL_TEXTURE_2D,
 			0,
-			GL_COMPRESSED_RGBA_ARB,
+			GL_RGBA,
 			widthImg,
 			heightImg,
 			0,
