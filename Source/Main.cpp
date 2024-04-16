@@ -4,7 +4,7 @@ const double PI = 3.1415926535897932384626433832795028841971693993751058209;
 
 // todo move to particle class?
 struct {
-	bool operator()(Particle a, Particle b) const { return glm::length(Globals::get().camera->Position - a.getTranslation()) > glm::length(Globals::get().camera->Position - b.getTranslation()); }
+	bool operator()(Particle a, Particle b) const { return glm::length(Globals::get().camera->getPosition() - a.getTranslation()) > glm::length(Globals::get().camera->getPosition() - b.getTranslation()); }
 } Less;
 
 int main() {
@@ -317,7 +317,7 @@ int main() {
 				if (Globals::get().camLock) {
 					btRigidBody* body = character->getBody();
 
-					glm::vec2 camOri = glm::vec2(Globals::get().camera->Orientation.x, Globals::get().camera->Orientation.z);
+					glm::vec2 camOri = glm::vec2(Globals::get().camera->getOrientation().x, Globals::get().camera->getOrientation().z);
 
 					glm::vec2 proj = glm::rotate(camOri, glm::radians(-90.0f));
 
@@ -375,7 +375,7 @@ int main() {
 					btRigidBody* body = character->getBody();
 					body->getMotionState()->getWorldTransform(trans);
 					glm::vec3 pos = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()) + 7.0f, float(trans.getOrigin().getZ()));
-					Globals::get().camera->Position = pos;
+					Globals::get().camera->setPosition(pos);
 				}
 			}
 			{
@@ -390,9 +390,9 @@ int main() {
 
 			{ // do rayCast 
 
-				glm::vec3 ppp = Globals::get().camera->Position + (Globals::get().camera->Orientation * 12.5f);
+				glm::vec3 ppp = Globals::get().camera->getPosition() + (Globals::get().camera->getOrientation() * 12.5f);
 
-				btVector3 from = btVector3(Globals::get().camera->Position.x, Globals::get().camera->Position.y, Globals::get().camera->Position.z);
+				btVector3 from = btVector3(Globals::get().camera->getPosition().x, Globals::get().camera->getPosition().y, Globals::get().camera->getPosition().z);
 				btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
 				btCollisionWorld::ClosestRayResultCallback rrc = btCollisionWorld::ClosestRayResultCallback(from, to);
 				Physics::get().getDynamicsWorld()->rayTest(from, to, rrc);
@@ -460,15 +460,15 @@ int main() {
 
 				if (cig_anim == false && is_smoking == true) {
 					Particle p = Particle();
-					p.setTranslation(Globals::get().camera->Position - glm::vec3(0.f, 0.25f, 0.f));
+					p.setTranslation(Globals::get().camera->getPosition() - glm::vec3(0.f, 0.25f, 0.f));
 					p.setScale(0.1f);
-					p.vel = glm::normalize(Globals::get().camera->Orientation);
+					p.vel = glm::normalize(Globals::get().camera->getOrientation());
 					Globals::get().particles.push_back(p);
 
 					Particle p2 = Particle();
-					p2.setTranslation(Globals::get().camera->Position - glm::vec3(0.f, 0.25f, 0.f));
+					p2.setTranslation(Globals::get().camera->getPosition() - glm::vec3(0.f, 0.25f, 0.f));
 					p2.setScale(0.1f);
-					p2.vel = glm::normalize(Globals::get().camera->Orientation);
+					p2.vel = glm::normalize(Globals::get().camera->getOrientation());
 					Globals::get().particles.push_back(p2);
 				}
 
@@ -564,7 +564,7 @@ int main() {
 void gameTick(double delta) {
 	{ // update cam pos
 		if (!Globals::get().camLock) {
-			glm::vec3 proj = glm::rotate(Globals::get().camera->Orientation, glm::radians(90.0f), Globals::get().camera->Up);
+			glm::vec3 proj = glm::rotate(Globals::get().camera->getOrientation(), glm::radians(90.0f), Globals::get().camera->getUp());
 			proj.y = 0.0f;
 			proj = glm::normalize(proj);
 
@@ -574,13 +574,13 @@ void gameTick(double delta) {
 			glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			if (Input::get().getValue(GLFW_KEY_W)) {
-				velocity += Globals::get().camera->Orientation;
+				velocity += Globals::get().camera->getOrientation();
 			}
 			if (Input::get().getValue(GLFW_KEY_A)) {
 				velocity += proj;
 			}
 			if (Input::get().getValue(GLFW_KEY_S)) {
-				velocity -= Globals::get().camera->Orientation;
+				velocity -= Globals::get().camera->getOrientation();
 			}
 			if (Input::get().getValue(GLFW_KEY_D)) {
 				velocity -= proj;
@@ -594,7 +594,7 @@ void gameTick(double delta) {
 				velocity.z *= delta * order * moveSpeed;
 			}
 
-			Globals::get().camera->Position += velocity;
+			Globals::get().camera->setPosition(Globals::get().camera->getPosition() + velocity);
 		}
 	}
 
@@ -686,12 +686,12 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
 		double rotX = xOffset * sensitivity * deltaAngle;
 		double rotY = yOffset * sensitivity * deltaAngle;
 
-		Globals::get().camera->Orientation = glm::rotate(Globals::get().camera->Orientation, (float)rotX, Globals::get().camera->Up);
+		Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotX, Globals::get().camera->getUp()));
 
-		glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->Orientation, Globals::get().camera->Up));
+		glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));
 		// Clamps rotY so it doesn't glitch when looking directly up or down
-		if (!((rotY > 0 && Globals::get().camera->Orientation.y > 0.99f) || (rotY < 0 && Globals::get().camera->Orientation.y < -0.99f)))
-			Globals::get().camera->Orientation = glm::rotate(Globals::get().camera->Orientation, (float)rotY, perpendicular);
+		if (!((rotY > 0 && Globals::get().camera->getOrientation().y > 0.99f) || (rotY < 0 && Globals::get().camera->getOrientation().y < -0.99f)))
+			Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotY, perpendicular));
 
 		glfwSetCursorPos(window, xMiddle, yMiddle);
 	}
@@ -737,11 +737,9 @@ void window_size_callback(GLFWwindow* window, int width, int height) {
 	Globals::get().screenWidth = width == 0 ? 1 : width;
 	Globals::get().screenHeight = height == 0 ? 1 : height;
 
-	Globals::get().camera->width = Globals::get().screenWidth;
-	Globals::get().camera->height = Globals::get().screenHeight;
+	Globals::get().camera->setDims(Globals::get().screenWidth, Globals::get().screenHeight);
 
-	Globals::get().handCam->width = Globals::get().screenWidth;
-	Globals::get().handCam->height = Globals::get().screenHeight;
+	Globals::get().handCam->setDims(Globals::get().screenWidth, Globals::get().screenHeight);
 }
 
 void setup_callbacks(GLFWwindow* window) {

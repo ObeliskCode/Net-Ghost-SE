@@ -84,9 +84,9 @@ void Particle::Draw(Shader& shader, Camera& camera) {
 	sprite->texUnit(shader, "sprite");
 	sprite->Bind();
 
-	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
+	camera.Matrix(shader, "camMatrix");
 
-	glm::vec3 vec2cam = camera.Position - translation;
+	glm::vec3 vec2cam = camera.getPosition() - translation;
 	vec2cam.y = 0.f;
 	vec2cam = glm::normalize(vec2cam);
 
@@ -96,7 +96,7 @@ void Particle::Draw(Shader& shader, Camera& camera) {
 	glm::vec3 crossProd = glm::cross(orientation, vec2cam);
 	float w = sqrt(powf(glm::length(orientation),2)*powf(glm::length(vec2cam), 2)) + glm::dot(orientation, vec2cam);
 
-	rotation = glm::quat(w,crossProd);
+	glm::quat rotation = glm::quat(w,crossProd);
 
 	float len = glm::length(rotation);
 
@@ -105,7 +105,7 @@ void Particle::Draw(Shader& shader, Camera& camera) {
 	rotation.z = rotation.z / len;
 	rotation.w = rotation.w / len;
 
-	glm::vec3 vec2cam2 = camera.Position - translation;
+	glm::vec3 vec2cam2 = camera.getPosition() - translation;
 	vec2cam2 = glm::normalize(vec2cam2);
 
 	crossProd = glm::cross(vec2cam, vec2cam2);
@@ -169,11 +169,6 @@ void Particle::setTranslation(glm::vec3 translation) {
 	Particle::translation = translation;
 }
 
-void Particle::setRotation(glm::quat rotation) {
-	Particle::rotation = rotation;
-}
-
 void Particle::setScale(float scalar) {
 	Particle::scale = glm::vec3(scalar);
-	Particle::scalar = scalar;
 }

@@ -71,8 +71,8 @@ void Mesh::Draw(
 	glUniform1i(glGetUniformLocation(shader.ID, "shadowMap"), 6);
 
 	// Take care of the camera Matrix  // ONLY needs to be sent once for shader!! (instancing)
-	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
+	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+	camera.Matrix(shader, "camMatrix");
 
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));

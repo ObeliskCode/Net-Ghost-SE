@@ -41,7 +41,7 @@ void Wire::Draw(Shader& shader, Camera& camera,
 	shader.Activate();
 	glBindVertexArray(VAO);
 
-	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
+	camera.Matrix(shader, "camMatrix");
 
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));

@@ -39,8 +39,8 @@ public:
 private:
     Globals()
     {
-        camera = new Camera(screenWidth, screenHeight, glm::vec3(0.0f, 11.0f, 30.0f));
-        handCam = new Camera(screenWidth, screenHeight, glm::vec3(0.0f, 0.0f, 2.0f));
+        camera = new Camera(screenWidth, screenHeight, glm::vec3(0.0f, 11.0f, 30.0f), 90.0f, 0.1f, 1000.0f);
+        handCam = new Camera(screenWidth, screenHeight, glm::vec3(0.0f, 0.0f, 2.0f), 90.0f, 0.1f, 1000.0f);
     } // no public constructor
     ~Globals() = default; // no public destructor
     static Globals* instance; // declaration class variable

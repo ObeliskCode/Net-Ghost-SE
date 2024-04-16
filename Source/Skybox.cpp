@@ -55,10 +55,10 @@ void Skybox::Draw(Shader& shader, Camera& camera) {
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	shader.Activate();
 
-	camera.Matrix(90.0f, 0.1f, 1000.0f, shader, "camMatrix");
+	camera.Matrix(shader, "camMatrix");
 
 	glm::mat4 trans = glm::mat4(1.0f);
-	trans = glm::translate(trans, camera.Position);
+	trans = glm::translate(trans, camera.getPosition());
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
 
 	// skybox cube
