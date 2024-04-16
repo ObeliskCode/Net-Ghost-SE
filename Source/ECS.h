@@ -16,7 +16,7 @@
 //imagine simulating our reality
 //you cannot simulate our infinity
 //yet you may simulate a smaller infinity
-//inf^ x = inf; x != 0
+//inf^ x = inf; x != 0?
 //contradictively
 //yet both facts are true
 //how is this possible
@@ -25,16 +25,14 @@
 
 //within a point there is everything
 //that is why we have no area to them
-//we have 0 space to them yet infinitely much space to us(edited)
+//we have 0 space to them yet infinitely much space to us
 //everything is within a point
 
 //i may be wrong on my corollary
 //inf^ x = inf; x is real
 //i believe that inf ^ 0 = inf
-//i dont wanna fact check stuff with other fields too much
-//until all the ideas are out
 //inf ^ 0 = inf explains infinite space in a point!oblivion!
-//inf ^ 0 = inf must to be pushed!!
+//inf ^ 0 = inf should to be pushed!!
 
 class ComponentSet {
     public:

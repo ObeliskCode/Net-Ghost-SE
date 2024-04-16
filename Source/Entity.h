@@ -153,7 +153,4 @@ class Entity {
 		Camera* camera;
 };
 
-
-
-
 #endif

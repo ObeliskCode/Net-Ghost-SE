@@ -211,7 +211,7 @@ void Entity::Draw() {
 			mdl->Draw(*shader, *camera, finaltransform, finalntransform);
 		}
 	}
-	if (m_signature[COMPONENT_BIT_STATIC]) {
+	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
 		if (Globals::get().drawWires) {
 			for (int i = 0; i < wires.size(); i++) {
 				glm::mat4 tran = phystransform->getMatrix();
