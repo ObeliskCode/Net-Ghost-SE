@@ -1,4 +1,4 @@
-#include"Texture.h"
+#include "Texture.h"
 
 // not working not used
 Texture::Texture(const aiTexture* aiTex, std::string texType, GLuint slot) {
