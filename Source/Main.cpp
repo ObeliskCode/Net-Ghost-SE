@@ -489,7 +489,6 @@ int main() {
 		/* ANIMATION UPDATES */
 		// calc time since last frame for animation
 
-
 		{ // pls do not make this a function
 			batRot += deltaTime;
 			if (batRot > 2 * PI) {
@@ -510,8 +509,7 @@ int main() {
 		/* RENDERING */
 
 		renderScene();
-
-
+		
 		{ // shadow draw pass!
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -597,8 +595,6 @@ void gameTick(double delta) {
 			Globals::get().camera->setPosition(Globals::get().camera->getPosition() + velocity);
 		}
 	}
-
-
 }
 
 void renderScene() {
@@ -727,7 +723,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	case GLFW_KEY_F9:
 		glfwSetWindowMonitor(window, NULL, 100, 100, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
 		break;
-
 	}
 }
 
