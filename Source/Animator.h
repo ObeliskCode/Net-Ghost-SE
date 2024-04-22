@@ -13,14 +13,24 @@
 class Animator
 {
 public:
+	//TODO: add actual checks if animation is there set to -1/nullptr if not found
+	
 	Animator(Skeleton* skeleton)
 	{
 		m_CurrentTime = 0.0;
 		m_QueueCurrentTime = 0.0;
 		m_BlendFactor = 0.0f;
 		m_Skeleton = skeleton;
-		m_AnimationIndex = 0;
-		m_CurrentAnimation = m_Skeleton->GetAnimation(m_AnimationIndex);
+		
+		Animation* anim0 = m_Skeleton->GetAnimation(m_AnimationIndex);
+		if (!anim0){
+			m_AnimationIndex = -1;
+			m_CurrentAnimation = nullptr;
+		} else {
+			m_AnimationIndex = 0;
+			m_CurrentAnimation = anim0;
+		}
+
 		m_QueueAnimationIndex = -1;
 		m_QueueAnimation = nullptr;
 
