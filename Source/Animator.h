@@ -13,8 +13,6 @@
 class Animator
 {
 public:
-	//TODO: add actual checks if animation is there set to -1/nullptr if not found
-	
 	Animator(Skeleton* skeleton)
 	{
 		m_CurrentTime = 0.0;
@@ -22,7 +20,7 @@ public:
 		m_BlendFactor = 0.0f;
 		m_Skeleton = skeleton;
 		
-		Animation* anim0 = m_Skeleton->GetAnimation(m_AnimationIndex);
+		Animation* anim0 = m_Skeleton->GetAnimation(0);
 		if (!anim0){
 			m_AnimationIndex = -1;
 			m_CurrentAnimation = nullptr;
@@ -65,8 +63,15 @@ public:
 			m_QueueAnimation = nullptr;
 			m_QueueAnimationIndex = -1;
 		}
-		m_AnimationIndex = index;
-		m_CurrentAnimation = m_Skeleton->GetAnimation(m_AnimationIndex);
+
+		Animation* animI = m_Skeleton->GetAnimation(index);
+		if (!animI) {
+			m_AnimationIndex = -1;
+			m_CurrentAnimation = nullptr;
+		} else {
+			m_AnimationIndex = index;
+			m_CurrentAnimation = animI;
+		}
 		m_CurrentTime = 0.0f;
 		m_QueueCurrentTime = 0.0f;
 		m_BlendFactor = 0.0f;
@@ -89,8 +94,16 @@ public:
 	void QueueAnimation(unsigned int index)
 	{
 		if (index == m_AnimationIndex) return;
-		m_QueueAnimationIndex = index;
-		m_QueueAnimation = m_Skeleton->GetAnimation(m_QueueAnimationIndex);
+
+		Animation* animI = m_Skeleton->GetAnimation(index);
+
+		if (!animI){
+			m_QueueAnimationIndex = -1;
+			m_QueueAnimation = nullptr;
+		} else {
+			m_QueueAnimationIndex = index;
+			m_QueueAnimation = animI;
+		}
 		m_QueueCurrentTime = 0.0f;
 		m_BlendFactor = 0.0f;
 	}
