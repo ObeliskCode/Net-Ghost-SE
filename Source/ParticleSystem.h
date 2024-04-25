@@ -20,11 +20,15 @@ class ParticleSystem {
 		std::vector <GLuint> Ind;
 		GLuint VAO, VBO, EBO;
 
+		GLuint IVBO;
+		GLuint IlVBO;
+
 		Texture* sprite;
 
 		std::vector <Particle> particles;
 
 		std::vector <glm::mat4> transforms;
+		std::vector <float> lifeVec;
 };
 
 

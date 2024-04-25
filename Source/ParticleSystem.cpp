@@ -43,6 +43,8 @@ ParticleSystem::ParticleSystem(){
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
+    glGenBuffers(1, &IVBO);
+    glGenBuffers(1, &IlVBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, Vert.size() * sizeof(float), Vert.data(), GL_STATIC_DRAW);
@@ -52,6 +54,25 @@ ParticleSystem::ParticleSystem(){
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 *sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glEnableVertexAttribArray(2);
+    glEnableVertexAttribArray(3);
+    glEnableVertexAttribArray(4);
+    glEnableVertexAttribArray(5);
+    glBindBuffer(GL_ARRAY_BUFFER, IVBO);
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4 * 4, (void*)(0));
+    glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4 * 4, (void*)(sizeof(float) * 4));
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4 * 4, (void*)(sizeof(float) * 8));
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 4 * 4, (void*)(sizeof(float) * 12));
+    glVertexAttribDivisor(2, 1);
+    glVertexAttribDivisor(3, 1);
+    glVertexAttribDivisor(4, 1);
+    glVertexAttribDivisor(5, 1);
+
+    glEnableVertexAttribArray(6);
+    glBindBuffer(GL_ARRAY_BUFFER, IlVBO);
+    glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
+    glVertexAttribDivisor(6, 1);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -124,13 +145,24 @@ void ParticleSystem::DrawParticles(Shader& shader, Camera& camera){
         transforms.push_back(trans * rot * sca);
     }
 
-	// Push the matrices to the vertex shader
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "translation"), 1, GL_FALSE, glm::value_ptr(trans));
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "rotation"), 1, GL_FALSE, glm::value_ptr(rot));
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "scale"), 1, GL_FALSE, glm::value_ptr(sca));
+    glBindBuffer(GL_ARRAY_BUFFER, IVBO);
+    glBufferData(GL_ARRAY_BUFFER, transforms.size() * sizeof(glm::mat4), transforms.data(), GL_STATIC_DRAW);
 
-	glUniform1f(glGetUniformLocation(shader.ID, "life"), life);
+    lifeVec.clear();
+
+    for (int i = 0; i < particles.size(); i++){
+        lifeVec.push_back(particles[i].life);
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, IlVBO);
+    glBufferData(GL_ARRAY_BUFFER, lifeVec.size() * sizeof(float), lifeVec.data(), GL_STATIC_DRAW);
 
 	glDrawElementsInstanced(GL_TRIANGLES, Ind.size(), GL_UNSIGNED_INT, 0, particles.size());
 
+}
+
+void ParticleSystem::updateParticles(float delta){
+    for (int i = 0; i < particles.size(); i++){
+        particles[i].update(delta);
+    }
 }

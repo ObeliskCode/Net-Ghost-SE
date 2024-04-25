@@ -5,7 +5,7 @@ out vec4 color;
 
 uniform sampler2D sprite;
 
-uniform float life;
+in flat float life;
 
 void main()
 {
