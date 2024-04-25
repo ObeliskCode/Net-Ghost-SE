@@ -9,9 +9,7 @@
 
 class Particle {
 	public:
-		Particle();
-
-		void Draw(Shader& shader, Camera& camera);
+		Particle() = default;
 
 		void update(float delta);
 
@@ -20,22 +18,16 @@ class Particle {
 		float life = 0.0f;
 		
 		glm::vec3 vel = glm::vec3(1.f,0.f,0.f);
+		float rotMag = ((float)rand() / RAND_MAX) - 0.5f;
+		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
 		glm::vec3 getTranslation();
 		void setTranslation(glm::vec3 translation);
 		void setScale(float scalar);
 
 	private:
-		static std::vector <float> Vert;
-		static std::vector <GLuint> Ind;
-		static GLuint VAO, VBO, EBO;
-
-		static Texture* sprite;
-
-		float rotMag = ((float)rand() / RAND_MAX) - 0.5f;
 
 		glm::vec3 translation = glm::vec3(0.0f, 0.0f, 0.0f);
-		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 };
 
 #endif

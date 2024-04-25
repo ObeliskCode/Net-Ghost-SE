@@ -23,6 +23,8 @@ class ParticleSystem {
 		Texture* sprite;
 
 		std::vector <Particle> particles;
+
+		std::vector <glm::mat4> transforms;
 };
 
 
