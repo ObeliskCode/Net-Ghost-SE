@@ -83,6 +83,9 @@ ParticleSystem::ParticleSystem(){
 }
 
 void ParticleSystem::DrawParticles(Shader& shader, Camera& camera){
+    std::vector <glm::mat4> transforms;
+    std::vector <float> lifeVec;
+
     shader.Activate();
 	glBindVertexArray(VAO);
 
@@ -90,8 +93,6 @@ void ParticleSystem::DrawParticles(Shader& shader, Camera& camera){
 	sprite->Bind();
 
 	camera.Matrix(shader, "camMatrix");
-
-    transforms.clear();
 
     for (int i = 0; i < particles.size(); i++){
         glm::vec3 vec2cam = camera.getPosition() - particles[i].getTranslation();
@@ -147,8 +148,6 @@ void ParticleSystem::DrawParticles(Shader& shader, Camera& camera){
 
     glBindBuffer(GL_ARRAY_BUFFER, IVBO);
     glBufferData(GL_ARRAY_BUFFER, transforms.size() * sizeof(glm::mat4), transforms.data(), GL_STATIC_DRAW);
-
-    lifeVec.clear();
 
     for (int i = 0; i < particles.size(); i++){
         lifeVec.push_back(particles[i].life);

@@ -27,8 +27,6 @@ class ParticleSystem {
 
 		std::vector <Particle> particles;
 
-		std::vector <glm::mat4> transforms;
-		std::vector <float> lifeVec;
 };
 
 
