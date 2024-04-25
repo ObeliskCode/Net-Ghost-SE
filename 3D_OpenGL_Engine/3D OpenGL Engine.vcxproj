@@ -197,6 +197,7 @@
     <ClInclude Include="..\Source\Skybox.h" />
     <ClInclude Include="..\Source\stb_image.h" />
     <ClInclude Include="..\Source\Texture.h" />
+    <ClInclude Include="..\Source\Transform.h" />
     <ClInclude Include="..\Source\VAO.h" />
     <ClInclude Include="..\Source\VBO.h" />
     <ClInclude Include="..\Source\Wire.h" />
