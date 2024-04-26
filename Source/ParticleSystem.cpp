@@ -82,6 +82,11 @@ ParticleSystem::ParticleSystem(){
 
 }
 
+//TODO!
+ParticleSystem::~ParticleSystem() {
+    
+}
+
 void ParticleSystem::DrawParticles(Shader& shader, Camera& camera){
     std::vector <glm::mat4> transforms;
     std::vector <float> lifeVec;

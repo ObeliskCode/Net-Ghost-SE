@@ -15,6 +15,9 @@ class ParticleSystem {
 		void DrawParticles(Shader& shader, Camera& camera);
 		void updateParticles(float delta);
 
+		std::vector <Particle> particles;
+
+
 	private:
 		std::vector <float> Vert;
 		std::vector <GLuint> Ind;
@@ -24,8 +27,6 @@ class ParticleSystem {
 		GLuint IlVBO;
 
 		Texture* sprite;
-
-		std::vector <Particle> particles;
 
 };
 

@@ -17,17 +17,15 @@ layout (location = 6) in float life;
 
 out vec2 TexCoords;
 
-out flat float life;
+out float lf;
 
 uniform mat4 camMatrix;
 
-uniform mat4 translation;
-uniform mat4 rotation;
-uniform mat4 scale;
-
 void main()
 {
-    transform = mat4(M0,M1,M2,M3);
+    mat4 transform = mat4(M0,M1,M2,M3);
+
+    lf = life;
 
     TexCoords = aTex;
     gl_Position = camMatrix * transform * vec4(aPos,1.0f);
