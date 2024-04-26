@@ -17,7 +17,6 @@ class ParticleSystem {
 
 		std::vector <Particle> particles;
 
-
 	private:
 		std::vector <float> Vert;
 		std::vector <GLuint> Ind;

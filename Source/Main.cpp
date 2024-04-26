@@ -197,6 +197,8 @@ int main() {
 
 	Shader partProgram = Shader("partVert.glsl", "partFrag.glsl");
 
+	ParticleSystem particleSys;
+
 	std::vector<std::string> faces =
 	{
 			"models/skybox/right.jpg",
@@ -209,6 +211,8 @@ int main() {
 	Skybox* sky = new Skybox(faces);
 
 	Shader skyProgram = Shader("skyVert.glsl", "skyFrag.glsl");
+
+	/* SHADOW MAP (DIRECTIONAL [DEFUNCT]) */
 
 	unsigned int depthMapFBO;
 	glGenFramebuffers(1, &depthMapFBO);
@@ -248,9 +252,9 @@ int main() {
 	shadowProgram.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(shadowProgram.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
-	ParticleSystem particleSys;
+	/* SHADOW MAP (DIRECTIONAL [DEFUNCT]) */
 
-	// loop vars
+	/* loop vars */ 
 	double crntTime = 0.0;
 
 	const double timeStart = glfwGetTime();
@@ -263,7 +267,7 @@ int main() {
 
 	double lastFrame = timeStart;
 	double delta = 1.0 / 187.0;
-	double deltaTime = 0.0f;
+	double frameTime = 0.0f;
 	int tickCounter = 0;
 	bool _skip = false;
 
@@ -280,9 +284,9 @@ int main() {
 
 	/* Main Game Loop */
 	while (!glfwWindowShouldClose(window)) {
+		crntTime = glfwGetTime();
 
 		/* FPS counter */
-		crntTime = glfwGetTime();
 		timeDiff = crntTime - prevTime;
 		counter++;
 		if (timeDiff >= 1.0) {
@@ -297,19 +301,19 @@ int main() {
 		glfwPollEvents(); // get inputs
 
 		/* TICK BASED EVENTS */ // 1. calc physics update -> 2. game logic
-		deltaTime = crntTime - lastFrame;
+		frameTime = crntTime - lastFrame;
 		lastFrame = crntTime;
 
 		// Note: floating point should be renamed to floating transform point because subratction isn't guarenteed
 		// a real floating point is impossible. accumulator as a double thus accumulutas ERROR which should be accounted for! 45321!
 
-		accum(deltaTime);
+		accum(frameTime);
 		while (boost::accumulators::sum(accum) >= delta) {
 			tickCounter++;
 			if (tickCounter == 187.0) {
 				tickCounter = 0;
 				accum(-delta);
-				_skip = true;
+				//_skip = true;
 			}
 			else {
 				accum(-delta);
@@ -487,12 +491,13 @@ int main() {
 			}
 
 		}
+		/* TICK BASED EVENTS */
 
 		/* ANIMATION UPDATES */
 		// calc time since last frame for animation
 
 		{ // pls do not make this a function
-			batRot += deltaTime;
+			batRot += frameTime;
 			if (batRot > 2 * PI) {
 				batRot = batRot - (2 * PI);
 			}
@@ -506,7 +511,7 @@ int main() {
 		if (_skip) {
 			_skip = false;
 			continue;
-		} // skip rendering on lag tick
+		}
 
 		/* RENDERING */
 
@@ -517,7 +522,7 @@ int main() {
 			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);// clears this framebuffers depth bit!
 
-			ECS::get().DrawEntityShadows(deltaTime);
+			ECS::get().DrawEntityShadows(frameTime);
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -543,13 +548,13 @@ int main() {
 
 	}
 
+	/* Application Close */
+
 	delete sky;
 
 	// careful with these! not well written!
 	ECS::destruct();
 	Physics::destruct();
-
-	/* Application Close */
 
 	glfwTerminate();
 	return 0;
