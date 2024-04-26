@@ -248,6 +248,8 @@ int main() {
 	shadowProgram.Activate();
 	glUniformMatrix4fv(glGetUniformLocation(shadowProgram.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
+	ParticleSystem particleSys;
+
 	// loop vars
 	double crntTime = 0.0;
 
@@ -463,21 +465,21 @@ int main() {
 					p.setTranslation(Globals::get().camera->getPosition() - glm::vec3(0.f, 0.25f, 0.f));
 					p.setScale(0.1f);
 					p.vel = glm::normalize(Globals::get().camera->getOrientation());
-					Globals::get().particles.push_back(p);
+					particleSys.particles.push_back(p);
 
 					Particle p2 = Particle();
 					p2.setTranslation(Globals::get().camera->getPosition() - glm::vec3(0.f, 0.25f, 0.f));
 					p2.setScale(0.1f);
 					p2.vel = glm::normalize(Globals::get().camera->getOrientation());
-					Globals::get().particles.push_back(p2);
+					particleSys.particles.push_back(p2);
 				}
 
 				// how slow is this? (update/cleanup particles)
-				for (int i = 0; i < Globals::get().particles.size(); i++) {
-					Globals::get().particles[i].update(delta);
-
-					if (Globals::get().particles[i].life >= Globals::get().particles[i].expire) {
-						Globals::get().particles.erase(Globals::get().particles.begin() + i);
+				particleSys.updateParticles(delta);
+				
+				for (int i = 0; i < particleSys.particles.size(); i++) {
+					if (particleSys.particles[i].life >= particleSys.particles[i].expire) {
+						particleSys.particles.erase(particleSys.particles.begin() + i);
 						i--;
 					}
 				}
@@ -531,12 +533,9 @@ int main() {
 		batEnt->Draw();
 		cigEnt->Draw();
 
-		// emitter->drawparticles()
 		glEnable(GL_BLEND);
-		std::sort(Globals::get().particles.begin(), Globals::get().particles.end(), Less);
-		for (int i = 0; i < Globals::get().particles.size(); i++) {
-			Globals::get().particles[i].Draw(partProgram, *Globals::get().camera);
-		}
+		std::sort(particleSys.particles.begin(), particleSys.particles.end(), Less);
+		particleSys.DrawParticles(partProgram, *Globals::get().camera);
 		glDisable(GL_BLEND);
 
 		glfwSwapBuffers(window);
@@ -545,8 +544,6 @@ int main() {
 	}
 
 	delete sky;
-
-	Globals::get().particles.clear();
 
 	// careful with these! not well written!
 	ECS::destruct();

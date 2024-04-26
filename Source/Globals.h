@@ -27,7 +27,6 @@ public:
     bool drawWires = true;
     unsigned int depthMap;
     glm::mat4 lightSpaceMatrix;
-    std::vector <Particle> particles;
     Shader * shadowShader;
     Shader * wireShader;
     Shader * animShadowShader;
