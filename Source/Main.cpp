@@ -301,13 +301,15 @@ int main() {
 		glfwPollEvents(); // get inputs
 
 		/* TICK BASED EVENTS */ // 1. calc physics update -> 2. game logic
+
+		// Note: floating point should be renamed to floating transform point because subratction isn't guarenteed
+		// a real floating point is impossible.
+
 		frameTime = crntTime - lastFrame;
 		lastFrame = crntTime;
 
-		// Note: floating point should be renamed to floating transform point because subratction isn't guarenteed
-		// a real floating point is impossible. accumulator as a double thus accumulutas ERROR which should be accounted for! 45321!
-
 		accum(frameTime);
+
 		while (boost::accumulators::sum(accum) >= delta) {
 			tickCounter++;
 			if (tickCounter == 187.0) {
