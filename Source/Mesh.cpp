@@ -70,6 +70,12 @@ void Mesh::Draw(
 	glBindTexture(GL_TEXTURE_2D, Globals::get().depthMap);
 	glUniform1i(glGetUniformLocation(shader.ID, "shadowMap"), 6);
 
+	glActiveTexture(GL_TEXTURE0 + 7);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, Globals::get().depthCubeMap);
+	glUniform1i(glGetUniformLocation(shader.ID, "shadowCubeMap"), 7);
+
+	glUniform1f(glGetUniformLocation(shader.ID, "far_plane"), Globals::get().far_plane);
+
 	// Take care of the camera Matrix  // ONLY needs to be sent once for shader!! (instancing)
 	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 	camera.Matrix(shader, "camMatrix");

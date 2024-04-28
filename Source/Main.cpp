@@ -25,6 +25,7 @@ int main() {
 	Shader animCellProgram = Shader("animVert.glsl", "cellFrag.glsl");
 	Globals::get().animCellShader = &animCellProgram;
 	Shader pointShadowProgram = Shader("pointShadowVert.glsl","pointShadowFrag.glsl","pointShadowGeom.glsl");
+	Globals::get().pointShadowShader = &pointShadowProgram;
 
 	Entity* e;
 
@@ -115,7 +116,7 @@ int main() {
 	e->transform->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
 	ECS::get().registerComponents(e);
 
-	Light lampLight = Light(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(-20.0f, 13.2f, 28.0f));
+	Light lampLight = Light(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), glm::vec3(-20.0f + 5.0f, 13.2f, 28.0f));
 	
 	Model* light = new Model("bulb/scene.gltf");
 	e = ECS::get().linkEntity(new Entity(light, &lightProgram, Globals::get().camera));
@@ -243,6 +244,8 @@ int main() {
 	float near_plane = 0.1f, far_plane = 200.0f;
 	glm::mat4 lightProjection = glm::ortho(-60.0f, 60.0f, -60.0f, 60.0f, near_plane, far_plane);
 
+	Globals::get().far_plane = far_plane;
+
 	glm::mat4 lightView = glm::lookAt(glm::vec3(-4.0f, 10.0f, -6.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
@@ -277,11 +280,16 @@ int main() {
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
+	glBindFramebuffer(GL_FRAMEBUFFER, pointShadowMapFBO);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	Globals::get().depthCubeMap = depthCubemap;
 
 	float aspect = (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT;
-	float near = 1.0f;
-	float far = 25.0f;
-	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
+	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near_plane, far_plane);
 	glm::vec3 lightPos = lampLight.lightPos;
 	std::vector<glm::mat4> shadowTransforms;
 	shadowTransforms.push_back(shadowProj *
@@ -296,6 +304,16 @@ int main() {
 		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
 	shadowTransforms.push_back(shadowProj *
 		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
+
+	pointShadowProgram.Activate();
+	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[0]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[0]));
+	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[1]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[1]));
+	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[2]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[2]));
+	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[3]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[3]));
+	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[4]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[4]));
+	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[5]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[5]));
+	glUniform3f(glGetUniformLocation(pointShadowProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	glUniform1f(glGetUniformLocation(pointShadowProgram.ID, "far_plane"), far_plane);
 
 	/* SHADOW MAP (POINT) */
 
@@ -564,12 +582,27 @@ int main() {
 
 		renderScene();
 		
-		{ // shadow draw pass!
+		ECS::get().advanceEntityAnimations(frameTime);
+
+		{ // directional shadow draw pass
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);// clears this framebuffers depth bit!
 
-			ECS::get().DrawEntityShadows(frameTime);
+			ECS::get().DrawEntityShadows();
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			glViewport(0, 0, Globals::get().screenWidth, Globals::get().screenHeight);
+		}
+
+		
+		{ // single point shadow draw pass
+			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+			glBindFramebuffer(GL_FRAMEBUFFER, pointShadowMapFBO);
+			glClear(GL_DEPTH_BUFFER_BIT);// clears this framebuffers depth bit!
+
+			ECS::get().DrawEntityPointShadows();
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

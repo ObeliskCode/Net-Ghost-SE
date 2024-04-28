@@ -26,12 +26,15 @@ public:
     bool camLock = false;
     bool drawWires = true;
     unsigned int depthMap;
+    unsigned int depthCubeMap;
+    float far_plane;
     glm::mat4 lightSpaceMatrix;
     Shader * shadowShader;
     Shader * wireShader;
     Shader * animShadowShader;
     Shader * animCellShader;
     Shader * cellShader;
+    Shader * pointShadowShader;
     Camera * camera;
     Camera * handCam;
 

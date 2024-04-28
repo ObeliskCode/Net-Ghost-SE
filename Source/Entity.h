@@ -33,8 +33,10 @@ class Entity {
 
 		void addWire(Wire* w);
 		void addWireFrame(float halfWidth, float halfHeight, float halfLength);
-		void updatePhysics();
-		void DrawShadow(float delta);
+		void updatePhysicsState();
+		void advanceAnimation(float delta);
+		void DrawPointShadow();
+		void DrawShadow();
 		void DrawStencil();
 		void Draw();
 		void addBody(btRigidBody* b);

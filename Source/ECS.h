@@ -39,7 +39,9 @@ public:
 
     Entity* linkEntity(Entity* e);
     void updatePhysics();
-    void DrawEntityShadows(float delta);
+    void DrawEntityShadows();
+    void advanceEntityAnimations(float delta);
+    void DrawEntityPointShadows();
     void DrawEntityStencils();
     void DrawEntities();
     void deleteEntity(unsigned int ID);

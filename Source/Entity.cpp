@@ -68,7 +68,7 @@ void Entity::addBody(btRigidBody* b) {
 	}
 	body = b;
 	phystransform = new Transform();
-	updatePhysics();
+	updatePhysicsState();
 }
 
 btRigidBody* Entity::getBody() {
@@ -125,7 +125,15 @@ void Entity::addWireFrame(float halfWidth, float halfHeight, float halfLength) {
 	wires.push_back(new Wire(glm::vec3(-halfWidth, -halfHeight, halfLength), glm::vec3(-halfWidth, halfHeight, halfLength)));
 }
 
-void Entity::DrawShadow(float delta) {
+
+void Entity::advanceAnimation(float delta) {
+	if (m_signature[COMPONENT_BIT_ANIMATED]) {
+		mator->UpdateAnimation(delta);
+	}
+}
+
+
+void Entity::DrawShadow() {
 	if (!m_visible) return;
 	glm::mat4 finaltransform;
 	glm::mat4 finalntransform;
@@ -138,8 +146,6 @@ void Entity::DrawShadow(float delta) {
 		finalntransform = transform->getNormalMatrix();
 	}
 	if (m_signature[COMPONENT_BIT_ANIMATED]) {
-		mator->UpdateAnimation(delta);
-
 		Globals::get().animShadowShader->Activate();
 		const auto& transforms = mator->GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i) {
@@ -152,6 +158,32 @@ void Entity::DrawShadow(float delta) {
 		mdl->Draw(*Globals::get().shadowShader, *camera, finaltransform, finalntransform);
 	}
 
+}
+
+void Entity::DrawPointShadow() {
+	if (!m_visible) return;
+	glm::mat4 finaltransform;
+	glm::mat4 finalntransform;
+	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+		finaltransform = phystransform->getMatrix() * transform->getMatrix();
+		finalntransform = phystransform->getNormalMatrix() * transform->getNormalMatrix();
+	}
+	else {
+		finaltransform = transform->getMatrix();
+		finalntransform = transform->getNormalMatrix();
+	}
+	if (m_signature[COMPONENT_BIT_ANIMATED]) {
+		Globals::get().pointShadowShader->Activate();
+		const auto& transforms = mator->GetFinalBoneMatrices();
+		for (int i = 0; i < transforms.size(); ++i) {
+			glUniformMatrix4fv(glGetUniformLocation(Globals::get().pointShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+		}
+		skMdl->Draw(*Globals::get().pointShadowShader, *camera, finaltransform, finalntransform);
+	}
+	else if (m_signature[COMPONENT_BIT_MODEL]) {
+		Globals::get().pointShadowShader->Activate();
+		mdl->Draw(*Globals::get().pointShadowShader, *camera, finaltransform, finalntransform);
+	}
 }
 
 
@@ -230,7 +262,7 @@ void Entity::Draw() {
 
 }
 
-void Entity::updatePhysics() {
+void Entity::updatePhysicsState() {
 	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
 		btTransform trans;
 

@@ -48,7 +48,7 @@ void ECS::updatePhysics() {
 
 	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
 	{
-		it->second->updatePhysics();
+		it->second->updatePhysicsState();
 	}
 }
 
@@ -89,12 +89,31 @@ void ECS::DrawEntities() {
 	glStencilMask(0xFF);
 }
 
-void ECS::DrawEntityShadows(float delta) {
-	for (auto it = entMap.begin(); it != entMap.end(); it++)
+void ECS::advanceEntityAnimations(float delta) {
+	const auto& componentMap = componentSets[COMPONENT_BIT_ANIMATED].getMap();
+
+	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
 	{
-		it->second->DrawShadow(delta);
+		it->second->advanceAnimation(delta);
 	}
 }
+
+void ECS::DrawEntityShadows() {
+	for (auto it = entMap.begin(); it != entMap.end(); it++)
+	{
+		it->second->DrawShadow();
+	}
+}
+
+void ECS::DrawEntityPointShadows() {
+	const auto& componentMap = componentSets[COMPONENT_BIT_MODEL].getMap();
+
+	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
+	{
+		it->second->DrawPointShadow();
+	}
+}
+
 
 void ECS::DrawEntityStencils() {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
