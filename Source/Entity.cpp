@@ -173,12 +173,12 @@ void Entity::DrawPointShadow() {
 		finalntransform = transform->getNormalMatrix();
 	}
 	if (m_signature[COMPONENT_BIT_ANIMATED]) {
-		Globals::get().pointShadowShader->Activate();
+		Globals::get().animPointShadowShader->Activate();
 		const auto& transforms = mator->GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i) {
-			glUniformMatrix4fv(glGetUniformLocation(Globals::get().pointShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animPointShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		}
-		skMdl->Draw(*Globals::get().pointShadowShader, *camera, finaltransform, finalntransform);
+		skMdl->Draw(*Globals::get().animPointShadowShader, *camera, finaltransform, finalntransform);
 	}
 	else if (m_signature[COMPONENT_BIT_MODEL]) {
 		Globals::get().pointShadowShader->Activate();

@@ -26,6 +26,8 @@ int main() {
 	Globals::get().animCellShader = &animCellProgram;
 	Shader pointShadowProgram = Shader("pointShadowVert.glsl","pointShadowFrag.glsl","pointShadowGeom.glsl");
 	Globals::get().pointShadowShader = &pointShadowProgram;
+	Shader animPointShadowProgram = Shader("animPointShadowVert.glsl", "pointShadowFrag.glsl", "pointShadowGeom.glsl");
+	Globals::get().animPointShadowShader = &animPointShadowProgram;
 
 	Entity* e;
 

@@ -32,6 +32,7 @@ public:
     Shader * shadowShader;
     Shader * wireShader;
     Shader * animShadowShader;
+    Shader * animPointShadowShader;
     Shader * animCellShader;
     Shader * cellShader;
     Shader * pointShadowShader;

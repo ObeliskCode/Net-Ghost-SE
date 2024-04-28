@@ -217,5 +217,8 @@
     <None Include="shaders\pointShadowVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="shaders\animPointShadowVert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

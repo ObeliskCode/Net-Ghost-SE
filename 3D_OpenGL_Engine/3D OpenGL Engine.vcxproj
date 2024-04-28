@@ -205,6 +205,7 @@
     <ClInclude Include="..\Source\Wire.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\animPointShadowVert.glsl" />
     <None Include="shaders\animShadowVert.glsl" />
     <None Include="shaders\animVert.glsl" />
     <None Include="shaders\cellFrag.glsl" />

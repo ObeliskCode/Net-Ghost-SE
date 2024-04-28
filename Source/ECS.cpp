@@ -106,9 +106,7 @@ void ECS::DrawEntityShadows() {
 }
 
 void ECS::DrawEntityPointShadows() {
-	const auto& componentMap = componentSets[COMPONENT_BIT_MODEL].getMap();
-
-	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
+	for (auto it = entMap.begin(); it != entMap.end(); it++)
 	{
 		it->second->DrawPointShadow();
 	}
