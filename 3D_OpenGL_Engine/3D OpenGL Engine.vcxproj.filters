@@ -208,5 +208,14 @@
     <None Include="shaders\wireVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="shaders\pointShadowFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\pointShadowGeom.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\pointShadowVert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
