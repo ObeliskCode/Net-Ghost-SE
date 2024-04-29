@@ -79,7 +79,7 @@ vec4 pointLight()
 vec4 direcLight()
 {
 	// ambient lighting
-	float ambient = 1.5f;
+	float ambient = 1.0f;
 
 	// diffuse lighting
 	float diffuseLight = 0.5f;

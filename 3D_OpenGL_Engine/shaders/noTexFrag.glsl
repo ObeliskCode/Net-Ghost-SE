@@ -34,9 +34,8 @@ vec4 pointLight()
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(lightPos - crntPos);
 
-	float ambient = 0.3f;
-
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
+	diffuse *= 0.80f;
 
 	// Shadow value
 	float shadow = 0.0f;
@@ -65,18 +64,19 @@ vec4 pointLight()
 	// Average shadow
 	shadow /= pow((sampleRadius * 2 + 1), 3);
 
-	return (diffuse * (1.0f - shadow) + ambient) * lightColor * vec4(0.5f,0.5f,0.5f,1.0f);
+	return (diffuse * (1.0f - shadow)) * lightColor * vec4(0.5f,0.5f,0.5f,1.0f);
 }
 
 vec4 direcLight()
 {
 	// ambient lighting
-	float ambient = 0.20f;
+	float ambient = 1.0f;
 
 	// diffuse lighting
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(vec3(-4.0f, 10.0f, -6.0f));
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
+	diffuse *= 0.50f;
 
 	// Shadow value
 	float shadow = 0.0f;

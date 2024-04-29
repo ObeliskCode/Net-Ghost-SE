@@ -11,11 +11,11 @@ int main() {
 	GLFWwindow* window = initApp();
 
 	Shader rigProgram = Shader("rigVert.glsl", "mdlFrag.glsl");
-	Shader wireProgram = Shader("wireVert.glsl", "wireFrag.glsl");
-	Globals::get().wireShader = &wireProgram;
 	Shader lightProgram = Shader("rigVert.glsl", "lightFrag.glsl");
 	Shader animProgram = Shader("animVert.glsl", "mdlFrag.glsl");
 	Shader noTexAnimProgram = Shader("animVert.glsl", "noTexFrag.glsl");
+	Shader wireProgram = Shader("wireVert.glsl", "wireFrag.glsl");
+	Globals::get().wireShader = &wireProgram;
 	Shader shadowProgram = Shader("shadowVert.glsl", "shadowFrag.glsl");
 	Globals::get().shadowShader = &shadowProgram;
 	Shader animShadowProgram = Shader("animShadowVert.glsl", "shadowFrag.glsl");
