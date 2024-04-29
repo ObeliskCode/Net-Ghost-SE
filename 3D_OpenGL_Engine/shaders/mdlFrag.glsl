@@ -77,10 +77,10 @@ vec4 pointLight()
 vec4 direcLight()
 {
 	// ambient lighting
-	float ambient = 0.4f;
+	float ambient = 1.5f;
 
 	// diffuse lighting
-	float diffuseLight = 0.35f;
+	float diffuseLight = 0.50f;
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(vec3(-4.0f, 10.0f, -6.0f));
 	float diffuseAmount = max(dot(normal, lightDirection), 0.0f);
@@ -129,4 +129,5 @@ vec4 direcLight()
 void main()
 {
 	FragmentColor = pointLight() + direcLight();
+	//FragmentColor = direcLight();
 }
