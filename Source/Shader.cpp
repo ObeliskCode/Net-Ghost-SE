@@ -16,8 +16,11 @@ std::string get_file_contents(const char* filename) {
 
 Shader::Shader(std::string vertexFile, std::string fragmentFile) {
 
-	const char* vertSrc = ("shaders/" + vertexFile).c_str();
-	const char* fragSrc = ("shaders/" + fragmentFile).c_str();
+	std::string vertPath = ("shaders/" + vertexFile);
+	std::string fragPath = ("shaders/" + fragmentFile);
+
+	const char* vertSrc = vertPath.c_str();
+	const char* fragSrc = fragPath.c_str();
 
 	std::string vertexCode = get_file_contents(vertSrc);
 	std::string fragmentCode = get_file_contents(fragSrc);
@@ -48,9 +51,13 @@ Shader::Shader(std::string vertexFile, std::string fragmentFile) {
 
 Shader::Shader(std::string vertexFile, std::string fragmentFile, std::string geomFile) {
 
-	const char* vertSrc = ("shaders/" + vertexFile).c_str();
-	const char* fragSrc = ("shaders/" + fragmentFile).c_str();
-	const char* geomSrc = ("shaders/" + geomFile).c_str();
+	std::string vertPath = ("shaders/" + vertexFile);
+	std::string fragPath = ("shaders/" + fragmentFile);
+	std::string geomPath = ("shaders/" + geomFile);
+
+	const char* vertSrc = vertPath.c_str();
+	const char* fragSrc = fragPath.c_str();
+	const char* geomSrc = geomPath.c_str();
 
 	std::string vertexCode = get_file_contents(vertSrc);
 	std::string fragmentCode = get_file_contents(fragSrc);
