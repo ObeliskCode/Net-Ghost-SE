@@ -162,6 +162,7 @@ void Entity::DrawShadow() {
 
 void Entity::DrawPointShadow() {
 	if (!m_visible) return;
+	if (m_type == "light") return;
 	glm::mat4 finaltransform;
 	glm::mat4 finalntransform;
 	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
