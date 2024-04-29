@@ -627,7 +627,7 @@ int main() {
 
 		ECS::get().DrawEntityStencils();
 
-		batEnt->Draw();
+		batEnt->Draw(); // fix these so that they have unique lighting!
 		cigEnt->Draw();
 
 		glEnable(GL_BLEND);
