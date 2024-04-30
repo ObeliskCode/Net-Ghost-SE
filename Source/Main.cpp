@@ -343,7 +343,7 @@ int main() {
 	boost::accumulators::accumulator_set<double, boost::accumulators::stats<boost::accumulators::tag::sum>> accum;
 
 	double lastFrame = timeStart;
-	double delta = 1.0 / 187.0;
+	double delta = 1.0 / 300.0;
 	double frameTime = 0.0f;
 	int tickCounter = 0;
 	bool _skip = false;
@@ -388,15 +388,7 @@ int main() {
 		accum(frameTime);
 
 		while (boost::accumulators::sum(accum) >= delta) {
-			tickCounter++;
-			if (tickCounter == 187.0) {
-				tickCounter = 0;
-				accum(-delta);
-				//_skip = true;
-			}
-			else {
-				accum(-delta);
-			}
+			accum(-delta);
 
 			{ // character, delta
 				if (Globals::get().camLock) {
