@@ -203,7 +203,7 @@ int main() {
 
 	Shader partProgram = Shader("partVert.glsl", "partFrag.glsl");
 
-	ParticleSystem particleSys;
+	ParticleEmitter particleEmitter;
 
 	std::vector<std::string> faces =
 	{
@@ -540,21 +540,21 @@ int main() {
 					p.setTranslation(Globals::get().camera->getPosition() - glm::vec3(0.f, 0.25f, 0.f));
 					p.setScale(0.1f);
 					p.vel = glm::normalize(Globals::get().camera->getOrientation());
-					particleSys.particles.push_back(p);
+					particleEmitter.particles.push_back(p);
 
 					Particle p2 = Particle();
 					p2.setTranslation(Globals::get().camera->getPosition() - glm::vec3(0.f, 0.25f, 0.f));
 					p2.setScale(0.1f);
 					p2.vel = glm::normalize(Globals::get().camera->getOrientation());
-					particleSys.particles.push_back(p2);
+					particleEmitter.particles.push_back(p2);
 				}
 
 				// how slow is this? (update/cleanup particles)
-				particleSys.updateParticles(delta);
+				particleEmitter.updateParticles(delta);
 				
-				for (int i = 0; i < particleSys.particles.size(); i++) {
-					if (particleSys.particles[i].life >= particleSys.particles[i].expire) {
-						particleSys.particles.erase(particleSys.particles.begin() + i);
+				for (int i = 0; i < particleEmitter.particles.size(); i++) {
+					if (particleEmitter.particles[i].life >= particleEmitter.particles[i].expire) {
+						particleEmitter.particles.erase(particleEmitter.particles.begin() + i);
 						i--;
 					}
 				}
@@ -625,8 +625,8 @@ int main() {
 		cigEnt->Draw();
 
 		glEnable(GL_BLEND);
-		std::sort(particleSys.particles.begin(), particleSys.particles.end(), Less);
-		particleSys.DrawParticles(partProgram, *Globals::get().camera);
+		std::sort(particleEmitter.particles.begin(), particleEmitter.particles.end(), Less);
+		particleEmitter.DrawParticles(partProgram, *Globals::get().camera);
 		glDisable(GL_BLEND);
 
 		glfwSwapBuffers(window);

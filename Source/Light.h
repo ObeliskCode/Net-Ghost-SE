@@ -3,6 +3,7 @@
 
 #include "glm/glm.hpp"
 #include "Shader.h"
+#include "PointShadow.h"
 
 class Light {
 	public:
@@ -14,7 +15,7 @@ class Light {
 
 		void linkShader(Shader sh);
 	private:
-
+		PointShadow lightShadow;
 };
 
 

@@ -48,7 +48,7 @@
 #include "Light.h"
 #include "Animator.h"
 #include "Input.h"
-#include "ParticleSystem.h"
+#include "ParticleEmitter.h"
 
 GLFWwindow* initApp();
 void gameTick(double delta);

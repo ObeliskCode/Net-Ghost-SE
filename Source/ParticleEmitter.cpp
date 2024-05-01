@@ -1,8 +1,8 @@
-#include "ParticleSystem.h"
+#include "ParticleEmitter.h"
 
 const double PI = 3.1415926535897932384626433832795028841971693993751058209;
 
-ParticleSystem::ParticleSystem(){
+ParticleEmitter::ParticleEmitter(){
 
     Vert.push_back(1.0f);
     Vert.push_back(1.0f);
@@ -83,11 +83,11 @@ ParticleSystem::ParticleSystem(){
 }
 
 //TODO!
-ParticleSystem::~ParticleSystem() {
+ParticleEmitter::~ParticleEmitter() {
     
 }
 
-void ParticleSystem::DrawParticles(Shader& shader, Camera& camera){
+void ParticleEmitter::DrawParticles(Shader& shader, Camera& camera){
     std::vector <glm::mat4> transforms;
     std::vector <float> lifeVec;
 
@@ -165,7 +165,7 @@ void ParticleSystem::DrawParticles(Shader& shader, Camera& camera){
 
 }
 
-void ParticleSystem::updateParticles(float delta){
+void ParticleEmitter::updateParticles(float delta){
     for (int i = 0; i < particles.size(); i++){
         particles[i].update(delta);
     }
