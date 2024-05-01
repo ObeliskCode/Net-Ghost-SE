@@ -99,7 +99,7 @@ void SkeletalMesh::Draw(
 }
 
 
-void SkeletalMesh::Draw(
+void SkeletalMesh::DrawShadow(
 	Shader& shader,
 	glm::mat4 transform
 ) {
