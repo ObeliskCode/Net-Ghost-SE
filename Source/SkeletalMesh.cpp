@@ -97,3 +97,21 @@ void SkeletalMesh::Draw(
 	// Draw the actual mesh
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
+
+
+void SkeletalMesh::Draw(
+	Shader& shader,
+	glm::mat4 transform
+) {
+	shader.Activate();
+	m_VAO->Bind();
+
+	// Push the matrices to the vertex shader
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
+
+	//send transform matrix to meshes shader
+	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "model"), 1, GL_FALSE, glm::value_ptr(model));
+
+	// Draw the actual mesh
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+}

@@ -265,8 +265,10 @@ int main() {
 
 	/* SHADOW MAP (DIRECTIONAL [DEFUNCT]) */
 
-	/* SHADOW MAP (POINT) */
+	Globals::get().depthCubeMap = lampLight.lightShadow.getMap();
 
+	/* SHADOW MAP (POINT) */
+	/*
 	unsigned int pointShadowMapFBO;
 	glGenFramebuffers(1, &pointShadowMapFBO);
 
@@ -328,7 +330,7 @@ int main() {
 	glUniformMatrix4fv(glGetUniformLocation(animPointShadowProgram.ID, "shadowMatrices[5]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[5]));
 	glUniform3f(glGetUniformLocation(animPointShadowProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform1f(glGetUniformLocation(animPointShadowProgram.ID, "far_plane"), far_plane);
-
+	*/
 	/* SHADOW MAP (POINT) */
 
 	/* loop vars */ 
@@ -605,8 +607,10 @@ int main() {
 		
 		{ // single point shadow draw pass
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-			glBindFramebuffer(GL_FRAMEBUFFER, pointShadowMapFBO);
+			glBindFramebuffer(GL_FRAMEBUFFER, lampLight.lightShadow.getFBO());
 			glClear(GL_DEPTH_BUFFER_BIT);// clears this framebuffers depth bit!
+
+			lampLight.lightShadow.linkShadowShader();
 
 			ECS::get().DrawEntityPointShadows();
 

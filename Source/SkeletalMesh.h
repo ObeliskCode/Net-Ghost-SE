@@ -32,6 +32,13 @@ public:
 		glm::mat4 transform,
 		glm::mat4 ntransform
 	);
+
+
+	void DrawShadow
+	(
+		Shader& shader,
+		glm::mat4 transform
+	);
 };
 
 #endif

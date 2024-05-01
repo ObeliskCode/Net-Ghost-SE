@@ -17,9 +17,19 @@ class PointShadow {
     public:
         PointShadow(glm::vec3 lightPos);
         ~PointShadow();
+
+        void linkShadowShaders();
+
+        unsigned int getFBO(){ return pointShadowMapFBO };
+        unsigned int getMap(){ return depthCubemap };
     private:
         unsigned int pointShadowMapFBO;
         unsigned int depthCubemap;
+
+    	std::vector<glm::mat4> shadowTransforms;
+        glm::vec3 lightPos;
+        float far_plane;
+
 };
 
 #endif

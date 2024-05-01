@@ -14,8 +14,10 @@ class Light {
 		~Light();
 
 		void linkShader(Shader sh);
-	private:
+
 		PointShadow lightShadow;
+
+	private:
 };
 
 

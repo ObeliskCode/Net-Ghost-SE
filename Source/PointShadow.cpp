@@ -4,6 +4,10 @@ PointShadow::PointShadow(glm::vec3 lightPos){
 	const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 	const float near_plane = 0.1f, far_plane = 200.0f;
 
+	PointShadow::far_plane = far_plane;
+
+	PointShadow::lightPos = lightPos;
+
 	glGenFramebuffers(1, &pointShadowMapFBO);
 	glGenTextures(1, &depthCubemap);
 
@@ -26,7 +30,6 @@ PointShadow::PointShadow(glm::vec3 lightPos){
 
 	float aspect = (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT;
 	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near_plane, far_plane);
-	std::vector<glm::mat4> shadowTransforms;
 	shadowTransforms.push_back(shadowProj *
 		glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
 	shadowTransforms.push_back(shadowProj *
@@ -40,6 +43,9 @@ PointShadow::PointShadow(glm::vec3 lightPos){
 	shadowTransforms.push_back(shadowProj *
 		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
 
+}
+
+void PointShadow::linkShadowShaders(){
 	Globals::get().pointShadowShader->Activate();
 	GLuint pointShaderID = Globals::get().pointShadowShader->ID;
 	glUniformMatrix4fv(glGetUniformLocation(pointShaderID, "shadowMatrices[0]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[0]));
@@ -62,6 +68,7 @@ PointShadow::PointShadow(glm::vec3 lightPos){
 	glUniform3f(glGetUniformLocation(pointAnimShaderID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform1f(glGetUniformLocation(pointAnimShaderID, "far_plane"), far_plane);
 }
+
 
 PointShadow::~PointShadow(){
 

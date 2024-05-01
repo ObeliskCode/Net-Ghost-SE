@@ -136,14 +136,11 @@ void Entity::advanceAnimation(float delta) {
 void Entity::DrawShadow() {
 	if (!m_visible) return;
 	glm::mat4 finaltransform;
-	glm::mat4 finalntransform;
 	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
 		finaltransform = phystransform->getMatrix() * transform->getMatrix();
-		finalntransform = phystransform->getNormalMatrix() * transform->getNormalMatrix();
 	}
 	else {
 		finaltransform = transform->getMatrix();
-		finalntransform = transform->getNormalMatrix();
 	}
 	if (m_signature[COMPONENT_BIT_ANIMATED]) {
 		Globals::get().animShadowShader->Activate();
@@ -151,11 +148,11 @@ void Entity::DrawShadow() {
 		for (int i = 0; i < transforms.size(); ++i) {
 			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		}
-		skMdl->Draw(*Globals::get().animShadowShader, *camera, finaltransform, finalntransform);
+		skMdl->DrawShadow(*Globals::get().animShadowShader, finaltransform);
 	}
 	else if (m_signature[COMPONENT_BIT_MODEL]) {
 		Globals::get().shadowShader->Activate();
-		mdl->Draw(*Globals::get().shadowShader, *camera, finaltransform, finalntransform);
+		mdl->DrawShadow(*Globals::get().shadowShader, finaltransform);
 	}
 
 }
@@ -164,14 +161,11 @@ void Entity::DrawPointShadow() {
 	if (!m_visible) return;
 	if (m_type == "light") return;
 	glm::mat4 finaltransform;
-	glm::mat4 finalntransform;
 	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
 		finaltransform = phystransform->getMatrix() * transform->getMatrix();
-		finalntransform = phystransform->getNormalMatrix() * transform->getNormalMatrix();
 	}
 	else {
 		finaltransform = transform->getMatrix();
-		finalntransform = transform->getNormalMatrix();
 	}
 	if (m_signature[COMPONENT_BIT_ANIMATED]) {
 		Globals::get().animPointShadowShader->Activate();
@@ -179,11 +173,11 @@ void Entity::DrawPointShadow() {
 		for (int i = 0; i < transforms.size(); ++i) {
 			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animPointShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		}
-		skMdl->Draw(*Globals::get().animPointShadowShader, *camera, finaltransform, finalntransform);
+		skMdl->DrawShadow(*Globals::get().animPointShadowShader, finaltransform);
 	}
 	else if (m_signature[COMPONENT_BIT_MODEL]) {
 		Globals::get().pointShadowShader->Activate();
-		mdl->Draw(*Globals::get().pointShadowShader, *camera, finaltransform, finalntransform);
+		mdl->DrawShadow(*Globals::get().pointShadowShader, finaltransform);
 	}
 }
 
