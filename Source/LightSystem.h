@@ -1,9 +1,15 @@
 #ifndef LIGHTSYSTEM_H
 #define LIGHTSYSTEM_H
 
+#define GLEW_STATIC
+#include <GL/glew.h> 
+#include <GLFW/glfw3.h>
+
 #include <vector>
 
 #include "Light.h"
+#include "ECS.h"
+#include "Globals.h"
 
 class LightSystem {
 public:
@@ -22,9 +28,11 @@ public:
 
     std::vector <Light> lights;
 
+    void RenderPointShadows();
+
 private:
-    LightSystem(); // no public constructor
-    ~LightSystem(); // no public destructor
+    LightSystem() = default; // no public constructor
+    ~LightSystem() = default; // no public destructor
     static LightSystem* instance; // declaration class variable
 
 };

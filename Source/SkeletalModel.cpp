@@ -243,6 +243,13 @@ void SkeletalModel::Draw(Shader& shader, Camera& camera,
     }
 }
 
+
+void SkeletalModel::DrawShadow(Shader& shader, glm::mat4& transform){
+    for (unsigned int i = 0; i < meshes.size(); i++) {
+        meshes[i]->DrawShadow(shader, transform);
+    } 
+}
+
 // POSSIBLY CHANGE type in Texture from string to aiTextureType?
 
 

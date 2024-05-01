@@ -4,7 +4,7 @@ Light::Light(glm::vec4 col, glm::vec3 pos) {
 	lightColor = col;
 	lightPos = pos;
 
-	lightShadow = PointShadow(pos);
+	Light::lightShadow = PointShadow(pos);
 }
 
 Light::~Light() {

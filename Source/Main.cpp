@@ -120,7 +120,11 @@ int main() {
 	ECS::get().registerComponents(e);
 
 	Light lampLight = Light(glm::vec4(0.6f, 0.6f, 0.6f, 1.0f), glm::vec3(-20.0f, 13.2f, 28.0f));
-	
+	LightSystem::get().lights.push_back(lampLight);
+
+	Light light2 = Light(glm::vec4(0.5f,0.5f,0.5f,1.0f), glm::vec3(-20.0f, 10.0f, -20.0f))
+	LightSystem::get().lights.push_back(light2);
+
 	Model* light = new Model("bulb/scene.gltf");
 	e = ECS::get().linkEntity(new Entity(light, &lightProgram, Globals::get().camera));
 	e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
@@ -604,7 +608,9 @@ int main() {
 			glViewport(0, 0, Globals::get().screenWidth, Globals::get().screenHeight);
 		}
 
+		LightSystem::get().RenderPointShadows();
 		
+		/*
 		{ // single point shadow draw pass
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, lampLight.lightShadow.getFBO());
@@ -617,7 +623,7 @@ int main() {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			glViewport(0, 0, Globals::get().screenWidth, Globals::get().screenHeight);
-		}
+		}*/
 
 		ECS::get().DrawEntities();
 

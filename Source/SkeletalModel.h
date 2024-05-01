@@ -32,6 +32,8 @@ public:
     void Draw(Shader& shader, Camera& camera,
         glm::mat4& transform, glm::mat4& ntransform);
 
+    void DrawShadow(Shader& shader, glm::mat4& transform);
+
     auto& GetBoneInfoMap() { return m_BoneInfoMap; }
     int& GetBoneCount() { return m_BoneCounter; }
 

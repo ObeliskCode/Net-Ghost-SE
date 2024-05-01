@@ -18,6 +18,8 @@ public:
     void Draw(Shader& shader, Camera& camera,
         glm::mat4& transform, glm::mat4& ntransform);
 
+    void DrawShadow(Shader& shader, glm::mat4& transform);
+
 private:
     // model data
     std::vector<Texture> textures_loaded; // all textures for all meshes

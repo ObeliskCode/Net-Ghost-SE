@@ -20,8 +20,8 @@ class PointShadow {
 
         void linkShadowShaders();
 
-        unsigned int getFBO(){ return pointShadowMapFBO };
-        unsigned int getMap(){ return depthCubemap };
+        unsigned int getFBO(){ return pointShadowMapFBO; }
+        unsigned int getMap(){ return depthCubemap; }
     private:
         unsigned int pointShadowMapFBO;
         unsigned int depthCubemap;
