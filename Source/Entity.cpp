@@ -56,19 +56,21 @@ Entity::~Entity(){
 	else if (m_signature[COMPONENT_BIT_MODEL]) {
 		delete mdl;
 	}
+	delete transform;
+	if (phystransform != nullptr) delete phystransform;
 }
 
 void Entity::addBody(btRigidBody* b) {
 	if (body || !b) return;
 	if (b->getMass() == 0.0f) {
 		setBit(COMPONENT_BIT_STATIC);
+		body = b;
 	}
 	else {
 		setBit(COMPONENT_BIT_DYNAMIC);
+		body = b;
+		phystransform = new Transform();
 	}
-	body = b;
-	phystransform = new Transform();
-	updatePhysicsState();
 }
 
 btRigidBody* Entity::getBody() {
@@ -136,7 +138,7 @@ void Entity::advanceAnimation(float delta) {
 void Entity::DrawShadow() {
 	if (!m_visible) return;
 	glm::mat4 finaltransform;
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+	if (m_signature[COMPONENT_BIT_DYNAMIC]) {
 		finaltransform = phystransform->getMatrix() * transform->getMatrix();
 	}
 	else {
@@ -161,7 +163,7 @@ void Entity::DrawPointShadow() {
 	if (!m_visible) return;
 	if (m_type == "light") return;
 	glm::mat4 finaltransform;
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+	if (m_signature[COMPONENT_BIT_DYNAMIC]) {
 		finaltransform = phystransform->getMatrix() * transform->getMatrix();
 	}
 	else {
@@ -191,7 +193,7 @@ void Entity::DrawStencil() {
 			transform->setScale(upScale);
 			glm::mat4 finaltransform;
 			glm::mat4 finalntransform;
-			if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+			if (m_signature[COMPONENT_BIT_DYNAMIC]) {
 				finaltransform = phystransform->getMatrix() * transform->getMatrix();
 				finalntransform = phystransform->getNormalMatrix() * transform->getNormalMatrix();
 			}
@@ -205,12 +207,12 @@ void Entity::DrawStencil() {
 	}
 }
 
-
+// update finaltransform?
 void Entity::Draw() {
 	if (!m_visible) return;
 	glm::mat4 finaltransform;
 	glm::mat4 finalntransform;
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+	if (m_signature[COMPONENT_BIT_DYNAMIC]) {
 		finaltransform = phystransform->getMatrix() * transform->getMatrix();
 		finalntransform = phystransform->getNormalMatrix() * transform->getNormalMatrix();
 	}
@@ -238,19 +240,10 @@ void Entity::Draw() {
 			mdl->Draw(*shader, *camera, finaltransform, finalntransform);
 		}
 	}
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
-		if (Globals::get().drawWires) {
-			for (int i = 0; i < wires.size(); i++) {
-				glm::mat4 tran = phystransform->getMatrix();
-				wires[i]->Draw(*Globals::get().wireShader, *camera, tran);
-			}
-		}
-	}
-	else {
-		if (Globals::get().drawWires) {
-			for (int i = 0; i < wires.size(); i++) {
-				wires[i]->Draw(*Globals::get().wireShader, *camera, finaltransform);
-			}
+	
+	if (Globals::get().drawWires) {
+		for (int i = 0; i < wires.size(); i++) {
+			wires[i]->Draw(*Globals::get().wireShader, *camera, finaltransform);
 		}
 	}
 
@@ -258,7 +251,7 @@ void Entity::Draw() {
 }
 
 void Entity::updatePhysicsState() {
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+	if (m_signature[COMPONENT_BIT_DYNAMIC]) {
 		btTransform trans;
 
 		//if (body && body->getMotionState())
