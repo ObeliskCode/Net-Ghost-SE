@@ -1,5 +1,5 @@
-#ifndef PARTICLESYSTEM_H
-#define PARTICLESYSTEM_H
+#ifndef POINTSHADOW_H
+#define POINTSHADOW_H
 
 #define GLEW_STATIC
 #include <GL/glew.h> 

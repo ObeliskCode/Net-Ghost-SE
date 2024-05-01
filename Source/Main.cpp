@@ -122,7 +122,7 @@ int main() {
 	Light lampLight = Light(glm::vec4(0.6f, 0.6f, 0.6f, 1.0f), glm::vec3(-20.0f, 13.2f, 28.0f));
 	LightSystem::get().lights.push_back(lampLight);
 
-	Light light2 = Light(glm::vec4(0.5f,0.5f,0.5f,1.0f), glm::vec3(-20.0f, 10.0f, -20.0f))
+	Light light2 = Light(glm::vec4(0.5f,0.5f,0.5f,1.0f), glm::vec3(-20.0f, 10.0f, -20.0f));
 	LightSystem::get().lights.push_back(light2);
 
 	Model* light = new Model("bulb/scene.gltf");
@@ -351,8 +351,6 @@ int main() {
 	double lastFrame = timeStart;
 	double delta = 1.0 / 300.0;
 	double frameTime = 0.0f;
-	int tickCounter = 0;
-	bool _skip = false;
 
 	double batRot = 0.0f;
 	float bf = 0.0f;
@@ -582,12 +580,6 @@ int main() {
 			q1 = cos(batRot / 2);
 			q3 = sin(batRot / 2);
 			batEnt->transform->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
-		}
-
-
-		if (_skip) {
-			_skip = false;
-			continue;
 		}
 
 		/* RENDERING */
