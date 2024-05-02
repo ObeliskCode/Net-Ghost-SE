@@ -71,5 +71,5 @@ void PointShadow::linkShadowShaders(){
 
 
 PointShadow::~PointShadow(){
-
+	// delete FBO and Map
 }

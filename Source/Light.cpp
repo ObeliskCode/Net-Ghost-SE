@@ -4,11 +4,11 @@ Light::Light(glm::vec4 col, glm::vec3 pos) {
 	lightColor = col;
 	lightPos = pos;
 
-	Light::lightShadow = PointShadow(lightPos);
+	Light::lightShadow = new PointShadow(lightPos);
 }
 
 Light::~Light() {
-
+	delete lightShadow;
 }
 
 void Light::linkShader(Shader sh) {

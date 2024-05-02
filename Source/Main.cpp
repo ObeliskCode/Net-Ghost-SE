@@ -269,7 +269,7 @@ int main() {
 
 	/* SHADOW MAP (DIRECTIONAL [DEFUNCT]) */
 
-	Globals::get().depthCubeMap = lampLight.lightShadow.getMap();
+	Globals::get().depthCubeMap = lampLight.lightShadow->getMap();
 
 	/* SHADOW MAP (POINT) */
 	/*
