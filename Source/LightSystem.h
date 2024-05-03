@@ -26,7 +26,7 @@ public:
         instance = nullptr;
     }
 
-    std::vector <Light> lights;
+    std::vector <Light*> lights;
 
     void RenderPointShadows();
 

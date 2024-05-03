@@ -7,10 +7,10 @@ void LightSystem::RenderPointShadows(){
     const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
     for (int i = 0; i < lights.size(); i++){
         glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-        glBindFramebuffer(GL_FRAMEBUFFER, lights[i].lightShadow->getFBO());
+        glBindFramebuffer(GL_FRAMEBUFFER, lights[i]->lightShadow->getFBO());
         glClear(GL_DEPTH_BUFFER_BIT);// clears this framebuffers depth bit!
 
-        lights[i].lightShadow->linkShadowShaders();
+        lights[i]->lightShadow->linkShadowShaders();
 
         ECS::get().DrawEntityPointShadows();
 
