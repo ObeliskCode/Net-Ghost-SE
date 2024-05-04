@@ -10,6 +10,16 @@ struct {
 int main() {
 	GLFWwindow* window = initApp();
 
+	Shader textProgram = Shader("textVert.glsl", "textFrag.glsl");
+
+	renderScene();
+
+	glEnable(GL_BLEND);
+	GUI::get().RenderText(textProgram, "Loading...", (Globals::get().screenWidth/2)-100.0f, Globals::get().screenHeight/2, 1.0f, glm::vec3(1.f, 1.f, 1.f));
+	glDisable(GL_BLEND);
+
+	glfwSwapBuffers(window);
+
 	Shader rigProgram = Shader("rigVert.glsl", "mdlFrag.glsl");
 	Shader lightProgram = Shader("rigVert.glsl", "lightFrag.glsl");
 	Shader animProgram = Shader("animVert.glsl", "mdlFrag.glsl");
@@ -28,7 +38,6 @@ int main() {
 	Globals::get().pointShadowShader = &pointShadowProgram;
 	Shader animPointShadowProgram = Shader("animPointShadowVert.glsl", "pointShadowFrag.glsl", "pointShadowGeom.glsl");
 	Globals::get().animPointShadowShader = &animPointShadowProgram;
-	Shader textProgram = Shader("textVert.glsl", "textFrag.glsl");
 
 	Entity* e;
 
