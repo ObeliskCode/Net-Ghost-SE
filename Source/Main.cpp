@@ -28,6 +28,7 @@ int main() {
 	Globals::get().pointShadowShader = &pointShadowProgram;
 	Shader animPointShadowProgram = Shader("animPointShadowVert.glsl", "pointShadowFrag.glsl", "pointShadowGeom.glsl");
 	Globals::get().animPointShadowShader = &animPointShadowProgram;
+	Shader textProgram = Shader("textVert.glsl", "textFrag.glsl");
 
 	Entity* e;
 
@@ -159,7 +160,6 @@ int main() {
 	e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	e->addBody(Physics::get().addShape2(e->getID()));
-	e->setType("pickup");
 	ECS::get().registerComponents(e);
 
 	//RIGID BODY 2
@@ -168,7 +168,6 @@ int main() {
 	e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	e->addBody(Physics::get().addShape3(e->getID()));
-	e->setType("pickup");
 	ECS::get().registerComponents(e);
 
 	//CONTROLLABLE BODY
@@ -185,7 +184,6 @@ int main() {
 	e->addWire(new Wire(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
 	e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 	e->addBody(Physics::get().addShape5(e->getID()));
-	e->setType("pickup");
 	ECS::get().registerComponents(e);
 
 	//TEST CIGS
@@ -269,73 +267,8 @@ int main() {
 
 	/* SHADOW MAP (DIRECTIONAL [DEFUNCT]) */
 
+	// SHADOW MAP (POINT)
 	Globals::get().depthCubeMap = lampLight->lightShadow->getMap();
-
-	/* SHADOW MAP (POINT) */
-	/*
-	unsigned int pointShadowMapFBO;
-	glGenFramebuffers(1, &pointShadowMapFBO);
-
-	unsigned int depthCubemap;
-	glGenTextures(1, &depthCubemap);
-
-	glBindTexture(GL_TEXTURE_CUBE_MAP, depthCubemap);
-	for (unsigned int i = 0; i < 6; ++i)
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
-			SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	glBindFramebuffer(GL_FRAMEBUFFER, pointShadowMapFBO);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	Globals::get().depthCubeMap = depthCubemap;
-
-	float aspect = (float)SHADOW_WIDTH / (float)SHADOW_HEIGHT;
-	glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near_plane, far_plane);
-	glm::vec3 lightPos = lampLight.lightPos;
-	std::vector<glm::mat4> shadowTransforms;
-	shadowTransforms.push_back(shadowProj *
-		glm::lookAt(lightPos, lightPos + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-	shadowTransforms.push_back(shadowProj *
-		glm::lookAt(lightPos, lightPos + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-	shadowTransforms.push_back(shadowProj *
-		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
-	shadowTransforms.push_back(shadowProj *
-		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
-	shadowTransforms.push_back(shadowProj *
-		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
-	shadowTransforms.push_back(shadowProj *
-		glm::lookAt(lightPos, lightPos + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
-
-	pointShadowProgram.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[0]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[0]));
-	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[1]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[1]));
-	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[2]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[2]));
-	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[3]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[3]));
-	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[4]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[4]));
-	glUniformMatrix4fv(glGetUniformLocation(pointShadowProgram.ID, "shadowMatrices[5]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[5]));
-	glUniform3f(glGetUniformLocation(pointShadowProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-	glUniform1f(glGetUniformLocation(pointShadowProgram.ID, "far_plane"), far_plane);
-
-	animPointShadowProgram.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(animPointShadowProgram.ID, "shadowMatrices[0]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[0]));
-	glUniformMatrix4fv(glGetUniformLocation(animPointShadowProgram.ID, "shadowMatrices[1]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[1]));
-	glUniformMatrix4fv(glGetUniformLocation(animPointShadowProgram.ID, "shadowMatrices[2]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[2]));
-	glUniformMatrix4fv(glGetUniformLocation(animPointShadowProgram.ID, "shadowMatrices[3]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[3]));
-	glUniformMatrix4fv(glGetUniformLocation(animPointShadowProgram.ID, "shadowMatrices[4]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[4]));
-	glUniformMatrix4fv(glGetUniformLocation(animPointShadowProgram.ID, "shadowMatrices[5]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[5]));
-	glUniform3f(glGetUniformLocation(animPointShadowProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-	glUniform1f(glGetUniformLocation(animPointShadowProgram.ID, "far_plane"), far_plane);
-	*/
-	/* SHADOW MAP (POINT) */
 
 	/* loop vars */ 
 	double crntTime = 0.0;
@@ -354,6 +287,8 @@ int main() {
 
 	double batRot = 0.0f;
 	float bf = 0.0f;
+
+	unsigned int cigCt = 1;
 
 	unsigned int prevID = 0;
 
@@ -493,6 +428,7 @@ int main() {
 						if (Input::get().getValue(GLFW_KEY_E)) {
 							if (ECS::get().getEntity(entID)->getType() == "pickup") {
 								// only deletes wires, rigid body & not model / skel model
+								cigCt++;
 								ECS::get().deleteEntity(entID);
 								prevID = 0;
 
@@ -521,10 +457,11 @@ int main() {
 
 			{ // particles
 			// UPDATE so that it shows cig first then blows smoke after it dissapears
-				if (Input::get().getValue(GLFW_KEY_P) && !is_smoking) {
+				if (Input::get().getValue(GLFW_KEY_P) && !is_smoking && cigCt > 0) {
 					is_smoking = true;
 					cig_anim = true;
 					cig_anim_time = 0.0f;
+					cigCt--;
 				}
 
 				if (is_smoking) {
@@ -602,21 +539,6 @@ int main() {
 
 		LightSystem::get().RenderPointShadows();
 		
-		/*
-		{ // single point shadow draw pass
-			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-			glBindFramebuffer(GL_FRAMEBUFFER, lampLight->lightShadow->getFBO());
-			glClear(GL_DEPTH_BUFFER_BIT);// clears this framebuffers depth bit!
-
-			lampLight->lightShadow->linkShadowShaders();
-
-			ECS::get().DrawEntityPointShadows();
-
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-			glViewport(0, 0, Globals::get().screenWidth, Globals::get().screenHeight);
-		}*/
-
 		ECS::get().DrawEntities();
 
 		sky->Draw(skyProgram, *Globals::get().camera);
@@ -629,6 +551,10 @@ int main() {
 		glEnable(GL_BLEND);
 		std::sort(particleEmitter.particles.begin(), particleEmitter.particles.end(), Less);
 		particleEmitter.DrawParticles(partProgram, *Globals::get().camera);
+		glDisable(GL_BLEND);
+
+		glEnable(GL_BLEND);
+		GUI::get().RenderText(textProgram, "Cigarettes: " + std::to_string(cigCt), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
 		glDisable(GL_BLEND);
 
 		glfwSwapBuffers(window);

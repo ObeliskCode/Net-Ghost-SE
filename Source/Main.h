@@ -29,8 +29,12 @@
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/sum.hpp>
 
+#include <AL/al.h>
+#include <AL/alc.h>
+
 #include "Globals.h"
 #include "Shader.h"
+#include "GUI.h"
 #include "ECS.h"
 #include "Entity.h"
 #include "VAO.h"

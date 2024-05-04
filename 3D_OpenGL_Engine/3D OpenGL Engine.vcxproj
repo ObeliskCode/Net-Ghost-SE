@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\boost_1_84_0;$(SolutionDir)\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\boost_1_84_0;$(SolutionDir)\Libraries\include;$(SolutionDir)\Libraries\FreeType;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -149,13 +149,14 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;LinearMath.lib;BulletDynamics.lib;BulletCollision.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;LinearMath.lib;BulletDynamics.lib;BulletCollision.lib;freetype.lib;alcommon.lib;OpenAL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\ECS.cpp" />
     <ClCompile Include="..\Source\Entity.cpp" />
     <ClCompile Include="..\Source\Globals.cpp" />
+    <ClCompile Include="..\Source\GUI.cpp" />
     <ClCompile Include="..\Source\Input.cpp" />
     <ClCompile Include="..\Source\Light.cpp" />
     <ClCompile Include="..\Source\LightSystem.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="..\Source\Shader.h" />
     <ClInclude Include="..\Source\Skybox.h" />
     <ClInclude Include="..\Source\stb_image.h" />
+    <ClInclude Include="..\Source\GUI.h" />
     <ClInclude Include="..\Source\Texture.h" />
     <ClInclude Include="..\Source\Transform.h" />
     <ClInclude Include="..\Source\VAO.h" />
@@ -228,6 +230,8 @@
     <None Include="shaders\shadowVert.glsl" />
     <None Include="shaders\skyFrag.glsl" />
     <None Include="shaders\skyVert.glsl" />
+    <None Include="shaders\textFrag.glsl" />
+    <None Include="shaders\textVert.glsl" />
     <None Include="shaders\wireFrag.glsl" />
     <None Include="shaders\wireVert.glsl" />
   </ItemGroup>
