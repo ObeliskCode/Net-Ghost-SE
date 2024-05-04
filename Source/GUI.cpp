@@ -84,8 +84,8 @@ void GUI::RenderText(Shader& s, std::string text, float x, float y, float scale,
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(VAO);
 
+    // TODO: small opt. / set this in a class and only recalculate and send when stale!
     glm::mat4 projection = glm::ortho(0.0f, (float)Globals::get().screenWidth, 0.0f, (float)Globals::get().screenHeight);
-
     glUniformMatrix4fv(glGetUniformLocation(s.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     // iterate through all characters
