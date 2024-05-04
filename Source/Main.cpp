@@ -554,7 +554,7 @@ int main() {
 		glDisable(GL_BLEND);
 
 		glEnable(GL_BLEND);
-		GUI::get().RenderText(textProgram, "Cigarettes: " + std::to_string(cigCt), 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+		GUI::get().RenderText(textProgram, "Cigarettes: " + std::to_string(cigCt), 25.0f, 25.0f, 1.0f, glm::vec3(1.f, 1.f, 1.f));
 		glDisable(GL_BLEND);
 
 		glfwSwapBuffers(window);
