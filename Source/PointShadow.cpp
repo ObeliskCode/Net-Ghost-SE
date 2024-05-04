@@ -45,6 +45,12 @@ PointShadow::PointShadow(glm::vec3 lightPos){
 
 }
 
+PointShadow::~PointShadow() {
+	glDeleteFramebuffers(1, &pointShadowMapFBO);
+	glDeleteTextures(1, &depthCubemap);
+	shadowTransforms.clear();
+}
+
 void PointShadow::linkShadowShaders(){
 	Globals::get().pointShadowShader->Activate();
 	GLuint pointShaderID = Globals::get().pointShadowShader->ID;
@@ -70,6 +76,3 @@ void PointShadow::linkShadowShaders(){
 }
 
 
-PointShadow::~PointShadow(){
-	// delete FBO and Map
-}

@@ -82,9 +82,15 @@ ParticleEmitter::ParticleEmitter(){
 
 }
 
-//TODO!
 ParticleEmitter::~ParticleEmitter() {
-    
+    sprite->Delete();
+    delete sprite;
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+    glDeleteBuffers(1, &IVBO);
+    glDeleteBuffers(1, &IlVBO);
+    particles.clear();
 }
 
 void ParticleEmitter::DrawParticles(Shader& shader, Camera& camera){
