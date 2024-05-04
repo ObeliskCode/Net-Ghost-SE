@@ -62,10 +62,7 @@ public:
 		}
 	}
 
-	~Skeleton()
-	{
-
-	}
+	~Skeleton() = default;
 
 	void addAnimation(const std::string animationPath, SkeletalModel* model) 
 	{

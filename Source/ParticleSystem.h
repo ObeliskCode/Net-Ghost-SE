@@ -23,8 +23,8 @@ public:
     std::vector <ParticleEmitter> emitters;
 
 private:
-    ParticleSystem(); // no public constructor
-    ~ParticleSystem(); // no public destructor
+    ParticleSystem() = default; // no public constructor
+    ~ParticleSystem() = default; // no public destructor
     static ParticleSystem* instance; // declaration class variable
 
 };

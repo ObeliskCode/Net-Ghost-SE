@@ -2,7 +2,6 @@
 
 LightSystem* LightSystem::instance = nullptr; // definition class variable
 
-
 void LightSystem::RenderPointShadows(){
     const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
     for (int i = 0; i < lights.size(); i++){
@@ -19,4 +18,11 @@ void LightSystem::RenderPointShadows(){
 
     glViewport(0, 0, Globals::get().screenWidth, Globals::get().screenHeight);
 
+}
+
+LightSystem::~LightSystem() {
+    for (int i = 0; i < lights.size(); i++) {
+        delete lights[i];
+    }
+    lights.clear();
 }

@@ -32,7 +32,7 @@ public:
 
 private:
     LightSystem() = default; // no public constructor
-    ~LightSystem() = default; // no public destructor
+    ~LightSystem(); // no public destructor
     static LightSystem* instance; // declaration class variable
 
 };

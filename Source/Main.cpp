@@ -576,8 +576,13 @@ int main() {
 	delete sky;
 
 	// careful with these! not well written!
+	LightSystem::destruct();
+	ParticleSystem::destruct();
+	GUI::destruct();
 	ECS::destruct();
 	Physics::destruct();
+	Globals::destruct();
+	Input::destruct();
 
 	glfwTerminate();
 	return 0;
