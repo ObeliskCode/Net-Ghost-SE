@@ -153,6 +153,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\Audio.cpp" />
+    <ClCompile Include="..\Source\dr_wav.c" />
     <ClCompile Include="..\Source\ECS.cpp" />
     <ClCompile Include="..\Source\Entity.cpp" />
     <ClCompile Include="..\Source\Globals.cpp" />
@@ -181,6 +183,8 @@
     <ClCompile Include="..\Source\Wire.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\Audio.h" />
+    <ClInclude Include="..\Source\dr_wav.h" />
     <ClInclude Include="..\Source\Light.h" />
     <ClInclude Include="..\Source\LightSystem.h" />
     <ClInclude Include="..\Source\ParticleEmitter.h" />

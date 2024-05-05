@@ -279,6 +279,8 @@ int main() {
 	// SHADOW MAP (POINT)
 	Globals::get().depthCubeMap = lampLight->lightShadow->getMap();
 
+	Audio::get();
+
 	/* loop vars */ 
 	double crntTime = 0.0;
 
@@ -462,6 +464,9 @@ int main() {
 					prevID = 0;
 				}
 
+			}
+			{
+				if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playSound();
 			}
 
 			{ // particles
