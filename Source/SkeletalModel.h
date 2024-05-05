@@ -9,6 +9,7 @@
 #include <unordered_map> 
 
 #include "SkeletalMesh.h"
+#include "Material.h"
 
 struct BoneInfo
 {
@@ -36,6 +37,8 @@ public:
 
     auto& GetBoneInfoMap() { return m_BoneInfoMap; }
     int& GetBoneCount() { return m_BoneCounter; }
+
+    Material mat;
 
 private:
     // model data

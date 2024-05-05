@@ -6,6 +6,7 @@
 #include <assimp/postprocess.h>
 
 #include "Mesh.h"
+#include "Material.h"
 
 class Model
 {
@@ -19,6 +20,8 @@ public:
         glm::mat4& transform, glm::mat4& ntransform);
 
     void DrawShadow(Shader& shader, glm::mat4& transform);
+
+    Material mat;
 
 private:
     // model data

@@ -236,6 +236,7 @@ SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiM
 
 void SkeletalModel::Draw(Shader& shader, Camera& camera,
     glm::mat4& transform, glm::mat4& ntransform) {
+    mat.linkShader(shader);
     for (unsigned int i = 0; i < meshes.size(); i++) {
         //std::cerr << "mesh ptr: " << meshes[i] << std::endl;
         //if (i == 0) continue;

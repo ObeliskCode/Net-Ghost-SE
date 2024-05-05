@@ -119,6 +119,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>
 
 void Model::Draw(Shader& shader, Camera& camera,
     glm::mat4& transform, glm::mat4& ntransform){
+    mat.linkShader(shader);
     for (unsigned int i = 0; i < meshes.size(); i++) {
         meshes[i]->Draw(shader, camera, transform, ntransform);
     } 

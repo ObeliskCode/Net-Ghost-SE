@@ -18,7 +18,9 @@ class Light {
 		PointShadow * lightShadow;
 
 	private:
+		glm::vec3 ambient = glm::vec3(0.2f);
+		glm::vec3 diffuse = glm::vec3(0.5f);
+		glm::vec3 specular = glm::vec3(1.0f);
 };
-
 
 #endif

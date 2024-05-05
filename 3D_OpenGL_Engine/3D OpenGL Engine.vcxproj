@@ -188,6 +188,7 @@
     <ClInclude Include="..\Source\dr_wav.h" />
     <ClInclude Include="..\Source\Light.h" />
     <ClInclude Include="..\Source\LightSystem.h" />
+    <ClInclude Include="..\Source\Material.h" />
     <ClInclude Include="..\Source\ParticleEmitter.h" />
     <ClInclude Include="..\Source\ParticleSystem.h" />
     <ClInclude Include="..\Source\PointShadow.h" />
