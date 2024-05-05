@@ -141,6 +141,7 @@ Audio::Audio() {
 	alec(alSourcei(stereoSource, AL_LOOPING, AL_FALSE));
 	alec(alSourcei(stereoSource, AL_BUFFER, stereoSoundBuffer));
 
+	/*
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// play the mono sound source
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,17 +165,51 @@ Audio::Audio() {
 		//basically loop until we're done playing the mono sound source
 		alec(alGetSourcei(stereoSource, AL_SOURCE_STATE, &sourceState));
 	}
+	*/
+
+	threadStopped = false;
+	audioThread = std::thread(&Audio::pollAudio, this);
 
 }
 
-void Audio::playSound() {
-	alec(alSourcePlay(monoSource));
-	ALint sourceState;
-	alec(alGetSourcei(monoSource, AL_SOURCE_STATE, &sourceState));
-	while (sourceState == AL_PLAYING)
-	{
-		//basically loop until we're done playing the mono sound source
-		alec(alGetSourcei(monoSource, AL_SOURCE_STATE, &sourceState));
+void Audio::playAudio(int x) {
+	if (x == 0) {
+		mixerMutex.lock();
+		alec(alSourcePlay(monoSource));
+		mixer.push_back(0);
+		mixerMutex.unlock();
+	}
+	else if (x == 1) {
+		mixerMutex.lock();
+		alec(alSourcePlay(stereoSource));
+		mixer.push_back(1);
+		mixerMutex.unlock();
+	}
+}
+
+void Audio::pollAudio() {
+	while (!threadStopped) {
+		mixerMutex.lock();
+		std::erase_if(mixer, [this](const int x) -> bool {
+			ALint source_state = AL_PLAYING;
+			ALuint soundSource;
+			if (x == 0) {
+				soundSource = monoSource;
+			}
+			else {
+				soundSource = stereoSource;
+			}
+			alGetSourcei(stereoSource, AL_SOURCE_STATE, &source_state);
+			if (source_state != AL_STOPPED)
+				return false;
+
+			return true;
+		});
+		mixerMutex.unlock();
+
+		static constexpr int UPDATES_PER_SECOND = 200;
+		static constexpr int UPDATE_FRAME_MS = 1000 / UPDATES_PER_SECOND;
+		std::this_thread::sleep_for(std::chrono::milliseconds(UPDATE_FRAME_MS));
 	}
 }
 

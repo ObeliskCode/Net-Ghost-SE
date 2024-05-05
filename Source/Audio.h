@@ -1,11 +1,15 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 
+#include <thread>
+#include <atomic>
+#include <mutex>
 
 #include "dr_wav.h"
 
 #include <iostream>
 #include <vector>
+
 
 class Audio {
 public:
@@ -22,8 +26,9 @@ public:
         instance = nullptr;
     }
 
-    void playSound();
+    void playAudio(int x);
 
+    void pollAudio();
 
 private:
     Audio(); // no public constructor
@@ -38,4 +43,9 @@ private:
     ALCcontext* context;
     ALCdevice* device;
 
+    std::atomic_bool threadStopped;
+    std::thread audioThread;
+
+    std::vector<int> mixer;
+    std::mutex mixerMutex;
 };

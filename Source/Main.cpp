@@ -466,7 +466,8 @@ int main() {
 
 			}
 			{
-				if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playSound();
+				if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playAudio(1);
+				if (Input::get().getValue(GLFW_KEY_U)) Audio::get().playAudio(0);
 			}
 
 			{ // particles
