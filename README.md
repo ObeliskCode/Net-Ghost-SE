@@ -30,6 +30,7 @@ F10: fullscreen
 
 ## Build Instructions (Windows Only)
 Note: Development versions of every library but Boost are included. Install Instructions included if you want to compile newer versions.
+
 Note: GLFW & GLEW also need to be installed globally on the system. (unless you want to add them to /Libraries & link them yourself)
 1. Download Visual Studio 2022.
 2. Open GLEW_GLFW.zip and install both GLEW & GLFW on your system, Instructions inside Zip folder.
