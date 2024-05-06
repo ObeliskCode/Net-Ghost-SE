@@ -161,7 +161,6 @@
     <ClCompile Include="..\Source\Globals.cpp" />
     <ClCompile Include="..\Source\GUI.cpp" />
     <ClCompile Include="..\Source\Input.cpp" />
-    <ClCompile Include="..\Source\Light.cpp" />
     <ClCompile Include="..\Source\LightSystem.cpp" />
     <ClCompile Include="..\Source\Particle.cpp" />
     <ClCompile Include="..\Source\ParticleEmitter.cpp" />
