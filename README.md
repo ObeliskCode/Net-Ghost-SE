@@ -54,8 +54,8 @@ cp lib/Debug/assimp-vcxxx-mtd.lib OBELISK_DIR/Libraries/lib/assimp-vcxxx-mtd.lib
 #Copy lib files to Libraries/lib/ and source folder to Libraries/include/ (files within lib/ and src/ folders)
 ```
 5. install Boost to Libraries/boost_x_xx_x
-6. install glm to Libraries/include/ (included)
-7. install freetype /include to Libraries/Freetype and freetype.lib to Libraries/lib [https://freetype.org/] (included)
+6. install glm, copy /glm to Libraries/include/ [https://github.com/g-truc/glm] (included)
+7. install freetype, copy /include contents to Libraries/Freetype and freetype.lib to Libraries/lib [https://freetype.org/] (included)
 8. install openal-soft to Libraries/include and Libraries/lib [https://github.com/kcat/openal-soft] (included)
 9. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
 10. Download models from Obelisk-Models repo and copy to OBELISK_DIR/3D_OpenGL_Enginge/models/
