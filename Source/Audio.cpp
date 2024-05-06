@@ -174,6 +174,7 @@ Audio::Audio() {
 
 void Audio::playAudio(int x) {
 	if (x == 0) {
+		// multi-thread this aswell? channels? this will block main thread if std::erase_if coincides this func call
 		mixerMutex.lock();
 		alec(alSourcePlay(monoSource));
 		mixer.push_back(0);
@@ -207,9 +208,7 @@ void Audio::pollAudio() {
 		});
 		mixerMutex.unlock();
 
-		static constexpr int UPDATES_PER_SECOND = 200;
-		static constexpr int UPDATE_FRAME_MS = 1000 / UPDATES_PER_SECOND;
-		std::this_thread::sleep_for(std::chrono::milliseconds(UPDATE_FRAME_MS));
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
 }
 
