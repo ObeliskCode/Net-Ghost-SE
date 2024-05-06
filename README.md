@@ -29,10 +29,11 @@ F9: windowed
 F10: fullscreen
 
 ## Build Instructions (Windows Only)
-Note: Older versions of every library but Boost are included.
+Note: Development versions of every library but Boost are included. Install Instructions included if you want to compile newer versions.
+Note: GLFW & GLEW also need to be installed globally on the system. (unless you want to add them to /Libraries & link them yourself)
 1. Download Visual Studio 2022.
 2. Open GLEW_GLFW.zip and install both GLEW & GLFW on your system, Instructions inside Zip folder.
-3. Install Assimp [https://assimp-docs.readthedocs.io/en/latest/about/installation.html] to Libraries
+3. Install Assimp [https://assimp-docs.readthedocs.io/en/latest/about/installation.html] to Libraries (included)
 ```bash
 git clone https://github.com/assimp/assimp.git
 cd assimp
@@ -42,7 +43,7 @@ cp -r include OBELISK_DIR/Libraries/include/
 cp bin/Debug/assimp-vcxxx-mtd.dll "OBELISK_DIR/3D_OpenGL_Engine/assimp-vcxxx-mtd.dll"
 cp lib/Debug/assimp-vcxxx-mtd.lib OBELISK_DIR/Libraries/lib/assimp-vcxxx-mtd.lib
 ```
-4. Install Bullet Physics [https://github.com/bulletphysics/bullet3] to Libraries
+4. Install Bullet Physics [https://github.com/bulletphysics/bullet3] to Libraries (included)
 ```bash
 #Click on build_visual_studio_vr_pybullet_double.bat and open build3/vs2010/0_Bullet3Solution.sln
 #When asked, convert the projects to a newer version of Visual Studio.
@@ -52,7 +53,9 @@ cp lib/Debug/assimp-vcxxx-mtd.lib OBELISK_DIR/Libraries/lib/assimp-vcxxx-mtd.lib
 #Copy lib files to Libraries/lib/ and source folder to Libraries/include/ (files within lib/ and src/ folders)
 ```
 5. install Boost to Libraries/boost_x_xx_x
-6. install glm to Libraries/include/
-7. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
-8. Download models from Obelisk-Models repo and copy to OBELISK_DIR/3D_OpenGL_Enginge/models/
-9. Write Code!
+6. install glm to Libraries/include/ (included)
+7. install freetype /include to Libraries/Freetype and freetype.lib to Libraries/lib (compilation similar to Bullet)
+8. install openal-soft to Libraries/include and Libraries/lib [https://github.com/kcat/openal-soft]
+9. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
+10. Download models from Obelisk-Models repo and copy to OBELISK_DIR/3D_OpenGL_Enginge/models/
+11. Write Code!
