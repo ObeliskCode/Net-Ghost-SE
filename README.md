@@ -53,7 +53,7 @@ cp lib/Debug/assimp-vcxxx-mtd.lib OBELISK_DIR/Libraries/lib/assimp-vcxxx-mtd.lib
 #Right Click and Build only projects BulletCollision,BulletDynamics & LinearMath
 #Copy lib files to Libraries/lib/ and source folder to Libraries/include/ (files within lib/ and src/ folders)
 ```
-5. install Boost to Libraries/boost_x_xx_x
+5. install Boost to Libraries/boost_x_xx_x [https://www.boost.org/]
 6. install glm, copy /glm to Libraries/include/ [https://github.com/g-truc/glm] (included)
 7. install freetype, copy /include contents to Libraries/Freetype and freetype.lib to Libraries/lib [https://freetype.org/] (included)
 8. install openal-soft to Libraries/include and Libraries/lib [https://github.com/kcat/openal-soft] (included)
