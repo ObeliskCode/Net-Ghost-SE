@@ -7,7 +7,10 @@ struct {
 	bool operator()(Particle a, Particle b) const { return glm::length(Globals::get().camera->getPosition() - a.getTranslation()) > glm::length(Globals::get().camera->getPosition() - b.getTranslation()); }
 } Less;
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc > 1){
+        std::cout << argv[1] << std::endl;
+    }
 	GLFWwindow* window = initApp();
 
 	ECS::get();
@@ -17,6 +20,7 @@ int main() {
 	ParticleSystem::get();
 	Physics::get();
 	Input::get();
+	Audio::get();
 
 	Shader textProgram = Shader("textVert.glsl", "textFrag.glsl");
 
@@ -474,8 +478,8 @@ int main() {
 
 			}
 			{
-				//if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playAudio(1);
-				//if (Input::get().getValue(GLFW_KEY_U)) Audio::get().playAudio(0);
+				if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playAudio(1);
+				if (Input::get().getValue(GLFW_KEY_U)) Audio::get().playAudio(0);
 			}
 
 			{ // particles
@@ -592,6 +596,7 @@ int main() {
 	// careful with these! not well written!
 	LightSystem::destruct();
 	ParticleSystem::destruct();
+	Audio::destruct();
 	GUI::destruct();
 	ECS::destruct();
 	Physics::destruct();

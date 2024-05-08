@@ -38,7 +38,7 @@
 
 #include "Globals.h"
 #include "Shader.h"
-//#include "Audio.h"
+#include "Audio.h"
 #include "GUI.h"
 #include "ECS.h"
 #include "Entity.h"

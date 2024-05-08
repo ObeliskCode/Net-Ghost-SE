@@ -135,7 +135,7 @@ Audio::Audio() {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	alec(alGenSources(1, &stereoSource));
 	//alec(alSource3f(stereoSource, AL_POSITION, 0.f, 0.f, 1.f)); //NOTE: this does not work like mono sound positions!
-	//alec(alSource3f(stereoSource, AL_VELOCITY, 0.f, 0.f, 0.f)); 
+	//alec(alSource3f(stereoSource, AL_VELOCITY, 0.f, 0.f, 0.f));
 	alec(alSourcef(stereoSource, AL_PITCH, 1.f));
 	alec(alSourcef(stereoSource, AL_GAIN, 1.f));
 	alec(alSourcei(stereoSource, AL_LOOPING, AL_FALSE));

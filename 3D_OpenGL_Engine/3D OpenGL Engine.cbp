@@ -76,6 +76,7 @@
 					<Add library="z" />
 					<Add library="png" />
 					<Add library="../Libraries_linux/lib/libassimp.a" />
+					<Add library="../Libraries_linux/lib/libopenal.a" />
 					<Add directory="../Libraries_linux/lib" />
 				</Linker>
 			</Target>
@@ -145,6 +146,12 @@
 			</Target>
 		</Build>
 		<Unit filename="../Source/Animator.h">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="../Source/Audio.cpp">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="../Source/Audio.h">
 			<Option target="Release x64" />
 		</Unit>
 		<Unit filename="../Source/Bone.h">
