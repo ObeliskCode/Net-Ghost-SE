@@ -4,6 +4,7 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
+#include <cstring>
 
 #include "dr_wav.h"
 

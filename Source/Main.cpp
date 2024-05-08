@@ -10,6 +10,14 @@ struct {
 int main() {
 	GLFWwindow* window = initApp();
 
+	ECS::get();
+	GUI::get();
+	Globals::get();
+	LightSystem::get();
+	ParticleSystem::get();
+	Physics::get();
+	Input::get();
+
 	Shader textProgram = Shader("textVert.glsl", "textFrag.glsl");
 
 	renderScene();
@@ -279,9 +287,9 @@ int main() {
 	// SHADOW MAP (POINT)
 	Globals::get().depthCubeMap = lampLight->lightShadow->getMap();
 
-	Audio::get();
+	//Audio::get();
 
-	/* loop vars */ 
+	/* loop vars */
 	double crntTime = 0.0;
 
 	const double timeStart = glfwGetTime();
@@ -391,9 +399,9 @@ int main() {
 					body->setLinearVelocity(linVel);
 				}
 			} // character.physicsProcess(delta)
-			
+
 			Physics::get().updateSim(delta); // regular time advance
-			
+
 			// move sim forward by delta
 			ECS::get().updatePhysics(); // update entities with physics state
 			{
@@ -415,7 +423,7 @@ int main() {
 
 			gameTick(delta); // post-physics game logic.
 
-			{ // do rayCast 
+			{ // do rayCast
 
 				glm::vec3 ppp = Globals::get().camera->getPosition() + (Globals::get().camera->getOrientation() * 12.5f);
 
@@ -466,8 +474,8 @@ int main() {
 
 			}
 			{
-				if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playAudio(1);
-				if (Input::get().getValue(GLFW_KEY_U)) Audio::get().playAudio(0);
+				//if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playAudio(1);
+				//if (Input::get().getValue(GLFW_KEY_U)) Audio::get().playAudio(0);
 			}
 
 			{ // particles
@@ -507,7 +515,7 @@ int main() {
 
 				// how slow is this? (update/cleanup particles)
 				particleEmitter.updateParticles(delta);
-				
+
 				for (int i = 0; i < particleEmitter.particles.size(); i++) {
 					if (particleEmitter.particles[i].life >= particleEmitter.particles[i].expire) {
 						particleEmitter.particles.erase(particleEmitter.particles.begin() + i);
@@ -537,7 +545,7 @@ int main() {
 		/* RENDERING */
 
 		renderScene();
-		
+
 		ECS::get().advanceEntityAnimations(frameTime);
 
 		{ // directional shadow draw pass
@@ -553,7 +561,7 @@ int main() {
 		}
 
 		LightSystem::get().RenderPointShadows();
-		
+
 		ECS::get().DrawEntities();
 
 		sky->Draw(skyProgram, *Globals::get().camera);

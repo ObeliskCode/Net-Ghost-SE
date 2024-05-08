@@ -1,8 +1,10 @@
 #ifndef LIGHTSYSTEM_H
 #define LIGHTSYSTEM_H
 
+#ifdef BUILD_WINDOWS
 #define GLEW_STATIC
-#include <GL/glew.h> 
+#endif
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <vector>

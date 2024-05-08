@@ -1,9 +1,10 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
-#include "bullet/btBulletDynamicsCommon.h"
 #include "Entity.h"
 #include <map>
+
+#include "btBulletDynamicsCommon.h"
 
 class Physics {
 public:
@@ -21,7 +22,7 @@ public:
     }
 
 	void updateSim(float delta);
-	
+
 	btRigidBody* addUnitBoxStaticBody(unsigned int ID, float halfWidth, float halfHeight, float halfLength, float x, float y, float z);
 
 	btRigidBody* addShape1(unsigned int ID);

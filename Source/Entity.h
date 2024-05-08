@@ -10,7 +10,7 @@
 #include "Globals.h"
 #include "Transform.h"
 
-#include "bullet/btBulletDynamicsCommon.h"
+#include "btBulletDynamicsCommon.h"
 
 #include <bitset>
 
@@ -29,7 +29,7 @@ class Entity {
 
 		void setBit(std::size_t pos);
 		void resetBit(std::size_t pos);
-		const bool& getBit(std::size_t pos); // should this be const reference lol
+		bool getBit(std::size_t pos); // should this be const reference lol // NO!!!
 
 		void addWire(Wire* w);
 		void addWireFrame(float halfWidth, float halfHeight, float halfLength);
@@ -41,7 +41,7 @@ class Entity {
 		void Draw();
 		void addBody(btRigidBody* b);
 		btRigidBody* getBody();
-		
+
 		Transform* transform;
 
 		bool m_visible;

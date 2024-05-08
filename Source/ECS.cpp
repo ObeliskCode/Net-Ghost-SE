@@ -64,7 +64,7 @@ void ECS::deleteEntity(unsigned int ID) {
 		if (ret) delete ret;
 		entMap.erase(ID);
 		availableIDs.push(ID);
-	} 
+	}
 }
 
 Entity* ECS::getEntity(unsigned int ID) {

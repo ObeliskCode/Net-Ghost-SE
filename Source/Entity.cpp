@@ -102,7 +102,7 @@ void Entity::resetBit(std::size_t pos) {
 	m_signature.reset(pos);
 }
 
-const bool& Entity::getBit(std::size_t pos) {
+bool Entity::getBit(std::size_t pos) {
 	return m_signature[pos];
 }
 
@@ -240,7 +240,7 @@ void Entity::Draw() {
 			mdl->Draw(*shader, *camera, finaltransform, finalntransform);
 		}
 	}
-	
+
 	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
 		if (Globals::get().drawWires) {
 			for (int i = 0; i < wires.size(); i++) {

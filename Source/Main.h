@@ -1,14 +1,21 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // remove console
+#define BUILD_LINUX
+//#define BUILD_WINDOWS
 
+#ifdef BUILD_WINDOWS
+//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // remove console on windows??
+#endif
+
+#ifdef BUILD_WINDOWS
 #pragma comment(lib,"opengl32.lib")
 #pragma comment(lib,"glu32.lib")
 #pragma comment(lib,"glfw3.lib")
 #pragma comment(lib,"glew32s.lib")
 #pragma comment(lib,"glew32.lib")
 #define GLEW_STATIC
+#endif
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -17,13 +24,13 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include <FileSystem>
+//#include <FileSystem> //why was this here
 #include <math.h>
 #include <cmath>
 
 #include "stb_image.h"
 
-#include "bullet/btBulletDynamicsCommon.h"
+#include "btBulletDynamicsCommon.h"
 
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
@@ -31,7 +38,7 @@
 
 #include "Globals.h"
 #include "Shader.h"
-#include "Audio.h"
+//#include "Audio.h"
 #include "GUI.h"
 #include "ECS.h"
 #include "Entity.h"
@@ -53,6 +60,7 @@
 #include "ParticleEmitter.h"
 #include "LightSystem.h"
 #include "ParticleSystem.h"
+#include "Transform.h"
 
 GLFWwindow* initApp();
 void gameTick(double delta);

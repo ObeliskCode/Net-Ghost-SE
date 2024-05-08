@@ -1,9 +1,10 @@
 #ifndef VBO_H
 #define VBO_H
 
-// Use the static library (so glew32.dll is not needed):
+#ifdef BUILD_WINDOWS
 #define GLEW_STATIC
-#include <GL/glew.h> 
+#endif
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <vector>

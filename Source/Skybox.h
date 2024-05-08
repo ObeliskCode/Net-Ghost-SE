@@ -1,9 +1,10 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
-// Use the static library (so glew32.dll is not needed):
+#ifdef BUILD_WINDOWS
 #define GLEW_STATIC
-#include <GL/glew.h> 
+#endif
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "stb_image.h"
@@ -25,7 +26,7 @@ private:
     unsigned int skyboxVAO, skyboxVBO;
 
     std::vector<float> Vert = {
-        // positions          
+        // positions
         -1.0f,  1.0f, -1.0f,
         -1.0f, -1.0f, -1.0f,
          1.0f, -1.0f, -1.0f,

@@ -2,3 +2,5 @@ x64
 .vs
 3D_OpenGL_Engine/x64
 .vscode
+3D_OpenGL_Engine/Release
+Release
