@@ -241,6 +241,8 @@ int main(int argc, char **argv) {
 
 	Shader skyProgram = Shader("skyVert.glsl", "skyFrag.glsl");
 
+	// TODO: Multi-Light Rendering w/ Materials, CSM, GUI class, Audio Class. Extra: Normal Mapping
+
 	/* SHADOW MAP (DIRECTIONAL [DEFUNCT]) */
 
 	unsigned int depthMapFBO;

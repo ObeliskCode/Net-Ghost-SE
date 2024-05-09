@@ -19,6 +19,19 @@ OpenAL_ErrorCheck(FUNCTION_CALL)
 // Credits To: https://github.com/matts-dev/OpenAL_TestProject/blob/master/TestOpenAL/src/no_gpl_dependency/main_nogpl.cpp
 
 Audio::Audio() {
+    const ALCchar *printdevices = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
+    const ALCchar *printdevice = printdevices, *next = printdevices + 1;
+	size_t len = 0;
+
+	fprintf(stdout, "Devices list:\n");
+	fprintf(stdout, "----------\n");
+	while (printdevice && *printdevice != '\0' && next && *next != '\0') {
+		fprintf(stdout, "%s\n", printdevice);
+		len = strlen(printdevice);
+		printdevice += (len + 1);
+		next += (len + 2);
+	}
+	fprintf(stdout, "----------\n");
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// find the default audio device
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
