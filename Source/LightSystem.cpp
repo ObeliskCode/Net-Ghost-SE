@@ -27,7 +27,8 @@ LightSystem::~LightSystem() {
 
 void LightSystem::linkShader(Shader sh){
     sh.Activate();
-    glUniform1i(glGetUniformLocation(sh.ID, "NR_POINT_LIGHTS"), lights.size());
+    int lightNo = lights.size();
+    glUniform1i(glGetUniformLocation(sh.ID, "NR_POINT_LIGHTS"), lightNo);
     for (int i = 0; i < lights.size(); i++) {
         std::string arrStr = "pointLights[" + std::to_string(i) + "]";
         glUniform3f(glGetUniformLocation(sh.ID, (arrStr+".position").c_str()), lights[i]->lightPos.x, lights[i]->lightPos.y, lights[i]->lightPos.z);

@@ -93,7 +93,7 @@ vec4 pointLight(PointLight light, samplerCube cubeMap)
     diffuse  *= attenuation;
     specular *= attenuation;
 
-    vec3 texflat = ambient + diffuse + specular;
+    //vec3 texflat = ambient + diffuse + specular;
 
 	// Shadow value
 	float shadow = 0.0f;
@@ -186,10 +186,11 @@ void main()
 
 	vec4 output = vec4(0.0);
 	output += direcLight();
-	//for(int i = 0; i < 1; i++){
-	    output += pointLight(pointLights[0], shadowCubeMap[0]);
-	    output += pointLight(pointLights[1], shadowCubeMap[1]);
+	//for(int i = 0; i < 2; i++){
+	  //  output += pointLight(pointLights[i], shadowCubeMap[i]);
 	//}
+	output += pointLight(pointLights[0], shadowCubeMap[0]);
+	output += pointLight(pointLights[1], shadowCubeMap[1]);
 
     FragmentColor = output;
 }
