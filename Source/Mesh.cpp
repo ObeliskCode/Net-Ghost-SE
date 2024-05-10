@@ -41,7 +41,7 @@ void Mesh::Draw(
 ) {
 	shader.Activate();
 	m_VAO->Bind();
-	
+
 	unsigned int numDiffuse = 0;
 	unsigned int numSpecular = 0;
 
@@ -71,9 +71,9 @@ void Mesh::Draw(
 	glBindTexture(GL_TEXTURE_2D, Globals::get().depthMap);
 	glUniform1i(glGetUniformLocation(shader.ID, "shadowMap"), 6);
 
-	glActiveTexture(GL_TEXTURE0 + 7);
+	glActiveTexture(GL_TEXTURE0 + 5);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, Globals::get().depthCubeMap);
-	glUniform1i(glGetUniformLocation(shader.ID, "shadowCubeMap"), 7);
+	glUniform1i(glGetUniformLocation(shader.ID, "shadowCubeMap"), 5);
 
 	glUniform1f(glGetUniformLocation(shader.ID, "far_plane"), Globals::get().far_plane);
 
@@ -99,7 +99,7 @@ void Mesh::DrawShadow(
 ) {
 	shader.Activate();
 	m_VAO->Bind();
-	
+
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 

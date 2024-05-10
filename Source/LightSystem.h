@@ -32,6 +32,8 @@ public:
 
     void RenderPointShadows();
 
+    void linkShader(Shader sh);
+
 private:
     LightSystem() = default; // no public constructor
     ~LightSystem(); // no public destructor

@@ -326,6 +326,69 @@
 		<Unit filename="../Source/stb_image.h">
 			<Option target="Release x64" />
 		</Unit>
+		<Unit filename="shaders/animPointShadowVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/animShadowVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/animVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/cellFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/lightFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/mdlFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/noTexFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/partFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/partVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/pointShadowFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/pointShadowGeom.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/pointShadowVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/rigVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/shadowFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/shadowVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/skyFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/skyVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/textFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/textVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/wireFrag.glsl">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="shaders/wireVert.glsl">
+			<Option target="Release x64" />
+		</Unit>
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

@@ -67,7 +67,7 @@ void SkeletalMesh::Draw(
 			num = std::to_string(numSpecular++);
 		}
 
-		textures[i].texUnit(shader, (type + num).c_str()); 
+		textures[i].texUnit(shader, (type + num).c_str());
 		textures[i].Bind();
 	}
 
@@ -77,9 +77,9 @@ void SkeletalMesh::Draw(
 	glBindTexture(GL_TEXTURE_2D, Globals::get().depthMap);
 	glUniform1i(glGetUniformLocation(shader.ID, "shadowMap"), 6);
 
-	glActiveTexture(GL_TEXTURE0 + 7);
+	glActiveTexture(GL_TEXTURE0 + 5);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, Globals::get().depthCubeMap);
-	glUniform1i(glGetUniformLocation(shader.ID, "shadowCubeMap"), 7);
+	glUniform1i(glGetUniformLocation(shader.ID, "shadowCubeMap"), 5);
 
 	glUniform1f(glGetUniformLocation(shader.ID, "far_plane"), Globals::get().far_plane);
 

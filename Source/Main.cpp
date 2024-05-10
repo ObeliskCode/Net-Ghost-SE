@@ -154,10 +154,22 @@ int main(int argc, char **argv) {
 	e->setType("light");
 	ECS::get().registerComponents(e);
 
+	Model* lightSecond = new Model("bulb/scene.gltf");
+	e = ECS::get().linkEntity(new Entity(light, &lightProgram, Globals::get().camera));
+	e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+	e->transform->setTranslation(glm::vec3(-20.0f, 10.0f, -20.0f));
+	e->setType("light");
+	ECS::get().registerComponents(e);
+
 	lampLight->linkShader(rigProgram);
 	lampLight->linkShader(animProgram);
 	lampLight->linkShader(noTexAnimProgram);
 	lampLight->linkShader(lightProgram);
+
+	LightSystem::get().linkShader(rigProgram);
+	LightSystem::get().linkShader(animProgram);
+	LightSystem::get().linkShader(noTexAnimProgram);
+	LightSystem::get().linkShader(lightProgram);
 
 	//QUAD
 	e = ECS::get().linkEntity(new Entity(Globals::get().camera));

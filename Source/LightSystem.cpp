@@ -24,3 +24,23 @@ LightSystem::~LightSystem() {
     }
     lights.clear();
 }
+
+void LightSystem::linkShader(Shader sh){
+    sh.Activate();
+    glUniform1i(glGetUniformLocation(sh.ID, "NR_POINT_LIGHTS"), lights.size());
+    for (int i = 0; i < lights.size(); i++) {
+        std::string arrStr = "pointLights[" + std::to_string(i) + "]";
+        glUniform3f(glGetUniformLocation(sh.ID, (arrStr+".position").c_str()), lights[i]->lightPos.x, lights[i]->lightPos.y, lights[i]->lightPos.z);
+        glUniform3f(glGetUniformLocation(sh.ID, (arrStr+".ambient").c_str()), lights[i]->ambient.x, lights[i]->ambient.y, lights[i]->ambient.z);
+        glUniform3f(glGetUniformLocation(sh.ID, (arrStr+".diffuse").c_str()), lights[i]->diffuse.x, lights[i]->diffuse.y, lights[i]->diffuse.z);
+        glUniform3f(glGetUniformLocation(sh.ID, (arrStr+".specular").c_str()), lights[i]->specular.x, lights[i]->specular.y, lights[i]->specular.z);
+        glUniform1f(glGetUniformLocation(sh.ID, (arrStr+".constant").c_str()), lights[i]->constant);
+        glUniform1f(glGetUniformLocation(sh.ID, (arrStr+".linear").c_str()), lights[i]->linear);
+        glUniform1f(glGetUniformLocation(sh.ID, (arrStr+".quadratic").c_str()), lights[i]->quadratic);
+
+        glActiveTexture(GL_TEXTURE0 + 7 + i);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, lights[i]->lightShadow->getMap());
+        glUniform1i(glGetUniformLocation(sh.ID, ("shadowCubeMap[" + std::to_string(i) + "]").c_str()), 7 + i);
+    }
+}
+
