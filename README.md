@@ -2,8 +2,8 @@
 ### Author: Noel Garcia - n6garcia@ucsd.edu - https://noeldev.site/
 Obelisk Engine is a lightweight C++ 3D Game Engine designed solely for the OpenGL API. The libraries included by Obelisk Engine offer a feature complete C++ enviroment for making ANY video game feature now and in the future for MIT licensable projects. The Game Engine is designed for a Game I hope to release. The Game I hope to release has an incredibly low graphics target so I hope to make an Engine which has little to no over-engineering (NO IMGUI!) and can handle any modern OpenGL feature efficiently. I hope that my project helps people stray away from over-engineered and over-priced messes like Unity and see that low-level graphics programming is actually quite easy. My code should be quite familiar to those who read https://learnopengl.com/.
 ## Libraries Included
-- glew & glfw (OpenGl Software Implementation)
-- openAL-soft (OpenAl Software Implementation)
+- GLEW & GLFW (OpenGl Software Implementation)
+- OpenAL-soft (OpenAl Software Implementation)
 - Bullet Physics
 - FreeType
 - Boost
