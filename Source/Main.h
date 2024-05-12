@@ -1,8 +1,8 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#define BUILD_LINUX
-//#define BUILD_WINDOWS
+//#define BUILD_LINUX
+#define BUILD_WINDOWS
 
 #ifdef BUILD_WINDOWS
 //#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // remove console on windows??
@@ -14,8 +14,8 @@
 #pragma comment(lib,"glfw3.lib")
 #pragma comment(lib,"glew32s.lib")
 #pragma comment(lib,"glew32.lib")
-#define GLEW_STATIC
 #endif
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -24,7 +24,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-//#include <FileSystem> //why was this here
 #include <math.h>
 #include <cmath>
 
@@ -61,7 +60,7 @@
 #include "LightSystem.h"
 #include "ParticleSystem.h"
 #include "Transform.h"
-#include "Scene.h"
+//#include "Scene.h"
 
 GLFWwindow* initApp();
 void gameTick(double delta);

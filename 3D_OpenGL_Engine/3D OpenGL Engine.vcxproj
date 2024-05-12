@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\boost_1_84_0;$(SolutionDir)\Libraries\include;$(SolutionDir)\Libraries\FreeType;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\bullet;$(SolutionDir)\Libraries\boost_1_84_0;$(SolutionDir)\Libraries\include;$(SolutionDir)\Libraries\FreeType;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -191,6 +191,7 @@
     <ClInclude Include="..\Source\ParticleEmitter.h" />
     <ClInclude Include="..\Source\ParticleSystem.h" />
     <ClInclude Include="..\Source\PointShadow.h" />
+    <ClInclude Include="..\Source\Scene.h" />
     <ClInclude Include="..\Source\Skeleton.h" />
     <ClInclude Include="..\Source\Animator.h" />
     <ClInclude Include="..\Source\Bone.h" />

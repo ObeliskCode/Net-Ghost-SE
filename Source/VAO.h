@@ -1,9 +1,7 @@
 #ifndef VAO_H
 #define VAO_H
 
-#ifdef BUILD_WINDOWS
 #define GLEW_STATIC
-#endif
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
