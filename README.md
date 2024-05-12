@@ -35,7 +35,7 @@ F9: windowed
 
 F10: fullscreen
 
-## Build Instructions (Windows Only)
+## Build Instructions (Windows) (use CodeBlocksProject on Linux to compile! instructions soon)
 Note: Development versions of every library but Boost are included. Install Instructions included if you want to compile newer versions.
 
 Note: GLFW & GLEW also need to be installed globally on the system. (unless you want to add them to /Libraries & link them yourself)
