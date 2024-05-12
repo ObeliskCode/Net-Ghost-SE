@@ -1,6 +1,6 @@
 # Obelisk Engine
+Obelisk Engine is a lightweight C++ 3D Game Engine designed solely for the OpenGL API. The libraries included by Obelisk Engine offer a feature complete C++ enviroment for making ANY video game feature now and in the future for MIT licensable projects. 
 
-### 3D Game Engine - C++/OpenGL
 
 ### Author: Noel Garcia - n6garcia@ucsd.edu - https://noeldev.site/
 
