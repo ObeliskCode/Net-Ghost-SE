@@ -35,7 +35,7 @@ F9: windowed
 
 F10: fullscreen
 
-## Build Instructions (Windows) (WIP Linux Instructions)
+## Build Instructions (Windows)
 Note: Development versions of every library but Boost are included. Install Instructions included if you want to compile newer versions.
 
 Note: GLFW & GLEW also need to be installed globally on the system. (unless you want to add them to /Libraries & link them yourself)
@@ -67,3 +67,5 @@ cp lib/Debug/assimp-vcxxx-mtd.lib OBELISK_DIR/Libraries/lib/assimp-vcxxx-mtd.lib
 9. Within Visual Studio Update C/C++->General, Linker->General, & Linker->Input with all new paths and lib names
 10. Download models from Obelisk-Models repo and copy to OBELISK_DIR/3D_OpenGL_Enginge/models/
 11. Write Code!
+## Build Instructions (Linux) WIP
+To build on linux use the CodeBlocks Project (.cbp) in the 3D_OpenGL_Engine/ folder. Also build libassimp.a and put in Libraries_linux/lib
