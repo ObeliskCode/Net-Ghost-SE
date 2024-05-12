@@ -3286,7 +3286,7 @@
 1715140638 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Entity.cpp
 	"Entity.h"
 
-1715377128 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/LightSystem.cpp
+1715378888 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/LightSystem.cpp
 	"LightSystem.h"
 
 1715310176 /home/noel/Desktop/Obelisk-3D-Engine/Source/LightSystem.h
@@ -3302,10 +3302,10 @@
 	"Shader.h"
 	"PointShadow.h"
 
-1715367790 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Main.cpp
+1715424906 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Main.cpp
 	"Main.h"
 
-1715145195 /home/noel/Desktop/Obelisk-3D-Engine/Source/Main.h
+1715424625 /home/noel/Desktop/Obelisk-3D-Engine/Source/Main.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	"glm/glm.hpp"
@@ -3344,6 +3344,7 @@
 	"LightSystem.h"
 	"ParticleSystem.h"
 	"Transform.h"
+	"Scene.h"
 
 1712861280 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/boost_1_85_0/boost/accumulators/accumulators.hpp
 	<boost/accumulators/framework/accumulator_set.hpp>
@@ -10406,4 +10407,6 @@
 1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/Vehicle/btWheelInfo.h
 	"LinearMath/btVector3.h"
 	"LinearMath/btTransform.h"
+
+1715425053 /home/noel/Desktop/Obelisk-3D-Engine/Source/Scene.h
 

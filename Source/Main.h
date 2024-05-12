@@ -61,6 +61,7 @@
 #include "LightSystem.h"
 #include "ParticleSystem.h"
 #include "Transform.h"
+#include "Scene.h"
 
 GLFWwindow* initApp();
 void gameTick(double delta);

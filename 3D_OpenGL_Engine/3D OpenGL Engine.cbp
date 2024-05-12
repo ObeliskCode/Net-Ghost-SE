@@ -259,6 +259,9 @@
 		<Unit filename="../Source/PointShadow.h">
 			<Option target="Release x64" />
 		</Unit>
+		<Unit filename="../Source/Scene.h">
+			<Option target="Release x64" />
+		</Unit>
 		<Unit filename="../Source/Shader.cpp">
 			<Option target="Release x64" />
 		</Unit>

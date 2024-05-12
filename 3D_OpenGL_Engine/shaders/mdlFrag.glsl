@@ -47,7 +47,7 @@ struct PointLight {
 };
 
 uniform int NR_POINT_LIGHTS;
-#define MAX_LIGHTS 4
+#define MAX_LIGHTS 20
 uniform PointLight pointLights[MAX_LIGHTS];
 uniform samplerCube shadowCubeMap[MAX_LIGHTS];
 
