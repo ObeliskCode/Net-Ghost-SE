@@ -1,3 +1,6 @@
+#ifndef AUDIO_H
+#define AUDIO_H
+
 #include <AL/al.h>
 #include <AL/alc.h>
 
@@ -50,3 +53,7 @@ private:
     std::vector<int> mixer;
     std::mutex mixerMutex;
 };
+
+
+#endif
+

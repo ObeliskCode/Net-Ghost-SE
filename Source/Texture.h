@@ -20,6 +20,7 @@ public:
 
 	Texture(const char* image, std::string texType, GLuint slot);
 	Texture(const aiTexture* aiTex, std::string texType, GLuint slot);
+	~Texture(){Delete();};
 
 	void print();
 	void texUnit(Shader& shader, const char* uniform);

@@ -1,17 +1,13 @@
 #include "Main.h"
 
-const double PI = 3.1415926535897932384626433832795028841971693993751058209;
-
-// todo move to particle class?
-struct {
-	bool operator()(Particle a, Particle b) const { return glm::length(Globals::get().camera->getPosition() - a.getTranslation()) > glm::length(Globals::get().camera->getPosition() - b.getTranslation()); }
-} Less;
-
 int main(int argc, char **argv) {
     if (argc > 1){
         std::cout << argv[1] << std::endl;
     }
 	GLFWwindow* window = initApp();
+
+	TestRoom tr;
+	tr.loadResources(window);
 
 	ECS::get();
     GUI::get();
@@ -24,7 +20,7 @@ int main(int argc, char **argv) {
 
     Shader textProgram = Shader("textVert.glsl", "textFrag.glsl");
 
-    renderScene();
+    tr.renderScene();
 
     glEnable(GL_BLEND);
     GUI::get().RenderText(textProgram, "Loading...", (Globals::get().screenWidth/2)-100.0f, Globals::get().screenHeight/2, 1.0f, glm::vec3(1.f, 1.f, 1.f));
@@ -561,7 +557,7 @@ int main(int argc, char **argv) {
 
 		/* RENDERING */
 
-		renderScene();
+		tr.renderScene();
 
 		ECS::get().advanceEntityAnimations(frameTime);
 
@@ -659,9 +655,6 @@ void gameTick(double delta) {
 	}
 }
 
-void renderScene() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-}
 
 GLFWwindow* initApp() {
 

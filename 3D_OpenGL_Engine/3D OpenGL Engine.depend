@@ -2,7 +2,7 @@
 1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Camera.cpp
 	"Camera.h"
 
-1715141579 /home/noel/Desktop/Obelisk-3D-Engine/Source/Camera.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Camera.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	"glm/glm.hpp"
@@ -966,7 +966,7 @@
 
 1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/vector_angle.inl
 
-1715141710 /home/noel/Desktop/Obelisk-3D-Engine/Source/Shader.h
+1715824737 /home/noel/Desktop/Obelisk-3D-Engine/Source/Shader.h
 	<string>
 	<fstream>
 	<sstream>
@@ -991,7 +991,7 @@
 1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/EBO.cpp
 	"EBO.h"
 
-1715141804 /home/noel/Desktop/Obelisk-3D-Engine/Source/EBO.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/EBO.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<vector>
@@ -1011,7 +1011,7 @@
 	<vector>
 	<math.h>
 
-1715141664 /home/noel/Desktop/Obelisk-3D-Engine/Source/Texture.h
+1715824716 /home/noel/Desktop/Obelisk-3D-Engine/Source/Texture.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<assimp/scene.h>
@@ -1186,7 +1186,7 @@
 1714972097 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/GUI.cpp
 	"GUI.h"
 
-1715141784 /home/noel/Desktop/Obelisk-3D-Engine/Source/GUI.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/GUI.h
 	<ft2build.h>
 	<GL/glew.h>
 	<GLFW/glfw3.h>
@@ -1204,7 +1204,7 @@
 1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Input.cpp
 	"Input.h"
 
-1715141770 /home/noel/Desktop/Obelisk-3D-Engine/Source/Input.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Input.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 
@@ -1212,7 +1212,7 @@
 	"Mesh.h"
 	<glm/gtx/string_cast.hpp>
 
-1714539732 /home/noel/Desktop/Obelisk-3D-Engine/Source/Mesh.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Mesh.h
 	<string>
 	<vector>
 	"VAO.h"
@@ -1221,12 +1221,12 @@
 	"Globals.h"
 	"Texture.h"
 
-1715141640 /home/noel/Desktop/Obelisk-3D-Engine/Source/VAO.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/VAO.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	"VBO.h"
 
-1715141613 /home/noel/Desktop/Obelisk-3D-Engine/Source/VBO.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/VBO.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<vector>
@@ -2523,7 +2523,7 @@
 1714807561 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/PointShadow.cpp
 	"PointShadow.h"
 
-1715141725 /home/noel/Desktop/Obelisk-3D-Engine/Source/PointShadow.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/PointShadow.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<vector>
@@ -2563,7 +2563,7 @@
 1713817130 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Skybox.cpp
 	"Skybox.h"
 
-1715141686 /home/noel/Desktop/Obelisk-3D-Engine/Source/Skybox.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Skybox.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	"stb_image.h"
@@ -3173,23 +3173,23 @@
 	"Globals.h"
 	"Texture.h"
 
-1715141640 /home/noel/Desktop/Obelisk-3D-Engine/Source//VAO.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source//VAO.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	"VBO.h"
 
-1715141613 /home/noel/Desktop/Obelisk-3D-Engine/Source//VBO.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source//VBO.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<vector>
 	"glm/glm.hpp"
 
-1715141804 /home/noel/Desktop/Obelisk-3D-Engine/Source//EBO.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source//EBO.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<vector>
 
-1715141579 /home/noel/Desktop/Obelisk-3D-Engine/Source//Camera.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source//Camera.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	"glm/glm.hpp"
@@ -3199,7 +3199,7 @@
 	"glm/gtx/vector_angle.hpp"
 	"Shader.h"
 
-1715141710 /home/noel/Desktop/Obelisk-3D-Engine/Source//Shader.h
+1715824737 /home/noel/Desktop/Obelisk-3D-Engine/Source//Shader.h
 	<string>
 	<fstream>
 	<sstream>
@@ -3219,7 +3219,7 @@
 	<vector>
 	<math.h>
 
-1715141664 /home/noel/Desktop/Obelisk-3D-Engine/Source//Texture.h
+1715824716 /home/noel/Desktop/Obelisk-3D-Engine/Source//Texture.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<assimp/scene.h>
@@ -3289,7 +3289,7 @@
 1715378888 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/LightSystem.cpp
 	"LightSystem.h"
 
-1715310176 /home/noel/Desktop/Obelisk-3D-Engine/Source/LightSystem.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/LightSystem.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	<vector>
@@ -3302,10 +3302,10 @@
 	"Shader.h"
 	"PointShadow.h"
 
-1715424906 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Main.cpp
+1715823728 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Main.cpp
 	"Main.h"
 
-1715424625 /home/noel/Desktop/Obelisk-3D-Engine/Source/Main.h
+1715821528 /home/noel/Desktop/Obelisk-3D-Engine/Source/Main.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	"glm/glm.hpp"
@@ -3325,11 +3325,7 @@
 	"GUI.h"
 	"ECS.h"
 	"Entity.h"
-	"VAO.h"
-	"VBO.h"
-	"EBO.h"
 	"Camera.h"
-	"Mesh.h"
 	"Model.h"
 	"Wire.h"
 	"Particle.h"
@@ -9912,7 +9908,7 @@
 	<boost/accumulators/framework/depends_on.hpp>
 	<boost/accumulators/statistics_fwd.hpp>
 
-1715041886 /home/noel/Desktop/Obelisk-3D-Engine/Source/Audio.h
+1715821620 /home/noel/Desktop/Obelisk-3D-Engine/Source/Audio.h
 	<AL/al.h>
 	<AL/alc.h>
 	<thread>
@@ -10408,5 +10404,39 @@
 	"LinearMath/btVector3.h"
 	"LinearMath/btTransform.h"
 
-1715425053 /home/noel/Desktop/Obelisk-3D-Engine/Source/Scene.h
+1715825366 /home/noel/Desktop/Obelisk-3D-Engine/Source/Scene.h
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	"glm/glm.hpp"
+	<glm/gtx/string_cast.hpp>
+	"glm/gtc/matrix_transform.hpp"
+	"glm/gtc/type_ptr.hpp"
+	<math.h>
+	<cmath>
+	"stb_image.h"
+	"btBulletDynamicsCommon.h"
+	<boost/accumulators/accumulators.hpp>
+	<boost/accumulators/statistics/stats.hpp>
+	<boost/accumulators/statistics/sum.hpp>
+	"Globals.h"
+	"Shader.h"
+	"Audio.h"
+	"GUI.h"
+	"ECS.h"
+	"Entity.h"
+	"Camera.h"
+	"Model.h"
+	"Wire.h"
+	"Particle.h"
+	"Physics.h"
+	"Skybox.h"
+	"SkeletalModel.h"
+	"Skeleton.h"
+	"Light.h"
+	"Animator.h"
+	"Input.h"
+	"ParticleEmitter.h"
+	"LightSystem.h"
+	"ParticleSystem.h"
+	"Transform.h"
 
