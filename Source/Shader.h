@@ -18,7 +18,6 @@ class Shader
 		GLuint ID;
 		Shader(std::string vertexFile, std::string fragmentFile);
         Shader(std::string vertexFile, std::string fragmentFile, std::string geomFile);
-        ~Shader(){Delete();};
 
 		void Activate();
 		void Delete();

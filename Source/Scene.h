@@ -57,9 +57,9 @@ class Scene {
         virtual int tick(GLFWwindow* window) = 0;
         virtual int drawFrame(GLFWwindow* window, double frameTime) = 0;
         virtual int loadResources(GLFWwindow* window) = 0;
-        virtual int cleanup(GLFWwindow* window) = 0;
+        virtual int cleanup() = 0;
 
-        void renderScene() {
+        static void renderScene() {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         }
 
@@ -72,6 +72,7 @@ class Scene {
 
 class TestRoom : public Scene {
     public:
+        double delta = 1.0 / 300.0;
 
         double batRot = 0.0f;
         float bf = 0.0f;
@@ -101,10 +102,227 @@ class TestRoom : public Scene {
 
         Shader* partProgram;
 
+        Entity* character;
+
+        Animator* mator;
+
         TestRoom(){};
 
-        int tick(GLFWwindow* window) override {
+        void gameTick(double delta) {
+            { // update cam pos
+                if (!Globals::get().camLock) {
+                    glm::vec3 proj = glm::rotate(Globals::get().camera->getOrientation(), glm::radians(90.0f), Globals::get().camera->getUp());
+                    proj.y = 0.0f;
+                    proj = glm::normalize(proj);
 
+                    float moveSpeed = 1.0f; // position of camera move speed
+                    float order = 10.0f;
+
+                    glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+
+                    if (Input::get().getValue(GLFW_KEY_W)) {
+                        velocity += Globals::get().camera->getOrientation();
+                    }
+                    if (Input::get().getValue(GLFW_KEY_A)) {
+                        velocity += proj;
+                    }
+                    if (Input::get().getValue(GLFW_KEY_S)) {
+                        velocity -= Globals::get().camera->getOrientation();
+                    }
+                    if (Input::get().getValue(GLFW_KEY_D)) {
+                        velocity -= proj;
+                    }
+
+                    if (glm::length(velocity) > 0) {
+                        velocity = glm::normalize(velocity);
+
+                        velocity.x *= delta * order * moveSpeed;
+                        velocity.y *= delta * order * moveSpeed;
+                        velocity.z *= delta * order * moveSpeed;
+                    }
+
+                    Globals::get().camera->setPosition(Globals::get().camera->getPosition() + velocity);
+                }
+            }
+        }
+
+        int tick(GLFWwindow* window) override {
+            { // character, delta
+				if (Globals::get().camLock) {
+					btRigidBody* body = character->getBody();
+
+					glm::vec2 camOri = glm::vec2(Globals::get().camera->getOrientation().x, Globals::get().camera->getOrientation().z);
+
+					glm::vec2 proj = glm::rotate(camOri, glm::radians(-90.0f));
+
+					glm::vec2 vel = glm::vec2(0.0f);
+
+
+					if (Input::get().getValue(GLFW_KEY_W)) {
+						vel += camOri;
+					}
+					if (Input::get().getValue(GLFW_KEY_A)) {
+						vel += proj;
+					}
+					if (Input::get().getValue(GLFW_KEY_S)) {
+						vel -= camOri;
+					}
+					if (Input::get().getValue(GLFW_KEY_D)) {
+						vel -= proj;
+					}
+
+
+					if (cd > 0) cd--;
+					// code character->canJump()
+					if (Input::get().getValue(GLFW_KEY_SPACE)) {
+						if (cd == 0) {
+							cd = 192;
+							body->applyCentralImpulse(btVector3(0.0f, 9.0f, 0.0f));
+						}
+					}
+
+					float accel;
+					accel = delta * 60.0f;
+
+					if (glm::length(vel) > 0) {
+						vel = glm::normalize(vel);
+						vel *= accel;
+					}
+
+					btVector3 linVel = body->getLinearVelocity();
+					btVector3 horizVel = btVector3(linVel.getX() + vel.x, 0.0f, linVel.getZ() + vel.y);
+					if (horizVel.length() > 12.0f) {
+						horizVel = horizVel * (12.0f / horizVel.length());
+					}
+					linVel = btVector3(horizVel.getX(), linVel.getY(), horizVel.getZ());
+					body->setLinearVelocity(linVel);
+				}
+			} // character.physicsProcess(delta)
+
+			Physics::get().updateSim(delta); // regular time advance
+
+			// move sim forward by delta
+			ECS::get().updatePhysics(); // update entities with physics state
+			{
+				if (Globals::get().camLock) {
+					btTransform trans;
+					btRigidBody* body = character->getBody();
+					body->getMotionState()->getWorldTransform(trans);
+					glm::vec3 pos = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()) + 7.0f, float(trans.getOrigin().getZ()));
+					Globals::get().camera->setPosition(pos);
+				}
+			}
+			{
+				if (Input::get().getValue(GLFW_KEY_RIGHT)) bf += 0.02f;
+				if (Input::get().getValue(GLFW_KEY_LEFT)) bf -= 0.02f;
+				if (bf < 0.0f) bf = 0.0f;
+				if (bf > 1.0f) bf = 1.0f;
+				mator->SetBlendFactor(bf);
+			}
+
+			gameTick(delta); // post-physics game logic.
+
+			{ // do rayCast
+
+				glm::vec3 ppp = Globals::get().camera->getPosition() + (Globals::get().camera->getOrientation() * 12.5f);
+
+				btVector3 from = btVector3(Globals::get().camera->getPosition().x, Globals::get().camera->getPosition().y, Globals::get().camera->getPosition().z);
+				btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
+				btCollisionWorld::ClosestRayResultCallback rrc = btCollisionWorld::ClosestRayResultCallback(from, to);
+				Physics::get().getDynamicsWorld()->rayTest(from, to, rrc);
+
+				if (rrc.hasHit()) {
+					btRigidBody* sel = btRigidBody::upcast(const_cast <btCollisionObject*>(rrc.m_collisionObject));
+					unsigned int entID = Physics::get().m_EntityMap[sel];
+					if (entID != 0) {
+						if (prevID != 0 && prevID != entID) {
+							Entity* prevEnt = ECS::get().getEntity(prevID);
+							if (prevEnt) {
+								prevEnt->resetBit(COMPONENT_BIT_STENCIL);
+								ECS::get().unregisterComponent(prevEnt, COMPONENT_BIT_STENCIL);
+							}
+							prevID = 0;
+						}
+						if (Input::get().getValue(GLFW_KEY_E)) {
+							if (ECS::get().getEntity(entID)->getType() == "pickup") {
+								// only deletes wires, rigid body & not model / skel model
+								cigCt++;
+								ECS::get().deleteEntity(entID);
+								prevID = 0;
+
+							}
+						}
+						else if (!ECS::get().getEntity(entID)->m_surface) {
+							Entity* selEnt = ECS::get().getEntity(entID);
+							if (selEnt) {
+								selEnt->setBit(COMPONENT_BIT_STENCIL);
+								ECS::get().registerComponent(selEnt, COMPONENT_BIT_STENCIL);
+								prevID = entID;
+							}
+						}
+					}
+				}
+				else if (prevID != 0) {
+					Entity* prevEnt = ECS::get().getEntity(prevID);
+					if (prevEnt) {
+						prevEnt->resetBit(COMPONENT_BIT_STENCIL);
+						ECS::get().unregisterComponent(prevEnt, COMPONENT_BIT_STENCIL);
+					}
+					prevID = 0;
+				}
+
+			}
+			{
+				if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playAudio(1);
+				if (Input::get().getValue(GLFW_KEY_U)) Audio::get().playAudio(0);
+			}
+
+			{ // particles
+			// UPDATE so that it shows cig first then blows smoke after it dissapears
+				if (Input::get().getValue(GLFW_KEY_P) && !is_smoking && cigCt > 0) {
+					is_smoking = true;
+					cig_anim = true;
+					cig_anim_time = 0.0f;
+					cigCt--;
+				}
+
+				if (is_smoking) {
+					cig_anim_time += delta;
+					if (cig_anim_time >= 2.0f) cig_anim = false;
+					if (cig_anim_time >= 3.0f) is_smoking = false;
+				}
+
+				if (cig_anim) {
+					cigEnt->m_visible = true;
+				}
+				else cigEnt->m_visible = false;
+
+
+				if (cig_anim == false && is_smoking == true) {
+					Particle p = Particle();
+					p.setTranslation(Globals::get().camera->getPosition() - glm::vec3(0.f, 0.25f, 0.f));
+					p.setScale(0.1f);
+					p.vel = glm::normalize(Globals::get().camera->getOrientation());
+					particleEmitter.particles.push_back(p);
+
+					Particle p2 = Particle();
+					p2.setTranslation(Globals::get().camera->getPosition() - glm::vec3(0.f, 0.25f, 0.f));
+					p2.setScale(0.1f);
+					p2.vel = glm::normalize(Globals::get().camera->getOrientation());
+					particleEmitter.particles.push_back(p2);
+				}
+
+				// how slow is this? (update/cleanup particles)
+				particleEmitter.updateParticles(delta);
+
+				for (int i = 0; i < particleEmitter.particles.size(); i++) {
+					if (particleEmitter.particles[i].life >= particleEmitter.particles[i].expire) {
+						particleEmitter.particles.erase(particleEmitter.particles.begin() + i);
+						i--;
+					}
+				}
+
+			}
             return 1;
         }
 
@@ -267,7 +485,7 @@ class TestRoom : public Scene {
             SkeletalModel* walk = new SkeletalModel("jjong/Idle.dae");
             Skeleton* walkAnimation = new Skeleton("jjong/Idle.dae", walk);
             walkAnimation->addAnimation("jjong/Walking.dae", walk);
-            Animator* mator = new Animator(walkAnimation);
+            mator = new Animator(walkAnimation);
             mator->QueueAnimation(1);
             e = ECS::get().linkEntity(new Entity(walk, mator, animProgram, Globals::get().camera));
             e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
@@ -337,7 +555,7 @@ class TestRoom : public Scene {
             ECS::get().registerComponents(e);
 
             //CONTROLLABLE BODY
-            Entity* character = ECS::get().linkEntity(new Entity(Globals::get().camera));
+            character = ECS::get().linkEntity(new Entity(Globals::get().camera));
             character->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             character->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
             character->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
@@ -430,7 +648,18 @@ class TestRoom : public Scene {
             return 1;
         }
 
-        int cleanup(GLFWwindow* window) override {
+        int cleanup() override {
+            delete sky;
+
+            // careful with these! not well written![BROKEN ATM]
+            LightSystem::destruct();
+            ParticleSystem::destruct();
+            Audio::destruct();
+            GUI::destruct();
+            ECS::destruct();
+            Physics::destruct();
+            Globals::destruct();
+            Input::destruct();
             return 1;
         }
 

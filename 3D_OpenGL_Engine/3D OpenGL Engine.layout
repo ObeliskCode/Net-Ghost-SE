@@ -2,84 +2,19 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release x64" />
-	<File name="../Source/SkeletalMesh.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2218" topLine="57" />
-		</Cursor>
-	</File>
-	<File name="../Source/GUI.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="96" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Physics.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="6591" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="shaders/mdlFrag.glsl" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="18" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Mesh.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1620" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Globals.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Audio.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="956" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/PointShadow.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="534" topLine="5" />
-		</Cursor>
-	</File>
-	<File name="../Source/GUI.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="417" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/VBO.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="50" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Main.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1294" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="../Source/ECS.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="16" topLine="98" />
 		</Cursor>
 	</File>
-	<File name="../Source/Main.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/Texture.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="445" topLine="0" />
+			<Cursor1 position="266" topLine="140" />
 		</Cursor>
 	</File>
-	<File name="../Source/Bone.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/Scene.h" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="-2" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="44" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Scene.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1547" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Camera.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="34" topLine="0" />
+			<Cursor1 position="26882" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../Source/Skeleton.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -87,19 +22,19 @@
 			<Cursor1 position="0" topLine="6" />
 		</Cursor>
 	</File>
-	<File name="../Source/Entity.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/Animator.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="7425" topLine="203" />
+			<Cursor1 position="0" topLine="70" />
 		</Cursor>
 	</File>
-	<File name="../Source/LightSystem.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/Audio.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="795" topLine="0" />
+			<Cursor1 position="205" topLine="15" />
 		</Cursor>
 	</File>
-	<File name="../Source/Shader.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/Shader.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="133" topLine="0" />
+			<Cursor1 position="416" topLine="8" />
 		</Cursor>
 	</File>
 	<File name="shaders/animPointShadowVert.glsl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -107,19 +42,9 @@
 			<Cursor1 position="154" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/Model.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/LightSystem.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="162" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Audio.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="173" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Entity.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="163" topLine="14" />
+			<Cursor1 position="795" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../Source/VAO.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -127,24 +52,9 @@
 			<Cursor1 position="50" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/ECS.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/Camera.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/LightSystem.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="823" topLine="12" />
-		</Cursor>
-	</File>
-	<File name="../Source/Material.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="405" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="../Source/Particle.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="463" topLine="0" />
+			<Cursor1 position="34" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="shaders/animVert.glsl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -152,14 +62,29 @@
 			<Cursor1 position="0" topLine="12" />
 		</Cursor>
 	</File>
+	<File name="../Source/Physics.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6591" topLine="0" />
+		</Cursor>
+	</File>
 	<File name="../Source/EBO.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="50" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="../Source/Entity.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="163" topLine="14" />
+		</Cursor>
+	</File>
 	<File name="../Source/SkeletalModel.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="0" topLine="234" />
+		</Cursor>
+	</File>
+	<File name="../Source/Mesh.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1620" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../Source/Physics.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -172,9 +97,14 @@
 			<Cursor1 position="338" topLine="45" />
 		</Cursor>
 	</File>
-	<File name="../Source/Animator.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/GUI.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="70" />
+			<Cursor1 position="96" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/Input.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="54" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="../Source/Skybox.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -187,19 +117,94 @@
 			<Cursor1 position="56" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/Texture.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/Texture.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="58" topLine="0" />
+			<Cursor1 position="393" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="../Source/Input.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="../Source/Model.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="54" topLine="0" />
+			<Cursor1 position="162" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/Main.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1129" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/Main.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1041" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/GUI.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="417" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/ECS.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/SkeletalMesh.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2218" topLine="57" />
+		</Cursor>
+	</File>
+	<File name="../Source/Globals.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1231" topLine="20" />
+		</Cursor>
+	</File>
+	<File name="shaders/mdlFrag.glsl" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="18" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/Entity.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7425" topLine="203" />
+		</Cursor>
+	</File>
+	<File name="../Source/Audio.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="956" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/PointShadow.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="534" topLine="5" />
 		</Cursor>
 	</File>
 	<File name="../Source/Light.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="444" topLine="2" />
+		</Cursor>
+	</File>
+	<File name="../Source/LightSystem.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="823" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="../Source/VBO.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="50" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/Particle.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="463" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/Material.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="405" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../Source/Bone.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="44" topLine="0" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
