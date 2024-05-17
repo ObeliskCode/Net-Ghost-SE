@@ -70,6 +70,52 @@ class Scene {
     private:
 };
 
+class MainMenu : public Scene {
+    public:
+        MainMenu(){}
+
+        int tick(GLFWwindow* window) override {
+            return 1;
+        }
+
+        int drawFrame(GLFWwindow* window, double frameTime) override {
+            return 1;
+        }
+
+        int loadResources(GLFWwindow* window) override {
+            return 1;
+        }
+
+        int cleanup() override {
+            return 1;
+        }
+
+    private:
+}
+
+class FoldAnim : public Scene {
+    public:
+        FoldAnim(){}
+
+        int tick(GLFWwindow* window) override {
+            return 1;
+        }
+
+        int drawFrame(GLFWwindow* window, double frameTime) override {
+            return 1;
+        }
+
+        int loadResources(GLFWwindow* window) override {
+            return 1;
+        }
+
+        int cleanup() override {
+            return 1;
+        }
+
+    private:
+}
+
 class TestRoom : public Scene {
     public:
         double delta = 1.0 / 300.0;
