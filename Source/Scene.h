@@ -85,6 +85,15 @@ class MainMenu : public Scene {
         Shader* textProgram;
 
         int loadResources(GLFWwindow* window) override {
+            ECS::get();
+            GUI::get();
+            Globals::get();
+            LightSystem::get();
+            ParticleSystem::get();
+            Physics::get();
+            Input::get();
+            Audio::get();
+
             textProgram = new Shader("textVert.glsl", "textFrag.glsl");
             return 1;
         }
@@ -105,6 +114,15 @@ class MainMenu : public Scene {
         }
 
         int cleanup() override {
+            // careful with these! not well written![BROKEN ATM]
+            LightSystem::destruct();
+            ParticleSystem::destruct();
+            Audio::destruct();
+            GUI::destruct();
+            ECS::destruct();
+            Physics::destruct();
+            Globals::destruct();
+            Input::destruct();
             return 1;
         }
 
@@ -247,6 +265,15 @@ class TestRoom : public Scene {
 
 
         int loadResources(GLFWwindow* window) override {
+            ECS::get();
+            GUI::get();
+            Globals::get();
+            LightSystem::get();
+            ParticleSystem::get();
+            Physics::get();
+            Input::get();
+            Audio::get();
+
             textProgram = new Shader("textVert.glsl", "textFrag.glsl");
 
             renderScene();

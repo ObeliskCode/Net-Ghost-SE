@@ -19,43 +19,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "glm/glm.hpp"
-#include <glm/gtx/string_cast.hpp>
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-
-#include <math.h>
-#include <cmath>
-
-#include "stb_image.h"
-
-#include "btBulletDynamicsCommon.h"
-
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/stats.hpp>
-#include <boost/accumulators/statistics/sum.hpp>
-
-#include "Globals.h"
-#include "Shader.h"
-#include "Audio.h"
-#include "GUI.h"
-#include "ECS.h"
-#include "Entity.h"
-#include "Camera.h"
-#include "Model.h"
-#include "Wire.h"
-#include "Particle.h"
-#include "Physics.h"
-#include "Skybox.h"
-#include "SkeletalModel.h"
-#include "Skeleton.h"
-#include "Light.h"
-#include "Animator.h"
-#include "Input.h"
-#include "ParticleEmitter.h"
-#include "LightSystem.h"
-#include "ParticleSystem.h"
-#include "Transform.h"
 #include "Scene.h"
 
 GLFWwindow* initApp();
