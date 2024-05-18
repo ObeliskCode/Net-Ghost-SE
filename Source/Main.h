@@ -59,12 +59,5 @@
 #include "Scene.h"
 
 GLFWwindow* initApp();
-void gameTick(double delta);
-
-/*Event Callback Functions*/
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void window_size_callback(GLFWwindow* window, int width, int height);
-void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
-void setup_callbacks(GLFWwindow* window);
 
 #endif
