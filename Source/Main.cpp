@@ -6,7 +6,7 @@ int main(int argc, char **argv) {
     }
 	GLFWwindow* window = initApp();
 
-	TestRoom tr;
+	MainMenu tr;
 	tr.setupCallbacks(window);
 	tr.loadResources(window);
 

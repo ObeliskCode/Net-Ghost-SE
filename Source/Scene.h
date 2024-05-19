@@ -17,10 +17,6 @@
 
 #include "btBulletDynamicsCommon.h"
 
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/stats.hpp>
-#include <boost/accumulators/statistics/sum.hpp>
-
 #include "Globals.h"
 #include "Shader.h"
 #include "Audio.h"
@@ -75,12 +71,50 @@ class Scene {
         void (*keyFun)(GLFWwindow*, int, int, int, int);
         void (*curFun)(GLFWwindow*, double, double);
 
+        double delta = 1.0 / 300.0;
+
     private:
 };
 
 class MainMenu : public Scene {
     public:
-        MainMenu() {}
+        MainMenu() {
+            winFun = [](GLFWwindow* window, int width, int height) {
+                // Define the portion of the window used for OpenGL rendering.
+                glViewport(0, 0, width, height);
+                Globals::get().screenWidth = width == 0 ? 1 : width;
+                Globals::get().screenHeight = height == 0 ? 1 : height;
+
+                Globals::get().camera->setDims(Globals::get().screenWidth, Globals::get().screenHeight);
+
+                Globals::get().handCam->setDims(Globals::get().screenWidth, Globals::get().screenHeight);
+
+                };
+
+            keyFun = [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    Input::get().setValue(key, false);
+                    return;
+                }
+
+                Input::get().setValue(key, true);
+                switch (key) {
+                case GLFW_KEY_ESCAPE:
+                    glfwSetWindowShouldClose(window, true);
+                    break;
+                case GLFW_KEY_F10:
+                    glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+                    break;
+                case GLFW_KEY_F9:
+                    glfwSetWindowMonitor(window, NULL, 100, 100, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+                    break;
+                }
+                };
+
+            curFun = [](GLFWwindow* window, double xpos, double ypos) {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                };
+        }
 
         Shader* textProgram;
 
@@ -131,7 +165,43 @@ class MainMenu : public Scene {
 
 class FoldAnim : public Scene {
     public:
-        FoldAnim() {}
+        FoldAnim() {
+            winFun = [](GLFWwindow* window, int width, int height) {
+                // Define the portion of the window used for OpenGL rendering.
+                glViewport(0, 0, width, height);
+                Globals::get().screenWidth = width == 0 ? 1 : width;
+                Globals::get().screenHeight = height == 0 ? 1 : height;
+
+                Globals::get().camera->setDims(Globals::get().screenWidth, Globals::get().screenHeight);
+
+                Globals::get().handCam->setDims(Globals::get().screenWidth, Globals::get().screenHeight);
+
+                };
+
+            keyFun = [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+                if (action == GLFW_RELEASE) {
+                    Input::get().setValue(key, false);
+                    return;
+                }
+
+                Input::get().setValue(key, true);
+                switch (key) {
+                case GLFW_KEY_ESCAPE:
+                    glfwSetWindowShouldClose(window, true);
+                    break;
+                case GLFW_KEY_F10:
+                    glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+                    break;
+                case GLFW_KEY_F9:
+                    glfwSetWindowMonitor(window, NULL, 100, 100, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+                    break;
+                }
+                };
+
+            curFun = [](GLFWwindow* window, double xpos, double ypos) {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                };
+        }
 
         int loadResources(GLFWwindow* window) override {
             return 1;
@@ -154,8 +224,6 @@ class FoldAnim : public Scene {
 
 class TestRoom : public Scene {
     public:
-        double delta = 1.0 / 300.0;
-
         double batRot = 0.0f;
         float bf = 0.0f;
 
@@ -189,7 +257,7 @@ class TestRoom : public Scene {
         Animator* mator;
 
         TestRoom(){
-            winFun = [](GLFWwindow* window, int width, int height) {             
+            winFun = [](GLFWwindow* window, int width, int height) {
                 // Define the portion of the window used for OpenGL rendering.
                 glViewport(0, 0, width, height);
                 Globals::get().screenWidth = width == 0 ? 1 : width;
@@ -197,69 +265,69 @@ class TestRoom : public Scene {
 
                 Globals::get().camera->setDims(Globals::get().screenWidth, Globals::get().screenHeight);
 
-                Globals::get().handCam->setDims(Globals::get().screenWidth, Globals::get().screenHeight); 
-               
+                Globals::get().handCam->setDims(Globals::get().screenWidth, Globals::get().screenHeight);
+
                 };
 
             keyFun = [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-                    if (action == GLFW_RELEASE) {
-                        Input::get().setValue(key, false);
-                        return;
-                    }
+                if (action == GLFW_RELEASE) {
+                    Input::get().setValue(key, false);
+                    return;
+                }
 
-                    Input::get().setValue(key, true);
-                    switch (key) {
-                    case GLFW_KEY_ESCAPE:
-                        glfwSetWindowShouldClose(window, true);
-                        break;
-                    case GLFW_KEY_X:
-                        Globals::get().cursorLocked = !Globals::get().cursorLocked;
-                        break;
-                    case GLFW_KEY_Z:
-                        Globals::get().camLock = !Globals::get().camLock;
-                        break;
-                    case GLFW_KEY_O:
-                        Globals::get().drawWires = !Globals::get().drawWires;
-                        break;
-                    case GLFW_KEY_F10:
-                        glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
-                        break;
-                    case GLFW_KEY_F9:
-                        glfwSetWindowMonitor(window, NULL, 100, 100, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
-                        break;
-                    }
+                Input::get().setValue(key, true);
+                switch (key) {
+                case GLFW_KEY_ESCAPE:
+                    glfwSetWindowShouldClose(window, true);
+                    break;
+                case GLFW_KEY_X:
+                    Globals::get().cursorLocked = !Globals::get().cursorLocked;
+                    break;
+                case GLFW_KEY_Z:
+                    Globals::get().camLock = !Globals::get().camLock;
+                    break;
+                case GLFW_KEY_O:
+                    Globals::get().drawWires = !Globals::get().drawWires;
+                    break;
+                case GLFW_KEY_F10:
+                    glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+                    break;
+                case GLFW_KEY_F9:
+                    glfwSetWindowMonitor(window, NULL, 100, 100, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
+                    break;
+                }
                 };
 
             curFun = [](GLFWwindow* window, double xpos, double ypos) {
-                    if (Globals::get().cursorLocked == true) {
+                if (Globals::get().cursorLocked == true) {
 
-                        float sensitivity = 1.0f; // mouse sens
+                    float sensitivity = 1.0f; // mouse sens
 
-                        double deltaAngle = 0.0005; // base angle we move in
+                    double deltaAngle = 0.0005; // base angle we move in
 
-                        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-                        double xMiddle = (double)Globals::get().screenWidth / 2.0;
-                        double yMiddle = (double)Globals::get().screenHeight / 2.0;
+                    double xMiddle = (double)Globals::get().screenWidth / 2.0;
+                    double yMiddle = (double)Globals::get().screenHeight / 2.0;
 
-                        double xOffset = xMiddle - xpos;
-                        double yOffset = yMiddle - ypos;
+                    double xOffset = xMiddle - xpos;
+                    double yOffset = yMiddle - ypos;
 
-                        double rotX = xOffset * sensitivity * deltaAngle;
-                        double rotY = yOffset * sensitivity * deltaAngle;
+                    double rotX = xOffset * sensitivity * deltaAngle;
+                    double rotY = yOffset * sensitivity * deltaAngle;
 
-                        Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotX, Globals::get().camera->getUp()));
+                    Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotX, Globals::get().camera->getUp()));
 
-                        glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));
-                        // Clamps rotY so it doesn't glitch when looking directly up or down
-                        if (!((rotY > 0 && Globals::get().camera->getOrientation().y > 0.99f) || (rotY < 0 && Globals::get().camera->getOrientation().y < -0.99f)))
-                            Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotY, perpendicular));
+                    glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));
+                    // Clamps rotY so it doesn't glitch when looking directly up or down
+                    if (!((rotY > 0 && Globals::get().camera->getOrientation().y > 0.99f) || (rotY < 0 && Globals::get().camera->getOrientation().y < -0.99f)))
+                        Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotY, perpendicular));
 
-                        glfwSetCursorPos(window, xMiddle, yMiddle);
-                    }
-                    else {
-                        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-                    }
+                    glfwSetCursorPos(window, xMiddle, yMiddle);
+                }
+                else {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                }
                 };
         };
 
