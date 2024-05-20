@@ -140,7 +140,8 @@ class MainMenu : public Scene {
             renderScene();
 
             glEnable(GL_BLEND);
-            GUI::get().RenderText(*textProgram, "Press Enter to Load Scene!", (Globals::get().screenWidth / 2) - 100.0f, Globals::get().screenHeight / 2, 1.0f, glm::vec3(1.f, 1.f, 1.f));
+            GUI::get().RenderText(*textProgram, "Obelisk Engine", (Globals::get().screenWidth / 2) - 150.0f, Globals::get().screenHeight - (Globals::get().screenHeight / 10), 0.75f, glm::vec3(1.f, 1.f, 1.f));
+            GUI::get().RenderText(*textProgram, "Test Room", (Globals::get().screenWidth / 2) - 150.0f, Globals::get().screenHeight - (Globals::get().screenHeight / 6), 0.75f, glm::vec3(1.f, 1.f, 1.f));
             glDisable(GL_BLEND);
 
             glfwSwapBuffers(window);

@@ -6,9 +6,12 @@ int main(int argc, char **argv) {
     }
 	GLFWwindow* window = initApp();
 
-	MainMenu tr;
-	tr.setupCallbacks(window);
-	tr.loadResources(window);
+	//we can solve all our problems with lambdas!
+
+	MainMenu* tr = new MainMenu();
+	Scene* bcp = tr;
+	bcp->setupCallbacks(window);
+	bcp->loadResources(window);
 
 	/* loop vars */
 	double crntTime = 0.0;
@@ -53,13 +56,13 @@ int main(int argc, char **argv) {
 
 		while (boost::accumulators::sum(accum) >= delta) {
 			accum(-delta);
-            tr.tick(window);
+            bcp->tick(window);
 		}
 
-        tr.drawFrame(window, frameTime);
+        bcp->drawFrame(window, frameTime);
 	}
 
-	tr.cleanup();
+	bcp->cleanup();
 
 	glfwTerminate();
 	return 0;
