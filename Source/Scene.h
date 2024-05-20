@@ -49,6 +49,22 @@ struct {
 
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
+glm::quat quat_axis_angle(const double& xx, const double& yy, const double& zz, const double& a)
+{
+    // Here we calculate the sin( theta / 2) once for optimization
+    double factor = sin(a / 2.0);
+
+    // Calculate the x, y and z of the quaternion
+    double x = xx * factor;
+    double y = yy * factor;
+    double z = zz * factor;
+
+    // Calcualte the w value by cos( theta / 2 )
+    double w = cos(a / 2.0);
+
+    return glm::quat(w, x, y, z);
+}
+
 class Scene {
     public:
         virtual int loadResources(GLFWwindow* window) = 0;
@@ -255,6 +271,12 @@ class FoldAnim : public Scene {
             quadProgram = new Shader("quadVert.glsl", "quadFrag.glsl");
 
             Quad q = Quad();
+            // multiply first rot last when multiplying quats!
+            glm::quat rot1 = quat_axis_angle(1.0, 0.0, 0.0, PI / 2);
+            glm::quat rot2 = quat_axis_angle(0.0, 1.0, 0.0, PI / 4);
+            glm::quat originQuat = rot2 * rot1;
+
+            q.t.setRotation(originQuat);
             quadSys->quads.push_back(q);
 
             Globals::get().camera->setPosition(glm::vec3(0.0f, 10.0f, 20.0f));
@@ -305,7 +327,9 @@ class FoldAnim : public Scene {
         int drawFrame(GLFWwindow* window, double frameTime) override {
             renderScene();
 
+            glDisable(GL_CULL_FACE);
             quadSys->DrawQuads(*quadProgram, *Globals::get().camera);
+            glEnable(GL_CULL_FACE);
 
             glfwSwapBuffers(window);
             return 1;
