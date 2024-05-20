@@ -10,6 +10,8 @@ int main(int argc, char **argv) {
 
 	//we can solve all our problems with lambdas!
 
+	// LAST GRAHPICS TODO: screen-space shadows & frustrum culling & updated rendering pipeline (deferred/forward+)
+
 	FoldAnim* dp = new FoldAnim();
 	Scene* bp = dp;
 	bp->setupCallbacks(window);
