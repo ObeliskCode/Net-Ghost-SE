@@ -81,7 +81,7 @@
     <ClCompile Include="..\Source\LightSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\ParticleEmitter.cpp">
+    <ClCompile Include="..\Source\ParticleRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\PointShadow.cpp">
@@ -176,7 +176,7 @@
     <ClInclude Include="..\Source\ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\ParticleEmitter.h">
+    <ClInclude Include="..\Source\ParticleRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\LightSystem.h">
@@ -198,6 +198,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\QuadRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

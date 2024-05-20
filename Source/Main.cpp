@@ -1,5 +1,7 @@
 #include "Main.h"
 
+// two functions queueScene and endScene?
+
 int main(int argc, char **argv) {
     if (argc > 1){
         std::cout << argv[1] << std::endl;
@@ -8,10 +10,10 @@ int main(int argc, char **argv) {
 
 	//we can solve all our problems with lambdas!
 
-	MainMenu* tr = new MainMenu();
-	Scene* bcp = tr;
-	bcp->setupCallbacks(window);
-	bcp->loadResources(window);
+	FoldAnim* dp = new FoldAnim();
+	Scene* bp = dp;
+	bp->setupCallbacks(window);
+	bp->loadResources(window);
 
 	/* loop vars */
 	double crntTime = 0.0;
@@ -56,13 +58,13 @@ int main(int argc, char **argv) {
 
 		while (boost::accumulators::sum(accum) >= delta) {
 			accum(-delta);
-            bcp->tick(window);
+            bp->tick(window);
 		}
 
-        bcp->drawFrame(window, frameTime);
+        bp->drawFrame(window, frameTime);
 	}
 
-	bcp->cleanup();
+	bp->cleanup();
 
 	glfwTerminate();
 	return 0;

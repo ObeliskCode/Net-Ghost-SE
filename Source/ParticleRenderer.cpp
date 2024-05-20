@@ -1,8 +1,8 @@
-#include "ParticleEmitter.h"
+#include "ParticleRenderer.h"
 
 const double PI = 3.1415926535897932384626433832795028841971693993751058209;
 
-ParticleEmitter::ParticleEmitter(){
+ParticleRenderer::ParticleRenderer(){
 
     Vert.push_back(1.0f);
     Vert.push_back(1.0f);
@@ -82,7 +82,7 @@ ParticleEmitter::ParticleEmitter(){
 
 }
 
-ParticleEmitter::~ParticleEmitter() {
+ParticleRenderer::~ParticleRenderer() {
     sprite->Delete();
     delete sprite;
     glDeleteVertexArrays(1, &VAO);
@@ -93,7 +93,7 @@ ParticleEmitter::~ParticleEmitter() {
     particles.clear();
 }
 
-void ParticleEmitter::DrawParticles(Shader& shader, Camera& camera){
+void ParticleRenderer::DrawParticles(Shader& shader, Camera& camera){
     std::vector <glm::mat4> transforms;
     std::vector <float> lifeVec;
 
@@ -171,7 +171,7 @@ void ParticleEmitter::DrawParticles(Shader& shader, Camera& camera){
 
 }
 
-void ParticleEmitter::updateParticles(float delta){
+void ParticleRenderer::updateParticles(float delta){
     for (int i = 0; i < particles.size(); i++){
         particles[i].update(delta);
     }

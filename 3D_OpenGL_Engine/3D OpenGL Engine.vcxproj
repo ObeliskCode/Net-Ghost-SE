@@ -163,7 +163,7 @@
     <ClCompile Include="..\Source\Input.cpp" />
     <ClCompile Include="..\Source\LightSystem.cpp" />
     <ClCompile Include="..\Source\Particle.cpp" />
-    <ClCompile Include="..\Source\ParticleEmitter.cpp" />
+    <ClCompile Include="..\Source\ParticleRenderer.cpp" />
     <ClCompile Include="..\Source\ParticleSystem.cpp" />
     <ClCompile Include="..\Source\Physics.cpp" />
     <ClCompile Include="..\Source\PointShadow.cpp" />
@@ -188,9 +188,10 @@
     <ClInclude Include="..\Source\Light.h" />
     <ClInclude Include="..\Source\LightSystem.h" />
     <ClInclude Include="..\Source\Material.h" />
-    <ClInclude Include="..\Source\ParticleEmitter.h" />
+    <ClInclude Include="..\Source\ParticleRenderer.h" />
     <ClInclude Include="..\Source\ParticleSystem.h" />
     <ClInclude Include="..\Source\PointShadow.h" />
+    <ClInclude Include="..\Source\QuadRenderer.h" />
     <ClInclude Include="..\Source\Scene.h" />
     <ClInclude Include="..\Source\Skeleton.h" />
     <ClInclude Include="..\Source\Animator.h" />

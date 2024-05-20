@@ -34,7 +34,7 @@
 #include "Light.h"
 #include "Animator.h"
 #include "Input.h"
-#include "ParticleEmitter.h"
+#include "ParticleRenderer.h"
 #include "LightSystem.h"
 #include "ParticleSystem.h"
 #include "Transform.h"
@@ -205,6 +205,15 @@ class FoldAnim : public Scene {
         }
 
         int loadResources(GLFWwindow* window) override {
+            ECS::get();
+            GUI::get();
+            Globals::get();
+            LightSystem::get();
+            ParticleSystem::get();
+            Physics::get();
+            Input::get();
+            Audio::get();
+
             return 1;
         }
 
@@ -213,10 +222,23 @@ class FoldAnim : public Scene {
         }
 
         int drawFrame(GLFWwindow* window, double frameTime) override {
+            renderScene();
+
+
+            glfwSwapBuffers(window);
             return 1;
         }
 
         int cleanup() override {
+            // careful with these! not well written![BROKEN ATM]
+            LightSystem::destruct();
+            ParticleSystem::destruct(); //questioning this one..
+            Audio::destruct();
+            GUI::destruct();
+            ECS::destruct();
+            Physics::destruct();
+            Globals::destruct();
+            Input::destruct(); // do i ever need to destruct this one?
             return 1;
         }
 
@@ -247,7 +269,7 @@ class TestRoom : public Scene {
         Skybox* sky;
         Shader* skyProgram;
 
-        ParticleEmitter particleEmitter;
+        ParticleRenderer particleEmitter;
 
         Shader* textProgram;
 

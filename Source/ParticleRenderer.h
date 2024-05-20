@@ -1,5 +1,5 @@
-#ifndef PARTICLEEMITTER_H
-#define PARTICLEEMITTER_H
+#ifndef PARTICLERENDERER_H
+#define PARTICLERENDERER_H
 
 #include <vector>
 #include "glm/glm.hpp"
@@ -8,10 +8,10 @@
 
 // class for instancing particles 
 
-class ParticleEmitter {
+class ParticleRenderer {
 	public:
-		ParticleEmitter();
-		~ParticleEmitter();
+		ParticleRenderer();
+		~ParticleRenderer();
 		void DrawParticles(Shader& shader, Camera& camera);
 		void updateParticles(float delta);
 

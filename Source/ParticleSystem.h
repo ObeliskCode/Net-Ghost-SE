@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "ParticleEmitter.h"
+#include "ParticleRenderer.h"
 
 class ParticleSystem {
 public:
@@ -20,7 +20,7 @@ public:
         instance = nullptr;
     }
 
-    std::vector <ParticleEmitter> emitters;
+    std::vector <ParticleRenderer> emitters;
 
 private:
     ParticleSystem() = default; // no public constructor
