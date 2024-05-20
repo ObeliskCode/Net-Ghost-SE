@@ -2516,9 +2516,9 @@
 1714541698 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleSystem.cpp
 	"ParticleSystem.h"
 
-1714807561 /home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleSystem.h
+1716184377 /home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleSystem.h
 	<vector>
-	"ParticleEmitter.h"
+	"ParticleRenderer.h"
 
 1714807561 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/PointShadow.cpp
 	"PointShadow.h"
@@ -3302,44 +3302,15 @@
 	"Shader.h"
 	"PointShadow.h"
 
-1715866124 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Main.cpp
+1716186351 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Main.cpp
 	"Main.h"
 
-1715825915 /home/noel/Desktop/Obelisk-3D-Engine/Source/Main.h
+1716110283 /home/noel/Desktop/Obelisk-3D-Engine/Source/Main.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
-	"glm/glm.hpp"
-	<glm/gtx/string_cast.hpp>
-	"glm/gtc/matrix_transform.hpp"
-	"glm/gtc/type_ptr.hpp"
-	<math.h>
-	<cmath>
-	"stb_image.h"
-	"btBulletDynamicsCommon.h"
 	<boost/accumulators/accumulators.hpp>
 	<boost/accumulators/statistics/stats.hpp>
 	<boost/accumulators/statistics/sum.hpp>
-	"Globals.h"
-	"Shader.h"
-	"Audio.h"
-	"GUI.h"
-	"ECS.h"
-	"Entity.h"
-	"Camera.h"
-	"Model.h"
-	"Wire.h"
-	"Particle.h"
-	"Physics.h"
-	"Skybox.h"
-	"SkeletalModel.h"
-	"Skeleton.h"
-	"Light.h"
-	"Animator.h"
-	"Input.h"
-	"ParticleEmitter.h"
-	"LightSystem.h"
-	"ParticleSystem.h"
-	"Transform.h"
 	"Scene.h"
 
 1712861280 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/boost_1_85_0/boost/accumulators/accumulators.hpp
@@ -10404,7 +10375,7 @@
 	"LinearMath/btVector3.h"
 	"LinearMath/btTransform.h"
 
-1715851711 /home/noel/Desktop/Obelisk-3D-Engine/Source/Scene.h
+1716186621 /home/noel/Desktop/Obelisk-3D-Engine/Source/Scene.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	"glm/glm.hpp"
@@ -10415,9 +10386,6 @@
 	<cmath>
 	"stb_image.h"
 	"btBulletDynamicsCommon.h"
-	<boost/accumulators/accumulators.hpp>
-	<boost/accumulators/statistics/stats.hpp>
-	<boost/accumulators/statistics/sum.hpp>
 	"Globals.h"
 	"Shader.h"
 	"Audio.h"
@@ -10435,8 +10403,25 @@
 	"Light.h"
 	"Animator.h"
 	"Input.h"
-	"ParticleEmitter.h"
+	"ParticleRenderer.h"
 	"LightSystem.h"
 	"ParticleSystem.h"
 	"Transform.h"
+	"QuadRenderer.h"
+
+1716184377 /home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleRenderer.h
+	<vector>
+	"glm/glm.hpp"
+	"Texture.h"
+	"Particle.h"
+
+1716184377 /home/noel/Desktop/Obelisk-3D-Engine/Source/QuadRenderer.h
+	<vector>
+	"glm/glm.hpp"
+	"Texture.h"
+	"Camera.h"
+	"Transform.h"
+
+1716184377 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleRenderer.cpp
+	"ParticleRenderer.h"
 

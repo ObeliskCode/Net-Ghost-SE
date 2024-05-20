@@ -197,6 +197,9 @@ class FoldAnim : public Scene {
                 case GLFW_KEY_ESCAPE:
                     glfwSetWindowShouldClose(window, true);
                     break;
+                case GLFW_KEY_X:
+                    Globals::get().cursorLocked = !Globals::get().cursorLocked;
+                    break;
                 case GLFW_KEY_F10:
                     glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, Globals::get().screenWidth, Globals::get().screenHeight, GLFW_DONT_CARE);
                     break;
@@ -207,7 +210,35 @@ class FoldAnim : public Scene {
                 };
 
             curFun = [](GLFWwindow* window, double xpos, double ypos) {
-                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                if (Globals::get().cursorLocked == true) {
+
+                    float sensitivity = 1.0f; // mouse sens
+
+                    double deltaAngle = 0.0005; // base angle we move in
+
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+                    double xMiddle = (double)Globals::get().screenWidth / 2.0;
+                    double yMiddle = (double)Globals::get().screenHeight / 2.0;
+
+                    double xOffset = xMiddle - xpos;
+                    double yOffset = yMiddle - ypos;
+
+                    double rotX = xOffset * sensitivity * deltaAngle;
+                    double rotY = yOffset * sensitivity * deltaAngle;
+
+                    Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotX, Globals::get().camera->getUp()));
+
+                    glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));
+                    // Clamps rotY so it doesn't glitch when looking directly up or down
+                    if (!((rotY > 0 && Globals::get().camera->getOrientation().y > 0.99f) || (rotY < 0 && Globals::get().camera->getOrientation().y < -0.99f)))
+                        Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotY, perpendicular));
+
+                    glfwSetCursorPos(window, xMiddle, yMiddle);
+                }
+                else {
+                    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                }
                 };
         }
 
@@ -226,13 +257,48 @@ class FoldAnim : public Scene {
             Quad q = Quad();
             quadSys->quads.push_back(q);
 
-            Globals::get().camera->setPosition(glm::vec3(20.0f, 10.0f, 0.0f));
-            Globals::get().camera->setOrientation(glm::normalize(glm::vec3(-20.0f, -10.0f, 0.0f)));
+            Globals::get().camera->setPosition(glm::vec3(0.0f, 10.0f, 20.0f));
+            Globals::get().camera->setOrientation(glm::normalize(glm::vec3(0.0f, -10.0f, -20.0f)));
 
             return 1;
         }
 
         int tick(GLFWwindow* window) override {
+            { // update cam pos
+                if (!Globals::get().camLock) {
+                    glm::vec3 proj = glm::rotate(Globals::get().camera->getOrientation(), glm::radians(90.0f), Globals::get().camera->getUp());
+                    proj.y = 0.0f;
+                    proj = glm::normalize(proj);
+
+                    float moveSpeed = 1.0f; // position of camera move speed
+                    float order = 10.0f;
+
+                    glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+
+                    if (Input::get().getValue(GLFW_KEY_W)) {
+                        velocity += Globals::get().camera->getOrientation();
+                    }
+                    if (Input::get().getValue(GLFW_KEY_A)) {
+                        velocity += proj;
+                    }
+                    if (Input::get().getValue(GLFW_KEY_S)) {
+                        velocity -= Globals::get().camera->getOrientation();
+                    }
+                    if (Input::get().getValue(GLFW_KEY_D)) {
+                        velocity -= proj;
+                    }
+
+                    if (glm::length(velocity) > 0) {
+                        velocity = glm::normalize(velocity);
+
+                        velocity.x *= delta * order * moveSpeed;
+                        velocity.y *= delta * order * moveSpeed;
+                        velocity.z *= delta * order * moveSpeed;
+                    }
+
+                    Globals::get().camera->setPosition(Globals::get().camera->getPosition() + velocity);
+                }
+            }
             return 1;
         }
 

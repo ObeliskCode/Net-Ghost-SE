@@ -235,10 +235,10 @@
 		<Unit filename="../Source/Particle.h">
 			<Option target="Release x64" />
 		</Unit>
-		<Unit filename="../Source/ParticleEmitter.cpp">
+		<Unit filename="../Source/ParticleRenderer.cpp">
 			<Option target="Release x64" />
 		</Unit>
-		<Unit filename="../Source/ParticleEmitter.h">
+		<Unit filename="../Source/ParticleRenderer.h">
 			<Option target="Release x64" />
 		</Unit>
 		<Unit filename="../Source/ParticleSystem.cpp">
@@ -257,6 +257,9 @@
 			<Option target="Release x64" />
 		</Unit>
 		<Unit filename="../Source/PointShadow.h">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="../Source/QuadRenderer.h">
 			<Option target="Release x64" />
 		</Unit>
 		<Unit filename="../Source/Scene.h">
