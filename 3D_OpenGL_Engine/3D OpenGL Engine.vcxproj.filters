@@ -268,5 +268,11 @@
     <None Include="shaders\textVert.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="shaders\quadFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaders\quadVert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

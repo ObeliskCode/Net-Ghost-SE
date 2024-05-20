@@ -38,6 +38,7 @@
 #include "LightSystem.h"
 #include "ParticleSystem.h"
 #include "Transform.h"
+#include "QuadRenderer.h"
 
 const double PI = 3.1415926535897932384626433832795028841971693993751058209;
 
@@ -129,6 +130,7 @@ class MainMenu : public Scene {
             Audio::get();
 
             textProgram = new Shader("textVert.glsl", "textFrag.glsl");
+
             return 1;
         }
 
@@ -166,6 +168,11 @@ class MainMenu : public Scene {
 
 class FoldAnim : public Scene {
     public:
+
+        QuadRenderer* quadSys = new QuadRenderer();
+
+        Shader* quadProgram;
+
         FoldAnim() {
             winFun = [](GLFWwindow* window, int width, int height) {
                 // Define the portion of the window used for OpenGL rendering.
@@ -214,6 +221,14 @@ class FoldAnim : public Scene {
             Input::get();
             Audio::get();
 
+            quadProgram = new Shader("quadVert.glsl", "quadFrag.glsl");
+
+            Quad q = Quad();
+            quadSys->quads.push_back(q);
+
+            Globals::get().camera->setPosition(glm::vec3(20.0f, 10.0f, 0.0f));
+            Globals::get().camera->setOrientation(glm::normalize(glm::vec3(-20.0f, -10.0f, 0.0f)));
+
             return 1;
         }
 
@@ -224,6 +239,7 @@ class FoldAnim : public Scene {
         int drawFrame(GLFWwindow* window, double frameTime) override {
             renderScene();
 
+            quadSys->DrawQuads(*quadProgram, *Globals::get().camera);
 
             glfwSwapBuffers(window);
             return 1;
@@ -271,9 +287,13 @@ class TestRoom : public Scene {
 
         ParticleRenderer particleEmitter;
 
+        QuadRenderer* quadSys = new QuadRenderer();
+
         Shader* textProgram;
 
         Shader* partProgram;
+
+        Shader* quadProgram;
 
         Entity* character;
 
@@ -374,6 +394,11 @@ class TestRoom : public Scene {
             glDisable(GL_BLEND);
 
             glfwSwapBuffers(window);
+
+            quadProgram = new Shader("quadVert.glsl", "quadFrag.glsl");
+
+            Quad q = Quad();
+            quadSys->quads.push_back(q);
 
             // warning these need to be deleted!
             Shader* rigProgram = new Shader("rigVert.glsl", "mdlFrag.glsl");
@@ -886,6 +911,8 @@ class TestRoom : public Scene {
             LightSystem::get().RenderPointShadows();
 
             ECS::get().DrawEntities();
+
+            quadSys->DrawQuads(*quadProgram, *Globals::get().camera);
 
             sky->Draw(*skyProgram, *Globals::get().camera);
 

@@ -232,6 +232,8 @@
     <None Include="shaders\pointShadowFrag.glsl" />
     <None Include="shaders\pointShadowGeom.glsl" />
     <None Include="shaders\pointShadowVert.glsl" />
+    <None Include="shaders\quadFrag.glsl" />
+    <None Include="shaders\quadVert.glsl" />
     <None Include="shaders\rigVert.glsl" />
     <None Include="shaders\shadowFrag.glsl" />
     <None Include="shaders\shadowVert.glsl" />

@@ -10,7 +10,7 @@ int main(int argc, char **argv) {
 
 	//we can solve all our problems with lambdas!
 
-	FoldAnim* dp = new FoldAnim();
+	TestRoom* dp = new TestRoom();
 	Scene* bp = dp;
 	bp->setupCallbacks(window);
 	bp->loadResources(window);
