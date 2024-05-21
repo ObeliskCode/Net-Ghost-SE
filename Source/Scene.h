@@ -751,45 +751,6 @@ class TestRoom : public Scene {
         }
 
 
-        void gameTick(double delta) {
-            { // update cam pos
-                if (!Globals::get().camLock) {
-                    glm::vec3 proj = glm::rotate(Globals::get().camera->getOrientation(), glm::radians(90.0f), Globals::get().camera->getUp());
-                    proj.y = 0.0f;
-                    proj = glm::normalize(proj);
-
-                    float moveSpeed = 1.0f; // position of camera move speed
-                    float order = 10.0f;
-
-                    glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-
-                    if (Input::get().getValue(GLFW_KEY_W)) {
-                        velocity += Globals::get().camera->getOrientation();
-                    }
-                    if (Input::get().getValue(GLFW_KEY_A)) {
-                        velocity += proj;
-                    }
-                    if (Input::get().getValue(GLFW_KEY_S)) {
-                        velocity -= Globals::get().camera->getOrientation();
-                    }
-                    if (Input::get().getValue(GLFW_KEY_D)) {
-                        velocity -= proj;
-                    }
-
-                    if (glm::length(velocity) > 0) {
-                        velocity = glm::normalize(velocity);
-
-                        velocity.x *= delta * order * moveSpeed;
-                        velocity.y *= delta * order * moveSpeed;
-                        velocity.z *= delta * order * moveSpeed;
-                    }
-
-                    Globals::get().camera->setPosition(Globals::get().camera->getPosition() + velocity);
-                }
-            }
-        }
-
-
         int tick(GLFWwindow* window) override {
             { // character, delta
 				if (Globals::get().camLock) {
@@ -863,10 +824,43 @@ class TestRoom : public Scene {
 				if (bf > 1.0f) bf = 1.0f;
 				mator->SetBlendFactor(bf);
 			}
+            { // update cam pos
+                if (!Globals::get().camLock) {
+                    glm::vec3 proj = glm::rotate(Globals::get().camera->getOrientation(), glm::radians(90.0f), Globals::get().camera->getUp());
+                    proj.y = 0.0f;
+                    proj = glm::normalize(proj);
 
-			gameTick(delta); // post-physics game logic.
+                    float moveSpeed = 1.0f; // position of camera move speed
+                    float order = 10.0f;
 
-			{ // do rayCast
+                    glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+
+                    if (Input::get().getValue(GLFW_KEY_W)) {
+                        velocity += Globals::get().camera->getOrientation();
+                    }
+                    if (Input::get().getValue(GLFW_KEY_A)) {
+                        velocity += proj;
+                    }
+                    if (Input::get().getValue(GLFW_KEY_S)) {
+                        velocity -= Globals::get().camera->getOrientation();
+                    }
+                    if (Input::get().getValue(GLFW_KEY_D)) {
+                        velocity -= proj;
+                    }
+
+                    if (glm::length(velocity) > 0) {
+                        velocity = glm::normalize(velocity);
+
+                        velocity.x *= delta * order * moveSpeed;
+                        velocity.y *= delta * order * moveSpeed;
+                        velocity.z *= delta * order * moveSpeed;
+                    }
+
+                    Globals::get().camera->setPosition(Globals::get().camera->getPosition() + velocity);
+                }
+            }
+
+			/* { // do rayCast // raycast selection causes hitching! how do we optimize?
 
 				glm::vec3 ppp = Globals::get().camera->getPosition() + (Globals::get().camera->getOrientation() * 12.5f);
 
@@ -915,7 +909,7 @@ class TestRoom : public Scene {
 					prevID = 0;
 				}
 
-			}
+			}*/
 			{
 				if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playAudio(1);
 				if (Input::get().getValue(GLFW_KEY_U)) Audio::get().playAudio(0);
