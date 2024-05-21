@@ -16,6 +16,9 @@ Entity::Entity(Model* m, Shader* s, Camera* c) {
 	else if (c == Globals::get().handCam) {
 		setBit(COMPONENT_BIT_CAM2);
 	}
+	else {
+		setBit(COMPONENT_BIT_CAMX);
+	}
 	m_surface = false;
 	m_visible = true;
 	mdl = m;
@@ -35,6 +38,9 @@ Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Camera* c) {
 	else if (c == Globals::get().handCam) {
 		setBit(COMPONENT_BIT_CAM2);
 	}
+	else {
+		setBit(COMPONENT_BIT_CAMX);
+	}
 	m_surface = false;
 	m_visible = true;
 	mdl = nullptr;
@@ -52,6 +58,9 @@ Entity::Entity(Camera* c) {
 	}
 	else if (c == Globals::get().handCam) {
 		setBit(COMPONENT_BIT_CAM2);
+	}
+	else {
+		setBit(COMPONENT_BIT_CAMX);
 	}
 	m_surface = false;
 	m_visible = true;

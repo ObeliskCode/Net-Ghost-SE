@@ -62,6 +62,6 @@ private:
     std::unordered_map<unsigned int, Entity*> entMap;
 };
 
-#define MAX_ENTITIES 5000
+#define MAX_ENTITIES 1500
 
 #endif

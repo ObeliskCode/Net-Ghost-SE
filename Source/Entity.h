@@ -59,7 +59,8 @@ class Entity {
 		#define COMPONENT_BIT_STENCIL 4
 		#define COMPONENT_BIT_CAM1 5
 		#define COMPONENT_BIT_CAM2 6
-		#define COMPONENT_BIT_COUNT 7
+		#define COMPONENT_BIT_CAMX 6
+		#define COMPONENT_BIT_COUNT 8
 		std::bitset<COMPONENT_BIT_COUNT> m_signature;
 
 		unsigned int m_id;
