@@ -99,12 +99,12 @@ GLFWwindow* initApp() {
 	glEnable(GL_DEPTH_TEST);
 
 	// emable stencil test
-	//glEnable(GL_STENCIL_TEST);
-	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-	//glStencilFunc(GL_ALWAYS, 0, 0xFF);
-	//glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glStencilMask(0xFF);
 
 	// enable 8x MSAA
 	glfwWindowHint(GLFW_SAMPLES, 8);

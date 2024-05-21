@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-#define NO_WIRES
+//#define NO_WIRES
 
 #ifdef NO_WIRES
 #define WIRES_DISABLED true

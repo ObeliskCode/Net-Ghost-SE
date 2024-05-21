@@ -870,7 +870,7 @@ class TestRoom : public Scene {
                 }
             }
 
-			/* { // do rayCast // raycast selection causes hitching! how do we optimize?
+			{ // do rayCast // raycast selection causes big hitching! how do we optimize?
 
 				glm::vec3 ppp = Globals::get().camera->getPosition() + (Globals::get().camera->getOrientation() * 12.5f);
 
@@ -919,7 +919,7 @@ class TestRoom : public Scene {
 					prevID = 0;
 				}
 
-			}*/
+			}
 			{
 				if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playAudio(1);
 				if (Input::get().getValue(GLFW_KEY_U)) Audio::get().playAudio(0);
