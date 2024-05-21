@@ -88,7 +88,7 @@ class Scene {
         void (*keyFun)(GLFWwindow*, int, int, int, int);
         void (*curFun)(GLFWwindow*, double, double);
 
-        double delta = 1.0 / 300.0;
+        double delta = 1.0 / 180.0;
 
     private:
 };
