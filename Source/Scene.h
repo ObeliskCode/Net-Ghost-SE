@@ -241,15 +241,8 @@ class FoldAnim : public Scene {
                     double xOffset = xMiddle - xpos;
                     double yOffset = yMiddle - ypos;
 
-                    double rotX = xOffset * sensitivity * deltaAngle;
-                    double rotY = yOffset * sensitivity * deltaAngle;
-
-                    Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotX, Globals::get().camera->getUp()));
-
-                    glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));
-                    // Clamps rotY so it doesn't glitch when looking directly up or down
-                    if (!((rotY > 0 && Globals::get().camera->getOrientation().y > 0.99f) || (rotY < 0 && Globals::get().camera->getOrientation().y < -0.99f)))
-                        Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotY, perpendicular));
+                    Globals::get().rotX += xOffset * sensitivity * deltaAngle;
+                    Globals::get().rotY += yOffset * sensitivity * deltaAngle;
 
                     glfwSetCursorPos(window, xMiddle, yMiddle);
                 }
@@ -287,6 +280,17 @@ class FoldAnim : public Scene {
         }
 
         int tick(GLFWwindow* window) override {
+            {
+                Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotX, Globals::get().camera->getUp()));
+
+                glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));
+                // Clamps rotY so it doesn't glitch when looking directly up or down
+                if (!((Globals::get().rotY > 0 && Globals::get().camera->getOrientation().y > 0.99f) || (Globals::get().rotY < 0 && Globals::get().camera->getOrientation().y < -0.99f)))
+                    Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotY, perpendicular));
+
+                Globals::get().rotX = 0.0;
+                Globals::get().rotY = 0.0;
+            }
             { // update cam pos
                 if (!Globals::get().camLock) {
                     glm::vec3 proj = glm::rotate(Globals::get().camera->getOrientation(), glm::radians(90.0f), Globals::get().camera->getUp());
@@ -390,6 +394,8 @@ class TestRoom : public Scene {
 
         Animator* mator;
 
+
+
         TestRoom(){
             winFun = [](GLFWwindow* window, int width, int height) {
                 // Define the portion of the window used for OpenGL rendering.
@@ -447,15 +453,8 @@ class TestRoom : public Scene {
                     double xOffset = xMiddle - xpos;
                     double yOffset = yMiddle - ypos;
 
-                    double rotX = xOffset * sensitivity * deltaAngle;
-                    double rotY = yOffset * sensitivity * deltaAngle;
-
-                    Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotX, Globals::get().camera->getUp()));
-
-                    glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));
-                    // Clamps rotY so it doesn't glitch when looking directly up or down
-                    if (!((rotY > 0 && Globals::get().camera->getOrientation().y > 0.99f) || (rotY < 0 && Globals::get().camera->getOrientation().y < -0.99f)))
-                        Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)rotY, perpendicular));
+                    Globals::get().rotX += xOffset * sensitivity * deltaAngle;
+                    Globals::get().rotY += yOffset * sensitivity * deltaAngle;
 
                     glfwSetCursorPos(window, xMiddle, yMiddle);
                 }
@@ -752,6 +751,17 @@ class TestRoom : public Scene {
 
 
         int tick(GLFWwindow* window) override {
+            {
+                Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotX, Globals::get().camera->getUp()));
+
+                glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));
+                // Clamps rotY so it doesn't glitch when looking directly up or down
+                if (!((Globals::get().rotY > 0 && Globals::get().camera->getOrientation().y > 0.99f) || (Globals::get().rotY < 0 && Globals::get().camera->getOrientation().y < -0.99f)))
+                    Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotY, perpendicular));
+
+                Globals::get().rotX = 0.0;
+                Globals::get().rotY = 0.0;
+            }
             { // character, delta
 				if (Globals::get().camLock) {
 					btRigidBody* body = character->getBody();

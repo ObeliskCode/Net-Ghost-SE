@@ -38,6 +38,8 @@ public:
     Shader * pointShadowShader;
     Camera * camera;
     Camera * handCam;
+    double rotX;
+    double rotY;
 
 private:
     Globals()
