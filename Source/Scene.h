@@ -95,6 +95,9 @@ class Scene {
 
 class MainMenu : public Scene {
     public:
+
+        Shader* textProgram;
+
         MainMenu() {
             winFun = [](GLFWwindow* window, int width, int height) {
                 // Define the portion of the window used for OpenGL rendering.
@@ -132,8 +135,6 @@ class MainMenu : public Scene {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
                 };
         }
-
-        Shader* textProgram;
 
         int loadResources(GLFWwindow* window) override {
             ECS::get();

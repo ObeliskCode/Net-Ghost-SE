@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 
 	// LAST GRAHPICS TODO: screen-space shadows & frustrum culling & updated rendering pipeline (deferred/forward+)
 
-	FoldAnim* dp = new FoldAnim();
+	TestRoom* dp = new TestRoom();
 	Scene* bp = dp;
 	bp->setupCallbacks(window);
 	bp->loadResources(window);
