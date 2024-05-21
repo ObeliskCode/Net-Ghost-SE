@@ -410,11 +410,6 @@ class TestRoom : public Scene {
 
         Animator* mator;
 
-        Shader* rigProgram;
-        Shader* lightProgram;
-        Shader* animProgram;
-        Shader* noTexAnimProgram;
-
 
         TestRoom(){
             winFun = [](GLFWwindow* window, int width, int height) {
@@ -511,10 +506,10 @@ class TestRoom : public Scene {
             quadSys->quads.push_back(q);
 
             // warning these need to be deleted!
-            rigProgram = new Shader("rigVert.glsl", "mdlFrag.glsl");
-            lightProgram = new Shader("rigVert.glsl", "lightFrag.glsl");
-            animProgram = new Shader("animVert.glsl", "mdlFrag.glsl");
-            noTexAnimProgram = new Shader("animVert.glsl", "noTexFrag.glsl");
+            Globals::get().rigProgram = new Shader("rigVert.glsl", "mdlFrag.glsl");
+            Globals::get().lightProgram = new Shader("rigVert.glsl", "lightFrag.glsl");
+            Globals::get().animProgram = new Shader("animVert.glsl", "mdlFrag.glsl");
+            Globals::get().noTexAnimProgram = new Shader("animVert.glsl", "noTexFrag.glsl");
             Globals::get().wireShader = new Shader("wireVert.glsl", "wireFrag.glsl");
             Globals::get().shadowShader = new Shader("shadowVert.glsl", "shadowFrag.glsl");
             Globals::get().animShadowShader = new Shader("animShadowVert.glsl", "shadowFrag.glsl");
@@ -526,14 +521,14 @@ class TestRoom : public Scene {
             Entity* e;
 
             Model* panel = new Model("floor/floor.dae");
-            e = ECS::get().linkEntity(new Entity(panel, rigProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(panel, Globals::get().rigProgram, Globals::get().camera));
             e->transform->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
             e->transform->setScale(glm::vec3(20.0f));
             e->m_surface = true;
             ECS::get().registerComponents(e);
 
             Model* lamp = new Model("lamp/lamp.dae");
-            e = ECS::get().linkEntity(new Entity(lamp, lightProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(lamp, Globals::get().lightProgram, Globals::get().camera));
             e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
             e->transform->setScale(glm::vec3(0.05f));
             e->transform->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
@@ -543,7 +538,7 @@ class TestRoom : public Scene {
 
             Model* bench = new Model("bench/bench.dae");
             float CosHalfPi = sqrt(2.f) / 2.f;
-            e = ECS::get().linkEntity(new Entity(bench, rigProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(bench, Globals::get().rigProgram, Globals::get().camera));
             e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 2.5f, 5.0f, 5.0f, 5.0f + 2.5f, 28.f)); // whole lot of maths
             e->transform->setScale(glm::vec3(4.5f));
             e->transform->setTranslation(glm::vec3(0.0f, -2.5f, 0.0f));
@@ -552,19 +547,19 @@ class TestRoom : public Scene {
             ECS::get().registerComponents(e);
 
             Model* handBat = new Model("bat/bat.dae");
-            batEnt = new Entity(handBat, rigProgram, Globals::get().handCam);
+            batEnt = new Entity(handBat, Globals::get().rigProgram, Globals::get().handCam);
             batEnt->transform->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
             batEnt->transform->setTranslation(glm::vec3(2.0f, -2.0f, 0.0f));
             ECS::get().registerComponents(batEnt);
 
             Model* cig = new Model("cig/cig.dae");
-            cigEnt = new Entity(cig, rigProgram, Globals::get().handCam);
+            cigEnt = new Entity(cig, Globals::get().rigProgram, Globals::get().handCam);
             cigEnt->transform->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
             cigEnt->transform->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
             ECS::get().registerComponents(cigEnt);
 
             Model* dumpster = new Model("dumpster/dumpster.dae");
-            e = ECS::get().linkEntity(new Entity(dumpster, rigProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(dumpster, Globals::get().rigProgram, Globals::get().camera));
             e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 3.0f, 4.0f, 6.0f, 25.0f, 5.0f + 4.0f, 35.f)); // whole lot of maths
             e->transform->setScale(glm::vec3(6.5f));
             e->transform->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
@@ -573,13 +568,13 @@ class TestRoom : public Scene {
             ECS::get().registerComponents(e);
 
             Model* cart = new Model("cart/ShoppingCart.dae");
-            e = ECS::get().linkEntity(new Entity(cart, rigProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(cart, Globals::get().rigProgram, Globals::get().camera));
             e->transform->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
             e->transform->setScale(glm::vec3(7.f));
             ECS::get().registerComponents(e);
 
             Model* tent = new Model("tent/tent.dae");
-            e = ECS::get().linkEntity(new Entity(tent, rigProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(tent, Globals::get().rigProgram, Globals::get().camera));
             e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 6.0f, 4.0f, 6.0f, -15.0f, 5.0f + 4.0f, 10.0f)); // whole lot of maths
             e->transform->setScale(glm::vec3(7.f));
             e->transform->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
@@ -589,7 +584,7 @@ class TestRoom : public Scene {
             SkeletalModel* wolf = new SkeletalModel("wolf/Wolf_One_dae.dae");
             Skeleton* wolfAnimation = new Skeleton("wolf/Wolf_One_dae.dae", wolf);
             Animator* animator = new Animator(wolfAnimation);
-            e = ECS::get().linkEntity(new Entity(wolf, animator, noTexAnimProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(wolf, animator, Globals::get().noTexAnimProgram, Globals::get().camera));
             e->transform->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
             e->transform->setTranslation(glm::vec3(10.0f, 5.0f, 10.0f));
             ECS::get().registerComponents(e);
@@ -597,7 +592,7 @@ class TestRoom : public Scene {
             SkeletalModel* sit = new SkeletalModel("sit/Sitting Clap.dae");
             Skeleton* sitAnimation = new Skeleton("sit/Sitting Clap.dae", sit);
             Animator* sitMator = new Animator(sitAnimation);
-            e = ECS::get().linkEntity(new Entity(sit, sitMator, animProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(sit, sitMator, Globals::get().animProgram, Globals::get().camera));
             e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
             e->transform->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
             e->transform->setRotation(glm::quat(CosHalfPi, 0.0f, -CosHalfPi, 0.0f));
@@ -608,7 +603,7 @@ class TestRoom : public Scene {
             walkAnimation->addAnimation("jjong/Walking.dae", walk);
             mator = new Animator(walkAnimation);
             mator->QueueAnimation(1);
-            e = ECS::get().linkEntity(new Entity(walk, mator, animProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(walk, mator, Globals::get().animProgram, Globals::get().camera));
             e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
             e->transform->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
             ECS::get().registerComponents(e);
@@ -620,28 +615,28 @@ class TestRoom : public Scene {
             LightSystem::get().lights.push_back(light2);
 
             Model* light = new Model("bulb/scene.gltf");
-            e = ECS::get().linkEntity(new Entity(light, lightProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(light, Globals::get().lightProgram, Globals::get().camera));
             e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
             e->transform->setTranslation(glm::vec3(-20.0f, 13.2f, 28.0f));
             e->setType("light");
             ECS::get().registerComponents(e);
 
             Model* lightSecond = new Model("bulb/scene.gltf");
-            e = ECS::get().linkEntity(new Entity(lightSecond, lightProgram, Globals::get().camera));
+            e = ECS::get().linkEntity(new Entity(lightSecond, Globals::get().lightProgram, Globals::get().camera));
             e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
             e->transform->setTranslation(glm::vec3(-20.0f, 10.0f, -20.0f));
             e->setType("light");
             ECS::get().registerComponents(e);
 
-            lampLight->linkShader(*rigProgram);
-            lampLight->linkShader(*animProgram);
-            lampLight->linkShader(*noTexAnimProgram);
-            lampLight->linkShader(*lightProgram);
+            lampLight->linkShader(*Globals::get().rigProgram);
+            lampLight->linkShader(*Globals::get().animProgram);
+            lampLight->linkShader(*Globals::get().noTexAnimProgram);
+            lampLight->linkShader(*Globals::get().lightProgram);
 
-            LightSystem::get().linkShader(*rigProgram);
-            LightSystem::get().linkShader(*animProgram);
-            LightSystem::get().linkShader(*noTexAnimProgram);
-            LightSystem::get().linkShader(*lightProgram);
+            LightSystem::get().linkShader(*Globals::get().rigProgram);
+            LightSystem::get().linkShader(*Globals::get().animProgram);
+            LightSystem::get().linkShader(*Globals::get().noTexAnimProgram);
+            LightSystem::get().linkShader(*Globals::get().lightProgram);
 
             //QUAD
             e = ECS::get().linkEntity(new Entity(Globals::get().camera));
@@ -693,7 +688,7 @@ class TestRoom : public Scene {
 
             //TEST CIGS
             for (int i = 0; i < 5; i++) {
-                e = ECS::get().linkEntity(new Entity(new Model("cig/cig.dae"), rigProgram, Globals::get().camera));
+                e = ECS::get().linkEntity(new Entity(new Model("cig/cig.dae"), Globals::get().rigProgram, Globals::get().camera));
                 e->addWire(new Wire(glm::vec3(-0.06f, 0.0f, 0.0f), glm::vec3(0.06f, 0.0f, 0.0f)));
                 e->addWire(new Wire(glm::vec3(0.0f, -0.06f, 0.0f), glm::vec3(0.0f, 0.06f, 0.0f)));
                 e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -0.685f), glm::vec3(0.0f, 0.0f, 0.685f)));
@@ -1025,10 +1020,10 @@ class TestRoom : public Scene {
 
             LightSystem::get().RenderPointShadows();
 
-            linkModelShaderUniforms(*rigProgram);
-            linkModelShaderUniforms(*lightProgram);
-            linkModelShaderUniforms(*animProgram);
-            linkModelShaderUniforms(*noTexAnimProgram);
+            linkModelShaderUniforms(*Globals::get().rigProgram);
+            linkModelShaderUniforms(*Globals::get().lightProgram);
+            linkModelShaderUniforms(*Globals::get().animProgram);
+            linkModelShaderUniforms(*Globals::get().noTexAnimProgram);
             ECS::get().DrawEntities();
 
             quadSys->DrawQuads(*quadProgram, *Globals::get().camera);

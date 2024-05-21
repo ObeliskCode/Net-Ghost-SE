@@ -64,12 +64,6 @@ void Mesh::Draw(
 		textures[i].Bind();
 	}
 
-	/* SEND THESE TO ALL SHADERS ONCE BEFORE DRAWING */
-	// Take care of the camera Matrix  // ONLY needs to be sent once for shader!! (instancing)
-	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
-	camera.Matrix(shader, "camMatrix");
-	/* SEND THESE TO ALL SHADERS ONCE BEFORE DRAWING */
-
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "ntransform"), 1, GL_FALSE, glm::value_ptr(ntransform));

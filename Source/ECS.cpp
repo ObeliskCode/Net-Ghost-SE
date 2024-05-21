@@ -77,11 +77,32 @@ Entity* ECS::getEntity(unsigned int ID) {
 }
 
 
+void linkCameraUniforms(Shader& shader, Camera& camera) {
+	shader.Activate();
+	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+	camera.Matrix(shader, "camMatrix");
+}
+
 // WARNING: advances animations by delta!
 void ECS::DrawEntities() {
+
+	const auto& cam1Map = componentSets[COMPONENT_BIT_CAM1].getMap();
+	const auto& cam2Map = componentSets[COMPONENT_BIT_CAM2].getMap();
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
-	for (auto it = entMap.begin(); it != entMap.end(); it++)
+	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().camera);
+	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().camera);
+	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().camera);
+	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().camera);
+	for (auto it = cam1Map.begin(); it != cam1Map.end(); it++)
+	{
+		it->second->Draw();
+	}
+	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().handCam);
+	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().handCam);
+	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().handCam);
+	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().handCam);
+	for (auto it = cam2Map.begin(); it != cam2Map.end(); it++)
 	{
 		it->second->Draw();
 	}
@@ -119,6 +140,8 @@ void ECS::DrawEntityStencils() {
 	glDisable(GL_DEPTH_TEST);
 
 	const auto& componentMap = componentSets[COMPONENT_BIT_STENCIL].getMap();
+
+	linkCameraUniforms(*Globals::get().cellShader, *Globals::get().camera);
 
 	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
 	{

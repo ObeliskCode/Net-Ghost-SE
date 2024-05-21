@@ -71,10 +71,6 @@ void SkeletalMesh::Draw(
 		textures[i].Bind();
 	}
 
-	// Take care of the camera Matrix
-	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
-	camera.Matrix(shader, "camMatrix");
-
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "ntransform"), 1, GL_FALSE, glm::value_ptr(ntransform));

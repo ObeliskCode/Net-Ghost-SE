@@ -43,6 +43,8 @@ class Entity {
 		btRigidBody* getBody();
 
 		Transform* transform;
+		Shader* shader;
+		Camera* camera;
 
 		bool m_visible;
 		bool m_surface;
@@ -55,7 +57,9 @@ class Entity {
 		#define COMPONENT_BIT_DYNAMIC 2
 		#define COMPONENT_BIT_STATIC 3
 		#define COMPONENT_BIT_STENCIL 4
-		#define COMPONENT_BIT_COUNT 5
+		#define COMPONENT_BIT_CAM1 5
+		#define COMPONENT_BIT_CAM2 6
+		#define COMPONENT_BIT_COUNT 7
 		std::bitset<COMPONENT_BIT_COUNT> m_signature;
 
 		unsigned int m_id;
@@ -69,8 +73,7 @@ class Entity {
 		Animator* mator;
 		std::vector<Wire*> wires;
 		btRigidBody* body;
-		Shader* shader;
-		Camera* camera;
+		
 };
 
 #endif

@@ -10,6 +10,12 @@
 
 Entity::Entity(Model* m, Shader* s, Camera* c) {
 	setBit(COMPONENT_BIT_MODEL);
+	if (c == Globals::get().camera) {
+		setBit(COMPONENT_BIT_CAM1);
+	}
+	else if (c == Globals::get().handCam) {
+		setBit(COMPONENT_BIT_CAM2);
+	}
 	m_surface = false;
 	m_visible = true;
 	mdl = m;
@@ -23,6 +29,12 @@ Entity::Entity(Model* m, Shader* s, Camera* c) {
 
 Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Camera* c) {
 	setBit(COMPONENT_BIT_ANIMATED);
+	if (c == Globals::get().camera) {
+		setBit(COMPONENT_BIT_CAM1);
+	}
+	else if (c == Globals::get().handCam) {
+		setBit(COMPONENT_BIT_CAM2);
+	}
 	m_surface = false;
 	m_visible = true;
 	mdl = nullptr;
@@ -35,6 +47,12 @@ Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Camera* c) {
 }
 
 Entity::Entity(Camera* c) {
+	if (c == Globals::get().camera) {
+		setBit(COMPONENT_BIT_CAM1);
+	}
+	else if (c == Globals::get().handCam) {
+		setBit(COMPONENT_BIT_CAM2);
+	}
 	m_surface = false;
 	m_visible = true;
 	mdl = nullptr;

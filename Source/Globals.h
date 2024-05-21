@@ -36,6 +36,10 @@ public:
     Shader * animCellShader;
     Shader * cellShader;
     Shader * pointShadowShader;
+    Shader * rigProgram;
+    Shader * lightProgram;
+    Shader * animProgram;
+    Shader * noTexAnimProgram;
     Camera * camera;
     Camera * handCam;
     double rotX;
