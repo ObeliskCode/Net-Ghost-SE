@@ -65,6 +65,22 @@ glm::quat quat_axis_angle(const double& xx, const double& yy, const double& zz, 
     return glm::quat(w, x, y, z);
 }
 
+void linkModelShaderUniforms(Shader& shader) {
+    shader.Activate();
+
+    glUniformMatrix4fv(glGetUniformLocation(shader.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(Globals::get().lightSpaceMatrix));
+
+    glActiveTexture(GL_TEXTURE0 + 6);
+    glBindTexture(GL_TEXTURE_2D, Globals::get().depthMap);
+    glUniform1i(glGetUniformLocation(shader.ID, "shadowMap"), 6);
+
+    glActiveTexture(GL_TEXTURE0 + 5);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, Globals::get().depthCubeMap);
+    glUniform1i(glGetUniformLocation(shader.ID, "shadowCubeMap"), 5);
+
+    glUniform1f(glGetUniformLocation(shader.ID, "far_plane"), Globals::get().far_plane);
+}
+
 class Scene {
     public:
         virtual int loadResources(GLFWwindow* window) = 0;
@@ -394,6 +410,10 @@ class TestRoom : public Scene {
 
         Animator* mator;
 
+        Shader* rigProgram;
+        Shader* lightProgram;
+        Shader* animProgram;
+        Shader* noTexAnimProgram;
 
 
         TestRoom(){
@@ -491,10 +511,10 @@ class TestRoom : public Scene {
             quadSys->quads.push_back(q);
 
             // warning these need to be deleted!
-            Shader* rigProgram = new Shader("rigVert.glsl", "mdlFrag.glsl");
-            Shader* lightProgram = new Shader("rigVert.glsl", "lightFrag.glsl");
-            Shader* animProgram = new Shader("animVert.glsl", "mdlFrag.glsl");
-            Shader* noTexAnimProgram = new Shader("animVert.glsl", "noTexFrag.glsl");
+            rigProgram = new Shader("rigVert.glsl", "mdlFrag.glsl");
+            lightProgram = new Shader("rigVert.glsl", "lightFrag.glsl");
+            animProgram = new Shader("animVert.glsl", "mdlFrag.glsl");
+            noTexAnimProgram = new Shader("animVert.glsl", "noTexFrag.glsl");
             Globals::get().wireShader = new Shader("wireVert.glsl", "wireFrag.glsl");
             Globals::get().shadowShader = new Shader("shadowVert.glsl", "shadowFrag.glsl");
             Globals::get().animShadowShader = new Shader("animShadowVert.glsl", "shadowFrag.glsl");
@@ -1005,6 +1025,10 @@ class TestRoom : public Scene {
 
             LightSystem::get().RenderPointShadows();
 
+            linkModelShaderUniforms(*rigProgram);
+            linkModelShaderUniforms(*lightProgram);
+            linkModelShaderUniforms(*animProgram);
+            linkModelShaderUniforms(*noTexAnimProgram);
             ECS::get().DrawEntities();
 
             quadSys->DrawQuads(*quadProgram, *Globals::get().camera);
