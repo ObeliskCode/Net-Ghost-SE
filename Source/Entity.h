@@ -63,18 +63,19 @@ class Entity {
 		#define COMPONENT_BIT_COUNT 8
 		std::bitset<COMPONENT_BIT_COUNT> m_signature;
 
-		unsigned int m_id;
+		unsigned int m_id; // CHANGE TO SHORT
 		std::string m_type;
 
 		//std::unordered_map<unsigned int, void*> pointerBuffer; // make entity class into typless pointer container? <pointer_type_enum, void_casted_pointer>
 
+		// STUFF AS POINTERS WITHIN COMPONENT SET TUPLE OR ARRAY LOOKUP
 		Transform* phystransform;
 		Model* mdl;
 		SkeletalModel* skMdl;
 		Animator* mator;
 		std::vector<Wire*> wires;
 		btRigidBody* body;
-		
+
 };
 
 #endif
