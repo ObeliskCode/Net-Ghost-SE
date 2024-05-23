@@ -63,8 +63,10 @@ class Entity {
 		#define COMPONENT_BIT_COUNT 8
 		std::bitset<COMPONENT_BIT_COUNT> m_signature;
 
-		unsigned int m_id; // CHANGE TO SHORT
-		std::string m_type;
+		unsigned int m_id:16; // steal 16 bits from 32 bit int instead of changing to short (16 bits)?
+		char m_flag;
+		char m_flag2;
+		std::string m_type; // make enumeration of m_flag or m_flag2?
 
 		//std::unordered_map<unsigned int, void*> pointerBuffer; // make entity class into typless pointer container? <pointer_type_enum, void_casted_pointer>
 
