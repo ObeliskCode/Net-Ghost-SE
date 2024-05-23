@@ -14,7 +14,7 @@
 class Mesh {
 public:
 	std::vector <Vertex> vertices;
-	std::vector <GLuint> indices;sa
+	std::vector <GLuint> indices;
 	std::vector <Texture> textures; // texture class is already sudo-pointer
 	glm::mat4 model; // sends mesh to default model position (same as in blender) AKA model matrix
 
