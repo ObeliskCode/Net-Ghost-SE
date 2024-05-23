@@ -21,13 +21,13 @@ public:
 
     void DrawShadow(Shader& shader, glm::mat4& transform);
 
-    Material mat;
+    Material mat; // this mat here may have to stay
 
 private:
     // model data
-    std::vector<Texture> textures_loaded; // all textures for all meshes
+    std::vector<Texture> textures_loaded; // all textures for all meshes // good for cleanup but can we not have this here for efficiency?
     std::vector<Mesh*> meshes;
-    std::string directory;
+    std::string directory; // do we need these strings here?
     std::string fileType;
 
     void loadModel(std::string path);

@@ -14,12 +14,12 @@
 class Mesh {
 public:
 	std::vector <Vertex> vertices;
-	std::vector <GLuint> indices;
+	std::vector <GLuint> indices;sa
 	std::vector <Texture> textures; // texture class is already sudo-pointer
 	glm::mat4 model; // sends mesh to default model position (same as in blender) AKA model matrix
 
 	VAO* m_VAO;
-	VBO* m_VBO;
+	VBO* m_VBO; // the 64 bits required for a pointer may be larger than the VAO struct itself
 	EBO* m_EBO;
 
 	Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& model);
