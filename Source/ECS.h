@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <queue>
 
+#define MAX_ENTITIES 65000
+
 class ComponentSet {
     public:
         void linkEntity(Entity* e) {
@@ -13,6 +15,7 @@ class ComponentSet {
         }
         void unlinkEntity(unsigned int ID) {
             componentMap.erase(ID);
+
         }
         const auto& getMap() {
             return componentMap;
@@ -51,6 +54,7 @@ public:
     void registerComponent(Entity* e, unsigned int bit);
     void unregisterComponent(Entity* e, unsigned int bit);
 
+
 private:
     ECS(); // no public constructor
     ~ECS(); // no public destructor
@@ -62,6 +66,5 @@ private:
     std::unordered_map<unsigned int, Entity*> entMap;
 };
 
-#define MAX_ENTITIES 1500
 
 #endif

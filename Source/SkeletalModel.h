@@ -6,7 +6,7 @@
 #include <assimp/postprocess.h>
 
 #include <string>
-#include <unordered_map> 
+#include <unordered_map>
 
 #include "SkeletalMesh.h"
 #include "Material.h"
@@ -44,17 +44,15 @@ private:
     // model data
     std::vector<Texture> textures_loaded; // all textures
     std::vector<SkeletalMesh*> meshes;
-    std::string directory;
-    std::string fileType;
 
     std::unordered_map<std::string, BoneInfo> m_BoneInfoMap;
     int m_BoneCounter = 0;
 
     void loadModel(std::string path);
-    void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation);
-    SkeletalMesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation);
+    void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation, std::string directory);
+    SkeletalMesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type,
-        std::string typeName, int slotInc);
+        std::string typeName, int slotInc, std::string directory);
     glm::mat4 aiMat4toGLM(aiMatrix4x4t<float>& matrix);
 
     void ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& vertices, aiMesh* mesh, const aiScene* scene);

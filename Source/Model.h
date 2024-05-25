@@ -27,14 +27,12 @@ private:
     // model data
     std::vector<Texture> textures_loaded; // all textures for all meshes // good for cleanup but can we not have this here for efficiency?
     std::vector<Mesh*> meshes;
-    std::string directory; // do we need these strings here?
-    std::string fileType;
 
     void loadModel(std::string path);
-    void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation);
-    Mesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation);
+    void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation, std::string directory);
+    Mesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type,
-        std::string typeName, int slotInc);
+        std::string typeName, int slotInc, std::string directory);
     glm::mat4 aiMat4toGLM(aiMatrix4x4t<float>& matrix);
 };
 

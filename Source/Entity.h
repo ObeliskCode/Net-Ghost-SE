@@ -51,7 +51,6 @@ class Entity {
 
 	private:
 
-
 		#define COMPONENT_BIT_MODEL 0
 		#define COMPONENT_BIT_ANIMATED 1
 		#define COMPONENT_BIT_DYNAMIC 2
@@ -59,9 +58,18 @@ class Entity {
 		#define COMPONENT_BIT_STENCIL 4
 		#define COMPONENT_BIT_CAM1 5
 		#define COMPONENT_BIT_CAM2 6
-		#define COMPONENT_BIT_CAMX 6
+		#define COMPONENT_BIT_CAMX 7
 		#define COMPONENT_BIT_COUNT 8
 		std::bitset<COMPONENT_BIT_COUNT> m_signature;
+
+        /* C STYLE BITFIELD
+		unsigned int model_flag : 1;
+		unsigned int animated_flag : 1;
+		unsigned int dyn_flag : 1;
+		unsigned int model_flag : 1;
+		unsigned int model_flag : 1;
+		unsigned int model_flag : 1;
+		*/
 
 		unsigned int m_id:16; // steal 16 bits from 32 bit int instead of changing to short (16 bits)?
 		char m_flag1; // use as enum?

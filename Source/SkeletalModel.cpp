@@ -30,14 +30,14 @@ void SkeletalModel::loadModel(std::string path)
         std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
         return;
     }
-    directory = path.substr(0, path.find_last_of('/'));
-    fileType = path.substr(path.find_last_of('.'), path.back());
+    std::string directory = path.substr(0, path.find_last_of('/'));
+    //fileType = path.substr(path.find_last_of('.'), path.back());
 
     aiMatrix4x4t<float> identity = aiMatrix4x4t<float>();
-    processNode(scene->mRootNode, scene, identity);
+    processNode(scene->mRootNode, scene, identity, directory);
 }
 
-void SkeletalModel::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> pTransform)
+void SkeletalModel::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> pTransform, std::string directory)
 {
 
     aiMatrix4x4t<float> transform = pTransform * node->mTransformation;
@@ -46,12 +46,12 @@ void SkeletalModel::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene, transform));
+        meshes.push_back(processMesh(mesh, scene, transform, directory));
     }
     // then do the same for each of its children
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
-        processNode(node->mChildren[i], scene, transform);
+        processNode(node->mChildren[i], scene, transform, directory);
     }
 }
 
@@ -163,7 +163,7 @@ void SkeletalModel::ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& ve
     }
 }
 
-SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation)
+SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory)
 {
     std::vector<SkeletalVertex> vertices;
     std::vector<unsigned int> indices;
@@ -217,14 +217,14 @@ SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiM
         int slotInc = 0;
 
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material, scene,
-            aiTextureType_DIFFUSE, "diffuse", slotInc);
+            aiTextureType_DIFFUSE, "diffuse", slotInc, directory);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
         slotInc = slotInc + diffuseMaps.size();
         //std::cerr << "test " << slotInc <<  std::endl;
 
         std::vector<Texture> specularMaps = loadMaterialTextures(material, scene,
-            aiTextureType_SPECULAR, "specular", slotInc);
+            aiTextureType_SPECULAR, "specular", slotInc, directory);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }// hmmm
 
@@ -248,7 +248,7 @@ void SkeletalModel::Draw(Shader& shader, Camera& camera,
 void SkeletalModel::DrawShadow(Shader& shader, glm::mat4& transform){
     for (unsigned int i = 0; i < meshes.size(); i++) {
         meshes[i]->DrawShadow(shader, transform);
-    } 
+    }
 }
 
 // POSSIBLY CHANGE type in Texture from string to aiTextureType?
@@ -256,7 +256,7 @@ void SkeletalModel::DrawShadow(Shader& shader, glm::mat4& transform){
 
 // BUG: .type member becomes corrupted when leaving loadMaterialTexture
 // not really sure why adding int slotInc(rement) makes this work perfectly, was having issue where specular sampler was overriding diffuse sampler
-std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type, std::string typeName, int slotInc)
+std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type, std::string typeName, int slotInc, std::string directory)
 {
     std::vector<Texture> textures;
 
@@ -280,16 +280,9 @@ std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, const 
         }
         if (!skip)
         {   // if texture hasn't been loaded already, load it
-            if (fileType == ".fbx") {
-                Texture texture = Texture(scene->GetEmbeddedTexture(path.c_str()), typeName, i + slotInc);
-                textures.push_back(texture);
-                textures_loaded.push_back(texture);
-            }
-            else {
-                Texture texture = Texture(path.c_str(), typeName, i + slotInc);
-                textures.push_back(texture);
-                textures_loaded.push_back(texture);
-            }
+            Texture texture = Texture(path.c_str(), typeName, i + slotInc);
+            textures.push_back(texture);
+            textures_loaded.push_back(texture);
         }
     }
 
