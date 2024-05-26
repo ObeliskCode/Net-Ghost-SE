@@ -8,6 +8,7 @@
 #define WIRES_DISABLED false
 #endif
 
+/*
 Entity::Entity(Model* m, Shader* s, Camera* c) {
 	setBit(COMPONENT_BIT_MODEL);
 	if (c == Globals::get().camera) {
@@ -313,4 +314,4 @@ void Entity::updatePhysicsState() {
 		phystransform->setRotation(glm::quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ()));
 	}
 }
-
+*/
