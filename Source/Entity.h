@@ -14,23 +14,29 @@
 
 #include <bitset>
 
+// we must refactor our entity/ECS!
+
 // FIX so entity has ID at creation!
 class Entity {
 	public:
+		// constructor will change
+		/*
 		Entity(Camera* c);
 		Entity(Model* m, Shader* s, Camera* c);
 		Entity(SkeletalModel* sm, Animator* m, Shader* s, Camera* c);
+		*/
 		~Entity();
 
-		void setType(std::string type);
-		std::string getType();
+		//void setType(std::string type);
+		//std::string getType();
 		void setID(unsigned int ID);
 		unsigned int getID();
 
-		void setBit(std::size_t pos);
-		void resetBit(std::size_t pos);
-		bool getBit(std::size_t pos); // should this be const reference lol // NO!!!
+		//void setBit(std::size_t pos);
+		//void resetBit(std::size_t pos);
+		//bool getBit(std::size_t pos);
 
+		/*
 		void addWire(Wire* w);
 		void addWireFrame(float halfWidth, float halfHeight, float halfLength);
 		void updatePhysicsState();
@@ -41,16 +47,24 @@ class Entity {
 		void Draw();
 		void addBody(btRigidBody* b);
 		btRigidBody* getBody();
+		*/
 
+		/*
 		Transform* transform;
 		Shader* shader;
 		Camera* camera;
+		*/
 
+		/*
 		bool m_visible;
 		bool m_surface;
+		*/
 
 	private:
 
+		// should we use a c++ style bitfield??
+		
+		/*
 		#define COMPONENT_BIT_MODEL 0
 		#define COMPONENT_BIT_ANIMATED 1
 		#define COMPONENT_BIT_DYNAMIC 2
@@ -61,6 +75,7 @@ class Entity {
 		#define COMPONENT_BIT_CAMX 7
 		#define COMPONENT_BIT_COUNT 8
 		std::bitset<COMPONENT_BIT_COUNT> m_signature;
+		*/
 
         /* C STYLE BITFIELD
 		unsigned int model_flag : 1;
@@ -71,18 +86,25 @@ class Entity {
 		unsigned int model_flag : 1;
 		*/
 
+		/// <summary>
+		///  these are the 32 bits we will limit ourselves to. some combo of C style bitfield and an enum type...
+		/// </summary>
 		unsigned int m_id:16; // steal 16 bits from 32 bit int instead of changing to short (16 bits)?
 		char m_flag1; // use as enum?
 		char m_flag2;// use as unmanaged bitset?
+		/*
 		std::string m_type; // put within m_flag or m_flag2?
+		*/
 
 		// STUFF AS POINTERS WITHIN COMPONENT SET TUPLE OR ARRAY LOOKUP
+		/*
 		Transform* phystransform;
 		Model* mdl;
 		SkeletalModel* skMdl;
 		Animator* mator;
 		std::vector<Wire*> wires;
 		btRigidBody* body;
+		*/
 
 };
 
