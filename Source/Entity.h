@@ -88,6 +88,7 @@ class Entity {
 
 		/// <summary>
 		///  these are the 32 bits we will limit ourselves to. some combo of C style bitfield and an enum type...
+		///	 we need the entity class to atleast be smaller than a ptr, (64 bits)
 		/// </summary>
 		unsigned int m_id:16; // steal 16 bits from 32 bit int instead of changing to short (16 bits)?
 		char m_flag1; // use as enum?
