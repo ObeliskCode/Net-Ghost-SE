@@ -72,6 +72,7 @@ private:
     ~ECS(); // no public destructor
     static ECS* instance; // declaration class variable
 
+    // approx 4MB right here ...
     ComponentSet<Transform*> cset_transform;
     ComponentSet<Model*> cset_model;
     ComponentSet<SkeletalModel*> cset_skmodel;
