@@ -26,7 +26,10 @@ class Entity {
 		unsigned int wire_flag : 1 = 0;
 		unsigned int shader_flag : 1 = 0;
 		unsigned int camera_flag : 1 = 0;
-		char m_flag : 7 = 0;
+		unsigned int stencil_flag : 1 = 0;
+		unsigned int visible_flag : 1 = 1;
+		unsigned int dynamic_flag : 1 = 0;
+		char m_enumtype : 4 = 0; // 15 possible types with 4 bits including NONE
 
 		/*
 		std::string m_type; // put within m_flag or m_flag2?
