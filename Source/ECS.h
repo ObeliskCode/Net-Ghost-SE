@@ -22,7 +22,7 @@ template <typename T> class ComponentSet {
         }
     private:
         std::unordered_set<unsigned int> entSet;
-        T[MAX_ENTITIES] memArr;
+        T memArr[MAX_ENTITIES];
 };
 
 class ECS {
