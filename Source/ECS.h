@@ -57,6 +57,7 @@ public:
     void DrawEntities();
     void deleteEntity(unsigned int ID);
     Entity getEntity(unsigned int ID);
+    void updateEntity(Entity e);
 
     /*
     void registerComponents(Entity* e);
@@ -70,7 +71,15 @@ private:
     ~ECS(); // no public destructor
     static ECS* instance; // declaration class variable
 
-    ComponentSet<Transform> cset_transform;
+    ComponentSet<Transform*> cset_transform;
+    ComponentSet<Model*> cset_model;
+    ComponentSet<SkeletalModel*> cset_skmodel;
+    ComponentSet<Transform*> cset_phystransform;
+    ComponentSet<Animator*> cset_animator;
+    ComponentSet<Camera*> cset_camera;
+    ComponentSet<Shader*> cset_shader;
+    ComponentSet<btRigidBody*> cset_body;
+    // no wire component set ideally
 
     std::queue<unsigned int> availableIDs;
     std::unordered_map<unsigned int, Entity> entMap;
