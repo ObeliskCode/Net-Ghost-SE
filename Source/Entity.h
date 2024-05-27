@@ -5,18 +5,11 @@ class Entity {
 	public:
 		Entity(unsigned int ID) { m_id = ID; };
 
-		//void setType(std::string type);
-		//std::string getType();
-		/*
-		bool m_visible;
-		bool m_surface;
-		*/
-
 		/// <summary>
-		///  these are the 32 bits we will limit ourselves to. some combo of C style bitfield and an enum type...
+		///  these are the 32 bits we will limit ourselves to. some combo of C style bitfield and enums...
 		///	 we need the entity class to atleast be smaller than a ptr, (64 bits)
 		/// </summary>
-		unsigned int m_id : 16; // steal 16 bits from 32 bit int instead of changing to short (16 bits)?
+		unsigned int m_id : 16; // steal 16 bits from 32 bit int instead of changing to short...
 		unsigned int transform_flag : 1 = 0;
 		unsigned int model_flag : 1 = 0;
 		unsigned int skmodel_flag : 1 = 0;
@@ -29,11 +22,9 @@ class Entity {
 		unsigned int stencil_flag : 1 = 0;
 		unsigned int visible_flag : 1 = 1;
 		unsigned int dynamic_flag : 1 = 0;
-		char m_enumtype : 4 = 0; // 15 possible types with 4 bits including NONE
-
-		/*
-		std::string m_type; // put within m_flag or m_flag2?
-		*/
+		unsigned int pickup_flag : 1 = 0;
+		unsigned int surface_flag : 1 = 0;
+		unsigned char m_camera : 2 = 0; // 0 = cam1, 1 = cam2, 2 = cam3, 3 = camx
 
 	private:
 };
