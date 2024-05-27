@@ -8,21 +8,18 @@
 
 #define MAX_ENTITIES 65000
 
-class ComponentSet {
+template <typename T> class ComponentSet {
     public:
-        void linkEntity(Entity* e) {
-            componentMap[e->getID()] = e;
+        void linkEntity(unsigned int ID, T& val) {
+            entSet.insert(ID);
+            memArr[ID] = val;
         }
         void unlinkEntity(unsigned int ID) {
-            componentMap.erase(ID);
-
-        }
-        const auto& getMap() {
-            return componentMap;
+            entSet.erase(ID);
         }
     private:
-        std::unordered_map<unsigned int, Entity*> componentMap; // possible make <unsigned int, std::pair<Entity*, Component>> for seperate component memory
-        // also make system for grouping entities like ComponentSet does orignally?
+        std::unordered_set<unsigned int> entSet;
+        T[MAX_ENTITIES] memArr;
 };
 
 class ECS {
@@ -40,7 +37,10 @@ public:
         instance = nullptr;
     }
 
-    Entity* linkEntity(Entity* e);
+    unsigned int createEntity();
+
+    void addModel(unsigned int ID, Model* mdl);
+
     void updatePhysics();
     void DrawEntityShadows();
     void advanceEntityAnimations(float delta);
@@ -48,11 +48,13 @@ public:
     void DrawEntityStencils();
     void DrawEntities();
     void deleteEntity(unsigned int ID);
-    Entity* getEntity(unsigned int ID);
+    Entity getEntity(unsigned int ID);
 
+    /*
     void registerComponents(Entity* e);
     void registerComponent(Entity* e, unsigned int bit);
     void unregisterComponent(Entity* e, unsigned int bit);
+    */
 
 
 private:
@@ -60,10 +62,10 @@ private:
     ~ECS(); // no public destructor
     static ECS* instance; // declaration class variable
 
-    ComponentSet componentSets[COMPONENT_BIT_COUNT];
+    ComponentSet<Transform> cset_transform;
 
     std::queue<unsigned int> availableIDs;
-    std::unordered_map<unsigned int, Entity*> entMap;
+    std::unordered_map<unsigned int, Entity> entMap;
 };
 
 
