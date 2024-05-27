@@ -82,33 +82,6 @@ void ECS::addWire(unsigned int ID, Wire* w) {
 void ECS::addWireFrame(unsigned int ID, float halfWidth, float halfHeight, float halfLength) {
 }
 
-
-/*
-void ECS::registerComponents(Entity* e) {
-	for (unsigned int i = 0; i < COMPONENT_BIT_COUNT; i++) {
-		if (e->getBit(i)) {
-			componentSets[i].linkEntity(e);
-		}
-	}
-}
-
-void ECS::registerComponent(Entity* e, unsigned int bit) {
-	componentSets[bit].linkEntity(e);
-}
-
-void ECS::unregisterComponent(Entity* e, unsigned int bit) {
-	componentSets[bit].unlinkEntity(e->getID());
-}
-
-Entity* ECS::linkEntity(Entity* e) {
-	if (availableIDs.empty()) return nullptr;
-	unsigned int id = availableIDs.front();
-	availableIDs.pop();
-	e->setID(id);
-	entMap[id] = e;
-	return e;
-}*/
-
 void ECS::updatePhysics() {
 	const auto& componentMap = componentSets[COMPONENT_BIT_DYNAMIC].getMap();
 

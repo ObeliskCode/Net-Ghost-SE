@@ -1,5 +1,7 @@
 #include "Entity.h"
 
+// code to be refactored
+
 /*
 Entity::Entity(Model* m, Shader* s, Camera* c) {
 	setBit(COMPONENT_BIT_MODEL);
