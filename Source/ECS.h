@@ -3,6 +3,17 @@
 
 #include "Entity.h"
 #include "Physics.h"
+#include "Model.h"
+#include "Physics.h"
+#include "SkeletalModel.h"
+#include "Wire.h"
+#include "Skeleton.h"
+#include "Animator.h"
+#include "Globals.h"
+#include "Transform.h"
+
+#include "btBulletDynamicsCommon.h"
+
 #include <unordered_map>
 #include <queue>
 
