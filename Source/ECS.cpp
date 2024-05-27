@@ -22,7 +22,7 @@ ECS::~ECS() {
 }
 
 unsigned int ECS::createEntity() {
-	if (availableIDs.empty()) return 65000;
+	if (availableIDs.empty()) return MAX_ENTITIES;
 	unsigned int id = availableIDs.front();
 	availableIDs.pop();
 	entMap[id] = Entity(id);
