@@ -21,6 +21,68 @@ ECS::~ECS() {
 	//todo
 }
 
+unsigned int ECS::createEntity() {
+	if (availableIDs.empty()) return 65000;
+	unsigned int id = availableIDs.front();
+	availableIDs.pop();
+	entMap[id] = Entity(id);
+	return id;
+}
+
+void ECS::addModel(unsigned int ID, Model* mdl) {
+	cset_model.linkEntity(ID, mdl);
+	Entity e = entMap[ID];
+	e.model_flag = 1;
+	entMap[ID] = e;
+}
+void ECS::addPhysBody(unsigned int ID, btRigidBody* b) {
+	cset_body.linkEntity(ID, b);
+	Entity e = entMap[ID];
+	e.phystransform_flag = 1;
+	entMap[ID] = e;
+}
+void ECS::addAnimator(unsigned int ID, Animator* mator) {
+	cset_animator.linkEntity(ID, mator);
+	Entity e = entMap[ID];
+	e.animator_flag = 1;
+	entMap[ID] = e;
+}
+void ECS::addShader(unsigned int ID, Shader* sh) {
+	cset_shader.linkEntity(ID, sh);
+	Entity e = entMap[ID];
+	e.shader_flag = 1;
+	entMap[ID] = e;
+}
+void ECS::addCamera(unsigned int ID, Camera* cam) {
+	cset_camera.linkEntity(ID, cam);
+	Entity e = entMap[ID];
+	e.camera_flag = 1;
+	entMap[ID] = e;
+}
+void ECS::addTransform(unsigned int ID, Transform* transf) {
+	cset_transform.linkEntity(ID, transf);
+	Entity e = entMap[ID];
+	e.transform_flag = 1;
+	entMap[ID] = e;
+}
+void ECS::addPhysTransform(unsigned int ID, Transform* phystransf) {
+	cset_phystransform.linkEntity(ID, phystransf);
+	Entity e = entMap[ID];
+	e.phystransform_flag = 1;
+	entMap[ID] = e;
+}
+void ECS::addSkModel(unsigned int ID, SkeletalModel* skmdl) {
+	cset_skmodel.linkEntity(ID, skmdl);
+	Entity e = entMap[ID];
+	e.skmodel_flag = 1;
+	entMap[ID] = e;
+}
+void ECS::addWire(unsigned int ID, Wire* w) {
+}
+void ECS::addWireFrame(unsigned int ID, float halfWidth, float halfHeight, float halfLength) {
+}
+
+
 /*
 void ECS::registerComponents(Entity* e) {
 	for (unsigned int i = 0; i < COMPONENT_BIT_COUNT; i++) {
