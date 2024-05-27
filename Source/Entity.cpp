@@ -1,13 +1,5 @@
 #include "Entity.h"
 
-//#define NO_WIRES
-
-#ifdef NO_WIRES
-#define WIRES_DISABLED true
-#else
-#define WIRES_DISABLED false
-#endif
-
 /*
 Entity::Entity(Model* m, Shader* s, Camera* c) {
 	setBit(COMPONENT_BIT_MODEL);

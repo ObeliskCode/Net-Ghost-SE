@@ -1,5 +1,14 @@
 #include "ECS.h"
 
+#define NO_WIRES
+
+#ifdef NO_WIRES
+#define WIRES_DISABLED true
+#else
+#define WIRES_DISABLED false
+#endif
+
+
 ECS* ECS::instance = nullptr; // definition class variable
 
 ECS::ECS() {

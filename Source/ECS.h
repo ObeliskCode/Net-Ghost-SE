@@ -48,6 +48,7 @@ public:
     void addPhysTransform(unsigned int ID, Transform* phystransf);
     void addSkModel(unsigned int ID, SkeletalModel* skmdl);
     void addWire(unsigned int ID, Wire* w);
+    void addWireFrame(unsigned int ID, float halfWidth, float halfHeight, float halfLength);
 
     void updatePhysics();
     void DrawEntityShadows();
