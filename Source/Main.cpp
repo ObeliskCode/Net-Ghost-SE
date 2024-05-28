@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 	boost::accumulators::accumulator_set<double, boost::accumulators::stats<boost::accumulators::tag::sum>> accum;
 
 	double lastFrame = timeStart;
-	double delta = 1.0 / 180.0;
+	double delta = 1.0 / 64.0;
 	double frameTime = 0.0f;
 
 	/* Main Game Loop */

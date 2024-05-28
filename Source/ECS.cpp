@@ -18,8 +18,10 @@ ECS::ECS() {
 }
 
 ECS::~ECS() {
-	//todo
+	//TODO
 }
+
+// TODO: add safety checks to ECS!
 
 unsigned int ECS::createEntity() {
 	if (availableIDs.empty()) return MAX_ENTITIES;
@@ -27,25 +29,6 @@ unsigned int ECS::createEntity() {
 	availableIDs.pop();
 	entMap[id] = Entity(id);
 	return id;
-}
-
-void ECS::addModel(unsigned int ID, Model* mdl) {
-	cset_model.linkEntity(ID, mdl);
-	Entity e = entMap[ID];
-	e.model_flag = 1;
-	entMap[ID] = e;
-}
-void ECS::addPhysBody(unsigned int ID, btRigidBody* b) {
-	cset_body.linkEntity(ID, b);
-	Entity e = entMap[ID];
-	e.phystransform_flag = 1;
-	entMap[ID] = e;
-}
-void ECS::addAnimator(unsigned int ID, Animator* mator) {
-	cset_animator.linkEntity(ID, mator);
-	Entity e = entMap[ID];
-	e.animator_flag = 1;
-	entMap[ID] = e;
 }
 void ECS::addShader(unsigned int ID, Shader* sh) {
 	cset_shader.linkEntity(ID, sh);
@@ -65,10 +48,10 @@ void ECS::addTransform(unsigned int ID, Transform* transf) {
 	e.transform_flag = 1;
 	entMap[ID] = e;
 }
-void ECS::addPhysTransform(unsigned int ID, Transform* phystransf) {
-	cset_phystransform.linkEntity(ID, phystransf);
+void ECS::addModel(unsigned int ID, Model* mdl) {
+	cset_model.linkEntity(ID, mdl);
 	Entity e = entMap[ID];
-	e.phystransform_flag = 1;
+	e.model_flag = 1;
 	entMap[ID] = e;
 }
 void ECS::addSkModel(unsigned int ID, SkeletalModel* skmdl) {
@@ -77,33 +60,30 @@ void ECS::addSkModel(unsigned int ID, SkeletalModel* skmdl) {
 	e.skmodel_flag = 1;
 	entMap[ID] = e;
 }
+void ECS::addAnimator(unsigned int ID, Animator* mator) {
+	cset_animator.linkEntity(ID, mator);
+	Entity e = entMap[ID];
+	e.animator_flag = 1;
+	entMap[ID] = e;
+}
+// ADD DYNAMIC FLAG HERE
+void ECS::addPhysBody(unsigned int ID, btRigidBody* b) {
+	cset_body.linkEntity(ID, b);
+	Entity e = entMap[ID];
+	e.phystransform_flag = 1;
+	entMap[ID] = e;
+}
+void ECS::addPhysTransform(unsigned int ID, Transform* phystransf) {
+	cset_phystransform.linkEntity(ID, phystransf);
+	Entity e = entMap[ID];
+	e.phystransform_flag = 1;
+	entMap[ID] = e;
+}
 void ECS::addWire(unsigned int ID, Wire* w) {
+    //TODO
 }
 void ECS::addWireFrame(unsigned int ID, float halfWidth, float halfHeight, float halfLength) {
-}
-
-void ECS::updatePhysics() {
-	const auto& componentMap = componentSets[COMPONENT_BIT_DYNAMIC].getMap();
-
-	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
-	{
-		it->second->updatePhysicsState();
-	}
-}
-
-void ECS::deleteEntity(unsigned int ID) {
-	for (unsigned int i = 0; i < COMPONENT_BIT_COUNT; i++) {
-		componentSets[i].unlinkEntity(ID);
-	}
-
-	auto iter = entMap.find(ID);
-	if (iter != entMap.end())
-	{
-		Entity* ret = iter->second;
-		if (ret) delete ret;
-		entMap.erase(ID);
-		availableIDs.push(ID);
-	}
+    //TODO
 }
 
 Entity ECS::getEntity(unsigned int ID) {
@@ -112,9 +92,65 @@ Entity ECS::getEntity(unsigned int ID) {
 	{
 		return iter->second;
 	}
-	return nullptr;
+	return Entity(MAX_ENTITIES);
 }
 
+void ECS::updateEntity(Entity e){
+    entMap[e.m_id] = e;
+}
+
+void ECS::deleteEntity(unsigned int ID) {
+
+	auto iter = entMap.find(ID);
+	if (iter != entMap.end())
+	{
+		Entity ret = iter->second;
+		if (ret.camera_flag) cset_camera.unlinkEntity(ID);
+		if (ret.shader_flag) cset_shader.unlinkEntity(ID);
+		if (ret.transform_flag) {
+            Transform* transPtr = cset_transform.getMem();
+            delete transPtr;
+            cset_transform.unlinkEntity(ID);
+		}
+		if (ret.model_flag) {
+            Model* mdlPtr = cset_model.getMem();
+            delete mdlPtr;
+            cset_model.unlinkEntity(ID);
+		}
+		if (ret.skmodel_flag) {
+            SkeletalModel* skmdlPtr = cset_skmodel.getMem();
+            delete skmdlPtr;
+            cset_skmodel.unlinkEntity(ID);
+		}
+		if (ret.animator_flag) {
+            Animator* animPtr = cset_animator.getMem();
+            delete animPtr;
+            cset_animator.unlinkEntity(ID);
+		}
+		if (ret.physbody_flag) {
+            btRigidBody* bodyPtr = cset_body.getMem();
+            delete bodyPtr;
+            cset_body.unlinkEntity(ID);
+		}
+		if (ret.phystransform_flag) {
+            Transform* phystransPtr = cset_phystransform.getMem();
+            delete phystransPtr;
+            cset_phystransform.unlinkEntity(ID);
+		}
+
+		entMap.erase(ID);
+		availableIDs.push(ID);
+	}
+}
+
+void ECS::syncPhysics() {
+	const auto& componentMap = componentSets[COMPONENT_BIT_DYNAMIC].getMap();
+
+	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
+	{
+		it->second->updatePhysicsState();
+	}
+}
 
 void linkCameraUniforms(Shader& shader, Camera& camera) {
 	shader.Activate();
@@ -171,7 +207,6 @@ void ECS::DrawEntityPointShadows() {
 		it->second->DrawPointShadow();
 	}
 }
-
 
 void ECS::DrawEntityStencils() {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);

@@ -64,7 +64,7 @@ public:
     void addWire(unsigned int ID, Wire* w);
     void addWireFrame(unsigned int ID, float halfWidth, float halfHeight, float halfLength);
 
-    void updatePhysics();
+    void syncPhysics();
     void DrawEntityShadows();
     void advanceEntityAnimations(float delta);
     void DrawEntityPointShadows();
