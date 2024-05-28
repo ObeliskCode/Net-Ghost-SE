@@ -70,16 +70,10 @@ public:
     void DrawEntityPointShadows();
     void DrawEntityStencils();
     void DrawEntities();
+
     void deleteEntity(unsigned int ID);
     Entity getEntity(unsigned int ID);
     void updateEntity(Entity e);
-
-    /*
-    void registerComponents(Entity* e);
-    void registerComponent(Entity* e, unsigned int bit);
-    void unregisterComponent(Entity* e, unsigned int bit);
-    */
-
 
 private:
     ECS(); // no public constructor

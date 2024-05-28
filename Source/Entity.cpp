@@ -3,71 +3,6 @@
 // code to be refactored
 
 /*
-Entity::Entity(Model* m, Shader* s, Camera* c) {
-	setBit(COMPONENT_BIT_MODEL);
-	if (c == Globals::get().camera) {
-		setBit(COMPONENT_BIT_CAM1);
-	}
-	else if (c == Globals::get().handCam) {
-		setBit(COMPONENT_BIT_CAM2);
-	}
-	else {
-		setBit(COMPONENT_BIT_CAMX);
-	}
-	m_surface = false;
-	m_visible = true;
-	mdl = m;
-	skMdl = nullptr;
-	mator = nullptr;
-	body = nullptr;
-	shader = s;
-	camera = c;
-	transform = new Transform();
-}
-
-Entity::Entity(SkeletalModel* sm, Animator* m, Shader* s, Camera* c) {
-	setBit(COMPONENT_BIT_ANIMATED);
-	if (c == Globals::get().camera) {
-		setBit(COMPONENT_BIT_CAM1);
-	}
-	else if (c == Globals::get().handCam) {
-		setBit(COMPONENT_BIT_CAM2);
-	}
-	else {
-		setBit(COMPONENT_BIT_CAMX);
-	}
-	m_surface = false;
-	m_visible = true;
-	mdl = nullptr;
-	skMdl = sm;
-	mator = m;
-	body = nullptr;
-	shader = s;
-	camera = c;
-	transform = new Transform();
-}
-
-Entity::Entity(Camera* c) {
-	if (c == Globals::get().camera) {
-		setBit(COMPONENT_BIT_CAM1);
-	}
-	else if (c == Globals::get().handCam) {
-		setBit(COMPONENT_BIT_CAM2);
-	}
-	else {
-		setBit(COMPONENT_BIT_CAMX);
-	}
-	m_surface = false;
-	m_visible = true;
-	mdl = nullptr;
-	skMdl = nullptr;
-	mator = nullptr;
-	body = nullptr;
-	shader = nullptr;
-	camera = c;
-	transform = new Transform();
-}
-
 // unexpected behavior if entity is deleted without using ECS::deleteEntity();
 Entity::~Entity(){
 	for (int i = 0; i < wires.size(); ++i) {
@@ -101,39 +36,6 @@ void Entity::addBody(btRigidBody* b) {
 	body = b;
 	phystransform = new Transform();
 	updatePhysicsState(); // is this necessary?
-}
-
-btRigidBody* Entity::getBody() {
-	if (!m_signature[COMPONENT_BIT_DYNAMIC] && !m_signature[COMPONENT_BIT_STATIC]) return nullptr;
-	return body;
-}
-
-void Entity::setType(std::string type) {
-	m_type = type;
-}
-
-std::string Entity::getType() {
-	return m_type;
-}
-
-void Entity::setID(unsigned int ID) {
-	m_id = ID;
-}
-
-unsigned int Entity::getID() {
-	return m_id;
-}
-
-void Entity::setBit(std::size_t pos) {
-	m_signature.set(pos);
-}
-
-void Entity::resetBit(std::size_t pos) {
-	m_signature.reset(pos);
-}
-
-bool Entity::getBit(std::size_t pos) {
-	return m_signature[pos];
 }
 
 void Entity::addWire(Wire* w) {
