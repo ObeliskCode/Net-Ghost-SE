@@ -3,41 +3,6 @@
 // code to be refactored
 
 /*
-// unexpected behavior if entity is deleted without using ECS::deleteEntity();
-Entity::~Entity(){
-	for (int i = 0; i < wires.size(); ++i) {
-		delete wires[i];
-	}
-	wires.clear();
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
-		Physics::get().getDynamicsWorld()->removeCollisionObject(body);
-		delete body->getMotionState();
-		delete body;
-	}
-	if (m_signature[COMPONENT_BIT_ANIMATED]) {
-		delete skMdl;
-		delete mator;
-	}
-	else if (m_signature[COMPONENT_BIT_MODEL]) {
-		delete mdl;
-	}
-	delete transform;
-	if (phystransform != nullptr) delete phystransform;
-}
-
-void Entity::addBody(btRigidBody* b) {
-	if (body || !b) return;
-	if (b->getMass() == 0.0f) {
-		setBit(COMPONENT_BIT_STATIC);
-	}
-	else {
-		setBit(COMPONENT_BIT_DYNAMIC);
-	}
-	body = b;
-	phystransform = new Transform();
-	updatePhysicsState(); // is this necessary?
-}
-
 void Entity::addWire(Wire* w) {
 	if (WIRES_DISABLED) {
 		delete w;

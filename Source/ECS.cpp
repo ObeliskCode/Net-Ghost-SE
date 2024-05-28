@@ -66,12 +66,18 @@ void ECS::addAnimator(unsigned int ID, Animator* mator) {
 	e.animator_flag = 1;
 	entMap[ID] = e;
 }
-// ADD DYNAMIC FLAG HERE
 void ECS::addPhysBody(unsigned int ID, btRigidBody* b) {
 	cset_body.linkEntity(ID, b);
 	Entity e = entMap[ID];
 	e.phystransform_flag = 1;
+    if (b->getMass() == 0.0f) {
+		e.dynamic_flag = 0;
+	}
+	else {
+        e.dynamic_flag = 1;
+    }
 	entMap[ID] = e;
+	//updatePhysicsState(); // is this necessary?
 }
 void ECS::addPhysTransform(unsigned int ID, Transform* phystransf) {
 	cset_phystransform.linkEntity(ID, phystransf);
@@ -129,6 +135,8 @@ void ECS::deleteEntity(unsigned int ID) {
 		}
 		if (ret.physbody_flag) {
             btRigidBody* bodyPtr = cset_body.getMem();
+            Physics::get().getDynamicsWorld()->removeCollisionObject(bodyPtr);
+            delete bodyPtr->getMotionState();
             delete bodyPtr;
             cset_body.unlinkEntity(ID);
 		}
