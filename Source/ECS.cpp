@@ -24,7 +24,7 @@ ECS::~ECS() {
 // TODO: add safety checks to ECS!
 
 unsigned int ECS::createEntity() {
-	if (availableIDs.empty()) return MAX_ENTITIES;
+	if (availableIDs.empty()) return NULL;
 	unsigned int id = availableIDs.front();
 	availableIDs.pop();
 	entMap[id] = Entity(id);
@@ -92,7 +92,7 @@ Entity ECS::getEntity(unsigned int ID) {
 	{
 		return iter->second;
 	}
-	return Entity(MAX_ENTITIES);
+	return Entity(NULL);
 }
 
 void ECS::updateEntity(Entity e){
