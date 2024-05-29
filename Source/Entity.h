@@ -16,7 +16,6 @@ class Entity {
 		unsigned int physbody_flag : 1 = 0;
 		unsigned int phystransform_flag : 1 = 0;
 		unsigned int animator_flag : 1 = 0;
-		unsigned int wire_flag : 1 = 0;
 		unsigned int shader_flag : 1 = 0;
 		unsigned int camera_flag : 1 = 0;
 		unsigned int stencil_flag : 1 = 0;
@@ -24,6 +23,7 @@ class Entity {
 		unsigned int dynamic_flag : 1 = 0;
 		unsigned int pickup_flag : 1 = 0;
 		unsigned int surface_flag : 1 = 0;
+		unsigned int light_flag : 1 = 0;
 		unsigned char m_camera : 2 = 0; // 0 = cam1, 1 = cam2, 2 = cam3, 3 = camx
 
 	private:

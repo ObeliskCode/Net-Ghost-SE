@@ -211,44 +211,85 @@ void ECS::advanceEntityAnimations(float delta) {
 	}
 }
 
-/*
-
-void Entity::DrawShadow() {
-	if (!m_visible) return;
-	glm::mat4 finaltransform;
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
-		finaltransform = phystransform->getMatrix() * transform->getMatrix();
-	}
-	else {
-		finaltransform = transform->getMatrix();
-	}
-	if (m_signature[COMPONENT_BIT_ANIMATED]) {
-		Globals::get().animShadowShader->Activate();
-		const auto& transforms = mator->GetFinalBoneMatrices();
+void ECS::DrawEntityShadows() {
+	for (auto it = cset_skmodel.entSet.begin(); it != cset_skmodel.entSet.end(); it++)
+	{
+        unsigned int ID = *it;
+        Entity e = getEntity(ID);
+        if (!e.visible_flag) continue;
+        glm::mat4 finaltransform;
+        if (e.phystransform_flag) {
+            finaltransform = cset_phystransform.getMem(ID)->getMatrix() * cset_transform.getMem(ID)->getMatrix();
+        }
+        else {
+            finaltransform = cset_transform.getMem(ID)->getMatrix();
+        }
+        SkeletalModel* skmdl = cset_skmodel.getMem(ID);
+        Animator* anim =  cset_animator.getMem(ID);
+        Globals::get().animShadowShader->Activate();
+		const auto& transforms = anim->GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i) {
 			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		}
-		skMdl->DrawShadow(*Globals::get().animShadowShader, finaltransform);
+		skmdl->DrawShadow(*Globals::get().animShadowShader, finaltransform);
 	}
-	else if (m_signature[COMPONENT_BIT_MODEL]) {
+	for (auto it = cset_model.entSet.begin(); it != cset_model.entSet.end(); it++)
+	{
+        unsigned int ID = *it;
+        Entity e = getEntity(ID);
+        if (!e.visible_flag) continue;
+        glm::mat4 finaltransform;
+        if (e.phystransform_flag) {
+            finaltransform = cset_phystransform.getMem(ID)->getMatrix() * cset_transform.getMem(ID)->getMatrix();
+        }
+        else {
+            finaltransform = cset_transform.getMem(ID)->getMatrix();
+        }
+        Model* mdl = cset_model.getMem(ID);
 		Globals::get().shadowShader->Activate();
 		mdl->DrawShadow(*Globals::get().shadowShader, finaltransform);
 	}
-
-}
-*/
-void ECS::DrawEntityShadows() {
-	for (auto it = entMap.begin(); it != entMap.end(); it++)
-	{
-		it->second->DrawShadow();
-	}
 }
 
-// TODO
 void ECS::DrawEntityPointShadows() {
-	for (auto it = entMap.begin(); it != entMap.end(); it++)
+    	for (auto it = cset_skmodel.entSet.begin(); it != cset_skmodel.entSet.end(); it++)
 	{
-		it->second->DrawPointShadow();
+        unsigned int ID = *it;
+        Entity e = getEntity(ID);
+        if (!e.visible_flag) continue;
+        if (e.light_flag) continue;
+        glm::mat4 finaltransform;
+        if (e.phystransform_flag) {
+            finaltransform = cset_phystransform.getMem(ID)->getMatrix() * cset_transform.getMem(ID)->getMatrix();
+        }
+        else {
+            finaltransform = cset_transform.getMem(ID)->getMatrix();
+        }
+        SkeletalModel* skmdl = cset_skmodel.getMem(ID);
+        Animator* anim =  cset_animator.getMem(ID);
+        Globals::get().animPointShadowShader->Activate();
+		const auto& transforms = anim->GetFinalBoneMatrices();
+		for (int i = 0; i < transforms.size(); ++i) {
+			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animPointShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+		}
+		skmdl->DrawShadow(*Globals::get().animPointShadowShader, finaltransform);
+	}
+	for (auto it = cset_model.entSet.begin(); it != cset_model.entSet.end(); it++)
+	{
+        unsigned int ID = *it;
+        Entity e = getEntity(ID);
+        if (!e.visible_flag) continue;
+        if (e.light_flag) continue;
+        glm::mat4 finaltransform;
+        if (e.phystransform_flag) {
+            finaltransform = cset_phystransform.getMem(ID)->getMatrix() * cset_transform.getMem(ID)->getMatrix();
+        }
+        else {
+            finaltransform = cset_transform.getMem(ID)->getMatrix();
+        }
+        Model* mdl = cset_model.getMem(ID);
+		Globals::get().pointShadowShader->Activate();
+		mdl->DrawShadow(*Globals::get().pointShadowShader, finaltransform);
 	}
 }
 

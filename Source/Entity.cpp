@@ -31,33 +31,6 @@ void Entity::addWireFrame(float halfWidth, float halfHeight, float halfLength) {
 	}
 }
 
-
-
-void Entity::DrawPointShadow() {
-	if (!m_visible) return;
-	if (m_type == "light") return;
-	glm::mat4 finaltransform;
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
-		finaltransform = phystransform->getMatrix() * transform->getMatrix();
-	}
-	else {
-		finaltransform = transform->getMatrix();
-	}
-	if (m_signature[COMPONENT_BIT_ANIMATED]) {
-		Globals::get().animPointShadowShader->Activate();
-		const auto& transforms = mator->GetFinalBoneMatrices();
-		for (int i = 0; i < transforms.size(); ++i) {
-			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animPointShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
-		}
-		skMdl->DrawShadow(*Globals::get().animPointShadowShader, finaltransform);
-	}
-	else if (m_signature[COMPONENT_BIT_MODEL]) {
-		Globals::get().pointShadowShader->Activate();
-		mdl->DrawShadow(*Globals::get().pointShadowShader, finaltransform);
-	}
-}
-
-
 void Entity::DrawStencil() {
 	if (!m_visible) return;
 	if (m_signature[COMPONENT_BIT_STENCIL]) {

@@ -28,7 +28,7 @@ template <typename T> class ComponentSet {
         void unlinkEntity(unsigned int ID) {
             entSet.erase(ID);
         }
-        T getMem(unsigned int ID) {
+        T& getMem(unsigned int ID) {
             return memArr[ID];
         }
         std::unordered_set<unsigned int> entSet;
