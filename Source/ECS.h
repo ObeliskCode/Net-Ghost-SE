@@ -31,8 +31,8 @@ template <typename T> class ComponentSet {
         T getMem(unsigned int ID) {
             return memArr[ID];
         }
-    private:
         std::unordered_set<unsigned int> entSet;
+    private:
         T memArr[MAX_ENTITIES];
 };
 

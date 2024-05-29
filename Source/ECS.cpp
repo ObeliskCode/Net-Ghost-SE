@@ -152,11 +152,20 @@ void ECS::deleteEntity(unsigned int ID) {
 }
 
 void ECS::syncPhysics() {
-	const auto& componentMap = componentSets[COMPONENT_BIT_DYNAMIC].getMap();
-
-	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
+	for (auto it = cset_body.entSet.begin(); it != cset_body.entSet.end(); it++)
 	{
-		it->second->updatePhysicsState();
+        unsigned int ID = *it;
+        btRigidBody* body = cset_body.getMem(ID);
+        Entity e = getEntity(ID);
+
+		btTransform trans;
+		//if (body && body->getMotionState())
+		body->getMotionState()->getWorldTransform(trans);
+
+		Transform* pt = cset_phystransform.getMem(ID);
+		pt->setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
+		pt->setRotation(glm::quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ()));
+
 	}
 }
 
@@ -166,7 +175,7 @@ void linkCameraUniforms(Shader& shader, Camera& camera) {
 	camera.Matrix(shader, "camMatrix");
 }
 
-// WARNING: advances animations by delta!
+// TODO
 void ECS::DrawEntities() {
 
 	const auto& cam1Map = componentSets[COMPONENT_BIT_CAM1].getMap();
@@ -194,14 +203,40 @@ void ECS::DrawEntities() {
 }
 
 void ECS::advanceEntityAnimations(float delta) {
-	const auto& componentMap = componentSets[COMPONENT_BIT_ANIMATED].getMap();
-
-	for (auto it = componentMap.begin(); it != componentMap.end(); it++)
+	for (auto it = cset_animator.entSet.begin(); it != cset_animator.entSet.end(); it++)
 	{
-		it->second->advanceAnimation(delta);
+        unsigned int ID = *it;
+        Animator* animPtr = cset_animator.getMem(ID);
+        animPtr->UpdateAnimation(delta);
 	}
 }
 
+/*
+
+void Entity::DrawShadow() {
+	if (!m_visible) return;
+	glm::mat4 finaltransform;
+	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
+		finaltransform = phystransform->getMatrix() * transform->getMatrix();
+	}
+	else {
+		finaltransform = transform->getMatrix();
+	}
+	if (m_signature[COMPONENT_BIT_ANIMATED]) {
+		Globals::get().animShadowShader->Activate();
+		const auto& transforms = mator->GetFinalBoneMatrices();
+		for (int i = 0; i < transforms.size(); ++i) {
+			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+		}
+		skMdl->DrawShadow(*Globals::get().animShadowShader, finaltransform);
+	}
+	else if (m_signature[COMPONENT_BIT_MODEL]) {
+		Globals::get().shadowShader->Activate();
+		mdl->DrawShadow(*Globals::get().shadowShader, finaltransform);
+	}
+
+}
+*/
 void ECS::DrawEntityShadows() {
 	for (auto it = entMap.begin(); it != entMap.end(); it++)
 	{
@@ -209,6 +244,7 @@ void ECS::DrawEntityShadows() {
 	}
 }
 
+// TODO
 void ECS::DrawEntityPointShadows() {
 	for (auto it = entMap.begin(); it != entMap.end(); it++)
 	{
@@ -216,6 +252,7 @@ void ECS::DrawEntityPointShadows() {
 	}
 }
 
+// TODO
 void ECS::DrawEntityStencils() {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);

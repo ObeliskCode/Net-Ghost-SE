@@ -32,36 +32,6 @@ void Entity::addWireFrame(float halfWidth, float halfHeight, float halfLength) {
 }
 
 
-void Entity::advanceAnimation(float delta) {
-	if (m_signature[COMPONENT_BIT_ANIMATED]) {
-		mator->UpdateAnimation(delta);
-	}
-}
-
-
-void Entity::DrawShadow() {
-	if (!m_visible) return;
-	glm::mat4 finaltransform;
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
-		finaltransform = phystransform->getMatrix() * transform->getMatrix();
-	}
-	else {
-		finaltransform = transform->getMatrix();
-	}
-	if (m_signature[COMPONENT_BIT_ANIMATED]) {
-		Globals::get().animShadowShader->Activate();
-		const auto& transforms = mator->GetFinalBoneMatrices();
-		for (int i = 0; i < transforms.size(); ++i) {
-			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
-		}
-		skMdl->DrawShadow(*Globals::get().animShadowShader, finaltransform);
-	}
-	else if (m_signature[COMPONENT_BIT_MODEL]) {
-		Globals::get().shadowShader->Activate();
-		mdl->DrawShadow(*Globals::get().shadowShader, finaltransform);
-	}
-
-}
 
 void Entity::DrawPointShadow() {
 	if (!m_visible) return;
@@ -164,15 +134,4 @@ void Entity::Draw() {
 
 }
 
-void Entity::updatePhysicsState() {
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
-		btTransform trans;
-
-		//if (body && body->getMotionState())
-		body->getMotionState()->getWorldTransform(trans);
-
-		phystransform->setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
-		phystransform->setRotation(glm::quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ()));
-	}
-}
 */
