@@ -211,7 +211,7 @@ void linkCameraUniforms(Shader& shader, Camera& camera) {
 
 */
 
-// TODO
+// TODO : finish wire code
 void ECS::DrawEntities() {
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
@@ -395,7 +395,6 @@ void ECS::DrawEntityPointShadows() {
 	}
 }
 
-// TODO
 void ECS::DrawEntityStencils() {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilMask(0x00);

@@ -1,9 +1,12 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <cstddef>
+
 class Entity {
 	public:
 		Entity(unsigned int ID) { m_id = ID; };
+		Entity() { m_id = NULL; };
 
 		/// <summary>
 		///  these are the 32 bits we will limit ourselves to. some combo of C style bitfield and enums...

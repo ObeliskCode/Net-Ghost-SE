@@ -518,23 +518,37 @@ class TestRoom : public Scene {
             Globals::get().pointShadowShader = new Shader("pointShadowVert.glsl", "pointShadowFrag.glsl", "pointShadowGeom.glsl");
             Globals::get().animPointShadowShader = new Shader("animPointShadowVert.glsl", "pointShadowFrag.glsl", "pointShadowGeom.glsl");
 
-            Entity* e;
+            unsigned int entID;
+            Entity e;
+            Transform* trf;
 
+            trf = new Transform();
             Model* panel = new Model("floor/floor.dae");
-            e = ECS::get().linkEntity(new Entity(panel, Globals::get().rigProgram, Globals::get().camera));
-            e->transform->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
-            e->transform->setScale(glm::vec3(20.0f));
-            e->m_surface = true;
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            trf->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
+            trf->setScale(glm::vec3(20.0f));
+            ECS::get().addModel(entID, panel);
+            ECS::get().addShader(entID, Globals::get().rigProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
+            e = ECS::get().getEntity(entID);
+            e.surface_flag = 1;
+            ECS::get().updateEntity(e);
 
+            trf = new Transform();
             Model* lamp = new Model("lamp/lamp.dae");
-            e = ECS::get().linkEntity(new Entity(lamp, Globals::get().lightProgram, Globals::get().camera));
-            e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
-            e->transform->setScale(glm::vec3(0.05f));
-            e->transform->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
-            e->addWireFrame(2.0f, 5.0f, 2.0f);
-            e->setType("light");
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            trf->setScale(glm::vec3(0.05f));
+            trf->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
+            ECS::get().addModel(entID, lamp);
+            ECS::get().addShader(entID, Globals::get().lightProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
+            e = ECS::get().getEntity(entID);
+            ECS::get().addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
+            ECS::get().addWireFrame(entID, 2.0f, 5.0f, 2.0f);
+            e.light_flag = 1;
+            ECS::get().updateEntity(e);
 
             Model* bench = new Model("bench/bench.dae");
             float CosHalfPi = sqrt(2.f) / 2.f;
