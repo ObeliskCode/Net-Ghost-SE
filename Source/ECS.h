@@ -21,7 +21,7 @@
 
 template <typename T> class ComponentSet {
     public:
-        void linkEntity(unsigned int ID, T& val) {
+        void linkEntity(unsigned int ID, T val) {
             entSet.insert(ID);
             memArr[ID] = val;
         }
@@ -75,6 +75,8 @@ public:
     Entity getEntity(unsigned int ID);
     void updateEntity(Entity e);
 
+    std::unordered_set<unsigned int> stencilSet;
+
 private:
     ECS(); // no public constructor
     ~ECS(); // no public destructor
@@ -90,6 +92,9 @@ private:
     ComponentSet<Shader*> cset_shader;
     ComponentSet<btRigidBody*> cset_body;
     // no wire component set ideally
+
+    std::unordered_set<unsigned int> cam1Set;
+    std::unordered_set<unsigned int> cam2Set;
 
     std::queue<unsigned int> availableIDs;
     std::unordered_map<unsigned int, Entity> entMap;
