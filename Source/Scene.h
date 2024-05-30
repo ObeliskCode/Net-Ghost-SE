@@ -387,8 +387,9 @@ class TestRoom : public Scene {
 
         int cd = 0;
 
-        Entity* batEnt;
-        Entity* cigEnt;
+        unsigned int batEntID;
+        unsigned int cigEntID;
+        unsigned int characterID;
 
         unsigned int depthMapFBO;
         unsigned int depthMap;
@@ -405,8 +406,6 @@ class TestRoom : public Scene {
         Shader* partProgram;
 
         Shader* quadProgram;
-
-        Entity* character;
 
         Animator* mator;
 
@@ -546,81 +545,129 @@ class TestRoom : public Scene {
             ECS::get().addTransform(entID, trf);
             e = ECS::get().getEntity(entID);
             ECS::get().addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
+            ECS::get().addPhysTransform(entID, new Transform());
             ECS::get().addWireFrame(entID, 2.0f, 5.0f, 2.0f);
             e.light_flag = 1;
             ECS::get().updateEntity(e);
 
+            trf = new Transform();
             Model* bench = new Model("bench/bench.dae");
             float CosHalfPi = sqrt(2.f) / 2.f;
-            e = ECS::get().linkEntity(new Entity(bench, Globals::get().rigProgram, Globals::get().camera));
-            e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 2.0f, 2.5f, 5.0f, 5.0f, 5.0f + 2.5f, 28.f)); // whole lot of maths
-            e->transform->setScale(glm::vec3(4.5f));
-            e->transform->setTranslation(glm::vec3(0.0f, -2.5f, 0.0f));
-            e->transform->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
-            e->addWireFrame(2.0f, 2.5f, 5.0f);
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            trf->setScale(glm::vec3(4.5f));
+            trf->setTranslation(glm::vec3(0.0f, -2.5f, 0.0f));
+            trf->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
+            ECS::get().addModel(entID, bench);
+            ECS::get().addShader(entID, Globals::get().rigProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
+            ECS::get().addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 2.0f, 2.5f, 5.0f, 5.0f, 5.0f + 2.5f, 28.f));
+            ECS::get().addPhysTransform(entID, new Transform());
+            ECS::get().addWireFrame(entID, 2.0f, 2.5f, 5.0f);
 
+            trf = new Transform();
             Model* handBat = new Model("bat/bat.dae");
-            batEnt = new Entity(handBat, Globals::get().rigProgram, Globals::get().handCam);
-            batEnt->transform->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
-            batEnt->transform->setTranslation(glm::vec3(2.0f, -2.0f, 0.0f));
-            ECS::get().registerComponents(batEnt);
+            entID = ECS::get().createEntity();
+            batEntID = entID;
+            trf->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
+            trf->setTranslation(glm::vec3(2.0f, -2.0f, 0.0f));
+            ECS::get().addModel(entID, handBat);
+            ECS::get().addShader(entID, Globals::get().rigProgram);
+            ECS::get().addCamera(entID, Globals::get().handCam);
+            ECS::get().addTransform(entID, trf);
 
+            trf = new Transform();
             Model* cig = new Model("cig/cig.dae");
-            cigEnt = new Entity(cig, Globals::get().rigProgram, Globals::get().handCam);
-            cigEnt->transform->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
-            cigEnt->transform->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
-            ECS::get().registerComponents(cigEnt);
+            entID = ECS::get().createEntity();
+            cigEntID = entID;
+            trf->setTranslation(glm::vec3(0.0f, -2.0f, -1.0f));
+            trf->setRotation(glm::quat(0.0f, 0.0f, 1.0f, 0.0f));
+            ECS::get().addModel(entID, cig);
+            ECS::get().addShader(entID, Globals::get().rigProgram);
+            ECS::get().addCamera(entID, Globals::get().handCam);
+            ECS::get().addTransform(entID, trf);
 
+            trf = new Transform();
             Model* dumpster = new Model("dumpster/dumpster.dae");
-            e = ECS::get().linkEntity(new Entity(dumpster, Globals::get().rigProgram, Globals::get().camera));
-            e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 3.0f, 4.0f, 6.0f, 25.0f, 5.0f + 4.0f, 35.f)); // whole lot of maths
-            e->transform->setScale(glm::vec3(6.5f));
-            e->transform->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
-            e->transform->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
-            e->addWireFrame(3.0f, 4.0f, 6.0f);
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            trf->setScale(glm::vec3(6.5f));
+            trf->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
+            trf->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
+            ECS::get().addModel(entID, dumpster);
+            ECS::get().addShader(entID, Globals::get().rigProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
+            ECS::get().addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 3.0f, 4.0f, 6.0f, 25.0f, 5.0f + 4.0f, 35.f));
+            ECS::get().addPhysTransform(entID, new Transform());
+            ECS::get().addWireFrame(entID, 3.0f, 4.0f, 6.0f);
 
+            trf = new Transform();
+            entID = ECS::get().createEntity();
             Model* cart = new Model("cart/ShoppingCart.dae");
-            e = ECS::get().linkEntity(new Entity(cart, Globals::get().rigProgram, Globals::get().camera));
-            e->transform->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
-            e->transform->setScale(glm::vec3(7.f));
-            ECS::get().registerComponents(e);
+            trf->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
+            trf->setScale(glm::vec3(7.f));
+            ECS::get().addModel(entID, cart);
+            ECS::get().addShader(entID, Globals::get().rigProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
 
+            trf = new Transform();
+            entID = ECS::get().createEntity();
             Model* tent = new Model("tent/tent.dae");
-            e = ECS::get().linkEntity(new Entity(tent, Globals::get().rigProgram, Globals::get().camera));
-            e->addBody(Physics::get().addUnitBoxStaticBody(e->getID(), 6.0f, 4.0f, 6.0f, -15.0f, 5.0f + 4.0f, 10.0f)); // whole lot of maths
-            e->transform->setScale(glm::vec3(7.f));
-            e->transform->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
-            e->addWireFrame(6.0f, 4.0f, 6.0f);
-            ECS::get().registerComponents(e);
+            trf->setScale(glm::vec3(7.f));
+            trf->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
+            ECS::get().addModel(entID, tent);
+            ECS::get().addShader(entID, Globals::get().rigProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
+            ECS::get().addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 6.0f, 4.0f, 6.0f, -15.0f, 5.0f + 4.0f, 10.0f));
+            ECS::get().addPhysTransform(entID, new Transform());
+            ECS::get().addWireFrame(entID, 6.0f, 4.0f, 6.0f);
 
+
+            trf = new Transform();
+            entID = ECS::get().createEntity();
             SkeletalModel* wolf = new SkeletalModel("wolf/Wolf_One_dae.dae");
             Skeleton* wolfAnimation = new Skeleton("wolf/Wolf_One_dae.dae", wolf);
             Animator* animator = new Animator(wolfAnimation);
-            e = ECS::get().linkEntity(new Entity(wolf, animator, Globals::get().noTexAnimProgram, Globals::get().camera));
-            e->transform->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
-            e->transform->setTranslation(glm::vec3(10.0f, 5.0f, 10.0f));
-            ECS::get().registerComponents(e);
+            trf->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+            trf->setTranslation(glm::vec3(10.0f, 5.0f, 10.0f));
+            ECS::get().addSkModel(entID, wolf);
+            ECS::get().addAnimator(entID, animator);
+            ECS::get().addShader(entID, Globals::get().noTexAnimProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
 
+
+            trf = new Transform();
+            entID = ECS::get().createEntity();
             SkeletalModel* sit = new SkeletalModel("sit/Sitting Clap.dae");
             Skeleton* sitAnimation = new Skeleton("sit/Sitting Clap.dae", sit);
             Animator* sitMator = new Animator(sitAnimation);
-            e = ECS::get().linkEntity(new Entity(sit, sitMator, Globals::get().animProgram, Globals::get().camera));
-            e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-            e->transform->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
-            e->transform->setRotation(glm::quat(CosHalfPi, 0.0f, -CosHalfPi, 0.0f));
-            ECS::get().registerComponents(e);
+            trf->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+            trf->setTranslation(glm::vec3(5.0f, 5.0f, 28.f));
+            trf->setRotation(glm::quat(CosHalfPi, 0.0f, -CosHalfPi, 0.0f));
+            ECS::get().addSkModel(entID, sit);
+            ECS::get().addAnimator(entID, sitMator);
+            ECS::get().addShader(entID, Globals::get().animProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
 
+
+            trf = new Transform();
+            entID = ECS::get().createEntity();
             SkeletalModel* walk = new SkeletalModel("jjong/Idle.dae");
             Skeleton* walkAnimation = new Skeleton("jjong/Idle.dae", walk);
             walkAnimation->addAnimation("jjong/Walking.dae", walk);
             mator = new Animator(walkAnimation);
             mator->QueueAnimation(1);
-            e = ECS::get().linkEntity(new Entity(walk, mator, Globals::get().animProgram, Globals::get().camera));
-            e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-            e->transform->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
-            ECS::get().registerComponents(e);
+            trf->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+            trf->setTranslation(glm::vec3(15.0f, 5.0f, -5.0f));
+            ECS::get().addSkModel(entID, walk);
+            ECS::get().addAnimator(entID, mator);
+            ECS::get().addShader(entID, Globals::get().animProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
 
             Light* lampLight = new Light(glm::vec4(0.6f, 0.6f, 0.6f, 1.0f), glm::vec3(-20.0f, 13.2f, 28.0f));
             LightSystem::get().lights.push_back(lampLight);
