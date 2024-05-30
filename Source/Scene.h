@@ -543,10 +543,10 @@ class TestRoom : public Scene {
             ECS::get().addShader(entID, Globals::get().lightProgram);
             ECS::get().addCamera(entID, Globals::get().camera);
             ECS::get().addTransform(entID, trf);
-            e = ECS::get().getEntity(entID);
             ECS::get().addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
             ECS::get().addPhysTransform(entID, new Transform());
             ECS::get().addWireFrame(entID, 2.0f, 5.0f, 2.0f);
+            e = ECS::get().getEntity(entID);
             e.light_flag = 1;
             ECS::get().updateEntity(e);
 
@@ -675,19 +675,32 @@ class TestRoom : public Scene {
             Light* light2 = new Light(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f), glm::vec3(-20.0f, 10.0f, -20.0f));
             LightSystem::get().lights.push_back(light2);
 
-            Model* light = new Model("bulb/scene.gltf");
-            e = ECS::get().linkEntity(new Entity(light, Globals::get().lightProgram, Globals::get().camera));
-            e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-            e->transform->setTranslation(glm::vec3(-20.0f, 13.2f, 28.0f));
-            e->setType("light");
-            ECS::get().registerComponents(e);
 
+            trf = new Transform();
+            entID = ECS::get().createEntity();
+            Model* light = new Model("bulb/scene.gltf");
+            trf->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+            trf->setTranslation(glm::vec3(-20.0f, 13.2f, 28.0f));
+            ECS::get().addModel(entID, light);
+            ECS::get().addShader(entID, Globals::get().lightProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
+            e = ECS::get().getEntity(entID);
+            e.light_flag = 1;
+            ECS::get().updateEntity(e);
+
+            trf = new Transform();
+            entID = ECS::get().createEntity();
             Model* lightSecond = new Model("bulb/scene.gltf");
-            e = ECS::get().linkEntity(new Entity(lightSecond, Globals::get().lightProgram, Globals::get().camera));
-            e->transform->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
-            e->transform->setTranslation(glm::vec3(-20.0f, 10.0f, -20.0f));
-            e->setType("light");
-            ECS::get().registerComponents(e);
+            trf->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
+            trf->setTranslation(glm::vec3(-20.0f, 10.0f, -20.0f));
+            ECS::get().addModel(entID, lightSecond);
+            ECS::get().addShader(entID, Globals::get().lightProgram);
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addTransform(entID, trf);
+            e = ECS::get().getEntity(entID);
+            e.light_flag = 1;
+            ECS::get().updateEntity(e);
 
             lampLight->linkShader(*Globals::get().rigProgram);
             lampLight->linkShader(*Globals::get().animProgram);
@@ -700,69 +713,83 @@ class TestRoom : public Scene {
             LightSystem::get().linkShader(*Globals::get().lightProgram);
 
             //QUAD
-            e = ECS::get().linkEntity(new Entity(Globals::get().camera));
-            e->addWire(new Wire(glm::vec3(60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, -60.0f)));
-            e->addWire(new Wire(glm::vec3(-60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, 60.0f)));
-            e->addWire(new Wire(glm::vec3(-60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, 60.0f)));
-            e->addWire(new Wire(glm::vec3(60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, -60.0f)));
-            e->addBody(Physics::get().addShape1(e->getID()));
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addWire(entID, new Wire(glm::vec3(60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, -60.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(-60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, 60.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(-60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, 60.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, -60.0f)));
+            ECS::get().addPhysBody(entID, Physics::get().addShape1(entID));
+            ECS::get().addPhysTransform(entID, new Transform());
 
             //STAGING AXIS
-            e = ECS::get().linkEntity(new Entity(Globals::get().camera));
-            e->addWire(new Wire(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
-            e->addWire(new Wire(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f)));
-            e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 5.0f)));
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addWire(entID, new Wire(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -5.0f), glm::vec3(0.0f, 0.0f, 5.0f)));
 
             //RIGID BODY 1
-            e = ECS::get().linkEntity(new Entity(Globals::get().camera));
-            e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-            e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-            e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-            e->addBody(Physics::get().addShape2(e->getID()));
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+            ECS::get().addPhysBody(entID, Physics::get().addShape2(entID));
+             ECS::get().addPhysTransform(entID, new Transform());
 
             //RIGID BODY 2
-            e = ECS::get().linkEntity(new Entity(Globals::get().camera));
-            e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-            e->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-            e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-            e->addBody(Physics::get().addShape3(e->getID()));
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+            ECS::get().addPhysBody(entID, Physics::get().addShape3(entID));
+            ECS::get().addPhysTransform(entID, new Transform());
 
             //CONTROLLABLE BODY
-            character = ECS::get().linkEntity(new Entity(Globals::get().camera));
-            character->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-            character->addWire(new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-            character->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-            character->addBody(Physics::get().addShape4(character->getID()));
-            ECS::get().registerComponents(character);
+            entID = ECS::get().createEntity();
+            characterID = entID;
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+            ECS::get().addPhysBody(entID, Physics::get().addShape4(entID));
+            ECS::get().addPhysTransform(entID, new Transform());
+
 
             // CAPSULE
-            e = ECS::get().linkEntity(new Entity(Globals::get().camera));
-            e->addWire(new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-            e->addWire(new Wire(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
-            e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-            e->addBody(Physics::get().addShape5(e->getID()));
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            ECS::get().addCamera(entID, Globals::get().camera);
+            ECS::get().addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+            ECS::get().addPhysBody(entID, Physics::get().addShape5(entID));
+            ECS::get().addPhysTransform(entID, new Transform());
+
 
             //TEST CIGS
             for (int i = 0; i < 5; i++) {
-                e = ECS::get().linkEntity(new Entity(new Model("cig/cig.dae"), Globals::get().rigProgram, Globals::get().camera));
-                e->addWire(new Wire(glm::vec3(-0.06f, 0.0f, 0.0f), glm::vec3(0.06f, 0.0f, 0.0f)));
-                e->addWire(new Wire(glm::vec3(0.0f, -0.06f, 0.0f), glm::vec3(0.0f, 0.06f, 0.0f)));
-                e->addWire(new Wire(glm::vec3(0.0f, 0.0f, -0.685f), glm::vec3(0.0f, 0.0f, 0.685f)));
-                e->addBody(Physics::get().addShape6(e->getID()));
-                e->setType("pickup");
-                ECS::get().registerComponents(e);
+                entID = ECS::get().createEntity();
+                ECS::get().addModel(entID, new Model("cig/cig.dae"));
+                ECS::get().addShader(entID, Globals::get().rigProgram);
+                ECS::get().addCamera(entID, Globals::get().camera);
+                ECS::get().addTransform(entID, new Transform());
+                ECS::get().addWire(entID, new Wire(glm::vec3(-0.06f, 0.0f, 0.0f), glm::vec3(0.06f, 0.0f, 0.0f)));
+                ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -0.06f, 0.0f), glm::vec3(0.0f, 0.06f, 0.0f)));
+                ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -0.685f), glm::vec3(0.0f, 0.0f, 0.685f)));
+                ECS::get().addPhysBody(entID, Physics::get().addShape6(entID));
+                ECS::get().addPhysTransform(entID, new Transform());
+                e = ECS::get().getEntity(entID);
+                e.pickup_flag = 1;
+                ECS::get().updateEntity(e);
             }
 
             //CROSSHAIR HACK (class required)
-            e = ECS::get().linkEntity(new Entity(Globals::get().handCam));
-            e->addWire(new Wire(glm::vec3(-0.04f, 0.0f, 0.0f), glm::vec3(0.04f, 0.0f, 0.0f)));
-            e->addWire(new Wire(glm::vec3(0.0f, -0.04f, 0.0f), glm::vec3(0.0f, 0.04f, 0.0f)));
-            ECS::get().registerComponents(e);
+            entID = ECS::get().createEntity();
+            ECS::get().addCamera(entID, Globals::get().handCam);
+            ECS::get().addWire(entID, new Wire(glm::vec3(-0.04f, 0.0f, 0.0f), glm::vec3(0.04f, 0.0f, 0.0f)));
+            ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -0.04f, 0.0f), glm::vec3(0.0f, 0.04f, 0.0f)));
 
             partProgram = new Shader("partVert.glsl", "partFrag.glsl");
 

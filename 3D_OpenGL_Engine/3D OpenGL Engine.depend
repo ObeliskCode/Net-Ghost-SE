@@ -1,981 +1,21 @@
 # depslib dependency file v1.0
-1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Camera.cpp
-	"Camera.h"
-
-1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Camera.h
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-	"glm/glm.hpp"
-	"glm/gtc/matrix_transform.hpp"
-	"glm/gtc/type_ptr.hpp"
-	"glm/gtx/rotate_vector.hpp"
-	"glm/gtx/vector_angle.hpp"
-	"Shader.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/glm.hpp
-	"detail/_fixes.hpp"
-	"detail/setup.hpp"
-	<cmath>
-	<climits>
-	<cfloat>
-	<limits>
-	<cassert>
-	"fwd.hpp"
-	"vec2.hpp"
-	"vec3.hpp"
-	"vec4.hpp"
-	"mat2x2.hpp"
-	"mat2x3.hpp"
-	"mat2x4.hpp"
-	"mat3x2.hpp"
-	"mat3x3.hpp"
-	"mat3x4.hpp"
-	"mat4x2.hpp"
-	"mat4x3.hpp"
-	"mat4x4.hpp"
-	"trigonometric.hpp"
-	"exponential.hpp"
-	"common.hpp"
-	"packing.hpp"
-	"geometric.hpp"
-	"matrix.hpp"
-	"vector_relational.hpp"
-	"integer.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/_fixes.hpp
-	<cmath>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/setup.hpp
-	<cassert>
-	<cstddef>
-	"../simd/platform.h"
-	<CL/sycl.hpp>
-	<limits>
-	<cstdint>
-	<type_traits>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/simd/platform.h
-	<cuda.h>
-	<immintrin.h>
-	<immintrin.h>
-	<popcntintrin.h>
-	<nmmintrin.h>
-	<smmintrin.h>
-	<tmmintrin.h>
-	<pmmintrin.h>
-	<emmintrin.h>
-	"neon.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/simd/neon.h
-	<arm_neon.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/fwd.hpp
-	"detail/qualifier.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/qualifier.hpp
-	"setup.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/vec2.hpp
-	"./ext/vector_bool2.hpp"
-	"./ext/vector_bool2_precision.hpp"
-	"./ext/vector_float2.hpp"
-	"./ext/vector_float2_precision.hpp"
-	"./ext/vector_double2.hpp"
-	"./ext/vector_double2_precision.hpp"
-	"./ext/vector_int2.hpp"
-	"./ext/vector_int2_precision.hpp"
-	"./ext/vector_uint2.hpp"
-	"./ext/vector_uint2_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_bool2.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_vec2.hpp
-	"qualifier.hpp"
-	"_swizzle.hpp"
-	"_swizzle_func.hpp"
-	<cstddef>
-	"type_vec2.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/_swizzle.hpp
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/_swizzle_func.hpp
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_vec2.inl
-	"./compute_vector_relational.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/compute_vector_relational.hpp
-	"setup.hpp"
-	<limits>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_bool2_precision.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_float2.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_float2_precision.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_double2.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_double2_precision.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_int2.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_int2_precision.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_uint2.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_uint2_precision.hpp
-	"../detail/type_vec2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/vec3.hpp
-	"./ext/vector_bool3.hpp"
-	"./ext/vector_bool3_precision.hpp"
-	"./ext/vector_float3.hpp"
-	"./ext/vector_float3_precision.hpp"
-	"./ext/vector_double3.hpp"
-	"./ext/vector_double3_precision.hpp"
-	"./ext/vector_int3.hpp"
-	"./ext/vector_int3_precision.hpp"
-	"./ext/vector_uint3.hpp"
-	"./ext/vector_uint3_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_bool3.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_vec3.hpp
-	"qualifier.hpp"
-	"_swizzle.hpp"
-	"_swizzle_func.hpp"
-	<cstddef>
-	"type_vec3.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_vec3.inl
-	"compute_vector_relational.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_bool3_precision.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_float3.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_float3_precision.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_double3.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_double3_precision.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_int3.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_int3_precision.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_uint3.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_uint3_precision.hpp
-	"../detail/type_vec3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/vec4.hpp
-	"./ext/vector_bool4.hpp"
-	"./ext/vector_bool4_precision.hpp"
-	"./ext/vector_float4.hpp"
-	"./ext/vector_float4_precision.hpp"
-	"./ext/vector_double4.hpp"
-	"./ext/vector_double4_precision.hpp"
-	"./ext/vector_int4.hpp"
-	"./ext/vector_int4_precision.hpp"
-	"./ext/vector_uint4.hpp"
-	"./ext/vector_uint4_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_bool4.hpp
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_vec4.hpp
-	"qualifier.hpp"
-	"_swizzle.hpp"
-	"_swizzle_func.hpp"
-	<cstddef>
-	"type_vec4.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_vec4.inl
-	"compute_vector_relational.hpp"
-	"type_vec4_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_vec4_simd.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_bool4_precision.hpp
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_float4.hpp
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_float4_precision.hpp
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_double4.hpp
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_double4_precision.hpp
-	"../detail/setup.hpp"
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_int4.hpp
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_int4_precision.hpp
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_uint4.hpp
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_uint4_precision.hpp
-	"../detail/type_vec4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/mat2x2.hpp
-	"./ext/matrix_double2x2.hpp"
-	"./ext/matrix_double2x2_precision.hpp"
-	"./ext/matrix_float2x2.hpp"
-	"./ext/matrix_float2x2_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double2x2.hpp
-	"../detail/type_mat2x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat2x2.hpp
-	"type_vec2.hpp"
-	<limits>
-	<cstddef>
-	"type_mat2x2.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat2x2.inl
-	"../matrix.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/matrix.hpp
-	"detail/qualifier.hpp"
-	"detail/setup.hpp"
-	"vec2.hpp"
-	"vec3.hpp"
-	"vec4.hpp"
-	"mat2x2.hpp"
-	"mat2x3.hpp"
-	"mat2x4.hpp"
-	"mat3x2.hpp"
-	"mat3x3.hpp"
-	"mat3x4.hpp"
-	"mat4x2.hpp"
-	"mat4x3.hpp"
-	"mat4x4.hpp"
-	"detail/func_matrix.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/mat2x3.hpp
-	"./ext/matrix_double2x3.hpp"
-	"./ext/matrix_double2x3_precision.hpp"
-	"./ext/matrix_float2x3.hpp"
-	"./ext/matrix_float2x3_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double2x3.hpp
-	"../detail/type_mat2x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat2x3.hpp
-	"type_vec2.hpp"
-	"type_vec3.hpp"
-	<limits>
-	<cstddef>
-	"type_mat2x3.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat2x3.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double2x3_precision.hpp
-	"../detail/type_mat2x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float2x3.hpp
-	"../detail/type_mat2x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float2x3_precision.hpp
-	"../detail/type_mat2x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/mat2x4.hpp
-	"./ext/matrix_double2x4.hpp"
-	"./ext/matrix_double2x4_precision.hpp"
-	"./ext/matrix_float2x4.hpp"
-	"./ext/matrix_float2x4_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double2x4.hpp
-	"../detail/type_mat2x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat2x4.hpp
-	"type_vec2.hpp"
-	"type_vec4.hpp"
-	<limits>
-	<cstddef>
-	"type_mat2x4.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat2x4.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double2x4_precision.hpp
-	"../detail/type_mat2x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float2x4.hpp
-	"../detail/type_mat2x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float2x4_precision.hpp
-	"../detail/type_mat2x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/mat3x2.hpp
-	"./ext/matrix_double3x2.hpp"
-	"./ext/matrix_double3x2_precision.hpp"
-	"./ext/matrix_float3x2.hpp"
-	"./ext/matrix_float3x2_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double3x2.hpp
-	"../detail/type_mat3x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat3x2.hpp
-	"type_vec2.hpp"
-	"type_vec3.hpp"
-	<limits>
-	<cstddef>
-	"type_mat3x2.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat3x2.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double3x2_precision.hpp
-	"../detail/type_mat3x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float3x2.hpp
-	"../detail/type_mat3x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float3x2_precision.hpp
-	"../detail/type_mat3x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/mat3x3.hpp
-	"./ext/matrix_double3x3.hpp"
-	"./ext/matrix_double3x3_precision.hpp"
-	"./ext/matrix_float3x3.hpp"
-	"./ext/matrix_float3x3_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double3x3.hpp
-	"../detail/type_mat3x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat3x3.hpp
-	"type_vec3.hpp"
-	<limits>
-	<cstddef>
-	"type_mat3x3.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat3x3.inl
-	"../matrix.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double3x3_precision.hpp
-	"../detail/type_mat3x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float3x3.hpp
-	"../detail/type_mat3x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float3x3_precision.hpp
-	"../detail/type_mat3x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/mat3x4.hpp
-	"./ext/matrix_double3x4.hpp"
-	"./ext/matrix_double3x4_precision.hpp"
-	"./ext/matrix_float3x4.hpp"
-	"./ext/matrix_float3x4_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double3x4.hpp
-	"../detail/type_mat3x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat3x4.hpp
-	"type_vec3.hpp"
-	"type_vec4.hpp"
-	<limits>
-	<cstddef>
-	"type_mat3x4.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat3x4.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double3x4_precision.hpp
-	"../detail/type_mat3x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float3x4.hpp
-	"../detail/type_mat3x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float3x4_precision.hpp
-	"../detail/type_mat3x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/mat4x2.hpp
-	"./ext/matrix_double4x2.hpp"
-	"./ext/matrix_double4x2_precision.hpp"
-	"./ext/matrix_float4x2.hpp"
-	"./ext/matrix_float4x2_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double4x2.hpp
-	"../detail/type_mat4x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat4x2.hpp
-	"type_vec2.hpp"
-	"type_vec4.hpp"
-	<limits>
-	<cstddef>
-	"type_mat4x2.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat4x2.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double4x2_precision.hpp
-	"../detail/type_mat4x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float4x2.hpp
-	"../detail/type_mat4x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float4x2_precision.hpp
-	"../detail/type_mat2x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/mat4x3.hpp
-	"./ext/matrix_double4x3.hpp"
-	"./ext/matrix_double4x3_precision.hpp"
-	"./ext/matrix_float4x3.hpp"
-	"./ext/matrix_float4x3_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double4x3.hpp
-	"../detail/type_mat4x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat4x3.hpp
-	"type_vec3.hpp"
-	"type_vec4.hpp"
-	<limits>
-	<cstddef>
-	"type_mat4x3.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat4x3.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double4x3_precision.hpp
-	"../detail/type_mat4x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float4x3.hpp
-	"../detail/type_mat4x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float4x3_precision.hpp
-	"../detail/type_mat4x3.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/mat4x4.hpp
-	"./ext/matrix_double4x4.hpp"
-	"./ext/matrix_double4x4_precision.hpp"
-	"./ext/matrix_float4x4.hpp"
-	"./ext/matrix_float4x4_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double4x4.hpp
-	"../detail/type_mat4x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat4x4.hpp
-	"type_vec4.hpp"
-	<limits>
-	<cstddef>
-	"type_mat4x4.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat4x4.inl
-	"../matrix.hpp"
-	"type_mat4x4_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_mat4x4_simd.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double4x4_precision.hpp
-	"../detail/type_mat4x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float4x4.hpp
-	"../detail/type_mat4x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float4x4_precision.hpp
-	"../detail/type_mat4x4.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_matrix.inl
-	"../geometric.hpp"
-	<limits>
-	"func_matrix_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/geometric.hpp
-	"detail/type_vec3.hpp"
-	"detail/func_geometric.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_geometric.inl
-	"../exponential.hpp"
-	"../common.hpp"
-	"func_geometric_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/exponential.hpp
-	"detail/type_vec1.hpp"
-	"detail/type_vec2.hpp"
-	"detail/type_vec3.hpp"
-	"detail/type_vec4.hpp"
-	<cmath>
-	"detail/func_exponential.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_vec1.hpp
-	"qualifier.hpp"
-	"_swizzle.hpp"
-	"_swizzle_func.hpp"
-	<cstddef>
-	"type_vec1.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_vec1.inl
-	"./compute_vector_relational.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_exponential.inl
-	"../vector_relational.hpp"
-	"_vectorize.hpp"
-	<limits>
-	<cmath>
-	<cassert>
-	"func_exponential_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/vector_relational.hpp
-	"detail/qualifier.hpp"
-	"detail/setup.hpp"
-	"detail/func_vector_relational.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_vector_relational.inl
-	"func_vector_relational_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_vector_relational_simd.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/_vectorize.hpp
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_exponential_simd.inl
-	"../simd/exponential.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/simd/exponential.h
-	"platform.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/common.hpp
-	"detail/qualifier.hpp"
-	"detail/_fixes.hpp"
-	"detail/func_common.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_common.inl
-	"../vector_relational.hpp"
-	"compute_common.hpp"
-	"type_vec1.hpp"
-	"type_vec2.hpp"
-	"type_vec3.hpp"
-	"type_vec4.hpp"
-	"_vectorize.hpp"
-	<limits>
-	"func_common_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/compute_common.hpp
-	"setup.hpp"
-	<limits>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_common_simd.inl
-	"../simd/common.h"
-	<immintrin.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/simd/common.h
-	"platform.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_geometric_simd.inl
-	"../simd/geometric.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/simd/geometric.h
-	"common.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_matrix_simd.inl
-	"type_mat4x4.hpp"
-	"../geometric.hpp"
-	"../simd/matrix.h"
+1715236676 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Audio.cpp
+	"Audio.h"
+
+1715821620 /home/noel/Desktop/Obelisk-3D-Engine/Source/Audio.h
+	<AL/al.h>
+	<AL/alc.h>
+	<thread>
+	<atomic>
+	<mutex>
 	<cstring>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/simd/matrix.h
-	"geometric.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_double2x2_precision.hpp
-	"../detail/type_mat2x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float2x2.hpp
-	"../detail/type_mat2x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_float2x2_precision.hpp
-	"../detail/type_mat2x2.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/trigonometric.hpp
-	"detail/setup.hpp"
-	"detail/qualifier.hpp"
-	"detail/func_trigonometric.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_trigonometric.inl
-	"_vectorize.hpp"
-	<cmath>
-	<limits>
-	"func_trigonometric_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_trigonometric_simd.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/packing.hpp
-	"./ext/vector_uint2.hpp"
-	"./ext/vector_float2.hpp"
-	"./ext/vector_float4.hpp"
-	"detail/func_packing.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_packing.inl
-	"../common.hpp"
-	"type_half.hpp"
-	"func_packing_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_half.hpp
-	"setup.hpp"
-	"type_half.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_half.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_packing_simd.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/integer.hpp
-	"detail/qualifier.hpp"
-	"common.hpp"
-	"vector_relational.hpp"
-	"detail/func_integer.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_integer.inl
-	"_vectorize.hpp"
-	<intrin.h>
-	<limits>
-	"func_integer_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/func_integer_simd.inl
-	"../simd/integer.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/simd/integer.h
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/matrix_transform.hpp
-	"../mat4x4.hpp"
-	"../vec2.hpp"
-	"../vec3.hpp"
-	"../vec4.hpp"
-	"../ext/matrix_projection.hpp"
-	"../ext/matrix_clip_space.hpp"
-	"../ext/matrix_transform.hpp"
-	"matrix_transform.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_projection.hpp
-	"../gtc/constants.hpp"
-	"../geometric.hpp"
-	"../trigonometric.hpp"
-	"../matrix.hpp"
-	"matrix_projection.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/constants.hpp
-	"../ext/scalar_constants.hpp"
-	"constants.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/scalar_constants.hpp
-	"../detail/setup.hpp"
-	"scalar_constants.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/scalar_constants.inl
-	<limits>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/constants.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_projection.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_clip_space.hpp
-	"../ext/scalar_constants.hpp"
-	"../geometric.hpp"
-	"../trigonometric.hpp"
-	"matrix_clip_space.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_clip_space.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_transform.hpp
-	"../gtc/constants.hpp"
-	"../geometric.hpp"
-	"../trigonometric.hpp"
-	"../matrix.hpp"
-	"matrix_transform.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/matrix_transform.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/matrix_transform.inl
-	"../geometric.hpp"
-	"../trigonometric.hpp"
-	"../matrix.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/type_ptr.hpp
-	"../gtc/quaternion.hpp"
-	"../gtc/vec1.hpp"
-	"../vec2.hpp"
-	"../vec3.hpp"
-	"../vec4.hpp"
-	"../mat2x2.hpp"
-	"../mat2x3.hpp"
-	"../mat2x4.hpp"
-	"../mat3x2.hpp"
-	"../mat3x3.hpp"
-	"../mat3x4.hpp"
-	"../mat4x2.hpp"
-	"../mat4x3.hpp"
-	"../mat4x4.hpp"
-	<cstring>
-	"type_ptr.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/quaternion.hpp
-	"../gtc/constants.hpp"
-	"../gtc/matrix_transform.hpp"
-	"../ext/vector_relational.hpp"
-	"../ext/quaternion_common.hpp"
-	"../ext/quaternion_float.hpp"
-	"../ext/quaternion_float_precision.hpp"
-	"../ext/quaternion_double.hpp"
-	"../ext/quaternion_double_precision.hpp"
-	"../ext/quaternion_relational.hpp"
-	"../ext/quaternion_geometric.hpp"
-	"../ext/quaternion_trigonometric.hpp"
-	"../ext/quaternion_transform.hpp"
-	"../detail/type_mat3x3.hpp"
-	"../detail/type_mat4x4.hpp"
-	"../detail/type_vec3.hpp"
-	"../detail/type_vec4.hpp"
-	"quaternion.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_relational.hpp
-	"../detail/qualifier.hpp"
-	"vector_relational.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_relational.inl
-	"../vector_relational.hpp"
-	"../common.hpp"
-	"../detail/qualifier.hpp"
-	"../detail/type_float.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_float.hpp
-	"setup.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_common.hpp
-	"../ext/scalar_constants.hpp"
-	"../ext/quaternion_geometric.hpp"
-	"../common.hpp"
-	"../trigonometric.hpp"
-	"../exponential.hpp"
-	<limits>
-	"quaternion_common.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_geometric.hpp
-	"../geometric.hpp"
-	"../exponential.hpp"
-	"../ext/vector_relational.hpp"
-	"quaternion_geometric.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_geometric.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_common.inl
-	"quaternion_common_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_common_simd.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_float.hpp
-	"../detail/type_quat.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_quat.hpp
-	"../detail/type_mat3x3.hpp"
-	"../detail/type_mat4x4.hpp"
-	"../detail/type_vec3.hpp"
-	"../detail/type_vec4.hpp"
-	"../ext/vector_relational.hpp"
-	"../ext/quaternion_relational.hpp"
-	"../gtc/constants.hpp"
-	"../gtc/matrix_transform.hpp"
-	"type_quat.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_relational.hpp
-	"../vector_relational.hpp"
-	"quaternion_relational.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_relational.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_quat.inl
-	"../trigonometric.hpp"
-	"../exponential.hpp"
-	"../ext/quaternion_geometric.hpp"
-	<limits>
-	"type_quat_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/detail/type_quat_simd.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_float_precision.hpp
-	"../detail/type_quat.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_double.hpp
-	"../detail/type_quat.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_double_precision.hpp
-	"../detail/type_quat.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_trigonometric.hpp
-	"../trigonometric.hpp"
-	"../exponential.hpp"
-	"scalar_constants.hpp"
-	"vector_relational.hpp"
-	<limits>
-	"quaternion_trigonometric.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_trigonometric.inl
-	"scalar_constants.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_transform.hpp
-	"../common.hpp"
-	"../trigonometric.hpp"
-	"../geometric.hpp"
-	"quaternion_transform.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_transform.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/quaternion.inl
-	"../trigonometric.hpp"
-	"../geometric.hpp"
-	"../exponential.hpp"
-	"epsilon.hpp"
-	<limits>
-	"quaternion_simd.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/epsilon.hpp
-	"../detail/setup.hpp"
-	"../detail/qualifier.hpp"
-	"epsilon.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/epsilon.inl
-	"../vector_relational.hpp"
-	"../common.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/quaternion_simd.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/vec1.hpp
-	"../ext/vector_bool1.hpp"
-	"../ext/vector_bool1_precision.hpp"
-	"../ext/vector_float1.hpp"
-	"../ext/vector_float1_precision.hpp"
-	"../ext/vector_double1.hpp"
-	"../ext/vector_double1_precision.hpp"
-	"../ext/vector_int1.hpp"
-	"../ext/vector_int1_precision.hpp"
-	"../ext/vector_uint1.hpp"
-	"../ext/vector_uint1_precision.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_bool1.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_bool1_precision.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_float1.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_float1_precision.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_double1.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_double1_precision.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_int1.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_int1_precision.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_uint1.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/vector_uint1_precision.hpp
-	"../detail/type_vec1.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/type_ptr.inl
-	<cstring>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/rotate_vector.hpp
-	"../gtx/transform.hpp"
-	"../gtc/epsilon.hpp"
-	"../ext/vector_relational.hpp"
-	"../glm.hpp"
-	"rotate_vector.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/transform.hpp
-	"../glm.hpp"
-	"../gtc/matrix_transform.hpp"
-	"transform.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/transform.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/rotate_vector.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/vector_angle.hpp
-	"../glm.hpp"
-	"../gtc/epsilon.hpp"
-	"../gtx/quaternion.hpp"
-	"../gtx/rotate_vector.hpp"
-	"vector_angle.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/quaternion.hpp
-	"../glm.hpp"
-	"../gtc/constants.hpp"
-	"../gtc/quaternion.hpp"
-	"../ext/quaternion_exponential.hpp"
-	"../gtx/norm.hpp"
-	"quaternion.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_exponential.hpp
-	"../common.hpp"
-	"../trigonometric.hpp"
-	"../geometric.hpp"
-	"../ext/scalar_constants.hpp"
-	"quaternion_exponential.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/quaternion_exponential.inl
-	"scalar_constants.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/norm.hpp
-	"../geometric.hpp"
-	"../gtx/quaternion.hpp"
-	"../gtx/component_wise.hpp"
-	"norm.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/component_wise.hpp
-	"../detail/setup.hpp"
-	"../detail/qualifier.hpp"
-	"component_wise.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/component_wise.inl
-	<limits>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/norm.inl
-	"../detail/qualifier.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/quaternion.inl
-	<limits>
-	"../gtc/constants.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/vector_angle.inl
-
-1715851569 /home/noel/Desktop/Obelisk-3D-Engine/Source/Shader.h
-	<string>
-	<fstream>
-	<sstream>
-	<iostream>
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-
-1714972097 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/dr_wav.c
 	"dr_wav.h"
+	<iostream>
+	<vector>
+
+1715038877 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//AL/al.h
+
+1715038877 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//AL/alc.h
 
 1714972097 /home/noel/Desktop/Obelisk-3D-Engine/Source/dr_wav.h
 	"dr_wav.h"
@@ -988,323 +28,18 @@
 	<assert.h>
 	<errno.h>
 
-1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/EBO.cpp
-	"EBO.h"
-
-1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/EBO.h
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-	<vector>
-
-1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Globals.cpp
-	"Globals.h"
-
-1716485540 /home/noel/Desktop/Obelisk-3D-Engine/Source/Globals.h
+1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Camera.cpp
 	"Camera.h"
-	<vector>
-	"Particle.h"
 
-1714029342 /home/noel/Desktop/Obelisk-3D-Engine/Source/Particle.h
-	"Camera.h"
-	"Texture.h"
-	"glm/glm.hpp"
-	<vector>
-	<math.h>
-
-1715851595 /home/noel/Desktop/Obelisk-3D-Engine/Source/Texture.h
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Camera.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
-	<assimp/scene.h>
-	"stb_image.h"
+	"glm/glm.hpp"
+	"glm/gtc/matrix_transform.hpp"
+	"glm/gtc/type_ptr.hpp"
+	"glm/gtx/rotate_vector.hpp"
+	"glm/gtx/vector_angle.hpp"
 	"Shader.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/scene.h
-	<assimp/types.h>
-	<assimp/texture.h>
-	<assimp/mesh.h>
-	<assimp/light.h>
-	<assimp/camera.h>
-	<assimp/material.h>
-	<assimp/anim.h>
-	<assimp/metadata.h>
-	<cstdlib>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/types.h
-	<limits.h>
-	<stddef.h>
-	<stdint.h>
-	<string.h>
-	<sys/types.h>
-	<assimp/defs.h>
-	<assimp/vector2.h>
-	<assimp/vector3.h>
-	<assimp/color4.h>
-	<assimp/matrix3x3.h>
-	<assimp/matrix4x4.h>
-	<assimp/quaternion.h>
-	<cstring>
-	<new>
-	<string>
-	"vector2.inl"
-	"vector3.inl"
-	"color4.inl"
-	"matrix3x3.inl"
-	"matrix4x4.inl"
-	"quaternion.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/defs.h
-	<assimp/config.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/config.h
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/vector2.h
-	<cmath>
-	<math.h>
-	"defs.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/vector3.h
-	<cmath>
-	<math.h>
-	<assimp/defs.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/color4.h
-	<assimp/defs.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/matrix3x3.h
-	<assimp/defs.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/matrix4x4.h
-	<assimp/vector3.h>
-	<assimp/defs.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/quaternion.h
-	<assimp/defs.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/vector2.inl
-	<assimp/vector2.h>
-	<cmath>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/vector3.inl
-	<assimp/vector3.h>
-	<cmath>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/color4.inl
-	<assimp/color4.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/matrix3x3.inl
-	<assimp/matrix3x3.h>
-	<assimp/matrix4x4.h>
-	<algorithm>
-	<cmath>
-	<limits>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/matrix4x4.inl
-	"matrix4x4.h"
-	"matrix3x3.h"
-	"quaternion.h"
-	"MathFunctions.h"
-	<algorithm>
-	<limits>
-	<cmath>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/MathFunctions.h
-	<limits>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/quaternion.inl
-	<assimp/quaternion.h>
-	<cmath>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/texture.h
-	<assimp/types.h>
-	"./Compiler/pushpack1.h"
-	"./Compiler/poppack1.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/Compiler/pushpack1.h
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/Compiler/poppack1.h
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/mesh.h
-	<assimp/aabb.h>
-	<assimp/types.h>
-	<unordered_set>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/aabb.h
-	<assimp/vector3.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/light.h
-	<assimp/types.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/camera.h
-	"types.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/material.h
-	<assimp/types.h>
-	"./Compiler/pushpack1.h"
-	"./Compiler/poppack1.h"
-	"material.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/material.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/anim.h
-	<assimp/quaternion.h>
-	<assimp/types.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/metadata.h
-	"Compiler/pstdint.h"
-	<stdint.h>
-	<assimp/quaternion.h>
-	<string>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/Compiler/pstdint.h
-	<stddef.h>
-	<limits.h>
-	<signal.h>
-	<stdint.h>
-	<sys/inttypes.h>
-	<wchar.h>
-	<stdlib.h>
-	<stdio.h>
-	<string.h>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Source/stb_image.h
-	"stb_image.h"
-	<stdio.h>
-	<stdlib.h>
-	<stdarg.h>
-	<stddef.h>
-	<stdlib.h>
-	<string.h>
-	<limits.h>
-	<math.h>
-	<stdio.h>
-	<assert.h>
-	<stdint.h>
-	<emmintrin.h>
-	<intrin.h>
-	<arm_neon.h>
-
-1714972097 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/GUI.cpp
-	"GUI.h"
-
-1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/GUI.h
-	<ft2build.h>
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-	<iostream>
-	"glm/glm.hpp"
-	"Shader.h"
-	"Globals.h"
-	<map>
-
-1714807561 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/FreeType//ft2build.h
-	<freetype/config/ftheader.h>
-
-1714807561 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/FreeType//freetype/config/ftheader.h
-
-1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Input.cpp
-	"Input.h"
-
-1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Input.h
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-
-1716485540 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Mesh.cpp
-	"Mesh.h"
-	<glm/gtx/string_cast.hpp>
-
-1716487931 /home/noel/Desktop/Obelisk-3D-Engine/Source/Mesh.h
-	<string>
-	<vector>
-	"VAO.h"
-	"EBO.h"
-	"Camera.h"
-	"Globals.h"
-	"Texture.h"
-
-1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/VAO.h
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-	"VBO.h"
-
-1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/VBO.h
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-	<vector>
-	"glm/glm.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/string_cast.hpp
-	"../glm.hpp"
-	"../gtc/type_precision.hpp"
-	"../gtc/quaternion.hpp"
-	"../gtx/dual_quaternion.hpp"
-	<string>
-	<cmath>
-	"string_cast.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/type_precision.hpp
-	"../gtc/quaternion.hpp"
-	"../gtc/vec1.hpp"
-	"../ext/scalar_int_sized.hpp"
-	"../ext/scalar_uint_sized.hpp"
-	"../detail/type_vec2.hpp"
-	"../detail/type_vec3.hpp"
-	"../detail/type_vec4.hpp"
-	"../detail/type_mat2x2.hpp"
-	"../detail/type_mat2x3.hpp"
-	"../detail/type_mat2x4.hpp"
-	"../detail/type_mat3x2.hpp"
-	"../detail/type_mat3x3.hpp"
-	"../detail/type_mat3x4.hpp"
-	"../detail/type_mat4x2.hpp"
-	"../detail/type_mat4x3.hpp"
-	"../detail/type_mat4x4.hpp"
-	"type_precision.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/scalar_int_sized.hpp
-	"../detail/setup.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/ext/scalar_uint_sized.hpp
-	"../detail/setup.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtc/type_precision.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/dual_quaternion.hpp
-	"../glm.hpp"
-	"../gtc/constants.hpp"
-	"../gtc/quaternion.hpp"
-	"dual_quaternion.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/dual_quaternion.inl
-	"../geometric.hpp"
-	<limits>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//glm/gtx/string_cast.inl
-	<cstdarg>
-	<cstdio>
-
-1716668946 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Model.cpp
-	"Model.h"
-
-1716668946 /home/noel/Desktop/Obelisk-3D-Engine/Source/Model.h
-	<assimp/Importer.hpp>
-	<assimp/scene.h>
-	<assimp/postprocess.h>
-	"Mesh.h"
-	"Material.h"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/Importer.hpp
-	<assimp/types.h>
-	<exception>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries/include//assimp/postprocess.h
-	<assimp/types.h>
-
-1714972097 /home/noel/Desktop/Obelisk-3D-Engine/Source/Material.h
-	"glm/glm.hpp"
-	"Shader.h"
-
-1714029261 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Particle.cpp
-	"Particle.h"
 
 1501500339 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//GL/glew.h
 	<stddef.h>
@@ -2293,289 +1028,26 @@
 
 1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtx/vector_angle.inl
 
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/scene.h
-	<assimp/types.h>
-	<assimp/texture.h>
-	<assimp/mesh.h>
-	<assimp/light.h>
-	<assimp/camera.h>
-	<assimp/material.h>
-	<assimp/anim.h>
-	<assimp/metadata.h>
-	<cstdlib>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/types.h
-	<limits.h>
-	<stddef.h>
-	<stdint.h>
-	<string.h>
-	<sys/types.h>
-	<assimp/defs.h>
-	<assimp/vector2.h>
-	<assimp/vector3.h>
-	<assimp/color4.h>
-	<assimp/matrix3x3.h>
-	<assimp/matrix4x4.h>
-	<assimp/quaternion.h>
-	<cstring>
-	<new>
+1715851569 /home/noel/Desktop/Obelisk-3D-Engine/Source/Shader.h
 	<string>
-	"vector2.inl"
-	"vector3.inl"
-	"color4.inl"
-	"matrix3x3.inl"
-	"matrix4x4.inl"
-	"quaternion.inl"
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/defs.h
-	<assimp/config.h>
-
-1715039150 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/config.h
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/vector2.h
-	<cmath>
-	<math.h>
-	"defs.h"
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/vector3.h
-	<cmath>
-	<math.h>
-	<assimp/defs.h>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/color4.h
-	<assimp/defs.h>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/matrix3x3.h
-	<assimp/defs.h>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/matrix4x4.h
-	<assimp/vector3.h>
-	<assimp/defs.h>
-	<assimp/config.h>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/quaternion.h
-	<assimp/defs.h>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/vector2.inl
-	<assimp/vector2.h>
-	<cmath>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/vector3.inl
-	<assimp/vector3.h>
-	<cmath>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/color4.inl
-	<assimp/color4.h>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/matrix3x3.inl
-	<assimp/matrix3x3.h>
-	<assimp/matrix4x4.h>
-	<algorithm>
-	<cmath>
-	<limits>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/matrix4x4.inl
-	"matrix4x4.h"
-	"matrix3x3.h"
-	"quaternion.h"
-	"MathFunctions.h"
-	<algorithm>
-	<limits>
-	<cmath>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/MathFunctions.h
-	<limits>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/quaternion.inl
-	<assimp/quaternion.h>
-	<cmath>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/texture.h
-	<assimp/types.h>
-	"./Compiler/pushpack1.h"
-	"./Compiler/poppack1.h"
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/Compiler/pushpack1.h
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/Compiler/poppack1.h
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/mesh.h
-	<assimp/aabb.h>
-	<assimp/types.h>
-	<unordered_set>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/aabb.h
-	<assimp/vector3.h>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/light.h
-	<assimp/types.h>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/camera.h
-	"types.h"
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/material.h
-	<assimp/types.h>
-	"./Compiler/pushpack1.h"
-	"./Compiler/poppack1.h"
-	"material.inl"
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/material.inl
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/anim.h
-	<assimp/quaternion.h>
-	<assimp/types.h>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/metadata.h
-	"Compiler/pstdint.h"
-	<stdint.h>
-	<assimp/quaternion.h>
-	<string>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/Compiler/pstdint.h
-	<stddef.h>
-	<limits.h>
-	<signal.h>
-	<stdint.h>
-	<sys/inttypes.h>
-	<wchar.h>
-	<stdlib.h>
-	<stdio.h>
-	<string.h>
-
-1524390096 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/FreeType//ft2build.h
-	<freetype/config/ftheader.h>
-
-1524390096 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/FreeType//freetype/config/ftheader.h
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtx/string_cast.hpp
-	"../glm.hpp"
-	"../gtc/type_precision.hpp"
-	"../gtc/quaternion.hpp"
-	"../gtx/dual_quaternion.hpp"
-	<string>
-	<cmath>
-	"string_cast.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtc/type_precision.hpp
-	"../gtc/quaternion.hpp"
-	"../gtc/vec1.hpp"
-	"../ext/scalar_int_sized.hpp"
-	"../ext/scalar_uint_sized.hpp"
-	"../detail/type_vec2.hpp"
-	"../detail/type_vec3.hpp"
-	"../detail/type_vec4.hpp"
-	"../detail/type_mat2x2.hpp"
-	"../detail/type_mat2x3.hpp"
-	"../detail/type_mat2x4.hpp"
-	"../detail/type_mat3x2.hpp"
-	"../detail/type_mat3x3.hpp"
-	"../detail/type_mat3x4.hpp"
-	"../detail/type_mat4x2.hpp"
-	"../detail/type_mat4x3.hpp"
-	"../detail/type_mat4x4.hpp"
-	"type_precision.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/ext/scalar_int_sized.hpp
-	"../detail/setup.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/ext/scalar_uint_sized.hpp
-	"../detail/setup.hpp"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtc/type_precision.inl
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtx/dual_quaternion.hpp
-	"../glm.hpp"
-	"../gtc/constants.hpp"
-	"../gtc/quaternion.hpp"
-	"dual_quaternion.inl"
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtx/dual_quaternion.inl
-	"../geometric.hpp"
-	<limits>
-
-1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtx/string_cast.inl
-	<cstdarg>
-	<cstdio>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/Importer.hpp
-	<assimp/types.h>
-	<exception>
-
-1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/postprocess.h
-	<assimp/types.h>
-
-1714807561 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleEmitter.cpp
-	"ParticleEmitter.h"
-
-1714535181 /home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleEmitter.h
-	<vector>
-	"glm/glm.hpp"
-	"Texture.h"
-	"Particle.h"
-
-1714541698 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleSystem.cpp
-	"ParticleSystem.h"
-
-1716184377 /home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleSystem.h
-	<vector>
-	"ParticleRenderer.h"
-
-1714807561 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/PointShadow.cpp
-	"PointShadow.h"
-
-1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/PointShadow.h
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-	<vector>
-	"glm/glm.hpp"
-	"glm/gtc/matrix_transform.hpp"
-	"glm/gtc/type_ptr.hpp"
-	"Globals.h"
-
-1714464568 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Shader.cpp
-	"Shader.h"
-
-1716485540 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/SkeletalMesh.cpp
-	"SkeletalMesh.h"
-	<glm/gtx/string_cast.hpp>
-
-1714539818 /home/noel/Desktop/Obelisk-3D-Engine/Source/SkeletalMesh.h
-	<string>
-	<vector>
-	"VAO.h"
-	"EBO.h"
-	"Camera.h"
-	"Globals.h"
-	"Texture.h"
-
-1716668946 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/SkeletalModel.cpp
-	"SkeletalModel.h"
-
-1716668946 /home/noel/Desktop/Obelisk-3D-Engine/Source/SkeletalModel.h
-	<assimp/Importer.hpp>
-	<assimp/scene.h>
-	<assimp/postprocess.h>
-	<string>
-	<unordered_map>
-	"SkeletalMesh.h"
-	"Material.h"
-
-1713817130 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Skybox.cpp
-	"Skybox.h"
-
-1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Skybox.h
-	<GL/glew.h>
-	<GLFW/glfw3.h>
-	"stb_image.h"
-	<vector>
+	<fstream>
+	<sstream>
 	<iostream>
-	<string>
-	"Camera.h"
+	<GL/glew.h>
+	<GLFW/glfw3.h>
 
-1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/stb.cpp
-	"stb_image.h"
+1714972097 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/dr_wav.c
+	"dr_wav.h"
 
-1716953367 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/ECS.cpp
+1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/EBO.cpp
+	"EBO.h"
+
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/EBO.h
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<vector>
+
+1717101506 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/ECS.cpp
 	"ECS.h"
 
 1716952718 /home/noel/Desktop/Obelisk-3D-Engine/Source/ECS.h
@@ -3134,6 +1606,247 @@
 	"LinearMath/btScalar.h"
 	"btRigidBody.h"
 
+1716668946 /home/noel/Desktop/Obelisk-3D-Engine/Source/Model.h
+	<assimp/Importer.hpp>
+	<assimp/scene.h>
+	<assimp/postprocess.h>
+	"Mesh.h"
+	"Material.h"
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/Importer.hpp
+	<assimp/types.h>
+	<exception>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/types.h
+	<limits.h>
+	<stddef.h>
+	<stdint.h>
+	<string.h>
+	<sys/types.h>
+	<assimp/defs.h>
+	<assimp/vector2.h>
+	<assimp/vector3.h>
+	<assimp/color4.h>
+	<assimp/matrix3x3.h>
+	<assimp/matrix4x4.h>
+	<assimp/quaternion.h>
+	<cstring>
+	<new>
+	<string>
+	"vector2.inl"
+	"vector3.inl"
+	"color4.inl"
+	"matrix3x3.inl"
+	"matrix4x4.inl"
+	"quaternion.inl"
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/defs.h
+	<assimp/config.h>
+
+1715039150 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/config.h
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/vector2.h
+	<cmath>
+	<math.h>
+	"defs.h"
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/vector3.h
+	<cmath>
+	<math.h>
+	<assimp/defs.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/color4.h
+	<assimp/defs.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/matrix3x3.h
+	<assimp/defs.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/matrix4x4.h
+	<assimp/vector3.h>
+	<assimp/defs.h>
+	<assimp/config.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/quaternion.h
+	<assimp/defs.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/vector2.inl
+	<assimp/vector2.h>
+	<cmath>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/vector3.inl
+	<assimp/vector3.h>
+	<cmath>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/color4.inl
+	<assimp/color4.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/matrix3x3.inl
+	<assimp/matrix3x3.h>
+	<assimp/matrix4x4.h>
+	<algorithm>
+	<cmath>
+	<limits>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/matrix4x4.inl
+	"matrix4x4.h"
+	"matrix3x3.h"
+	"quaternion.h"
+	"MathFunctions.h"
+	<algorithm>
+	<limits>
+	<cmath>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/MathFunctions.h
+	<limits>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/quaternion.inl
+	<assimp/quaternion.h>
+	<cmath>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/scene.h
+	<assimp/types.h>
+	<assimp/texture.h>
+	<assimp/mesh.h>
+	<assimp/light.h>
+	<assimp/camera.h>
+	<assimp/material.h>
+	<assimp/anim.h>
+	<assimp/metadata.h>
+	<cstdlib>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/texture.h
+	<assimp/types.h>
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/Compiler/pushpack1.h
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/Compiler/poppack1.h
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/mesh.h
+	<assimp/aabb.h>
+	<assimp/types.h>
+	<unordered_set>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/aabb.h
+	<assimp/vector3.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/light.h
+	<assimp/types.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/camera.h
+	"types.h"
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/material.h
+	<assimp/types.h>
+	"./Compiler/pushpack1.h"
+	"./Compiler/poppack1.h"
+	"material.inl"
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/material.inl
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/anim.h
+	<assimp/quaternion.h>
+	<assimp/types.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/metadata.h
+	"Compiler/pstdint.h"
+	<stdint.h>
+	<assimp/quaternion.h>
+	<string>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/Compiler/pstdint.h
+	<stddef.h>
+	<limits.h>
+	<signal.h>
+	<stdint.h>
+	<sys/inttypes.h>
+	<wchar.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+
+1715038855 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//assimp/postprocess.h
+	<assimp/types.h>
+
+1716487931 /home/noel/Desktop/Obelisk-3D-Engine/Source/Mesh.h
+	<string>
+	<vector>
+	"VAO.h"
+	"EBO.h"
+	"Camera.h"
+	"Globals.h"
+	"Texture.h"
+
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/VAO.h
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	"VBO.h"
+
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/VBO.h
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<vector>
+	"glm/glm.hpp"
+
+1716485540 /home/noel/Desktop/Obelisk-3D-Engine/Source/Globals.h
+	"Camera.h"
+	<vector>
+	"Particle.h"
+
+1714029342 /home/noel/Desktop/Obelisk-3D-Engine/Source/Particle.h
+	"Camera.h"
+	"Texture.h"
+	"glm/glm.hpp"
+	<vector>
+	<math.h>
+
+1715851595 /home/noel/Desktop/Obelisk-3D-Engine/Source/Texture.h
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<assimp/scene.h>
+	"stb_image.h"
+	"Shader.h"
+
+1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Source/stb_image.h
+	"stb_image.h"
+	<stdio.h>
+	<stdlib.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<string.h>
+	<limits.h>
+	<math.h>
+	<stdio.h>
+	<assert.h>
+	<stdint.h>
+	<emmintrin.h>
+	<intrin.h>
+	<arm_neon.h>
+
+1714972097 /home/noel/Desktop/Obelisk-3D-Engine/Source/Material.h
+	"glm/glm.hpp"
+	"Shader.h"
+
+1716668946 /home/noel/Desktop/Obelisk-3D-Engine/Source/SkeletalModel.h
+	<assimp/Importer.hpp>
+	<assimp/scene.h>
+	<assimp/postprocess.h>
+	<string>
+	<unordered_map>
+	"SkeletalMesh.h"
+	"Material.h"
+
+1714539818 /home/noel/Desktop/Obelisk-3D-Engine/Source/SkeletalMesh.h
+	<string>
+	<vector>
+	"VAO.h"
+	"EBO.h"
+	"Camera.h"
+	"Globals.h"
+	"Texture.h"
+
 1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Source/Wire.h
 	"Camera.h"
 	"glm/glm.hpp"
@@ -3271,6 +1984,56 @@
 	"../gtc/constants.hpp"
 	"../gtc/epsilon.hpp"
 
+1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtx/string_cast.hpp
+	"../glm.hpp"
+	"../gtc/type_precision.hpp"
+	"../gtc/quaternion.hpp"
+	"../gtx/dual_quaternion.hpp"
+	<string>
+	<cmath>
+	"string_cast.inl"
+
+1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtc/type_precision.hpp
+	"../gtc/quaternion.hpp"
+	"../gtc/vec1.hpp"
+	"../ext/scalar_int_sized.hpp"
+	"../ext/scalar_uint_sized.hpp"
+	"../detail/type_vec2.hpp"
+	"../detail/type_vec3.hpp"
+	"../detail/type_vec4.hpp"
+	"../detail/type_mat2x2.hpp"
+	"../detail/type_mat2x3.hpp"
+	"../detail/type_mat2x4.hpp"
+	"../detail/type_mat3x2.hpp"
+	"../detail/type_mat3x3.hpp"
+	"../detail/type_mat3x4.hpp"
+	"../detail/type_mat4x2.hpp"
+	"../detail/type_mat4x3.hpp"
+	"../detail/type_mat4x4.hpp"
+	"type_precision.inl"
+
+1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/ext/scalar_int_sized.hpp
+	"../detail/setup.hpp"
+
+1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/ext/scalar_uint_sized.hpp
+	"../detail/setup.hpp"
+
+1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtc/type_precision.inl
+
+1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtx/dual_quaternion.hpp
+	"../glm.hpp"
+	"../gtc/constants.hpp"
+	"../gtc/quaternion.hpp"
+	"dual_quaternion.inl"
+
+1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtx/dual_quaternion.inl
+	"../geometric.hpp"
+	<limits>
+
+1713586269 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//glm/gtx/string_cast.inl
+	<cstdarg>
+	<cstdio>
+
 1714807561 /home/noel/Desktop/Obelisk-3D-Engine/Source//Skeleton.h
 	<vector>
 	<unordered_map>
@@ -3285,6 +2048,34 @@
 
 1716952304 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Entity.cpp
 	"Entity.h"
+
+1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Globals.cpp
+	"Globals.h"
+
+1714972097 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/GUI.cpp
+	"GUI.h"
+
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/GUI.h
+	<ft2build.h>
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<iostream>
+	"glm/glm.hpp"
+	"Shader.h"
+	"Globals.h"
+	<map>
+
+1524390096 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/FreeType//ft2build.h
+	<freetype/config/ftheader.h>
+
+1524390096 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/FreeType//freetype/config/ftheader.h
+
+1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Input.cpp
+	"Input.h"
+
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Input.h
+	<GL/glew.h>
+	<GLFW/glfw3.h>
 
 1715378888 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/LightSystem.cpp
 	"LightSystem.h"
@@ -3301,6 +2092,15 @@
 	"glm/glm.hpp"
 	"Shader.h"
 	"PointShadow.h"
+
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/PointShadow.h
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	<vector>
+	"glm/glm.hpp"
+	"glm/gtc/matrix_transform.hpp"
+	"glm/gtc/type_ptr.hpp"
+	"Globals.h"
 
 1716669136 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Main.cpp
 	"Main.h"
@@ -9879,503 +8679,7 @@
 	<boost/accumulators/framework/depends_on.hpp>
 	<boost/accumulators/statistics_fwd.hpp>
 
-1715821620 /home/noel/Desktop/Obelisk-3D-Engine/Source/Audio.h
-	<AL/al.h>
-	<AL/alc.h>
-	<thread>
-	<atomic>
-	<mutex>
-	<cstring>
-	"dr_wav.h"
-	<iostream>
-	<vector>
-
-1715038877 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//AL/al.h
-
-1715038877 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//AL/alc.h
-
-1715140969 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Physics.cpp
-	"Physics.h"
-
-1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Texture.cpp
-	"Texture.h"
-
-1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/VAO.cpp
-	"VAO.h"
-
-1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/VBO.cpp
-	"VBO.h"
-
-1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Wire.cpp
-	"Wire.h"
-
-1715236676 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Audio.cpp
-	"Audio.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/btBulletDynamicsCommon.h
-	"btBulletCollisionCommon.h"
-	"BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h"
-	"BulletDynamics/Dynamics/btSimpleDynamicsWorld.h"
-	"BulletDynamics/Dynamics/btRigidBody.h"
-	"BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
-	"BulletDynamics/ConstraintSolver/btHingeConstraint.h"
-	"BulletDynamics/ConstraintSolver/btConeTwistConstraint.h"
-	"BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h"
-	"BulletDynamics/ConstraintSolver/btSliderConstraint.h"
-	"BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.h"
-	"BulletDynamics/ConstraintSolver/btUniversalConstraint.h"
-	"BulletDynamics/ConstraintSolver/btHinge2Constraint.h"
-	"BulletDynamics/ConstraintSolver/btGearConstraint.h"
-	"BulletDynamics/ConstraintSolver/btFixedConstraint.h"
-	"BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
-	"BulletDynamics/Vehicle/btRaycastVehicle.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/btBulletCollisionCommon.h
-	"BulletCollision/CollisionDispatch/btCollisionWorld.h"
-	"BulletCollision/CollisionDispatch/btCollisionObject.h"
-	"BulletCollision/CollisionShapes/btBoxShape.h"
-	"BulletCollision/CollisionShapes/btSphereShape.h"
-	"BulletCollision/CollisionShapes/btCapsuleShape.h"
-	"BulletCollision/CollisionShapes/btCylinderShape.h"
-	"BulletCollision/CollisionShapes/btConeShape.h"
-	"BulletCollision/CollisionShapes/btStaticPlaneShape.h"
-	"BulletCollision/CollisionShapes/btConvexHullShape.h"
-	"BulletCollision/CollisionShapes/btTriangleMesh.h"
-	"BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h"
-	"BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
-	"BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h"
-	"BulletCollision/CollisionShapes/btTriangleMeshShape.h"
-	"BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h"
-	"BulletCollision/CollisionShapes/btCompoundShape.h"
-	"BulletCollision/CollisionShapes/btTetrahedronShape.h"
-	"BulletCollision/CollisionShapes/btEmptyShape.h"
-	"BulletCollision/CollisionShapes/btMultiSphereShape.h"
-	"BulletCollision/CollisionShapes/btUniformScalingShape.h"
-	"BulletCollision/CollisionDispatch/btSphereSphereCollisionAlgorithm.h"
-	"BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h"
-	"BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
-	"BulletCollision/BroadphaseCollision/btSimpleBroadphase.h"
-	"BulletCollision/BroadphaseCollision/btAxisSweep3.h"
-	"BulletCollision/BroadphaseCollision/btDbvtBroadphase.h"
-	"LinearMath/btQuaternion.h"
-	"LinearMath/btTransform.h"
-	"LinearMath/btDefaultMotionState.h"
-	"LinearMath/btQuickprof.h"
-	"LinearMath/btIDebugDraw.h"
-	"LinearMath/btSerializer.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionDispatch/btCollisionWorld.h
-	"LinearMath/btVector3.h"
-	"LinearMath/btTransform.h"
-	"btCollisionObject.h"
-	"btCollisionDispatcher.h"
-	"BulletCollision/BroadphaseCollision/btOverlappingPairCache.h"
-	"LinearMath/btAlignedObjectArray.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionDispatch/btCollisionObject.h
-	"LinearMath/btTransform.h"
-	"LinearMath/btMotionState.h"
-	"LinearMath/btAlignedAllocator.h"
-	"LinearMath/btAlignedObjectArray.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionDispatch/btCollisionDispatcher.h
-	"BulletCollision/BroadphaseCollision/btDispatcher.h"
-	"BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
-	"BulletCollision/CollisionDispatch/btManifoldResult.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-	"LinearMath/btAlignedObjectArray.h"
-	"btCollisionCreateFunc.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionDispatch/btCollisionCreateFunc.h
-	"LinearMath/btAlignedObjectArray.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btBoxShape.h
-	"btPolyhedralConvexShape.h"
-	"btCollisionMargin.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-	"LinearMath/btVector3.h"
-	"LinearMath/btMinMax.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btPolyhedralConvexShape.h
-	"LinearMath/btMatrix3x3.h"
-	"btConvexInternalShape.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btConvexInternalShape.h
-	"btConvexShape.h"
-	"LinearMath/btAabbUtil2.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btConvexShape.h
-	"btCollisionShape.h"
-	"LinearMath/btVector3.h"
-	"LinearMath/btTransform.h"
-	"LinearMath/btMatrix3x3.h"
-	"btCollisionMargin.h"
-	"LinearMath/btAlignedAllocator.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btCollisionShape.h
-	"LinearMath/btTransform.h"
-	"LinearMath/btVector3.h"
-	"LinearMath/btMatrix3x3.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btCollisionMargin.h
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btSphereShape.h
-	"btConvexInternalShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btCapsuleShape.h
-	"btConvexInternalShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btCylinderShape.h
-	"btBoxShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-	"LinearMath/btVector3.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btConeShape.h
-	"btConvexInternalShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btStaticPlaneShape.h
-	"btConcaveShape.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btConcaveShape.h
-	"btCollisionShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-	"btTriangleCallback.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btTriangleCallback.h
-	"LinearMath/btVector3.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btConvexHullShape.h
-	"btPolyhedralConvexShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-	"LinearMath/btAlignedObjectArray.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btTriangleMesh.h
-	"btTriangleIndexVertexArray.h"
-	"LinearMath/btVector3.h"
-	"LinearMath/btAlignedObjectArray.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h
-	"btStridingMeshInterface.h"
-	"LinearMath/btAlignedObjectArray.h"
-	"LinearMath/btScalar.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btStridingMeshInterface.h
-	"LinearMath/btVector3.h"
-	"btTriangleCallback.h"
-	"btConcaveShape.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btConvexTriangleMeshShape.h
-	"btPolyhedralConvexShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h
-	"btTriangleMeshShape.h"
-	"btOptimizedBvh.h"
-	"LinearMath/btAlignedAllocator.h"
-	"btTriangleInfoMap.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btTriangleMeshShape.h
-	"btConcaveShape.h"
-	"btStridingMeshInterface.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btOptimizedBvh.h
-	"BulletCollision/BroadphaseCollision/btQuantizedBvh.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btTriangleInfoMap.h
-	"LinearMath/btHashMap.h"
-	"LinearMath/btSerializer.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h
-	"BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btCompoundShape.h
-	"btCollisionShape.h"
-	"LinearMath/btVector3.h"
-	"LinearMath/btTransform.h"
-	"LinearMath/btMatrix3x3.h"
-	"btCollisionMargin.h"
-	"LinearMath/btAlignedObjectArray.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btTetrahedronShape.h
-	"btPolyhedralConvexShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btEmptyShape.h
-	"btConcaveShape.h"
-	"LinearMath/btVector3.h"
-	"LinearMath/btTransform.h"
-	"LinearMath/btMatrix3x3.h"
-	"btCollisionMargin.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btMultiSphereShape.h
-	"btConvexInternalShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-	"LinearMath/btAlignedObjectArray.h"
-	"LinearMath/btAabbUtil2.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionShapes/btUniformScalingShape.h
-	"btConvexShape.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionDispatch/btSphereSphereCollisionAlgorithm.h
-	"btActivatingCollisionAlgorithm.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-	"BulletCollision/CollisionDispatch/btCollisionCreateFunc.h"
-	"btCollisionDispatcher.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionDispatch/btActivatingCollisionAlgorithm.h
-	"BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h
-	"btCollisionConfiguration.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/CollisionDispatch/btCollisionConfiguration.h
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/BroadphaseCollision/btSimpleBroadphase.h
-	"btOverlappingPairCache.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/BroadphaseCollision/btOverlappingPairCache.h
-	"btBroadphaseInterface.h"
-	"btBroadphaseProxy.h"
-	"btOverlappingPairCallback.h"
-	"LinearMath/btAlignedObjectArray.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/BroadphaseCollision/btBroadphaseInterface.h
-	"btBroadphaseProxy.h"
-	"LinearMath/btVector3.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/BroadphaseCollision/btBroadphaseProxy.h
-	"LinearMath/btScalar.h"
-	"LinearMath/btVector3.h"
-	"LinearMath/btAlignedAllocator.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/BroadphaseCollision/btOverlappingPairCallback.h
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/BroadphaseCollision/btAxisSweep3.h
-	"LinearMath/btVector3.h"
-	"btOverlappingPairCache.h"
-	"btBroadphaseInterface.h"
-	"btBroadphaseProxy.h"
-	"btOverlappingPairCallback.h"
-	"btDbvtBroadphase.h"
-	"btAxisSweep3Internal.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/BroadphaseCollision/btDbvtBroadphase.h
-	"BulletCollision/BroadphaseCollision/btDbvt.h"
-	"BulletCollision/BroadphaseCollision/btOverlappingPairCache.h"
-	"LinearMath/btQuickprof.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletCollision/BroadphaseCollision/btAxisSweep3Internal.h
-	"LinearMath/btVector3.h"
-	"btOverlappingPairCache.h"
-	"btBroadphaseInterface.h"
-	"btBroadphaseProxy.h"
-	"btOverlappingPairCallback.h"
-	"btDbvtBroadphase.h"
-	<stdio.h>
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btQuaternion.h
-	"btVector3.h"
-	"btQuadWord.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btVector3.h
-	"btScalar.h"
-	"btMinMax.h"
-	"btAlignedAllocator.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btScalar.h
-	<math.h>
-	<stdlib.h>
-	<float.h>
-	<ppcintrinsics.h>
-	<emmintrin.h>
-	<stdio.h>
-	<assert.h>
-	<assert.h>
-	<spu_printf.h>
-	<assert.h>
-	<smmintrin.h>
-	<tmmintrin.h>
-	<pmmintrin.h>
-	<emmintrin.h>
-	<arm_neon.h>
-	<assert.h>
-	<stdio.h>
-	<assert.h>
-	<arm_neon.h>
-	<arm_neon.h>
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btMinMax.h
-	"btScalar.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btAlignedAllocator.h
-	"btScalar.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btQuadWord.h
-	"btScalar.h"
-	"btMinMax.h"
-	<altivec.h>
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btTransform.h
-	"btMatrix3x3.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btMatrix3x3.h
-	"btVector3.h"
-	"btQuaternion.h"
-	<stdio.h>
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btDefaultMotionState.h
-	"btMotionState.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btMotionState.h
-	"btTransform.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btQuickprof.h
-	"btScalar.h"
-	<stdio.h>
-	"btAlignedAllocator.h"
-	<new>
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btIDebugDraw.h
-	"btVector3.h"
-	"btTransform.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btSerializer.h
-	"btScalar.h"
-	"btHashMap.h"
-	<memory.h>
-	<string.h>
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btHashMap.h
-	<string>
-	"btAlignedObjectArray.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/LinearMath/btAlignedObjectArray.h
-	"btScalar.h"
-	"btAlignedAllocator.h"
-	<memory.h>
-	<string.h>
-	<new>
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h
-	"btDynamicsWorld.h"
-	"LinearMath/btAlignedObjectArray.h"
-	"LinearMath/btThreads.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/Dynamics/btDynamicsWorld.h
-	"BulletCollision/CollisionDispatch/btCollisionWorld.h"
-	"BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/Dynamics/btSimpleDynamicsWorld.h
-	"btDynamicsWorld.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/Dynamics/btRigidBody.h
-	"LinearMath/btAlignedObjectArray.h"
-	"LinearMath/btTransform.h"
-	"BulletCollision/BroadphaseCollision/btBroadphaseProxy.h"
-	"BulletCollision/CollisionDispatch/btCollisionObject.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h
-	"LinearMath/btVector3.h"
-	"btJacobianEntry.h"
-	"btTypedConstraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btJacobianEntry.h
-	"LinearMath/btMatrix3x3.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btTypedConstraint.h
-	"LinearMath/btScalar.h"
-	"btSolverConstraint.h"
-	"BulletDynamics/Dynamics/btRigidBody.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btSolverConstraint.h
-	"LinearMath/btVector3.h"
-	"LinearMath/btMatrix3x3.h"
-	"btJacobianEntry.h"
-	"LinearMath/btAlignedObjectArray.h"
-	"btSolverBody.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btSolverBody.h
-	"LinearMath/btVector3.h"
-	"LinearMath/btMatrix3x3.h"
-	"LinearMath/btAlignedAllocator.h"
-	"LinearMath/btTransformUtil.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btHingeConstraint.h
-	"LinearMath/btVector3.h"
-	"btJacobianEntry.h"
-	"btTypedConstraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btConeTwistConstraint.h
-	"LinearMath/btVector3.h"
-	"btJacobianEntry.h"
-	"btTypedConstraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h
-	"LinearMath/btVector3.h"
-	"btJacobianEntry.h"
-	"btTypedConstraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btSliderConstraint.h
-	"LinearMath/btScalar.h"
-	"LinearMath/btVector3.h"
-	"btJacobianEntry.h"
-	"btTypedConstraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.h
-	"LinearMath/btVector3.h"
-	"btTypedConstraint.h"
-	"btGeneric6DofConstraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btUniversalConstraint.h
-	"LinearMath/btVector3.h"
-	"btTypedConstraint.h"
-	"btGeneric6DofConstraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btHinge2Constraint.h
-	"LinearMath/btVector3.h"
-	"btTypedConstraint.h"
-	"btGeneric6DofSpring2Constraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btGeneric6DofSpring2Constraint.h
-	"LinearMath/btVector3.h"
-	"btJacobianEntry.h"
-	"btTypedConstraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btGearConstraint.h
-	"BulletDynamics/ConstraintSolver/btTypedConstraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btFixedConstraint.h
-	"btGeneric6DofSpring2Constraint.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h
-	"BulletDynamics/ConstraintSolver/btTypedConstraint.h"
-	"BulletDynamics/ConstraintSolver/btContactSolverInfo.h"
-	"BulletDynamics/ConstraintSolver/btSolverBody.h"
-	"BulletDynamics/ConstraintSolver/btSolverConstraint.h"
-	"BulletCollision/NarrowPhaseCollision/btManifoldPoint.h"
-	"BulletDynamics/ConstraintSolver/btConstraintSolver.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/Vehicle/btRaycastVehicle.h
-	"BulletDynamics/Dynamics/btRigidBody.h"
-	"BulletDynamics/ConstraintSolver/btTypedConstraint.h"
-	"btVehicleRaycaster.h"
-	"LinearMath/btAlignedObjectArray.h"
-	"btWheelInfo.h"
-	"BulletDynamics/Dynamics/btActionInterface.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/Vehicle/btVehicleRaycaster.h
-	"LinearMath/btVector3.h"
-
-1714972438 /home/noel/Desktop/Obelisk-3D-Engine/Libraries_linux/include//bullet/BulletDynamics/Vehicle/btWheelInfo.h
-	"LinearMath/btVector3.h"
-	"LinearMath/btTransform.h"
-
-1717100988 /home/noel/Desktop/Obelisk-3D-Engine/Source/Scene.h
+1717102577 /home/noel/Desktop/Obelisk-3D-Engine/Source/Scene.h
 	<GL/glew.h>
 	<GLFW/glfw3.h>
 	"glm/glm.hpp"
@@ -10409,11 +8713,24 @@
 	"Transform.h"
 	"QuadRenderer.h"
 
+1715485591 /home/noel/Desktop/Obelisk-3D-Engine/Source/Skybox.h
+	<GL/glew.h>
+	<GLFW/glfw3.h>
+	"stb_image.h"
+	<vector>
+	<iostream>
+	<string>
+	"Camera.h"
+
 1716184377 /home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleRenderer.h
 	<vector>
 	"glm/glm.hpp"
 	"Texture.h"
 	"Particle.h"
+
+1716184377 /home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleSystem.h
+	<vector>
+	"ParticleRenderer.h"
 
 1716184377 /home/noel/Desktop/Obelisk-3D-Engine/Source/QuadRenderer.h
 	<vector>
@@ -10422,6 +8739,53 @@
 	"Camera.h"
 	"Transform.h"
 
+1716485540 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Mesh.cpp
+	"Mesh.h"
+	<glm/gtx/string_cast.hpp>
+
+1716668946 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Model.cpp
+	"Model.h"
+
+1714029261 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Particle.cpp
+	"Particle.h"
+
 1716184377 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleRenderer.cpp
 	"ParticleRenderer.h"
+
+1714541698 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/ParticleSystem.cpp
+	"ParticleSystem.h"
+
+1715140969 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Physics.cpp
+	"Physics.h"
+
+1714807561 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/PointShadow.cpp
+	"PointShadow.h"
+
+1714464568 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Shader.cpp
+	"Shader.h"
+
+1716485540 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/SkeletalMesh.cpp
+	"SkeletalMesh.h"
+	<glm/gtx/string_cast.hpp>
+
+1716668946 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/SkeletalModel.cpp
+	"SkeletalModel.h"
+
+1713817130 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Skybox.cpp
+	"Skybox.h"
+
+1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/stb.cpp
+	"stb_image.h"
+
+1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Texture.cpp
+	"Texture.h"
+
+1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/VAO.cpp
+	"VAO.h"
+
+1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/VBO.cpp
+	"VBO.h"
+
+1713586269 source:/home/noel/Desktop/Obelisk-3D-Engine/Source/Wire.cpp
+	"Wire.h"
 

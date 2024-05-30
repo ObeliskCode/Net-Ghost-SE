@@ -93,7 +93,7 @@ void ECS::addPhysTransform(unsigned int ID, Transform* phystransf) {
 	entMap[ID] = e;
 }
 void ECS::addWire(unsigned int ID, Wire* w) {
-    //TODO
+    delete w;
 }
 void ECS::addWireFrame(unsigned int ID, float halfWidth, float halfHeight, float halfLength) {
     //TODO
