@@ -867,7 +867,7 @@ class TestRoom : public Scene {
             }
             { // character, delta
 				if (Globals::get().camLock) {
-					btRigidBody* body = character->getBody();
+					btRigidBody* body = ECS::get().cset_body.getMem(characterID);
 
 					glm::vec2 camOri = glm::vec2(Globals::get().camera->getOrientation().x, Globals::get().camera->getOrientation().z);
 
@@ -920,11 +920,11 @@ class TestRoom : public Scene {
 			Physics::get().updateSim(delta); // regular time advance
 
 			// move sim forward by delta
-			ECS::get().updatePhysics(); // update entities with physics state
+			ECS::get().syncPhysics(); // update entities with physics state
 			{
 				if (Globals::get().camLock) {
 					btTransform trans;
-					btRigidBody* body = character->getBody();
+					btRigidBody* body = ECS::get().cset_body.getMem(characterID);
 					body->getMotionState()->getWorldTransform(trans);
 					glm::vec3 pos = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()) + 7.0f, float(trans.getOrigin().getZ()));
 					Globals::get().camera->setPosition(pos);
@@ -987,15 +987,16 @@ class TestRoom : public Scene {
 					unsigned int entID = Physics::get().m_EntityMap[sel];
 					if (entID != 0) {
 						if (prevID != 0 && prevID != entID) {
-							Entity* prevEnt = ECS::get().getEntity(prevID);
-							if (prevEnt) {
-								prevEnt->resetBit(COMPONENT_BIT_STENCIL);
-								ECS::get().unregisterComponent(prevEnt, COMPONENT_BIT_STENCIL);
+							Entity prevEnt = ECS::get().getEntity(prevID);
+							if (prevEnt.m_id != NULL) {
+								prevEnt.stencil_flag = 0;
+                                ECS::get().stencilSet.erase(prevEnt.m_id);
+								ECS::get().updateEntity(prevEnt);
 							}
 							prevID = 0;
 						}
 						if (Input::get().getValue(GLFW_KEY_E)) {
-							if (ECS::get().getEntity(entID)->getType() == "pickup") {
+							if (ECS::get().getEntity(entID).pickup_flag) {
 								// only deletes wires, rigid body & not model / skel model
 								cigCt++;
 								ECS::get().deleteEntity(entID);
@@ -1003,21 +1004,23 @@ class TestRoom : public Scene {
 
 							}
 						}
-						else if (!ECS::get().getEntity(entID)->m_surface) {
-							Entity* selEnt = ECS::get().getEntity(entID);
-							if (selEnt) {
-								selEnt->setBit(COMPONENT_BIT_STENCIL);
-								ECS::get().registerComponent(selEnt, COMPONENT_BIT_STENCIL);
+						else if (!ECS::get().getEntity(entID).surface_flag) {
+							Entity selEnt = ECS::get().getEntity(entID);
+							if (selEnt.m_id != NULL) {
+								selEnt.stencil_flag = 1;
+								ECS::get().stencilSet.insert(selEnt.m_id);
+								ECS::get().updateEntity(selEnt);
 								prevID = entID;
 							}
 						}
 					}
 				}
 				else if (prevID != 0) {
-					Entity* prevEnt = ECS::get().getEntity(prevID);
-					if (prevEnt) {
-						prevEnt->resetBit(COMPONENT_BIT_STENCIL);
-						ECS::get().unregisterComponent(prevEnt, COMPONENT_BIT_STENCIL);
+					Entity prevEnt = ECS::get().getEntity(prevID);
+					if (prevEnt.m_id != NULL) {
+						prevEnt.stencil_flag = 0;
+                        ECS::get().stencilSet.erase(prevEnt.m_id);
+                        ECS::get().updateEntity(prevEnt);
 					}
 					prevID = 0;
 				}

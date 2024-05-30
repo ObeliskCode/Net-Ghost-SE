@@ -75,12 +75,6 @@ public:
     Entity getEntity(unsigned int ID);
     void updateEntity(Entity e);
 
-    std::unordered_set<unsigned int> stencilSet;
-
-private:
-    ECS(); // no public constructor
-    ~ECS(); // no public destructor
-    static ECS* instance; // declaration class variable
 
     // approx 4MB right here ...
     ComponentSet<Transform*> cset_transform;
@@ -92,6 +86,14 @@ private:
     ComponentSet<Shader*> cset_shader;
     ComponentSet<btRigidBody*> cset_body;
     // no wire component set ideally
+
+    std::unordered_set<unsigned int> stencilSet;
+
+private:
+    ECS(); // no public constructor
+    ~ECS(); // no public destructor
+    static ECS* instance; // declaration class variable
+
 
     std::unordered_set<unsigned int> cam1Set;
     std::unordered_set<unsigned int> cam2Set;
