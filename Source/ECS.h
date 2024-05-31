@@ -70,6 +70,7 @@ public:
     void DrawEntityPointShadows();
     void DrawEntityStencils();
     void DrawEntities();
+    void DrawScreenEntity(unsigned int ID);
 
     void deleteEntity(unsigned int ID);
     Entity getEntity(unsigned int ID);

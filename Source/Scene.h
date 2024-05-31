@@ -1046,10 +1046,15 @@ class TestRoom : public Scene {
 					if (cig_anim_time >= 3.0f) is_smoking = false;
 				}
 
+				Entity cigEnt = ECS::get().getEntity(cigEntID);
+
 				if (cig_anim) {
-					cigEnt->m_visible = true;
+                    cigEnt.visible_flag = 1;
+                    ECS::get().updateEntity(cigEnt);
+				} else {
+                    cigEnt.visible_flag = 0;
+                    ECS::get().updateEntity(cigEnt);
 				}
-				else cigEnt->m_visible = false;
 
 
 				if (cig_anim == false && is_smoking == true) {
@@ -1090,7 +1095,8 @@ class TestRoom : public Scene {
                 float q1, q3;
                 q1 = cos(batRot / 2);
                 q3 = sin(batRot / 2);
-                batEnt->transform->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
+                Transform * batTRF = ECS::get().cset_transform.getMem(batEntID);
+                batTRF->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
             }
 
             renderScene();
@@ -1115,7 +1121,10 @@ class TestRoom : public Scene {
             linkModelShaderUniforms(*Globals::get().lightProgram);
             linkModelShaderUniforms(*Globals::get().animProgram);
             linkModelShaderUniforms(*Globals::get().noTexAnimProgram);
-            ECS::get().DrawEntities();
+
+            //ECS::get().DrawEntities(); // crashing here!
+
+            std::cerr << "hello" << std::endl;
 
             quadSys->DrawQuads(*quadProgram, *Globals::get().camera);
 
@@ -1123,8 +1132,8 @@ class TestRoom : public Scene {
 
             ECS::get().DrawEntityStencils();
 
-            batEnt->Draw(); // fix these so that they have unique lighting!
-            cigEnt->Draw();
+            ECS::get().DrawScreenEntity(batEntID);
+            ECS::get().DrawScreenEntity(cigEntID);
 
             glEnable(GL_BLEND);
             std::sort(particleEmitter.particles.begin(), particleEmitter.particles.end(), Less);
