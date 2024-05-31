@@ -390,6 +390,10 @@ class TestRoom : public Scene {
         unsigned int batEntID;
         unsigned int cigEntID;
         unsigned int characterID;
+        unsigned int panelID;
+        unsigned int dumpID;
+        unsigned int lampID;
+        unsigned int benchID;
 
         unsigned int depthMapFBO;
         unsigned int depthMap;
@@ -406,6 +410,8 @@ class TestRoom : public Scene {
         Shader* partProgram;
 
         Shader* quadProgram;
+
+
 
         Animator* mator;
 
@@ -524,6 +530,7 @@ class TestRoom : public Scene {
             trf = new Transform();
             Model* panel = new Model("floor/floor.dae");
             entID = ECS::get().createEntity();
+            panelID = entID;
             trf->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
             trf->setScale(glm::vec3(20.0f));
             ECS::get().addModel(entID, panel);
@@ -537,6 +544,7 @@ class TestRoom : public Scene {
             trf = new Transform();
             Model* lamp = new Model("lamp/lamp.dae");
             entID = ECS::get().createEntity();
+            lampID = entID;
             trf->setScale(glm::vec3(0.05f));
             trf->setTranslation(glm::vec3(0.0f, 5.0f, 0.0f));
             ECS::get().addModel(entID, lamp);
@@ -554,6 +562,7 @@ class TestRoom : public Scene {
             Model* bench = new Model("bench/bench.dae");
             float CosHalfPi = sqrt(2.f) / 2.f;
             entID = ECS::get().createEntity();
+            benchID = entID;
             trf->setScale(glm::vec3(4.5f));
             trf->setTranslation(glm::vec3(0.0f, -2.5f, 0.0f));
             trf->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
@@ -590,6 +599,7 @@ class TestRoom : public Scene {
             trf = new Transform();
             Model* dumpster = new Model("dumpster/dumpster.dae");
             entID = ECS::get().createEntity();
+            dumpID = entID;
             trf->setScale(glm::vec3(6.5f));
             trf->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
             trf->setRotation(glm::quat(CosHalfPi, 0.f, -CosHalfPi, 0.f));
@@ -1123,8 +1133,11 @@ class TestRoom : public Scene {
             linkModelShaderUniforms(*Globals::get().noTexAnimProgram);
 
             //ECS::get().DrawEntities(); // crashing here!
+            ECS::get().DrawEntity(panelID);
+            ECS::get().DrawEntity(dumpID);
+            ECS::get().DrawEntity(lampID);
+            ECS::get().DrawEntity(benchID);
 
-            std::cerr << "hello" << std::endl;
 
             quadSys->DrawQuads(*quadProgram, *Globals::get().camera);
 
