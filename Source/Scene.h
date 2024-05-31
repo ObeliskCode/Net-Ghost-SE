@@ -394,6 +394,17 @@ class TestRoom : public Scene {
         unsigned int dumpID;
         unsigned int lampID;
         unsigned int benchID;
+        unsigned int tentID;
+        unsigned int quadID;
+        unsigned int girlID;
+        unsigned int cartID;
+        unsigned int wolfID;
+        unsigned int sitID;
+        unsigned int light1ID;
+        unsigned int light2ID;
+        unsigned int cigEnts[5];
+        unsigned int axisID, sphere1ID ,sphere2ID, capsuleID;
+        unsigned int chID;
 
         unsigned int depthMapFBO;
         unsigned int depthMap;
@@ -613,6 +624,7 @@ class TestRoom : public Scene {
 
             trf = new Transform();
             entID = ECS::get().createEntity();
+            cartID = entID;
             Model* cart = new Model("cart/ShoppingCart.dae");
             trf->setTranslation(glm::vec3(20.0f, 5.0f, 20.0f));
             trf->setScale(glm::vec3(7.f));
@@ -623,6 +635,7 @@ class TestRoom : public Scene {
 
             trf = new Transform();
             entID = ECS::get().createEntity();
+            tentID = entID;
             Model* tent = new Model("tent/tent.dae");
             trf->setScale(glm::vec3(7.f));
             trf->setTranslation(glm::vec3(0.0f, -4.0f, 0.0f));
@@ -637,6 +650,7 @@ class TestRoom : public Scene {
 
             trf = new Transform();
             entID = ECS::get().createEntity();
+            wolfID = entID;
             SkeletalModel* wolf = new SkeletalModel("wolf/Wolf_One_dae.dae");
             Skeleton* wolfAnimation = new Skeleton("wolf/Wolf_One_dae.dae", wolf);
             Animator* animator = new Animator(wolfAnimation);
@@ -651,6 +665,7 @@ class TestRoom : public Scene {
 
             trf = new Transform();
             entID = ECS::get().createEntity();
+            sitID = entID;
             SkeletalModel* sit = new SkeletalModel("sit/Sitting Clap.dae");
             Skeleton* sitAnimation = new Skeleton("sit/Sitting Clap.dae", sit);
             Animator* sitMator = new Animator(sitAnimation);
@@ -666,6 +681,7 @@ class TestRoom : public Scene {
 
             trf = new Transform();
             entID = ECS::get().createEntity();
+            girlID = entID;
             SkeletalModel* walk = new SkeletalModel("jjong/Idle.dae");
             Skeleton* walkAnimation = new Skeleton("jjong/Idle.dae", walk);
             walkAnimation->addAnimation("jjong/Walking.dae", walk);
@@ -688,6 +704,7 @@ class TestRoom : public Scene {
 
             trf = new Transform();
             entID = ECS::get().createEntity();
+            light1ID = entID;
             Model* light = new Model("bulb/scene.gltf");
             trf->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
             trf->setTranslation(glm::vec3(-20.0f, 13.2f, 28.0f));
@@ -701,6 +718,7 @@ class TestRoom : public Scene {
 
             trf = new Transform();
             entID = ECS::get().createEntity();
+            light2ID = entID;
             Model* lightSecond = new Model("bulb/scene.gltf");
             trf->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
             trf->setTranslation(glm::vec3(-20.0f, 10.0f, -20.0f));
@@ -724,6 +742,8 @@ class TestRoom : public Scene {
 
             //QUAD
             entID = ECS::get().createEntity();
+            quadID = entID;
+            ECS::get().addTransform(entID, new Transform());
             ECS::get().addCamera(entID, Globals::get().camera);
             ECS::get().addWire(entID, new Wire(glm::vec3(60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, -60.0f)));
             ECS::get().addWire(entID, new Wire(glm::vec3(-60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, 60.0f)));
@@ -734,6 +754,8 @@ class TestRoom : public Scene {
 
             //STAGING AXIS
             entID = ECS::get().createEntity();
+            axisID = entID;
+            ECS::get().addTransform(entID, new Transform());
             ECS::get().addCamera(entID, Globals::get().camera);
             ECS::get().addWire(entID, new Wire(glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(5.0f, 0.0f, 0.0f)));
             ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -5.0f, 0.0f), glm::vec3(0.0f, 5.0f, 0.0f)));
@@ -741,15 +763,19 @@ class TestRoom : public Scene {
 
             //RIGID BODY 1
             entID = ECS::get().createEntity();
+            sphere1ID = entID;
+            ECS::get().addTransform(entID, new Transform());
             ECS::get().addCamera(entID, Globals::get().camera);
             ECS::get().addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
             ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
             ECS::get().addPhysBody(entID, Physics::get().addShape2(entID));
-             ECS::get().addPhysTransform(entID, new Transform());
+            ECS::get().addPhysTransform(entID, new Transform());
 
             //RIGID BODY 2
             entID = ECS::get().createEntity();
+            sphere2ID = entID;
+            ECS::get().addTransform(entID, new Transform());
             ECS::get().addCamera(entID, Globals::get().camera);
             ECS::get().addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -760,6 +786,7 @@ class TestRoom : public Scene {
             //CONTROLLABLE BODY
             entID = ECS::get().createEntity();
             characterID = entID;
+            ECS::get().addTransform(entID, new Transform());
             ECS::get().addCamera(entID, Globals::get().camera);
             ECS::get().addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
@@ -770,6 +797,8 @@ class TestRoom : public Scene {
 
             // CAPSULE
             entID = ECS::get().createEntity();
+            capsuleID = entID;
+            ECS::get().addTransform(entID, new Transform());
             ECS::get().addCamera(entID, Globals::get().camera);
             ECS::get().addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
@@ -781,10 +810,11 @@ class TestRoom : public Scene {
             //TEST CIGS
             for (int i = 0; i < 5; i++) {
                 entID = ECS::get().createEntity();
+                cigEnts[i] = entID;
+                ECS::get().addTransform(entID, new Transform());
                 ECS::get().addModel(entID, new Model("cig/cig.dae"));
                 ECS::get().addShader(entID, Globals::get().rigProgram);
                 ECS::get().addCamera(entID, Globals::get().camera);
-                ECS::get().addTransform(entID, new Transform());
                 ECS::get().addWire(entID, new Wire(glm::vec3(-0.06f, 0.0f, 0.0f), glm::vec3(0.06f, 0.0f, 0.0f)));
                 ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -0.06f, 0.0f), glm::vec3(0.0f, 0.06f, 0.0f)));
                 ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -0.685f), glm::vec3(0.0f, 0.0f, 0.685f)));
@@ -797,6 +827,8 @@ class TestRoom : public Scene {
 
             //CROSSHAIR HACK (class required)
             entID = ECS::get().createEntity();
+            chID = entID;
+            ECS::get().addTransform(entID, new Transform());
             ECS::get().addCamera(entID, Globals::get().handCam);
             ECS::get().addWire(entID, new Wire(glm::vec3(-0.04f, 0.0f, 0.0f), glm::vec3(0.04f, 0.0f, 0.0f)));
             ECS::get().addWire(entID, new Wire(glm::vec3(0.0f, -0.04f, 0.0f), glm::vec3(0.0f, 0.04f, 0.0f)));
@@ -1133,11 +1165,28 @@ class TestRoom : public Scene {
             linkModelShaderUniforms(*Globals::get().noTexAnimProgram);
 
             //ECS::get().DrawEntities(); // crashing here!
+
             ECS::get().DrawEntity(panelID);
             ECS::get().DrawEntity(dumpID);
             ECS::get().DrawEntity(lampID);
             ECS::get().DrawEntity(benchID);
-
+            ECS::get().DrawEntity(tentID);
+            ECS::get().DrawEntity(characterID);
+            ECS::get().DrawEntity(quadID);
+            ECS::get().DrawEntity(girlID);
+            ECS::get().DrawEntity(cartID);
+            ECS::get().DrawEntity(wolfID);
+            ECS::get().DrawEntity(sitID);
+            ECS::get().DrawEntity(light1ID);
+            ECS::get().DrawEntity(light2ID);
+            for (int i = 0; i < 5; i++) {
+                ECS::get().DrawEntity(cigEnts[i]);
+            }
+            ECS::get().DrawEntity(axisID);
+            ECS::get().DrawEntity(sphere1ID);
+            ECS::get().DrawEntity(sphere2ID);
+            ECS::get().DrawEntity(capsuleID);
+            ECS::get().DrawEntity(chID);
 
             quadSys->DrawQuads(*quadProgram, *Globals::get().camera);
 

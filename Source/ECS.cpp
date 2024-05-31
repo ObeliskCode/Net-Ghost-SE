@@ -1,6 +1,6 @@
 #include "ECS.h"
 
-#define NO_WIRES
+//#define NO_WIRES
 
 #ifdef NO_WIRES
 #define WIRES_DISABLED true
@@ -93,10 +93,30 @@ void ECS::addPhysTransform(unsigned int ID, Transform* phystransf) {
 	entMap[ID] = e;
 }
 void ECS::addWire(unsigned int ID, Wire* w) {
-    delete w;
+    if (WIRES_DISABLED) {
+		delete w;
+	}
+	else {
+		cset_wire.getMem(ID).push_back(w);
+	}
 }
 void ECS::addWireFrame(unsigned int ID, float halfWidth, float halfHeight, float halfLength) {
-    //TODO
+    if (!WIRES_DISABLED) {
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(-halfWidth, halfHeight, -halfLength), glm::vec3(halfWidth, halfHeight, -halfLength)));
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(halfWidth, halfHeight, -halfLength), glm::vec3(halfWidth, halfHeight, halfLength)));
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(halfWidth, halfHeight, halfLength), glm::vec3(-halfWidth, halfHeight, halfLength)));
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(-halfWidth, halfHeight, halfLength), glm::vec3(-halfWidth, halfHeight, -halfLength)));
+
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(-halfWidth, -halfHeight, -halfLength), glm::vec3(halfWidth, -halfHeight, -halfLength)));
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(halfWidth, -halfHeight, -halfLength), glm::vec3(halfWidth, -halfHeight, halfLength)));
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(halfWidth, -halfHeight, halfLength), glm::vec3(-halfWidth, -halfHeight, halfLength)));
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(-halfWidth, -halfHeight, halfLength), glm::vec3(-halfWidth, -halfHeight, -halfLength)));
+
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(-halfWidth, -halfHeight, -halfLength), glm::vec3(-halfWidth, halfHeight, -halfLength)));
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(halfWidth, -halfHeight, -halfLength), glm::vec3(halfWidth, halfHeight, -halfLength)));
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(halfWidth, -halfHeight, halfLength), glm::vec3(halfWidth, halfHeight, halfLength)));
+		cset_wire.getMem(ID).push_back(new Wire(glm::vec3(-halfWidth, -halfHeight, halfLength), glm::vec3(-halfWidth, halfHeight, halfLength)));
+	}
 }
 
 Entity ECS::getEntity(unsigned int ID) {
@@ -309,6 +329,19 @@ void ECS::DrawEntity(unsigned int ID) {
 
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 	glStencilMask(0xFF);
+
+	const auto& wires = cset_wire.getMem(ID);
+	if (e.phystransform_flag) {
+        for (int i = 0; i < wires.size(); i++) {
+            glm::mat4 tran = cset_phystransform.getMem(ID)->getMatrix();
+            wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), tran);
+        }
+	}
+	else {
+        for (int i = 0; i < wires.size(); i++) {
+            wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), finaltransform);
+        }
+	}
 }
 
 void ECS::DrawEntities() {
@@ -565,6 +598,13 @@ void ECS::DrawEntityStencils() {
         Entity e = getEntity(ID);
         if (!e.visible_flag) continue;
         if (!e.model_flag) continue;
+
+        Model* mdl = cset_model.getMem(ID);
+
+        glm::vec3 oldScale = cset_transform.getMem(ID)->getScale();
+        glm::vec3 upScale = oldScale * 1.05f;
+        cset_transform.getMem(ID)->setScale(upScale);
+
         glm::mat4 finaltransform;
         glm::mat4 finalntransform;
         if (e.phystransform_flag) {
@@ -575,11 +615,7 @@ void ECS::DrawEntityStencils() {
             finaltransform = cset_transform.getMem(ID)->getMatrix();
             finalntransform = cset_transform.getMem(ID)->getNormalMatrix();
         }
-        Model* mdl = cset_model.getMem(ID);
 
-        glm::vec3 oldScale = cset_transform.getMem(ID)->getScale();
-        glm::vec3 upScale = oldScale * 1.05f;
-        cset_transform.getMem(ID)->setScale(upScale);
         mdl->Draw(*Globals::get().cellShader, *Globals::get().camera, finaltransform, finalntransform);
         cset_transform.getMem(ID)->setScale(oldScale);
 

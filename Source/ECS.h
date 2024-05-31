@@ -16,6 +16,7 @@
 
 #include <unordered_map>
 #include <queue>
+#include <vector>
 
 #define MAX_ENTITIES 65000
 
@@ -87,6 +88,7 @@ public:
     ComponentSet<Camera*> cset_camera;
     ComponentSet<Shader*> cset_shader;
     ComponentSet<btRigidBody*> cset_body;
+    ComponentSet<std::vector<Wire*>> cset_wire;
     // no wire component set ideally
 
     std::unordered_set<unsigned int> stencilSet;
