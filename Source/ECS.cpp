@@ -209,28 +209,6 @@ void linkCameraUniforms(Shader& shader, Camera& camera) {
 	camera.Matrix(shader, "camMatrix");
 }
 
-
-/*
-    // wire code to be adapted
-
-	if (m_signature[COMPONENT_BIT_DYNAMIC] || m_signature[COMPONENT_BIT_STATIC]) {
-		if (Globals::get().drawWires) {
-			for (int i = 0; i < wires.size(); i++) {
-				glm::mat4 tran = phystransform->getMatrix();
-				wires[i]->Draw(*Globals::get().wireShader, *camera, tran);
-			}
-		}
-	}
-	else {
-		if (Globals::get().drawWires) {
-			for (int i = 0; i < wires.size(); i++) {
-				wires[i]->Draw(*Globals::get().wireShader, *camera, finaltransform);
-			}
-		}
-	}
-
-*/
-
 void ECS::DrawScreenEntity(unsigned int ID) {
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
