@@ -893,7 +893,7 @@ class TestRoom : public Scene {
 
 
         int tick(GLFWwindow* window, double delta) override {
-            {
+            {// mouse panning
                 Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotX, Globals::get().camera->getUp()));
 
                 glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));
