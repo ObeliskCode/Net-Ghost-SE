@@ -1163,7 +1163,7 @@ class TestRoom : public Scene {
 
             ECS::get().DrawEntities(); // crashing here!
 
-            /*
+            /* for debugging
             ECS::get().DrawEntity(panelID);
             ECS::get().DrawEntity(dumpID);
             ECS::get().DrawEntity(lampID);

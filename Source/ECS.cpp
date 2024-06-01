@@ -322,6 +322,7 @@ void ECS::DrawEntity(unsigned int ID) {
 	}
 }
 
+// TODO: this function needs to be updated to support multiple cameras!
 void ECS::DrawEntities() {
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
