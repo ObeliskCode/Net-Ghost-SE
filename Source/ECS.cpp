@@ -76,7 +76,7 @@ void ECS::addAnimator(unsigned int ID, Animator* mator) {
 void ECS::addPhysBody(unsigned int ID, btRigidBody* b) {
 	cset_body.linkEntity(ID, b);
 	Entity e = entMap[ID];
-	e.phystransform_flag = 1;
+	e.physbody_flag = 1;
     if (b->getMass() == 0.0f) {
 		e.dynamic_flag = 0;
 	}
@@ -169,8 +169,8 @@ void ECS::deleteEntity(unsigned int ID) {
 		}
 		if (ret.physbody_flag) {
             btRigidBody* bodyPtr = cset_body.getMem(ID);
-            Physics::get().m_EntityMap.erase(bodyPtr); // new addition?
             Physics::get().getDynamicsWorld()->removeCollisionObject(bodyPtr);
+            Physics::get().m_EntityMap.erase(bodyPtr); // new addition?
             delete bodyPtr->getMotionState();
             delete bodyPtr;
             cset_body.unlinkEntity(ID);
@@ -180,6 +180,10 @@ void ECS::deleteEntity(unsigned int ID) {
             delete phystransPtr;
             cset_phystransform.unlinkEntity(ID);
 		}
+		for (auto it = cset_wire.getMem(ID).begin(); it != cset_wire.getMem(ID).end(); it++ ) {
+            delete *it;
+		}
+		cset_wire.getMem(ID).clear();
 		entMap.erase(ID);
 		availableIDs.push(ID);
 	}
