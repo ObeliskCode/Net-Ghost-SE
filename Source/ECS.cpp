@@ -375,6 +375,21 @@ void ECS::DrawEntities() {
                 mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
             }
         }
+
+        if (Globals::get().drawWires){
+            const auto& wires = cset_wire.getMem(ID);
+            if (e.phystransform_flag) {
+                for (int i = 0; i < wires.size(); i++) {
+                    glm::mat4 tran = cset_phystransform.getMem(ID)->getMatrix();
+                    wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), tran);
+                }
+            }
+            else {
+                for (int i = 0; i < wires.size(); i++) {
+                    wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), finaltransform);
+                }
+            }
+        }
 	}
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 	glStencilMask(0xFF);
