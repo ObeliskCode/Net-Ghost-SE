@@ -157,7 +157,6 @@
     <ClCompile Include="..\Source\Audio.cpp" />
     <ClCompile Include="..\Source\dr_wav.c" />
     <ClCompile Include="..\Source\ECS.cpp" />
-    <ClCompile Include="..\Source\Entity.cpp" />
     <ClCompile Include="..\Source\Globals.cpp" />
     <ClCompile Include="..\Source\GUI.cpp" />
     <ClCompile Include="..\Source\Input.cpp" />
