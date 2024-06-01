@@ -169,6 +169,7 @@ void ECS::deleteEntity(unsigned int ID) {
 		}
 		if (ret.physbody_flag) {
             btRigidBody* bodyPtr = cset_body.getMem(ID);
+            Physics::get().m_EntityMap.erase(bodyPtr); // new addition?
             Physics::get().getDynamicsWorld()->removeCollisionObject(bodyPtr);
             delete bodyPtr->getMotionState();
             delete bodyPtr;
@@ -179,7 +180,6 @@ void ECS::deleteEntity(unsigned int ID) {
             delete phystransPtr;
             cset_phystransform.unlinkEntity(ID);
 		}
-
 		entMap.erase(ID);
 		availableIDs.push(ID);
 	}
