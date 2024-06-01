@@ -1014,55 +1014,54 @@ class TestRoom : public Scene {
 
 			{ // do rayCast // raycast selection causes big hitching! how do we optimize?
 
-				glm::vec3 ppp = Globals::get().camera->getPosition() + (Globals::get().camera->getOrientation() * 12.5f);
+                if (Input::get().getValue(GLFW_KEY_E)) {
+                    glm::vec3 ppp = Globals::get().camera->getPosition() + (Globals::get().camera->getOrientation() * 12.5f);
 
-				btVector3 from = btVector3(Globals::get().camera->getPosition().x, Globals::get().camera->getPosition().y, Globals::get().camera->getPosition().z);
-				btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
-				btCollisionWorld::ClosestRayResultCallback rrc = btCollisionWorld::ClosestRayResultCallback(from, to);
-				Physics::get().getDynamicsWorld()->rayTest(from, to, rrc);
+                    btVector3 from = btVector3(Globals::get().camera->getPosition().x, Globals::get().camera->getPosition().y, Globals::get().camera->getPosition().z);
+                    btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
+                    btCollisionWorld::ClosestRayResultCallback rrc = btCollisionWorld::ClosestRayResultCallback(from, to);
+                    Physics::get().getDynamicsWorld()->rayTest(from, to, rrc);
 
-				if (rrc.hasHit()) {
-					btRigidBody* sel = btRigidBody::upcast(const_cast <btCollisionObject*>(rrc.m_collisionObject));
-					unsigned int entID = Physics::get().m_EntityMap[sel];
-					if (entID != 0) {
-						if (prevID != 0 && prevID != entID) {
-							Entity prevEnt = ECS::get().getEntity(prevID);
-							if (prevEnt.m_id != NULL) {
-								prevEnt.stencil_flag = 0;
-                                ECS::get().stencilSet.erase(prevEnt.m_id);
-								ECS::get().updateEntity(prevEnt);
-							}
-							prevID = 0;
-						}
-						if (Input::get().getValue(GLFW_KEY_E)) {
-							if (ECS::get().getEntity(entID).pickup_flag) {
-								// only deletes wires, rigid body & not model / skel model
-								cigCt++;
-								ECS::get().deleteEntity(entID);
-								prevID = 0;
-
-							}
-						}
-						else if (!ECS::get().getEntity(entID).surface_flag) {
-							Entity selEnt = ECS::get().getEntity(entID);
-							if (selEnt.m_id != NULL) {
-								selEnt.stencil_flag = 1;
-								ECS::get().stencilSet.insert(selEnt.m_id);
-								ECS::get().updateEntity(selEnt);
-								prevID = entID;
-							}
-						}
-					}
-				}
-				else if (prevID != 0) {
-					Entity prevEnt = ECS::get().getEntity(prevID);
-					if (prevEnt.m_id != NULL) {
-						prevEnt.stencil_flag = 0;
-                        ECS::get().stencilSet.erase(prevEnt.m_id);
-                        ECS::get().updateEntity(prevEnt);
-					}
-					prevID = 0;
-				}
+                    if (rrc.hasHit()) {
+                        btRigidBody* sel = btRigidBody::upcast(const_cast <btCollisionObject*>(rrc.m_collisionObject));
+                        unsigned int entID = Physics::get().m_EntityMap[sel];
+                        if (entID != 0) {
+                            if (prevID != 0 && prevID != entID) {
+                                Entity prevEnt = ECS::get().getEntity(prevID);
+                                if (prevEnt.m_id != NULL) {
+                                    prevEnt.stencil_flag = 0;
+                                    ECS::get().stencilSet.erase(prevEnt.m_id);
+                                    ECS::get().updateEntity(prevEnt);
+                                }
+                                prevID = 0;
+                            }
+                            if (ECS::get().getEntity(entID).pickup_flag) {
+                                // only deletes wires, rigid body & not model / skel model
+                                cigCt++;
+                                ECS::get().deleteEntity(entID);
+                                prevID = 0;
+                            }
+                            else if (!ECS::get().getEntity(entID).surface_flag) {
+                                Entity selEnt = ECS::get().getEntity(entID);
+                                if (selEnt.m_id != NULL) {
+                                    selEnt.stencil_flag = 1;
+                                    ECS::get().stencilSet.insert(selEnt.m_id);
+                                    ECS::get().updateEntity(selEnt);
+                                    prevID = entID;
+                                }
+                            }
+                        }
+                    }
+                    else if (prevID != 0) {
+                        Entity prevEnt = ECS::get().getEntity(prevID);
+                        if (prevEnt.m_id != NULL) {
+                            prevEnt.stencil_flag = 0;
+                            ECS::get().stencilSet.erase(prevEnt.m_id);
+                            ECS::get().updateEntity(prevEnt);
+                        }
+                        prevID = 0;
+                    }
+                }
 
 			}
 			{
