@@ -27,7 +27,7 @@ class Entity {
 		unsigned int pickup_flag : 1 = 0;
 		unsigned int surface_flag : 1 = 0;
 		unsigned int light_flag : 1 = 0;
-		unsigned char m_camera : 2 = 0; // 0 = camx, 1 = cam1, 2 = cam2, 3 = cam3
+		unsigned int m_camera : 2 = 0; // 0 = camx, 1 = cam1, 2 = cam2, 3 = cam3
 
 	private:
 };
