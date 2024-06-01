@@ -18,7 +18,9 @@ ECS::ECS() {
 }
 
 ECS::~ECS() {
-	//TODO
+	for (auto it = entMap.begin(); it != entMap.end(); it++) {
+        deleteEntity(it->first);
+	}
 }
 
 // TODO: add safety checks to ECS!
