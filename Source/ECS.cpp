@@ -325,12 +325,18 @@ void ECS::DrawEntity(unsigned int ID) {
 void ECS::DrawEntities() {
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
+
+	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().camera);
+	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().camera);
+	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().camera);
+	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().camera);
+
 	for (auto it = entMap.begin(); it != entMap.end(); it++){
         unsigned int ID = it->first;
         Entity e = it->second;
 
-        Camera* cam = cset_camera.getMem(ID);
-        linkCameraUniforms(*cset_shader.getMem(ID), *cam);
+        //Camera* cam = cset_camera.getMem(ID);
+        //linkCameraUniforms(*cset_shader.getMem(ID), *cam);
 
         if (!e.visible_flag) continue;
         glm::mat4 finaltransform;
@@ -351,7 +357,7 @@ void ECS::DrawEntities() {
             for (int i = 0; i < transforms.size(); ++i) {
                 glUniformMatrix4fv(glGetUniformLocation(cset_shader.getMem(ID)->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
             }
-            skmdl->Draw(*cset_shader.getMem(ID), *cam, finaltransform, finalntransform);
+            skmdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
         } else
 
         if (e.model_flag) {
@@ -360,12 +366,12 @@ void ECS::DrawEntities() {
             if (e.surface_flag) {
                 glStencilFunc(GL_ALWAYS, 0, 0xFF);
                 glStencilMask(0xFF);
-                mdl->Draw(*cset_shader.getMem(ID), *cam, finaltransform, finalntransform);
+                mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
                 glStencilFunc(GL_ALWAYS, 1, 0xFF);
                 glStencilMask(0xFF);
             }
             else {
-                mdl->Draw(*cset_shader.getMem(ID), *cam, finaltransform, finalntransform);
+                mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
             }
         }
 	}

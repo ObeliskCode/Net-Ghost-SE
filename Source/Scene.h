@@ -422,10 +422,7 @@ class TestRoom : public Scene {
 
         Shader* quadProgram;
 
-
-
         Animator* mator;
-
 
         TestRoom(){
             winFun = [](GLFWwindow* window, int width, int height) {
@@ -1164,8 +1161,9 @@ class TestRoom : public Scene {
             linkModelShaderUniforms(*Globals::get().animProgram);
             linkModelShaderUniforms(*Globals::get().noTexAnimProgram);
 
-            //ECS::get().DrawEntities(); // crashing here!
+            ECS::get().DrawEntities(); // crashing here!
 
+            /*
             ECS::get().DrawEntity(panelID);
             ECS::get().DrawEntity(dumpID);
             ECS::get().DrawEntity(lampID);
@@ -1187,6 +1185,9 @@ class TestRoom : public Scene {
             ECS::get().DrawEntity(sphere2ID);
             ECS::get().DrawEntity(capsuleID);
             ECS::get().DrawEntity(chID);
+            ECS::get().DrawScreenEntity(batEntID);
+            ECS::get().DrawScreenEntity(cigEntID);
+            */
 
             quadSys->DrawQuads(*quadProgram, *Globals::get().camera);
 
