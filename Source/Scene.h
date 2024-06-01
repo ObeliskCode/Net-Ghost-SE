@@ -84,7 +84,7 @@ void linkModelShaderUniforms(Shader& shader) {
 class Scene {
     public:
         virtual int loadResources(GLFWwindow* window) = 0;
-        virtual int tick(GLFWwindow* window) = 0;
+        virtual int tick(GLFWwindow* window, double delta) = 0;
         virtual int drawFrame(GLFWwindow* window, double frameTime) = 0;
         virtual int cleanup() = 0;
 
@@ -104,7 +104,7 @@ class Scene {
         void (*keyFun)(GLFWwindow*, int, int, int, int);
         void (*curFun)(GLFWwindow*, double, double);
 
-        double delta = 1.0 / 64.0;
+        double deltaTime = 1.0 / 64.0;
 
     private:
 };
@@ -167,7 +167,7 @@ class MainMenu : public Scene {
             return 1;
         }
 
-        int tick(GLFWwindow* window) override {
+        int tick(GLFWwindow* window, double delta) override {
             return 1;
         }
 
@@ -295,7 +295,7 @@ class FoldAnim : public Scene {
             return 1;
         }
 
-        int tick(GLFWwindow* window) override {
+        int tick(GLFWwindow* window, double delta) override {
             {
                 Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotX, Globals::get().camera->getUp()));
 
@@ -892,7 +892,7 @@ class TestRoom : public Scene {
         }
 
 
-        int tick(GLFWwindow* window) override {
+        int tick(GLFWwindow* window, double delta) override {
             {
                 Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotX, Globals::get().camera->getUp()));
 

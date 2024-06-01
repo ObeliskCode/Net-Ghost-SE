@@ -26,11 +26,12 @@ int main(int argc, char **argv) {
 	double timeDiff;
 	unsigned int counter = 0;
 
-	boost::accumulators::accumulator_set<double, boost::accumulators::stats<boost::accumulators::tag::sum>> accum;
-
 	double lastFrame = timeStart;
-	double delta = 1.0 / 64.0;
+	double deltaTime = 1.0 / 64.0;
 	double frameTime = 0.0f;
+	double lastTick = timeStart;
+	double thisTick = 0.0;
+	double delta;
 
 	/* Main Game Loop */
 	while (!glfwWindowShouldClose(window)) {
@@ -56,11 +57,12 @@ int main(int argc, char **argv) {
 		frameTime = crntTime - lastFrame;
 		lastFrame = crntTime;
 
-		accum(frameTime);
+		thisTick = glfwGetTime();
+		delta = thisTick - lastTick;
 
-		while (boost::accumulators::sum(accum) >= delta) {
-			accum(-delta);
-            bp->tick(window);
+		if (delta >= deltaTime) {
+			lastTick = thisTick;
+            bp->tick(window, delta);
 		}
 
         bp->drawFrame(window, frameTime);

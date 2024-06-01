@@ -216,18 +216,20 @@ void linkCameraUniforms(Shader& shader, Camera& camera) {
 }
 
 void ECS::DrawScreenEntity(unsigned int ID) {
-	glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	glStencilMask(0xFF);
+
 	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().handCam);
 	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().handCam);
 	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().handCam);
 	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().handCam);
     Entity e = getEntity(ID);
     if (!e.visible_flag) {
-        glStencilFunc(GL_ALWAYS, 0, 0xFF);
-        glStencilMask(0xFF);
-        return;
+       return;
     }
+    if (e.stencil_flag) {
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
+    }
+    
     glm::mat4 finaltransform;
     glm::mat4 finalntransform;
     if (e.phystransform_flag) {
@@ -250,34 +252,37 @@ void ECS::DrawScreenEntity(unsigned int ID) {
     } else if (e.model_flag) {
         Model* mdl = cset_model.getMem(ID);
         if (e.surface_flag) {
-            glStencilFunc(GL_ALWAYS, 0, 0xFF);
-            glStencilMask(0xFF);
+            //glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            //glStencilMask(0xFF);
             mdl->Draw(*cset_shader.getMem(ID), *Globals::get().handCam, finaltransform, finalntransform);
-            glStencilFunc(GL_ALWAYS, 1, 0xFF);
-            glStencilMask(0xFF);
+            //glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            //glStencilMask(0xFF);
         }
         else {
             mdl->Draw(*cset_shader.getMem(ID), *Globals::get().handCam, finaltransform, finalntransform);
         }
     }
 
-	glStencilFunc(GL_ALWAYS, 0, 0xFF);
-	glStencilMask(0xFF);
+    if (e.stencil_flag) {
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        glStencilMask(0xFF);
+    }
 }
 
 void ECS::DrawEntity(unsigned int ID) {
-	glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	glStencilMask(0xFF);
 	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().camera);
 	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().camera);
 	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().camera);
 	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().camera);
     Entity e = getEntity(ID);
     if (!e.visible_flag) {
-        glStencilFunc(GL_ALWAYS, 0, 0xFF);
-        glStencilMask(0xFF);
         return;
     }
+    if (e.stencil_flag) {
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
+    }
+
     glm::mat4 finaltransform;
     glm::mat4 finalntransform;
     if (e.phystransform_flag) {
@@ -300,19 +305,21 @@ void ECS::DrawEntity(unsigned int ID) {
     } else if (e.model_flag) {
         Model* mdl = cset_model.getMem(ID);
         if (e.surface_flag) {
-            glStencilFunc(GL_ALWAYS, 0, 0xFF);
-            glStencilMask(0xFF);
+            //glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            //glStencilMask(0xFF);
             mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
-            glStencilFunc(GL_ALWAYS, 1, 0xFF);
-            glStencilMask(0xFF);
+            //glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            //glStencilMask(0xFF);
         }
         else {
             mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
         }
     }
 
-	glStencilFunc(GL_ALWAYS, 0, 0xFF);
-	glStencilMask(0xFF);
+    if (e.stencil_flag) {
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        glStencilMask(0xFF);
+    }
 
 	const auto& wires = cset_wire.getMem(ID);
 	if (e.phystransform_flag) {
@@ -330,9 +337,6 @@ void ECS::DrawEntity(unsigned int ID) {
 
 // TODO: this function needs to be updated to support multiple cameras!
 void ECS::DrawEntities() {
-	glStencilFunc(GL_ALWAYS, 1, 0xFF);
-	glStencilMask(0xFF);
-
 	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().camera);
 	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().camera);
 	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().camera);
@@ -346,6 +350,12 @@ void ECS::DrawEntities() {
         //linkCameraUniforms(*cset_shader.getMem(ID), *cam);
 
         if (!e.visible_flag) continue;
+
+        if (e.stencil_flag) {
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+        }
+
         glm::mat4 finaltransform;
         glm::mat4 finalntransform;
         if (e.phystransform_flag) {
@@ -371,18 +381,25 @@ void ECS::DrawEntities() {
             Model* mdl = cset_model.getMem(ID);
             if (!e.shader_flag) std::cerr << "no shader?" << std::endl;
             if (e.surface_flag) {
-                glStencilFunc(GL_ALWAYS, 0, 0xFF);
-                glStencilMask(0xFF);
+                //glStencilFunc(GL_ALWAYS, 0, 0xFF);
+                //glStencilMask(0xFF);
                 mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
-                glStencilFunc(GL_ALWAYS, 1, 0xFF);
-                glStencilMask(0xFF);
+                //glStencilFunc(GL_ALWAYS, 1, 0xFF);
+                //glStencilMask(0xFF);
             }
             else {
                 mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
             }
         }
 
+        if (e.stencil_flag) {
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glStencilMask(0xFF);
+        }
+
         if (Globals::get().drawWires){
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
             const auto& wires = cset_wire.getMem(ID);
             if (e.phystransform_flag) {
                 for (int i = 0; i < wires.size(); i++) {
@@ -395,10 +412,11 @@ void ECS::DrawEntities() {
                     wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), finaltransform);
                 }
             }
+            glStencilFunc(GL_ALWAYS, 0, 0xFF);
+            glStencilMask(0xFF);
         }
 	}
-	glStencilFunc(GL_ALWAYS, 0, 0xFF);
-	glStencilMask(0xFF);
+
 }
 
 /*
