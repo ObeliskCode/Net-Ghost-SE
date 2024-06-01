@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 	unsigned int counter = 0;
 
 	double lastFrame = timeStart;
-	double deltaTime = 1.0 / 64.0;
+	double deltaTime = 1.0 / 188.0;
 	double frameTime = 0.0f;
 	double lastTick = timeStart;
 	double thisTick = 0.0;
