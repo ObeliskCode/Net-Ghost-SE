@@ -894,6 +894,7 @@ class TestRoom : public Scene {
 
 
         int tick(GLFWwindow* window, double delta) override {
+            //double ts = glfwGetTime();
             {// mouse panning
                 Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotX, Globals::get().camera->getUp()));
 
@@ -1119,11 +1120,18 @@ class TestRoom : public Scene {
 				}
 
 			}
+            //double te = glfwGetTime();
+            //double elap = te - ts;
+            //std::cerr << "tick time: " << elap << std::endl;
             return 1;
         }
 
-
+        // TODO : fix drawFrame hitching!
         int drawFrame(GLFWwindow* window, double frameTime) override {
+            //double ts = glfwGetTime();
+
+            ECS& ecs = ECS::get();
+
             { // pls do not make this a function
                 batRot += frameTime;
                 if (batRot > 2 * PI) {
@@ -1132,20 +1140,20 @@ class TestRoom : public Scene {
                 float q1, q3;
                 q1 = cos(batRot / 2);
                 q3 = sin(batRot / 2);
-                Transform * batTRF = ECS::get().cset_transform.getMem(batEntID);
+                Transform * batTRF = ecs.cset_transform.getMem(batEntID);
                 batTRF->setRotation(glm::quat(q1, 0.0f, q3, 0.0f));
             }
 
             renderScene();
 
-            ECS::get().advanceEntityAnimations(frameTime);
+            ecs.advanceEntityAnimations(frameTime);
 
             { // directional shadow draw pass
                 glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
                 glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
                 glClear(GL_DEPTH_BUFFER_BIT);// clears this framebuffers depth bit!
 
-                ECS::get().DrawEntityShadows();
+                ecs.DrawEntityShadows();
 
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -1159,42 +1167,42 @@ class TestRoom : public Scene {
             linkModelShaderUniforms(*Globals::get().animProgram);
             linkModelShaderUniforms(*Globals::get().noTexAnimProgram);
 
-            ECS::get().DrawEntities(); // crashing here!
+            ecs.DrawEntities(); // crashing here!
 
             /* for debugging
-            ECS::get().DrawEntity(panelID);
-            ECS::get().DrawEntity(dumpID);
-            ECS::get().DrawEntity(lampID);
-            ECS::get().DrawEntity(benchID);
-            ECS::get().DrawEntity(tentID);
-            ECS::get().DrawEntity(characterID);
-            ECS::get().DrawEntity(quadID);
-            ECS::get().DrawEntity(girlID);
-            ECS::get().DrawEntity(cartID);
-            ECS::get().DrawEntity(wolfID);
-            ECS::get().DrawEntity(sitID);
-            ECS::get().DrawEntity(light1ID);
-            ECS::get().DrawEntity(light2ID);
+            ecs.DrawEntity(panelID);
+            ecs.DrawEntity(dumpID);
+            ecs.DrawEntity(lampID);
+            ecs.DrawEntity(benchID);
+            ecs.DrawEntity(tentID);
+            ecs.DrawEntity(characterID);
+            ecs.DrawEntity(quadID);
+            ecs.DrawEntity(girlID);
+            ecs.DrawEntity(cartID);
+            ecs.DrawEntity(wolfID);
+            ecs.DrawEntity(sitID);
+            ecs.DrawEntity(light1ID);
+            ecs.DrawEntity(light2ID);
             for (int i = 0; i < 5; i++) {
-                ECS::get().DrawEntity(cigEnts[i]);
+                ecs.DrawEntity(cigEnts[i]);
             }
-            ECS::get().DrawEntity(axisID);
-            ECS::get().DrawEntity(sphere1ID);
-            ECS::get().DrawEntity(sphere2ID);
-            ECS::get().DrawEntity(capsuleID);
-            ECS::get().DrawEntity(chID);
-            ECS::get().DrawScreenEntity(batEntID);
-            ECS::get().DrawScreenEntity(cigEntID);
+            ecs.DrawEntity(axisID);
+            ecs.DrawEntity(sphere1ID);
+            ecs.DrawEntity(sphere2ID);
+            ecs.DrawEntity(capsuleID);
+            ecs.DrawEntity(chID);
+            ecs.DrawScreenEntity(batEntID);
+            ecs.DrawScreenEntity(cigEntID);
             */
 
             quadSys->DrawQuads(*quadProgram, *Globals::get().camera);
 
             sky->Draw(*skyProgram, *Globals::get().camera);
 
-            ECS::get().DrawEntityStencils();
+            ecs.DrawEntityStencils();
 
-            ECS::get().DrawScreenEntity(batEntID);
-            ECS::get().DrawScreenEntity(cigEntID);
+            ecs.DrawScreenEntity(batEntID);
+            ecs.DrawScreenEntity(cigEntID);
 
             glEnable(GL_BLEND);
             std::sort(particleEmitter.particles.begin(), particleEmitter.particles.end(), Less);
@@ -1206,6 +1214,10 @@ class TestRoom : public Scene {
             glDisable(GL_BLEND);
 
             glfwSwapBuffers(window);
+            //double te = glfwGetTime();
+            //double elap = te - ts;
+            //if (elap >= 0.03)
+            //std::cerr << "frame time: " << elap << std::endl;
             return 1;
         }
 
