@@ -49,6 +49,7 @@ struct {
 
 const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
 
+//stackoverflow!
 glm::quat quat_axis_angle(const double& xx, const double& yy, const double& zz, const double& a)
 {
     // Here we calculate the sin( theta / 2) once for optimization
@@ -1036,7 +1037,6 @@ class TestRoom : public Scene {
                                 prevID = 0;
                             }
                             if (ECS::get().getEntity(entID).pickup_flag) {
-                                // only deletes wires, rigid body & not model / skel model
                                 cigCt++;
                                 ECS::get().deleteEntity(entID);
                                 prevID = 0;
@@ -1070,7 +1070,6 @@ class TestRoom : public Scene {
 			}
 
 			{ // particles
-			// UPDATE so that it shows cig first then blows smoke after it dissapears
 				if (Input::get().getValue(GLFW_KEY_P) && !is_smoking && cigCt > 0) {
 					is_smoking = true;
 					cig_anim = true;

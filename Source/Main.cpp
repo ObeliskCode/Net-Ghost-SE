@@ -2,15 +2,13 @@
 
 // two functions queueScene and endScene?
 
+// FINAL GRAHPICS TODO: screen-space shadows & frustrum culling & updated rendering pipeline (deferred/forward+)
+
 int main(int argc, char **argv) {
     if (argc > 1){
         std::cout << argv[1] << std::endl;
     }
 	GLFWwindow* window = initApp();
-
-	//we can solve all our problems with lambdas!
-
-	// LAST GRAHPICS TODO: screen-space shadows & frustrum culling & updated rendering pipeline (deferred/forward+)
 
 	TestRoom* dp = new TestRoom();
 	Scene* bp = dp;
@@ -50,9 +48,6 @@ int main(int argc, char **argv) {
 		}
 
 		glfwPollEvents(); // get inputs
-
-		// Note: floating point should be renamed to floating transform point because subratction isn't guarenteed
-		// a real floating point is impossible.
 
 		frameTime = crntTime - lastFrame;
 		lastFrame = crntTime;

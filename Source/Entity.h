@@ -25,9 +25,9 @@ class Entity {
 		unsigned int visible_flag : 1 = 1;
 		unsigned int dynamic_flag : 1 = 0;
 		unsigned int pickup_flag : 1 = 0;
-		unsigned int surface_flag : 1 = 0;
+		unsigned int surface_flag : 1 = 0; // to be removed?
 		unsigned int light_flag : 1 = 0;
-		unsigned int m_camera : 2 = 0; // 0 = camx, 1 = cam1, 2 = cam2, 3 = cam3
+		unsigned int m_camera : 2 = 0; // 0 = camx, 1 = cam1, 2 = cam2, 3 = cam3 // to be removed?
 
 	private:
 };

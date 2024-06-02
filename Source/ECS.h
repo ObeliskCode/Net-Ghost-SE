@@ -78,7 +78,6 @@ public:
     Entity getEntity(unsigned int ID);
     void updateEntity(Entity e);
 
-
     // approx 4MB right here ...
     ComponentSet<Transform*> cset_transform;
     ComponentSet<Model*> cset_model;

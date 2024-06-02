@@ -38,6 +38,7 @@ void ECS::addShader(unsigned int ID, Shader* sh) {
 	e.shader_flag = 1;
 	entMap[ID] = e;
 }
+// warning: code may be broken, also may soon be removed
 void ECS::addCamera(unsigned int ID, Camera* cam) {
 	cset_camera.linkEntity(ID, cam);
 	Entity e = entMap[ID];
@@ -86,7 +87,6 @@ void ECS::addPhysBody(unsigned int ID, btRigidBody* b) {
         e.dynamic_flag = 1;
     }
 	entMap[ID] = e;
-	//updatePhysicsState(); // is this necessary?
 }
 void ECS::addPhysTransform(unsigned int ID, Transform* phystransf) {
 	cset_phystransform.linkEntity(ID, phystransf);
@@ -199,13 +199,13 @@ void ECS::syncPhysics() {
         Entity e = getEntity(ID);
 
 		btTransform trans;
-		//if (body && body->getMotionState())
-		body->getMotionState()->getWorldTransform(trans);
+        if (body && body->getMotionState()) {
+            body->getMotionState()->getWorldTransform(trans);
 
-		Transform* pt = cset_phystransform.getMem(ID);
-		pt->setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
-		pt->setRotation(glm::quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ()));
-
+            Transform* pt = cset_phystransform.getMem(ID);
+            pt->setTranslation(glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ())));
+            pt->setRotation(glm::quat(trans.getRotation().getW(), trans.getRotation().getX(), trans.getRotation().getY(), trans.getRotation().getZ()));
+        }
 	}
 }
 
@@ -346,9 +346,6 @@ void ECS::DrawEntities() {
         unsigned int ID = it->first;
         Entity e = it->second;
 
-        //Camera* cam = cset_camera.getMem(ID);
-        //linkCameraUniforms(*cset_shader.getMem(ID), *cam);
-
         if (!e.visible_flag) continue;
 
         if (e.stencil_flag) {
@@ -416,7 +413,6 @@ void ECS::DrawEntities() {
             glStencilMask(0xFF);
         }
 	}
-
 }
 
 /*
@@ -568,7 +564,7 @@ void ECS::DrawEntityShadows() {
 }
 
 void ECS::DrawEntityPointShadows() {
-    	for (auto it = cset_skmodel.entSet.begin(); it != cset_skmodel.entSet.end(); it++)
+    for (auto it = cset_skmodel.entSet.begin(); it != cset_skmodel.entSet.end(); it++)
 	{
         unsigned int ID = *it;
         Entity e = getEntity(ID);
