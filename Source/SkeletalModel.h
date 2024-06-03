@@ -42,17 +42,16 @@ public:
 
 private:
     // model data
-    std::vector<Texture> textures_loaded; // all textures
     std::vector<SkeletalMesh*> meshes;
 
     std::unordered_map<std::string, BoneInfo> m_BoneInfoMap;
     int m_BoneCounter = 0;
 
     void loadModel(std::string path);
-    void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation, std::string directory);
-    SkeletalMesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory);
+    void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation, std::string directory, std::vector<Texture>& textures_loaded);
+    SkeletalMesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory, std::vector<Texture>& textures_loaded);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type,
-        std::string typeName, int slotInc, std::string directory);
+        std::string typeName, int slotInc, std::string directory, std::vector<Texture>& textures_loaded);
     glm::mat4 aiMat4toGLM(aiMatrix4x4t<float>& matrix);
 
     void ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& vertices, aiMesh* mesh, const aiScene* scene);

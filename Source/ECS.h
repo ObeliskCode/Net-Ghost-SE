@@ -33,6 +33,7 @@ template <typename T> class ComponentSet {
             return memArr[ID];
         }
         std::unordered_set<unsigned int> entSet;
+        std::vector<unsigned int> entVec;
     private:
         T memArr[MAX_ENTITIES];
 };
@@ -105,6 +106,7 @@ private:
 
     std::queue<unsigned int> availableIDs;
     std::unordered_map<unsigned int, Entity> entMap;
+    std::vector<unsigned int> entVec;
 };
 
 

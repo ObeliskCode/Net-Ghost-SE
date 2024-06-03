@@ -116,8 +116,6 @@ class Scene {
         void (*keyFun)(GLFWwindow*, int, int, int, int);
         void (*curFun)(GLFWwindow*, double, double);
 
-        double deltaTime = 1.0 / 64.0;
-
     private:
 };
 

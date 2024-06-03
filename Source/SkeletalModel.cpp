@@ -1,11 +1,24 @@
 #include "SkeletalModel.h"
 
 SkeletalModel::~SkeletalModel() {
-    for (unsigned int i = 0; i < textures_loaded.size(); i++)
+    std::unordered_set<GLuint> texIDs;
+    std::vector<Texture> texWrangled;
+    for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        textures_loaded[i].Delete();
+        auto& texs = meshes[i]->textures;
+        for (unsigned int i = 0; i < texs.size(); i++)
+        {
+            Texture tex = texs[i];
+            if (!(texIDs.find(tex.ID) != texIDs.end())) {
+                texWrangled.push_back(tex);
+                texIDs.insert(tex.ID);
+            }
+        }
     }
-    textures_loaded.clear();
+    for (unsigned int i = 0; i < texWrangled.size(); i++)
+    {
+        texWrangled[i].Delete();
+    }
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
         delete meshes[i];
@@ -34,10 +47,11 @@ void SkeletalModel::loadModel(std::string path)
     //fileType = path.substr(path.find_last_of('.'), path.back());
 
     aiMatrix4x4t<float> identity = aiMatrix4x4t<float>();
-    processNode(scene->mRootNode, scene, identity, directory);
+    std::vector<Texture> textures_loaded;
+    processNode(scene->mRootNode, scene, identity, directory, textures_loaded);
 }
 
-void SkeletalModel::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> pTransform, std::string directory)
+void SkeletalModel::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> pTransform, std::string directory, std::vector<Texture>& textures_loaded)
 {
 
     aiMatrix4x4t<float> transform = pTransform * node->mTransformation;
@@ -46,12 +60,12 @@ void SkeletalModel::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene, transform, directory));
+        meshes.push_back(processMesh(mesh, scene, transform, directory, textures_loaded));
     }
     // then do the same for each of its children
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
-        processNode(node->mChildren[i], scene, transform, directory);
+        processNode(node->mChildren[i], scene, transform, directory, textures_loaded);
     }
 }
 
@@ -163,7 +177,7 @@ void SkeletalModel::ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& ve
     }
 }
 
-SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory)
+SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory, std::vector<Texture>& textures_loaded)
 {
     std::vector<SkeletalVertex> vertices;
     std::vector<unsigned int> indices;
@@ -217,14 +231,14 @@ SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiM
         int slotInc = 0;
 
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material, scene,
-            aiTextureType_DIFFUSE, "diffuse", slotInc, directory);
+            aiTextureType_DIFFUSE, "diffuse", slotInc, directory, textures_loaded);
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 
         slotInc = slotInc + diffuseMaps.size();
         //std::cerr << "test " << slotInc <<  std::endl;
 
         std::vector<Texture> specularMaps = loadMaterialTextures(material, scene,
-            aiTextureType_SPECULAR, "specular", slotInc, directory);
+            aiTextureType_SPECULAR, "specular", slotInc, directory, textures_loaded);
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }// hmmm
 
@@ -256,7 +270,7 @@ void SkeletalModel::DrawShadow(Shader& shader, glm::mat4& transform){
 
 // BUG: .type member becomes corrupted when leaving loadMaterialTexture
 // not really sure why adding int slotInc(rement) makes this work perfectly, was having issue where specular sampler was overriding diffuse sampler
-std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type, std::string typeName, int slotInc, std::string directory)
+std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type, std::string typeName, int slotInc, std::string directory, std::vector<Texture>& textures_loaded)
 {
     std::vector<Texture> textures;
 
