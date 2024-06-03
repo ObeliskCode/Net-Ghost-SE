@@ -229,16 +229,19 @@ void ECS::DrawScreenEntity(unsigned int ID) {
         glStencilFunc(GL_ALWAYS, 1, 0xFF);
         glStencilMask(0xFF);
     }
+
+    Transform* phystrf = cset_phystransform.getMem(ID);
+    Transform* trf = cset_transform.getMem(ID);
     
     glm::mat4 finaltransform;
     glm::mat4 finalntransform;
     if (e.phystransform_flag) {
-        finaltransform = cset_phystransform.getMem(ID)->getMatrix() * cset_transform.getMem(ID)->getMatrix();
-        finalntransform = cset_phystransform.getMem(ID)->getNormalMatrix() * cset_transform.getMem(ID)->getNormalMatrix();
+        finaltransform = phystrf->getMatrix() * trf->getMatrix();
+        finalntransform = phystrf->getNormalMatrix() * trf->getNormalMatrix();
     }
     else {
-        finaltransform = cset_transform.getMem(ID)->getMatrix();
-        finalntransform = cset_transform.getMem(ID)->getNormalMatrix();
+        finaltransform = trf->getMatrix();
+        finalntransform = trf->getNormalMatrix();
     }
 
     if (e.animator_flag) {
@@ -283,15 +286,18 @@ void ECS::DrawEntity(unsigned int ID) {
         glStencilMask(0xFF);
     }
 
+    Transform* phystrf = cset_phystransform.getMem(ID);
+    Transform* trf = cset_transform.getMem(ID);
+
     glm::mat4 finaltransform;
     glm::mat4 finalntransform;
     if (e.phystransform_flag) {
-        finaltransform = cset_phystransform.getMem(ID)->getMatrix() * cset_transform.getMem(ID)->getMatrix();
-        finalntransform = cset_phystransform.getMem(ID)->getNormalMatrix() * cset_transform.getMem(ID)->getNormalMatrix();
+        finaltransform = phystrf->getMatrix() * trf->getMatrix();
+        finalntransform = phystrf->getNormalMatrix() * trf->getNormalMatrix();
     }
     else {
-        finaltransform = cset_transform.getMem(ID)->getMatrix();
-        finalntransform = cset_transform.getMem(ID)->getNormalMatrix();
+        finaltransform = trf->getMatrix();
+        finalntransform = trf->getNormalMatrix();
     }
 
     if (e.animator_flag) {
@@ -353,15 +359,18 @@ void ECS::DrawEntities() {
             glStencilMask(0xFF);
         }
 
+        Transform* phystrf = cset_phystransform.getMem(ID);
+        Transform* trf = cset_transform.getMem(ID);
+
         glm::mat4 finaltransform;
         glm::mat4 finalntransform;
         if (e.phystransform_flag) {
-            finaltransform = cset_phystransform.getMem(ID)->getMatrix() * cset_transform.getMem(ID)->getMatrix();
-            finalntransform = cset_phystransform.getMem(ID)->getNormalMatrix() * cset_transform.getMem(ID)->getNormalMatrix();
+            finaltransform = phystrf->getMatrix() * trf->getMatrix();
+            finalntransform = phystrf->getNormalMatrix() * trf->getNormalMatrix();
         }
         else {
-            finaltransform = cset_transform.getMem(ID)->getMatrix();
-            finalntransform = cset_transform.getMem(ID)->getNormalMatrix();
+            finaltransform = trf->getMatrix();
+            finalntransform = trf->getNormalMatrix();
         }
 
         if (e.animator_flag) {
@@ -625,15 +634,18 @@ void ECS::DrawEntityStencils() {
         glm::vec3 upScale = oldScale * 1.05f;
         cset_transform.getMem(ID)->setScale(upScale);
 
+        Transform* phystrf = cset_phystransform.getMem(ID);
+        Transform* trf = cset_transform.getMem(ID);
+
         glm::mat4 finaltransform;
         glm::mat4 finalntransform;
         if (e.phystransform_flag) {
-            finaltransform = cset_phystransform.getMem(ID)->getMatrix() * cset_transform.getMem(ID)->getMatrix();
-            finalntransform = cset_phystransform.getMem(ID)->getNormalMatrix() * cset_transform.getMem(ID)->getNormalMatrix();
+            finaltransform = phystrf->getMatrix() * trf->getMatrix();
+            finalntransform = phystrf->getNormalMatrix() * trf->getNormalMatrix();
         }
         else {
-            finaltransform = cset_transform.getMem(ID)->getMatrix();
-            finalntransform = cset_transform.getMem(ID)->getNormalMatrix();
+            finaltransform = trf->getMatrix();
+            finalntransform = trf->getNormalMatrix();
         }
 
         mdl->Draw(*Globals::get().cellShader, *Globals::get().camera, finaltransform, finalntransform);
