@@ -43,10 +43,10 @@ void ECS::addCamera(unsigned int ID, Camera* cam) {
 	cset_camera.linkEntity(ID, cam);
 	Entity e = entMap[ID];
 	e.camera_flag = 1;
-	if (cam == Globals::get().camera){
+	if (cam == globals.camera){
         e.m_camera = 1;
         cam1Set.insert(ID);
-	} else if (cam == Globals::get().handCam){
+	} else if (cam == globals.handCam){
         e.m_camera = 2;
         cam2Set.insert(ID);
 	}
@@ -217,10 +217,10 @@ void linkCameraUniforms(Shader& shader, Camera& camera) {
 
 void ECS::DrawScreenEntity(unsigned int ID) {
 
-	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().handCam);
-	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().handCam);
-	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().handCam);
-	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().handCam);
+	linkCameraUniforms(*globals.rigProgram, *globals.handCam);
+	linkCameraUniforms(*globals.lightProgram, *globals.handCam);
+	linkCameraUniforms(*globals.animProgram, *globals.handCam);
+	linkCameraUniforms(*globals.noTexAnimProgram, *globals.handCam);
     Entity e = getEntity(ID);
     if (!e.visible_flag) {
        return;
@@ -252,18 +252,18 @@ void ECS::DrawScreenEntity(unsigned int ID) {
         for (int i = 0; i < transforms.size(); ++i) {
             glUniformMatrix4fv(glGetUniformLocation(sh->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
         }
-        skmdl->Draw(*sh, *Globals::get().handCam, finaltransform, finalntransform);
+        skmdl->Draw(*sh, *globals.handCam, finaltransform, finalntransform);
     } else if (e.model_flag) {
         Model* mdl = cset_model.getMem(ID);
         if (e.surface_flag) {
             //glStencilFunc(GL_ALWAYS, 0, 0xFF);
             //glStencilMask(0xFF);
-            mdl->Draw(*cset_shader.getMem(ID), *Globals::get().handCam, finaltransform, finalntransform);
+            mdl->Draw(*cset_shader.getMem(ID), *globals.handCam, finaltransform, finalntransform);
             //glStencilFunc(GL_ALWAYS, 1, 0xFF);
             //glStencilMask(0xFF);
         }
         else {
-            mdl->Draw(*cset_shader.getMem(ID), *Globals::get().handCam, finaltransform, finalntransform);
+            mdl->Draw(*cset_shader.getMem(ID), *globals.handCam, finaltransform, finalntransform);
         }
     }
 
@@ -274,10 +274,10 @@ void ECS::DrawScreenEntity(unsigned int ID) {
 }
 
 void ECS::DrawEntity(unsigned int ID) {
-	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().camera);
-	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().camera);
-	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().camera);
-	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().camera);
+	linkCameraUniforms(*globals.rigProgram, *globals.camera);
+	linkCameraUniforms(*globals.lightProgram, *globals.camera);
+	linkCameraUniforms(*globals.animProgram, *globals.camera);
+	linkCameraUniforms(*globals.noTexAnimProgram, *globals.camera);
     Entity e = getEntity(ID);
     if (!e.visible_flag) {
         return;
@@ -309,18 +309,18 @@ void ECS::DrawEntity(unsigned int ID) {
         for (int i = 0; i < transforms.size(); ++i) {
             glUniformMatrix4fv(glGetUniformLocation(sh->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
         }
-        skmdl->Draw(*sh, *Globals::get().camera, finaltransform, finalntransform);
+        skmdl->Draw(*sh, *globals.camera, finaltransform, finalntransform);
     } else if (e.model_flag) {
         Model* mdl = cset_model.getMem(ID);
         if (e.surface_flag) {
             //glStencilFunc(GL_ALWAYS, 0, 0xFF);
             //glStencilMask(0xFF);
-            mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
+            mdl->Draw(*cset_shader.getMem(ID), *globals.camera, finaltransform, finalntransform);
             //glStencilFunc(GL_ALWAYS, 1, 0xFF);
             //glStencilMask(0xFF);
         }
         else {
-            mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
+            mdl->Draw(*cset_shader.getMem(ID), *globals.camera, finaltransform, finalntransform);
         }
     }
 
@@ -333,22 +333,22 @@ void ECS::DrawEntity(unsigned int ID) {
 	if (e.phystransform_flag) {
         glm::mat4 tran = phystrf->getMatrix();
         for (int i = 0; i < wires.size(); i++) {
-            wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), tran);
+            wires[i]->Draw(*globals.wireShader, *cset_camera.getMem(ID), tran);
         }
 	}
 	else {
         for (int i = 0; i < wires.size(); i++) {
-            wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), finaltransform);
+            wires[i]->Draw(*globals.wireShader, *cset_camera.getMem(ID), finaltransform);
         }
 	}
 }
 
 // TODO: this function needs to be updated to support multiple cameras!
 void ECS::DrawEntities() {
-	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().camera);
-	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().camera);
-	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().camera);
-	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().camera);
+	linkCameraUniforms(*globals.rigProgram, *globals.camera);
+	linkCameraUniforms(*globals.lightProgram, *globals.camera);
+	linkCameraUniforms(*globals.animProgram, *globals.camera);
+	linkCameraUniforms(*globals.noTexAnimProgram, *globals.camera);
 
 	for (auto it = entMap.begin(); it != entMap.end(); it++){
         unsigned int ID = it->first;
@@ -383,7 +383,7 @@ void ECS::DrawEntities() {
             for (int i = 0; i < transforms.size(); ++i) {
                 glUniformMatrix4fv(glGetUniformLocation(sh->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
             }
-            skmdl->Draw(*sh, *Globals::get().camera, finaltransform, finalntransform);
+            skmdl->Draw(*sh, *globals.camera, finaltransform, finalntransform);
         } else
 
         if (e.model_flag) {
@@ -392,12 +392,12 @@ void ECS::DrawEntities() {
             if (e.surface_flag) {
                 //glStencilFunc(GL_ALWAYS, 0, 0xFF);
                 //glStencilMask(0xFF);
-                mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
+                mdl->Draw(*cset_shader.getMem(ID), *globals.camera, finaltransform, finalntransform);
                 //glStencilFunc(GL_ALWAYS, 1, 0xFF);
                 //glStencilMask(0xFF);
             }
             else {
-                mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
+                mdl->Draw(*cset_shader.getMem(ID), *globals.camera, finaltransform, finalntransform);
             }
         }
 
@@ -406,19 +406,19 @@ void ECS::DrawEntities() {
             glStencilMask(0xFF);
         }
 
-        if (Globals::get().drawWires){
+        if (globals.drawWires){
             glStencilFunc(GL_ALWAYS, 1, 0xFF);
             glStencilMask(0xFF);
             const auto& wires = cset_wire.getMem(ID);
             if (e.phystransform_flag) {
                 glm::mat4 tran = phystrf->getMatrix();
                 for (int i = 0; i < wires.size(); i++) {
-                    wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), tran);
+                    wires[i]->Draw(*globals.wireShader, *cset_camera.getMem(ID), tran);
                 }
             }
             else {
                 for (int i = 0; i < wires.size(); i++) {
-                    wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), finaltransform);
+                    wires[i]->Draw(*globals.wireShader, *cset_camera.getMem(ID), finaltransform);
                 }
             }
             glStencilFunc(GL_ALWAYS, 0, 0xFF);
@@ -432,10 +432,10 @@ void ECS::DrawEntities() {
 void ECS::DrawEntities() {
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	glStencilMask(0xFF);
-	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().camera);
-	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().camera);
-	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().camera);
-	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().camera);
+	linkCameraUniforms(*globals.rigProgram, *globals.camera);
+	linkCameraUniforms(*globals.lightProgram, *globals.camera);
+	linkCameraUniforms(*globals.animProgram, *globals.camera);
+	linkCameraUniforms(*globals.noTexAnimProgram, *globals.camera);
 	for (auto it = cam1Set.begin(); it != cam1Set.end(); it++)
 	{
         unsigned int ID = *it;
@@ -459,7 +459,7 @@ void ECS::DrawEntities() {
             for (int i = 0; i < transforms.size(); ++i) {
                 glUniformMatrix4fv(glGetUniformLocation(cset_shader.getMem(ID)->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
             }
-            skmdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
+            skmdl->Draw(*cset_shader.getMem(ID), *globals.camera, finaltransform, finalntransform);
         } else
 
         if (e.model_flag) {
@@ -468,21 +468,21 @@ void ECS::DrawEntities() {
             if (e.surface_flag) {
                 glStencilFunc(GL_ALWAYS, 0, 0xFF);
                 glStencilMask(0xFF);
-                mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
+                mdl->Draw(*cset_shader.getMem(ID), *globals.camera, finaltransform, finalntransform);
                 glStencilFunc(GL_ALWAYS, 1, 0xFF);
                 glStencilMask(0xFF);
             }
             else {
-                mdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
+                mdl->Draw(*cset_shader.getMem(ID), *globals.camera, finaltransform, finalntransform);
             }
         }
 
 	}
 	std::cerr << "hello" << std::endl;
-	linkCameraUniforms(*Globals::get().rigProgram, *Globals::get().handCam);
-	linkCameraUniforms(*Globals::get().lightProgram, *Globals::get().handCam);
-	linkCameraUniforms(*Globals::get().animProgram, *Globals::get().handCam);
-	linkCameraUniforms(*Globals::get().noTexAnimProgram, *Globals::get().handCam);
+	linkCameraUniforms(*globals.rigProgram, *globals.handCam);
+	linkCameraUniforms(*globals.lightProgram, *globals.handCam);
+	linkCameraUniforms(*globals.animProgram, *globals.handCam);
+	linkCameraUniforms(*globals.noTexAnimProgram, *globals.handCam);
 	for (auto it = cam2Set.begin(); it != cam2Set.end(); it++)
 	{
 		unsigned int ID = *it;
@@ -506,18 +506,18 @@ void ECS::DrawEntities() {
             for (int i = 0; i < transforms.size(); ++i) {
                 glUniformMatrix4fv(glGetUniformLocation(cset_shader.getMem(ID)->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
             }
-            skmdl->Draw(*cset_shader.getMem(ID), *Globals::get().handCam, finaltransform, finalntransform);
+            skmdl->Draw(*cset_shader.getMem(ID), *globals.handCam, finaltransform, finalntransform);
         } else if (e.model_flag) {
             Model* mdl = cset_model.getMem(ID);
             if (e.surface_flag) {
                 glStencilFunc(GL_ALWAYS, 0, 0xFF);
                 glStencilMask(0xFF);
-                mdl->Draw(*cset_shader.getMem(ID), *Globals::get().handCam, finaltransform, finalntransform);
+                mdl->Draw(*cset_shader.getMem(ID), *globals.handCam, finaltransform, finalntransform);
                 glStencilFunc(GL_ALWAYS, 1, 0xFF);
                 glStencilMask(0xFF);
             }
             else {
-                mdl->Draw(*cset_shader.getMem(ID), *Globals::get().handCam, finaltransform, finalntransform);
+                mdl->Draw(*cset_shader.getMem(ID), *globals.handCam, finaltransform, finalntransform);
             }
         }
 	}
@@ -550,12 +550,12 @@ void ECS::DrawEntityShadows() {
         }
         SkeletalModel* skmdl = cset_skmodel.getMem(ID);
         Animator* anim =  cset_animator.getMem(ID);
-        Globals::get().animShadowShader->Activate();
+        globals.animShadowShader->Activate();
 		const auto& transforms = anim->GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i) {
-			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+			glUniformMatrix4fv(glGetUniformLocation(globals.animShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		}
-		skmdl->DrawShadow(*Globals::get().animShadowShader, finaltransform);
+		skmdl->DrawShadow(*globals.animShadowShader, finaltransform);
 	}
 	for (auto it = cset_model.entSet.begin(); it != cset_model.entSet.end(); it++)
 	{
@@ -570,8 +570,8 @@ void ECS::DrawEntityShadows() {
             finaltransform = cset_transform.getMem(ID)->getMatrix();
         }
         Model* mdl = cset_model.getMem(ID);
-		Globals::get().shadowShader->Activate();
-		mdl->DrawShadow(*Globals::get().shadowShader, finaltransform);
+		globals.shadowShader->Activate();
+		mdl->DrawShadow(*globals.shadowShader, finaltransform);
 	}
 }
 
@@ -591,12 +591,12 @@ void ECS::DrawEntityPointShadows() {
         }
         SkeletalModel* skmdl = cset_skmodel.getMem(ID);
         Animator* anim =  cset_animator.getMem(ID);
-        Globals::get().animPointShadowShader->Activate();
+        globals.animPointShadowShader->Activate();
 		const auto& transforms = anim->GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i) {
-			glUniformMatrix4fv(glGetUniformLocation(Globals::get().animPointShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+			glUniformMatrix4fv(glGetUniformLocation(globals.animPointShadowShader->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
 		}
-		skmdl->DrawShadow(*Globals::get().animPointShadowShader, finaltransform);
+		skmdl->DrawShadow(*globals.animPointShadowShader, finaltransform);
 	}
 	for (auto it = cset_model.entSet.begin(); it != cset_model.entSet.end(); it++)
 	{
@@ -612,8 +612,8 @@ void ECS::DrawEntityPointShadows() {
             finaltransform = cset_transform.getMem(ID)->getMatrix();
         }
         Model* mdl = cset_model.getMem(ID);
-		Globals::get().pointShadowShader->Activate();
-		mdl->DrawShadow(*Globals::get().pointShadowShader, finaltransform);
+		globals.pointShadowShader->Activate();
+		mdl->DrawShadow(*globals.pointShadowShader, finaltransform);
 	}
 }
 
@@ -622,7 +622,7 @@ void ECS::DrawEntityStencils() {
 	glStencilMask(0x00);
 	glDisable(GL_DEPTH_TEST);
 
-	linkCameraUniforms(*Globals::get().cellShader, *Globals::get().camera);
+	linkCameraUniforms(*globals.cellShader, *globals.camera);
 
 	for (auto it = stencilSet.begin(); it != stencilSet.end(); it++)
 	{
@@ -652,7 +652,7 @@ void ECS::DrawEntityStencils() {
             finalntransform = trf->getNormalMatrix();
         }
 
-        mdl->Draw(*Globals::get().cellShader, *Globals::get().camera, finaltransform, finalntransform);
+        mdl->Draw(*globals.cellShader, *globals.camera, finaltransform, finalntransform);
         trf->setScale(oldScale);
 
 	}

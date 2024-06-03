@@ -177,8 +177,8 @@ class MainMenu : public Scene {
             renderScene();
 
             glEnable(GL_BLEND);
-            GUI::get().RenderText(*textProgram, "Obelisk Engine", (globals.screenWidth / 2) - 150.0f, globals.screenHeight - (globals.screenHeight / 10), 0.75f, glm::vec3(1.f, 1.f, 1.f));
-            GUI::get().RenderText(*textProgram, "Test Room", (globals.screenWidth / 2) - 150.0f, globals.screenHeight - (globals.screenHeight / 6), 0.75f, glm::vec3(1.f, 1.f, 1.f));
+            gui.RenderText(*textProgram, "Obelisk Engine", (globals.screenWidth / 2) - 150.0f, globals.screenHeight - (globals.screenHeight / 10), 0.75f, glm::vec3(1.f, 1.f, 1.f));
+            gui.RenderText(*textProgram, "Test Room", (globals.screenWidth / 2) - 150.0f, globals.screenHeight - (globals.screenHeight / 6), 0.75f, glm::vec3(1.f, 1.f, 1.f));
             glDisable(GL_BLEND);
 
             glfwSwapBuffers(window);
@@ -312,16 +312,16 @@ class FoldAnim : public Scene {
 
                     glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
-                    if (Input::get().getValue(GLFW_KEY_W)) {
+                    if (input.getValue(GLFW_KEY_W)) {
                         velocity += globals.camera->getOrientation();
                     }
-                    if (Input::get().getValue(GLFW_KEY_A)) {
+                    if (input.getValue(GLFW_KEY_A)) {
                         velocity += proj;
                     }
-                    if (Input::get().getValue(GLFW_KEY_S)) {
+                    if (input.getValue(GLFW_KEY_S)) {
                         velocity -= globals.camera->getOrientation();
                     }
-                    if (Input::get().getValue(GLFW_KEY_D)) {
+                    if (input.getValue(GLFW_KEY_D)) {
                         velocity -= proj;
                     }
 
@@ -494,7 +494,7 @@ class TestRoom : public Scene {
             renderScene();
 
             glEnable(GL_BLEND);
-            GUI::get().RenderText(*textProgram, "Loading...", (globals.screenWidth / 2) - 100.0f, globals.screenHeight / 2, 1.0f, glm::vec3(1.f, 1.f, 1.f));
+            gui.RenderText(*textProgram, "Loading...", (globals.screenWidth / 2) - 100.0f, globals.screenHeight / 2, 1.0f, glm::vec3(1.f, 1.f, 1.f));
             glDisable(GL_BLEND);
 
             glfwSwapBuffers(window);
@@ -545,7 +545,7 @@ class TestRoom : public Scene {
             ecs.addShader(entID, globals.lightProgram);
             ecs.addCamera(entID, globals.camera);
             ecs.addTransform(entID, trf);
-            ecs.addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
+            ecs.addPhysBody(entID, physics.addUnitBoxStaticBody(entID, 2.0f, 5.0f, 2.0f, -20.0f, 10.0f - 0.1f, 28.0f));
             ecs.addPhysTransform(entID, new Transform());
             ecs.addWireFrame(entID, 2.0f, 5.0f, 2.0f);
             e = ecs.getEntity(entID);
@@ -564,7 +564,7 @@ class TestRoom : public Scene {
             ecs.addShader(entID, globals.rigProgram);
             ecs.addCamera(entID, globals.camera);
             ecs.addTransform(entID, trf);
-            ecs.addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 2.0f, 2.5f, 5.0f, 5.0f, 5.0f + 2.5f, 28.f));
+            ecs.addPhysBody(entID, physics.addUnitBoxStaticBody(entID, 2.0f, 2.5f, 5.0f, 5.0f, 5.0f + 2.5f, 28.f));
             ecs.addPhysTransform(entID, new Transform());
             ecs.addWireFrame(entID, 2.0f, 2.5f, 5.0f);
 
@@ -601,7 +601,7 @@ class TestRoom : public Scene {
             ecs.addShader(entID, globals.rigProgram);
             ecs.addCamera(entID, globals.camera);
             ecs.addTransform(entID, trf);
-            ecs.addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 3.0f, 4.0f, 6.0f, 25.0f, 5.0f + 4.0f, 35.f));
+            ecs.addPhysBody(entID, physics.addUnitBoxStaticBody(entID, 3.0f, 4.0f, 6.0f, 25.0f, 5.0f + 4.0f, 35.f));
             ecs.addPhysTransform(entID, new Transform());
             ecs.addWireFrame(entID, 3.0f, 4.0f, 6.0f);
 
@@ -626,7 +626,7 @@ class TestRoom : public Scene {
             ecs.addShader(entID, globals.rigProgram);
             ecs.addCamera(entID, globals.camera);
             ecs.addTransform(entID, trf);
-            ecs.addPhysBody(entID, Physics::get().addUnitBoxStaticBody(entID, 6.0f, 4.0f, 6.0f, -15.0f, 5.0f + 4.0f, 10.0f));
+            ecs.addPhysBody(entID, physics.addUnitBoxStaticBody(entID, 6.0f, 4.0f, 6.0f, -15.0f, 5.0f + 4.0f, 10.0f));
             ecs.addPhysTransform(entID, new Transform());
             ecs.addWireFrame(entID, 6.0f, 4.0f, 6.0f);
 
@@ -679,10 +679,10 @@ class TestRoom : public Scene {
             ecs.addTransform(entID, trf);
 
             Light* lampLight = new Light(glm::vec4(0.6f, 0.6f, 0.6f, 1.0f), glm::vec3(-20.0f, 13.2f, 28.0f));
-            LightSystem::get().lights.push_back(lampLight);
+            lightsys.lights.push_back(lampLight);
 
             Light* light2 = new Light(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f), glm::vec3(-20.0f, 10.0f, -20.0f));
-            LightSystem::get().lights.push_back(light2);
+            lightsys.lights.push_back(light2);
 
 
             trf = new Transform();
@@ -718,10 +718,10 @@ class TestRoom : public Scene {
             lampLight->linkShader(*globals.noTexAnimProgram);
             lampLight->linkShader(*globals.lightProgram);
 
-            LightSystem::get().linkShader(*globals.rigProgram);
-            LightSystem::get().linkShader(*globals.animProgram);
-            LightSystem::get().linkShader(*globals.noTexAnimProgram);
-            LightSystem::get().linkShader(*globals.lightProgram);
+            lightsys.linkShader(*globals.rigProgram);
+            lightsys.linkShader(*globals.animProgram);
+            lightsys.linkShader(*globals.noTexAnimProgram);
+            lightsys.linkShader(*globals.lightProgram);
 
             //QUAD
             entID = ecs.createEntity();
@@ -732,7 +732,7 @@ class TestRoom : public Scene {
             ecs.addWire(entID, new Wire(glm::vec3(-60.0f, 50.0f, -60.0f), glm::vec3(-60.0f, 50.0f, 60.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(-60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, 60.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(60.0f, 50.0f, 60.0f), glm::vec3(60.0f, 50.0f, -60.0f)));
-            ecs.addPhysBody(entID, Physics::get().addShape1(entID));
+            ecs.addPhysBody(entID, physics.addShape1(entID));
             ecs.addPhysTransform(entID, new Transform());
 
             //STAGING AXIS
@@ -752,7 +752,7 @@ class TestRoom : public Scene {
             ecs.addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-            ecs.addPhysBody(entID, Physics::get().addShape2(entID));
+            ecs.addPhysBody(entID, physics.addShape2(entID));
             ecs.addPhysTransform(entID, new Transform());
 
             //RIGID BODY 2
@@ -763,7 +763,7 @@ class TestRoom : public Scene {
             ecs.addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-            ecs.addPhysBody(entID, Physics::get().addShape3(entID));
+            ecs.addPhysBody(entID, physics.addShape3(entID));
             ecs.addPhysTransform(entID, new Transform());
 
             //CONTROLLABLE BODY
@@ -774,7 +774,7 @@ class TestRoom : public Scene {
             ecs.addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-            ecs.addPhysBody(entID, Physics::get().addShape4(entID));
+            ecs.addPhysBody(entID, physics.addShape4(entID));
             ecs.addPhysTransform(entID, new Transform());
 
 
@@ -786,7 +786,7 @@ class TestRoom : public Scene {
             ecs.addWire(entID, new Wire(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(0.0f, -2.0f, 0.0f), glm::vec3(0.0f, 2.0f, 0.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-            ecs.addPhysBody(entID, Physics::get().addShape5(entID));
+            ecs.addPhysBody(entID, physics.addShape5(entID));
             ecs.addPhysTransform(entID, new Transform());
 
 
@@ -801,7 +801,7 @@ class TestRoom : public Scene {
                 ecs.addWire(entID, new Wire(glm::vec3(-0.06f, 0.0f, 0.0f), glm::vec3(0.06f, 0.0f, 0.0f)));
                 ecs.addWire(entID, new Wire(glm::vec3(0.0f, -0.06f, 0.0f), glm::vec3(0.0f, 0.06f, 0.0f)));
                 ecs.addWire(entID, new Wire(glm::vec3(0.0f, 0.0f, -0.685f), glm::vec3(0.0f, 0.0f, 0.685f)));
-                ecs.addPhysBody(entID, Physics::get().addShape6(entID));
+                ecs.addPhysBody(entID, physics.addShape6(entID));
                 ecs.addPhysTransform(entID, new Transform());
                 e = ecs.getEntity(entID);
                 e.pickup_flag = 1;
@@ -902,23 +902,23 @@ class TestRoom : public Scene {
 					glm::vec2 vel = glm::vec2(0.0f);
 
 
-					if (Input::get().getValue(GLFW_KEY_W)) {
+					if (input.getValue(GLFW_KEY_W)) {
 						vel += camOri;
 					}
-					if (Input::get().getValue(GLFW_KEY_A)) {
+					if (input.getValue(GLFW_KEY_A)) {
 						vel += proj;
 					}
-					if (Input::get().getValue(GLFW_KEY_S)) {
+					if (input.getValue(GLFW_KEY_S)) {
 						vel -= camOri;
 					}
-					if (Input::get().getValue(GLFW_KEY_D)) {
+					if (input.getValue(GLFW_KEY_D)) {
 						vel -= proj;
 					}
 
 
 					if (cd > 0) cd--;
 					// code character->canJump()
-					if (Input::get().getValue(GLFW_KEY_SPACE)) {
+					if (input.getValue(GLFW_KEY_SPACE)) {
 						if (cd == 0) {
 							cd = 192;
 							body->applyCentralImpulse(btVector3(0.0f, 9.0f, 0.0f));
@@ -943,7 +943,7 @@ class TestRoom : public Scene {
 				}
 			} // character.physicsProcess(delta)
 
-			Physics::get().updateSim(delta); // regular time advance
+			physics.updateSim(delta); // regular time advance
 
 			// move sim forward by delta
 			ecs.syncPhysics(); // update entities with physics state
@@ -957,8 +957,8 @@ class TestRoom : public Scene {
 				}
 			}
 			{
-				if (Input::get().getValue(GLFW_KEY_RIGHT)) bf += 0.02f;
-				if (Input::get().getValue(GLFW_KEY_LEFT)) bf -= 0.02f;
+				if (input.getValue(GLFW_KEY_RIGHT)) bf += 0.02f;
+				if (input.getValue(GLFW_KEY_LEFT)) bf -= 0.02f;
 				if (bf < 0.0f) bf = 0.0f;
 				if (bf > 1.0f) bf = 1.0f;
 				mator->SetBlendFactor(bf);
@@ -974,16 +974,16 @@ class TestRoom : public Scene {
 
                     glm::vec3 velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 
-                    if (Input::get().getValue(GLFW_KEY_W)) {
+                    if (input.getValue(GLFW_KEY_W)) {
                         velocity += globals.camera->getOrientation();
                     }
-                    if (Input::get().getValue(GLFW_KEY_A)) {
+                    if (input.getValue(GLFW_KEY_A)) {
                         velocity += proj;
                     }
-                    if (Input::get().getValue(GLFW_KEY_S)) {
+                    if (input.getValue(GLFW_KEY_S)) {
                         velocity -= globals.camera->getOrientation();
                     }
-                    if (Input::get().getValue(GLFW_KEY_D)) {
+                    if (input.getValue(GLFW_KEY_D)) {
                         velocity -= proj;
                     }
 
@@ -1001,17 +1001,17 @@ class TestRoom : public Scene {
 
 			{ // do rayCast // raycast selection causes big hitching! how do we optimize?
 
-                if (Input::get().getValue(GLFW_KEY_E)) {
+                if (input.getValue(GLFW_KEY_E)) {
                     glm::vec3 ppp = globals.camera->getPosition() + (globals.camera->getOrientation() * 12.5f);
 
                     btVector3 from = btVector3(globals.camera->getPosition().x, globals.camera->getPosition().y, globals.camera->getPosition().z);
                     btVector3 to = btVector3(ppp.x, ppp.y, ppp.z);
                     btCollisionWorld::ClosestRayResultCallback rrc = btCollisionWorld::ClosestRayResultCallback(from, to);
-                    Physics::get().getDynamicsWorld()->rayTest(from, to, rrc);
+                    physics.getDynamicsWorld()->rayTest(from, to, rrc);
 
                     if (rrc.hasHit()) {
                         btRigidBody* sel = btRigidBody::upcast(const_cast <btCollisionObject*>(rrc.m_collisionObject));
-                        unsigned int entID = Physics::get().m_EntityMap[sel];
+                        unsigned int entID = physics.m_EntityMap[sel];
                         if (entID != 0) {
                             if (prevID != 0 && prevID != entID) {
                                 Entity prevEnt = ecs.getEntity(prevID);
@@ -1051,12 +1051,12 @@ class TestRoom : public Scene {
 
 			}
 			{
-				if (Input::get().getValue(GLFW_KEY_Y)) Audio::get().playAudio(1);
-				if (Input::get().getValue(GLFW_KEY_U)) Audio::get().playAudio(0);
+				if (input.getValue(GLFW_KEY_Y)) audio.playAudio(1);
+				if (input.getValue(GLFW_KEY_U)) audio.playAudio(0);
 			}
 
 			{ // particles
-				if (Input::get().getValue(GLFW_KEY_P) && !is_smoking && cigCt > 0) {
+				if (input.getValue(GLFW_KEY_P) && !is_smoking && cigCt > 0) {
 					is_smoking = true;
 					cig_anim = true;
 					cig_anim_time = 0.0f;
@@ -1143,7 +1143,7 @@ class TestRoom : public Scene {
                 glViewport(0, 0, globals.screenWidth, globals.screenHeight);
             }
 
-            LightSystem::get().RenderPointShadows();
+            lightsys.RenderPointShadows();
 
             linkModelShaderUniforms(*globals.rigProgram);
             linkModelShaderUniforms(*globals.lightProgram);
@@ -1193,7 +1193,7 @@ class TestRoom : public Scene {
             glDisable(GL_BLEND);
 
             glEnable(GL_BLEND);
-            GUI::get().RenderText(*textProgram, "Cigarettes: " + std::to_string(cigCt), 25.0f, 25.0f, 1.0f, glm::vec3(1.f, 1.f, 1.f));
+            gui.RenderText(*textProgram, "Cigarettes: " + std::to_string(cigCt), 25.0f, 25.0f, 1.0f, glm::vec3(1.f, 1.f, 1.f));
             glDisable(GL_BLEND);
 
             glfwSwapBuffers(window);

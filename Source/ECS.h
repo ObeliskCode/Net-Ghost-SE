@@ -101,6 +101,8 @@ private:
     std::unordered_set<unsigned int> cam1Set;
     std::unordered_set<unsigned int> cam2Set;
 
+    Globals& globals = Globals::get();
+
     std::queue<unsigned int> availableIDs;
     std::unordered_map<unsigned int, Entity> entMap;
 };
