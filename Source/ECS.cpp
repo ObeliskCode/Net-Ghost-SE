@@ -246,12 +246,13 @@ void ECS::DrawScreenEntity(unsigned int ID) {
 
     if (e.animator_flag) {
         SkeletalModel* skmdl = cset_skmodel.getMem(ID);
-        cset_shader.getMem(ID)->Activate();
+        Shader* sh = cset_shader.getMem(ID);
+        sh->Activate();
         const auto& transforms = cset_animator.getMem(ID)->GetFinalBoneMatrices();
         for (int i = 0; i < transforms.size(); ++i) {
-            glUniformMatrix4fv(glGetUniformLocation(cset_shader.getMem(ID)->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+            glUniformMatrix4fv(glGetUniformLocation(sh->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
         }
-        skmdl->Draw(*cset_shader.getMem(ID), *Globals::get().handCam, finaltransform, finalntransform);
+        skmdl->Draw(*sh, *Globals::get().handCam, finaltransform, finalntransform);
     } else if (e.model_flag) {
         Model* mdl = cset_model.getMem(ID);
         if (e.surface_flag) {
@@ -302,12 +303,13 @@ void ECS::DrawEntity(unsigned int ID) {
 
     if (e.animator_flag) {
         SkeletalModel* skmdl = cset_skmodel.getMem(ID);
-        cset_shader.getMem(ID)->Activate();
+        Shader* sh = cset_shader.getMem(ID);
+        sh->Activate();
         const auto& transforms = cset_animator.getMem(ID)->GetFinalBoneMatrices();
         for (int i = 0; i < transforms.size(); ++i) {
-            glUniformMatrix4fv(glGetUniformLocation(cset_shader.getMem(ID)->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+            glUniformMatrix4fv(glGetUniformLocation(sh->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
         }
-        skmdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
+        skmdl->Draw(*sh, *Globals::get().camera, finaltransform, finalntransform);
     } else if (e.model_flag) {
         Model* mdl = cset_model.getMem(ID);
         if (e.surface_flag) {
@@ -329,8 +331,8 @@ void ECS::DrawEntity(unsigned int ID) {
 
 	const auto& wires = cset_wire.getMem(ID);
 	if (e.phystransform_flag) {
+        glm::mat4 tran = phystrf->getMatrix();
         for (int i = 0; i < wires.size(); i++) {
-            glm::mat4 tran = cset_phystransform.getMem(ID)->getMatrix();
             wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), tran);
         }
 	}
@@ -375,12 +377,13 @@ void ECS::DrawEntities() {
 
         if (e.animator_flag) {
             SkeletalModel* skmdl = cset_skmodel.getMem(ID);
-            cset_shader.getMem(ID)->Activate();
+            Shader* sh = cset_shader.getMem(ID);
+            sh->Activate();
             const auto& transforms = cset_animator.getMem(ID)->GetFinalBoneMatrices();
             for (int i = 0; i < transforms.size(); ++i) {
-                glUniformMatrix4fv(glGetUniformLocation(cset_shader.getMem(ID)->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+                glUniformMatrix4fv(glGetUniformLocation(sh->ID, ("finalBonesMatrices[" + std::to_string(i) + "]").c_str()), 1, GL_FALSE, &transforms[i][0][0]);
             }
-            skmdl->Draw(*cset_shader.getMem(ID), *Globals::get().camera, finaltransform, finalntransform);
+            skmdl->Draw(*sh, *Globals::get().camera, finaltransform, finalntransform);
         } else
 
         if (e.model_flag) {
@@ -408,8 +411,8 @@ void ECS::DrawEntities() {
             glStencilMask(0xFF);
             const auto& wires = cset_wire.getMem(ID);
             if (e.phystransform_flag) {
+                glm::mat4 tran = phystrf->getMatrix();
                 for (int i = 0; i < wires.size(); i++) {
-                    glm::mat4 tran = cset_phystransform.getMem(ID)->getMatrix();
                     wires[i]->Draw(*Globals::get().wireShader, *cset_camera.getMem(ID), tran);
                 }
             }
@@ -630,13 +633,14 @@ void ECS::DrawEntityStencils() {
 
         Model* mdl = cset_model.getMem(ID);
 
-        glm::vec3 oldScale = cset_transform.getMem(ID)->getScale();
-        glm::vec3 upScale = oldScale * 1.05f;
-        cset_transform.getMem(ID)->setScale(upScale);
-
-        Transform* phystrf = cset_phystransform.getMem(ID);
         Transform* trf = cset_transform.getMem(ID);
 
+        glm::vec3 oldScale = cset_transform.getMem(ID)->getScale();
+        glm::vec3 upScale = oldScale * 1.05f;
+        trf->setScale(upScale);
+
+        Transform* phystrf = cset_phystransform.getMem(ID);
+        
         glm::mat4 finaltransform;
         glm::mat4 finalntransform;
         if (e.phystransform_flag) {
@@ -649,7 +653,7 @@ void ECS::DrawEntityStencils() {
         }
 
         mdl->Draw(*Globals::get().cellShader, *Globals::get().camera, finaltransform, finalntransform);
-        cset_transform.getMem(ID)->setScale(oldScale);
+        trf->setScale(oldScale);
 
 	}
 	glEnable(GL_DEPTH_TEST);
