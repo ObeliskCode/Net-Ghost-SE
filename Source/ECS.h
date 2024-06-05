@@ -20,15 +20,14 @@
 
 #define MAX_ENTITIES 65000
 
-template <typename T> class ComponentSet {
+template <typename T> class ComponentMemory {
     public:
+        // never link an Entity Twice!
         void linkEntity(unsigned int ID, T val) {
-            entSet.insert(ID);
             entVec.push_back(ID);
             memArr[ID] = val;
         }
         void unlinkEntity(unsigned int ID) {
-            entSet.erase(ID);
             for (auto it = entVec.begin(); it != entVec.end(); it++ ) {
                 if (*it == ID){
                     entVec.erase(it);
@@ -39,7 +38,6 @@ template <typename T> class ComponentSet {
         T& getMem(unsigned int ID) {
             return memArr[ID];
         }
-        std::unordered_set<unsigned int> entSet;
         std::vector<unsigned int> entVec;
     private:
         T memArr[MAX_ENTITIES];
@@ -87,15 +85,15 @@ public:
     void updateEntity(Entity e);
 
     // approx 4MB right here ...
-    ComponentSet<Transform*> cset_transform; // can transform and transform be passed as stack allocated objects?
-    ComponentSet<Model*> cset_model;
-    ComponentSet<SkeletalModel*> cset_skmodel;
-    ComponentSet<Transform*> cset_phystransform;
-    ComponentSet<Animator*> cset_animator;
-    ComponentSet<Camera*> cset_camera; // do we need this many camera pointers // only 2 cams rn
-    ComponentSet<Shader> cset_shader;
-    ComponentSet<btRigidBody*> cset_body;
-    ComponentSet<std::vector<Wire*>> cset_wire;
+    ComponentMemory<Transform*> cset_transform; // can transform and transform be passed as stack allocated objects?
+    ComponentMemory<Model*> cset_model;
+    ComponentMemory<SkeletalModel*> cset_skmodel;
+    ComponentMemory<Transform*> cset_phystransform;
+    ComponentMemory<Animator*> cset_animator;
+    ComponentMemory<Camera*> cset_camera; // do we need this many camera pointers // only 2 cams rn
+    ComponentMemory<Shader> cset_shader;
+    ComponentMemory<btRigidBody*> cset_body;
+    ComponentMemory<std::vector<Wire*>> cset_wire;
     // no wire component set ideally
 
     std::unordered_set<unsigned int> stencilSet;
