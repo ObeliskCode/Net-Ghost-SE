@@ -21,6 +21,8 @@ class VBO
 public:
 	// Reference ID of the Vertex Buffer Object
 	GLuint ID;
+	// undefined behavior if using default constructor obj!
+	VBO() {};
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	VBO(std::vector<Vertex>& vertices);
 
@@ -47,6 +49,8 @@ class SkeletalVBO
 public:
 	// Reference ID of the Vertex Buffer Object
 	GLuint ID;
+	// undefined behavior if using default constructor obj!
+    SkeletalVBO() {};
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	SkeletalVBO(std::vector<SkeletalVertex>& vertices);
 

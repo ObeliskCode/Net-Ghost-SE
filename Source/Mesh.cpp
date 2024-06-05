@@ -8,29 +8,24 @@ Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::v
 	Mesh::textures = textures;
 	Mesh::model = model;
 
-	m_VAO = new VAO();
+	m_VAO.Bind();
 
-	m_VAO->Bind();
+	m_VBO = VBO(vertices);
+	m_EBO = EBO(indices);
 
-	m_VBO = new VBO(vertices);
-	m_EBO = new EBO(indices);
+	m_VAO.LinkAttrib(m_VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0); // pos
+	m_VAO.LinkAttrib(m_VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float))); // normal
+	m_VAO.LinkAttrib(m_VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float))); // texUV
 
-	m_VAO->LinkAttrib(*m_VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0); // pos
-	m_VAO->LinkAttrib(*m_VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float))); // normal
-	m_VAO->LinkAttrib(*m_VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float))); // texUV
-
-	m_VAO->Unbind();
-	m_VBO->Unbind(); // VBO already unbinded by LinkAttrib()
-	m_EBO->Unbind();
+	m_VAO.Unbind();
+	m_VBO.Unbind(); // VBO already unbinded by LinkAttrib()
+	m_EBO.Unbind();
 }
 
 Mesh::~Mesh() {
-	m_VAO->Delete();
-	delete m_VAO;
-	m_VBO->Delete();
-	delete m_VBO;
-	m_EBO->Delete();
-	delete m_EBO;
+	m_VAO.Delete();
+	m_VBO.Delete();
+	m_EBO.Delete();
 }
 
 void Mesh::Draw(
@@ -40,7 +35,7 @@ void Mesh::Draw(
 	glm::mat4 ntransform
 ) {
 	shader.Activate();
-	m_VAO->Bind();
+	m_VAO.Bind();
 
 	unsigned int numDiffuse = 0;
 	unsigned int numSpecular = 0;
@@ -80,7 +75,7 @@ void Mesh::DrawShadow(
 	glm::mat4 transform
 ) {
 	shader.Activate();
-	m_VAO->Bind();
+	m_VAO.Bind();
 
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));

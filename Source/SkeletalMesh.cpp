@@ -8,36 +8,31 @@ SkeletalMesh::SkeletalMesh(std::vector <SkeletalVertex>& vertices, std::vector <
 	SkeletalMesh::textures = textures;
 	SkeletalMesh::model = model;
 
-	m_VAO = new SkeletalVAO();
+	m_VAO.Bind();
 
-	m_VAO->Bind();
+	m_VBO = SkeletalVBO(vertices);
+	m_EBO = EBO(indices);
 
-	m_VBO = new SkeletalVBO(vertices);
-	m_EBO = new EBO(indices);
+	m_VAO.LinkAttrib(m_VBO, 0, 3, GL_FLOAT, sizeof(SkeletalVertex), (void*)0);
+	m_VAO.LinkAttrib(m_VBO, 1, 3, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, normal));
+	m_VAO.LinkAttrib(m_VBO, 2, 2, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, texUV));
 
-	m_VAO->LinkAttrib(*m_VBO, 0, 3, GL_FLOAT, sizeof(SkeletalVertex), (void*)0);
-	m_VAO->LinkAttrib(*m_VBO, 1, 3, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, normal));
-	m_VAO->LinkAttrib(*m_VBO, 2, 2, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, texUV));
-
-	m_VBO->Bind();
+	m_VBO.Bind();
 	glVertexAttribIPointer(3, 4, GL_INT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_BoneIDs)); //AttribI function used instead!
 	glEnableVertexAttribArray(3);
-	m_VBO->Unbind();
+	m_VBO.Unbind();
 
-	m_VAO->LinkAttrib(*m_VBO, 4, 4, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_Weights));
+	m_VAO.LinkAttrib(m_VBO, 4, 4, GL_FLOAT, sizeof(SkeletalVertex), (void*)offsetof(SkeletalVertex, m_Weights));
 
-	m_VAO->Unbind();
-	m_VBO->Unbind(); // m_VBO already unbinded by LinkAttrib()
-	m_EBO->Unbind();
+	m_VAO.Unbind();
+	m_VBO.Unbind(); // m_VBO already unbinded by LinkAttrib()
+	m_EBO.Unbind();
 }
 
 SkeletalMesh::~SkeletalMesh() {
-	m_VAO->Delete();
-	delete m_VAO;
-	m_VBO->Delete();
-	delete m_VBO;
-	m_EBO->Delete();
-	delete m_EBO;
+	m_VAO.Delete();
+	m_VBO.Delete();
+	m_EBO.Delete();
 }
 
 void SkeletalMesh::Draw(
@@ -47,7 +42,7 @@ void SkeletalMesh::Draw(
 	glm::mat4 ntransform
 ) {
 	shader.Activate();
-	m_VAO->Bind();
+	m_VAO.Bind();
 
 	unsigned int numDiffuse = 0;
 	unsigned int numSpecular = 0;
@@ -88,7 +83,7 @@ void SkeletalMesh::DrawShadow(
 	glm::mat4 transform
 ) {
 	shader.Activate();
-	m_VAO->Bind();
+	m_VAO.Bind();
 
 	// Push the matrices to the vertex shader
 	glUniformMatrix4fv(glGetUniformLocation(shader.ID, "transform"), 1, GL_FALSE, glm::value_ptr(transform));
