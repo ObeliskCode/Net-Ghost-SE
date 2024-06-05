@@ -52,8 +52,8 @@ PointShadow::~PointShadow() {
 }
 
 void PointShadow::linkShadowShaders(){
-	Globals::get().pointShadowShader->Activate();
-	GLuint pointShaderID = Globals::get().pointShadowShader->ID;
+	Globals::get().pointShadowShader.Activate();
+	GLuint pointShaderID = Globals::get().pointShadowShader.ID;
 	glUniformMatrix4fv(glGetUniformLocation(pointShaderID, "shadowMatrices[0]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[0]));
 	glUniformMatrix4fv(glGetUniformLocation(pointShaderID, "shadowMatrices[1]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[1]));
 	glUniformMatrix4fv(glGetUniformLocation(pointShaderID, "shadowMatrices[2]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[2]));
@@ -63,8 +63,8 @@ void PointShadow::linkShadowShaders(){
 	glUniform3f(glGetUniformLocation(pointShaderID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 	glUniform1f(glGetUniformLocation(pointShaderID, "far_plane"), far_plane);
 
-	Globals::get().animPointShadowShader->Activate();
-	GLuint pointAnimShaderID = Globals::get().animPointShadowShader->ID;
+	Globals::get().animPointShadowShader.Activate();
+	GLuint pointAnimShaderID = Globals::get().animPointShadowShader.ID;
 	glUniformMatrix4fv(glGetUniformLocation(pointAnimShaderID, "shadowMatrices[0]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[0]));
 	glUniformMatrix4fv(glGetUniformLocation(pointAnimShaderID, "shadowMatrices[1]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[1]));
 	glUniformMatrix4fv(glGetUniformLocation(pointAnimShaderID, "shadowMatrices[2]"), 1, GL_FALSE, glm::value_ptr(shadowTransforms[2]));

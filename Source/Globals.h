@@ -20,7 +20,7 @@ public:
         delete instance;
         instance = nullptr;
     }
-    
+
     int screenWidth = 1600, screenHeight = 900; // Width and height of window in pixels.
     bool cursorLocked = false; // whether to lock cursor for first person mode
     bool camLock = false;
@@ -29,17 +29,17 @@ public:
     unsigned int depthCubeMap;
     float far_plane;
     glm::mat4 lightSpaceMatrix;
-    Shader * shadowShader;
-    Shader * wireShader;
-    Shader * animShadowShader;
-    Shader * animPointShadowShader;
-    Shader * animCellShader;
-    Shader * cellShader;
-    Shader * pointShadowShader;
-    Shader * rigProgram;
-    Shader * lightProgram;
-    Shader * animProgram;
-    Shader * noTexAnimProgram;
+    Shader shadowShader;
+    Shader wireShader;
+    Shader animShadowShader;
+    Shader animPointShadowShader;
+    Shader animCellShader;
+    Shader cellShader;
+    Shader pointShadowShader;
+    Shader rigProgram;
+    Shader lightProgram;
+    Shader animProgram;
+    Shader noTexAnimProgram;
     Camera * camera;
     Camera * handCam;
     double rotX;

@@ -16,6 +16,7 @@ class Shader
 {
 	public:
 		GLuint ID;
+		Shader() {};
 		Shader(std::string vertexFile, std::string fragmentFile);
         Shader(std::string vertexFile, std::string fragmentFile, std::string geomFile);
 

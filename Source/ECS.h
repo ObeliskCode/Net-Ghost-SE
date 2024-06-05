@@ -58,7 +58,7 @@ public:
     void addModel(unsigned int ID, Model* mdl);
     void addPhysBody(unsigned int ID, btRigidBody* b);
     void addAnimator(unsigned int ID, Animator* mator);
-    void addShader(unsigned int ID, Shader* sh);
+    void addShader(unsigned int ID, Shader sh);
     void addCamera(unsigned int ID, Camera* cam);
     void addTransform(unsigned int ID, Transform* transf);
     void addPhysTransform(unsigned int ID, Transform* phystransf);
@@ -86,7 +86,7 @@ public:
     ComponentSet<Transform*> cset_phystransform;
     ComponentSet<Animator*> cset_animator;
     ComponentSet<Camera*> cset_camera;
-    ComponentSet<Shader*> cset_shader;
+    ComponentSet<Shader> cset_shader;
     ComponentSet<btRigidBody*> cset_body;
     ComponentSet<std::vector<Wire*>> cset_wire;
     // no wire component set ideally

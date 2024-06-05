@@ -98,7 +98,7 @@ class Scene {
         ParticleSystem &particlesys = ParticleSystem::get();
         Physics &physics = Physics::get();
         Input &input = Input::get();
-        Audio &audio = Audio::get(); 
+        Audio &audio = Audio::get();
 
         static void renderScene() {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -122,7 +122,7 @@ class Scene {
 class MainMenu : public Scene {
     public:
 
-        Shader* textProgram;
+        Shader textProgram;
 
         MainMenu() {
             winFun = [](GLFWwindow* window, int width, int height) {
@@ -170,7 +170,7 @@ class MainMenu : public Scene {
 
         int loadResources(GLFWwindow* window) override {
 
-            textProgram = new Shader("textVert.glsl", "textFrag.glsl");
+            textProgram = Shader("textVert.glsl", "textFrag.glsl");
 
             return 1;
         }
@@ -183,8 +183,8 @@ class MainMenu : public Scene {
             renderScene();
 
             glEnable(GL_BLEND);
-            gui.RenderText(*textProgram, "Obelisk Engine", (globals.screenWidth / 2) - 150.0f, globals.screenHeight - (globals.screenHeight / 10), 0.75f, glm::vec3(1.f, 1.f, 1.f));
-            gui.RenderText(*textProgram, "Test Room", (globals.screenWidth / 2) - 150.0f, globals.screenHeight - (globals.screenHeight / 6), 0.75f, glm::vec3(1.f, 1.f, 1.f));
+            gui.RenderText(textProgram, "Obelisk Engine", (globals.screenWidth / 2) - 150.0f, globals.screenHeight - (globals.screenHeight / 10), 0.75f, glm::vec3(1.f, 1.f, 1.f));
+            gui.RenderText(textProgram, "Test Room", (globals.screenWidth / 2) - 150.0f, globals.screenHeight - (globals.screenHeight / 6), 0.75f, glm::vec3(1.f, 1.f, 1.f));
             glDisable(GL_BLEND);
 
             glfwSwapBuffers(window);
@@ -212,7 +212,7 @@ class FoldAnim : public Scene {
 
         QuadRenderer* quadSys = new QuadRenderer();
 
-        Shader* quadProgram;
+        Shader quadProgram;
 
         FoldAnim() {
             winFun = [](GLFWwindow* window, int width, int height) {
@@ -284,7 +284,7 @@ class FoldAnim : public Scene {
 
         int loadResources(GLFWwindow* window) override {
 
-            quadProgram = new Shader("quadVert.glsl", "quadFrag.glsl");
+            quadProgram = Shader("quadVert.glsl", "quadFrag.glsl");
 
             Quad q = Quad();
             // multiply first rot last when multiplying quats!
@@ -355,7 +355,7 @@ class FoldAnim : public Scene {
             renderScene();
 
             glDisable(GL_CULL_FACE);
-            quadSys->DrawQuads(*quadProgram, *globals.camera);
+            quadSys->DrawQuads(quadProgram, *globals.camera);
             glEnable(GL_CULL_FACE);
 
             glfwSwapBuffers(window);
@@ -416,17 +416,17 @@ class TestRoom : public Scene {
         unsigned int depthMap;
 
         Skybox* sky;
-        Shader* skyProgram;
+        Shader skyProgram;
 
         ParticleRenderer particleEmitter;
 
         QuadRenderer* quadSys = new QuadRenderer();
 
-        Shader* textProgram;
+        Shader textProgram;
 
-        Shader* partProgram;
+        Shader partProgram;
 
-        Shader* quadProgram;
+        Shader quadProgram;
 
         Animator* mator;
 
@@ -508,33 +508,33 @@ class TestRoom : public Scene {
 
         int loadResources(GLFWwindow* window) override {
 
-            textProgram = new Shader("textVert.glsl", "textFrag.glsl");
+            textProgram = Shader("textVert.glsl", "textFrag.glsl");
 
             renderScene();
 
             glEnable(GL_BLEND);
-            gui.RenderText(*textProgram, "Loading...", (globals.screenWidth / 2) - 100.0f, globals.screenHeight / 2, 1.0f, glm::vec3(1.f, 1.f, 1.f));
+            gui.RenderText(textProgram, "Loading...", (globals.screenWidth / 2) - 100.0f, globals.screenHeight / 2, 1.0f, glm::vec3(1.f, 1.f, 1.f));
             glDisable(GL_BLEND);
 
             glfwSwapBuffers(window);
 
-            quadProgram = new Shader("quadVert.glsl", "quadFrag.glsl");
+            quadProgram = Shader("quadVert.glsl", "quadFrag.glsl");
 
             Quad q = Quad();
             quadSys->quads.push_back(q);
 
             // warning these need to be deleted!
-            globals.rigProgram = new Shader("rigVert.glsl", "mdlFrag.glsl");
-            globals.lightProgram = new Shader("rigVert.glsl", "lightFrag.glsl");
-            globals.animProgram = new Shader("animVert.glsl", "mdlFrag.glsl");
-            globals.noTexAnimProgram = new Shader("animVert.glsl", "noTexFrag.glsl");
-            globals.wireShader = new Shader("wireVert.glsl", "wireFrag.glsl");
-            globals.shadowShader = new Shader("shadowVert.glsl", "shadowFrag.glsl");
-            globals.animShadowShader = new Shader("animShadowVert.glsl", "shadowFrag.glsl");
-            globals.cellShader = new Shader("rigVert.glsl", "cellFrag.glsl");
-            globals.animCellShader = new Shader("animVert.glsl", "cellFrag.glsl");
-            globals.pointShadowShader = new Shader("pointShadowVert.glsl", "pointShadowFrag.glsl", "pointShadowGeom.glsl");
-            globals.animPointShadowShader = new Shader("animPointShadowVert.glsl", "pointShadowFrag.glsl", "pointShadowGeom.glsl");
+            globals.rigProgram = Shader("rigVert.glsl", "mdlFrag.glsl");
+            globals.lightProgram = Shader("rigVert.glsl", "lightFrag.glsl");
+            globals.animProgram = Shader("animVert.glsl", "mdlFrag.glsl");
+            globals.noTexAnimProgram = Shader("animVert.glsl", "noTexFrag.glsl");
+            globals.wireShader = Shader("wireVert.glsl", "wireFrag.glsl");
+            globals.shadowShader = Shader("shadowVert.glsl", "shadowFrag.glsl");
+            globals.animShadowShader = Shader("animShadowVert.glsl", "shadowFrag.glsl");
+            globals.cellShader = Shader("rigVert.glsl", "cellFrag.glsl");
+            globals.animCellShader = Shader("animVert.glsl", "cellFrag.glsl");
+            globals.pointShadowShader = Shader("pointShadowVert.glsl", "pointShadowFrag.glsl", "pointShadowGeom.glsl");
+            globals.animPointShadowShader = Shader("animPointShadowVert.glsl", "pointShadowFrag.glsl", "pointShadowGeom.glsl");
 
             unsigned int entID;
             Entity e;
@@ -732,15 +732,15 @@ class TestRoom : public Scene {
             e.light_flag = 1;
             ecs.updateEntity(e);
 
-            lampLight->linkShader(*globals.rigProgram);
-            lampLight->linkShader(*globals.animProgram);
-            lampLight->linkShader(*globals.noTexAnimProgram);
-            lampLight->linkShader(*globals.lightProgram);
+            lampLight->linkShader(globals.rigProgram);
+            lampLight->linkShader(globals.animProgram);
+            lampLight->linkShader(globals.noTexAnimProgram);
+            lampLight->linkShader(globals.lightProgram);
 
-            lightsys.linkShader(*globals.rigProgram);
-            lightsys.linkShader(*globals.animProgram);
-            lightsys.linkShader(*globals.noTexAnimProgram);
-            lightsys.linkShader(*globals.lightProgram);
+            lightsys.linkShader(globals.rigProgram);
+            lightsys.linkShader(globals.animProgram);
+            lightsys.linkShader(globals.noTexAnimProgram);
+            lightsys.linkShader(globals.lightProgram);
 
             //QUAD
             entID = ecs.createEntity();
@@ -835,7 +835,7 @@ class TestRoom : public Scene {
             ecs.addWire(entID, new Wire(glm::vec3(-0.04f, 0.0f, 0.0f), glm::vec3(0.04f, 0.0f, 0.0f)));
             ecs.addWire(entID, new Wire(glm::vec3(0.0f, -0.04f, 0.0f), glm::vec3(0.0f, 0.04f, 0.0f)));
 
-            partProgram = new Shader("partVert.glsl", "partFrag.glsl");
+            partProgram = Shader("partVert.glsl", "partFrag.glsl");
 
             std::vector<std::string> faces =
             {
@@ -849,7 +849,7 @@ class TestRoom : public Scene {
             sky = new Skybox(faces);
 
 
-            skyProgram = new Shader("skyVert.glsl", "skyFrag.glsl");
+            skyProgram = Shader("skyVert.glsl", "skyFrag.glsl");
 
 
             glGenFramebuffers(1, &depthMapFBO);
@@ -885,11 +885,11 @@ class TestRoom : public Scene {
             glm::mat4 lightSpaceMatrix = lightProjection * lightView;
             globals.lightSpaceMatrix = lightSpaceMatrix;
 
-            globals.shadowShader->Activate();
-            glUniformMatrix4fv(glGetUniformLocation(globals.shadowShader->ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+            globals.shadowShader.Activate();
+            glUniformMatrix4fv(glGetUniformLocation(globals.shadowShader.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
-            globals.animShadowShader->Activate();
-            glUniformMatrix4fv(glGetUniformLocation(globals.animShadowShader->ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+            globals.animShadowShader.Activate();
+            glUniformMatrix4fv(glGetUniformLocation(globals.animShadowShader.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
             globals.depthCubeMap = lampLight->lightShadow->getMap();
 
@@ -1164,10 +1164,10 @@ class TestRoom : public Scene {
 
             lightsys.RenderPointShadows();
 
-            linkModelShaderUniforms(*globals.rigProgram);
-            linkModelShaderUniforms(*globals.lightProgram);
-            linkModelShaderUniforms(*globals.animProgram);
-            linkModelShaderUniforms(*globals.noTexAnimProgram);
+            linkModelShaderUniforms(globals.rigProgram);
+            linkModelShaderUniforms(globals.lightProgram);
+            linkModelShaderUniforms(globals.animProgram);
+            linkModelShaderUniforms(globals.noTexAnimProgram);
 
             ecs.DrawEntities(); // crashing here!
 
@@ -1197,9 +1197,9 @@ class TestRoom : public Scene {
             ecs.DrawScreenEntity(cigEntID);
             */
 
-            quadSys->DrawQuads(*quadProgram, *globals.camera);
+            quadSys->DrawQuads(quadProgram, *globals.camera);
 
-            sky->Draw(*skyProgram, *globals.camera);
+            sky->Draw(skyProgram, *globals.camera);
 
             ecs.DrawEntityStencils();
 
@@ -1208,11 +1208,11 @@ class TestRoom : public Scene {
 
             glEnable(GL_BLEND);
             std::sort(particleEmitter.particles.begin(), particleEmitter.particles.end(), Less);
-            particleEmitter.DrawParticles(*partProgram, *globals.camera);
+            particleEmitter.DrawParticles(partProgram, *globals.camera);
             glDisable(GL_BLEND);
 
             glEnable(GL_BLEND);
-            gui.RenderText(*textProgram, "Cigarettes: " + std::to_string(cigCt), 25.0f, 25.0f, 1.0f, glm::vec3(1.f, 1.f, 1.f));
+            gui.RenderText(textProgram, "Cigarettes: " + std::to_string(cigCt), 25.0f, 25.0f, 1.0f, glm::vec3(1.f, 1.f, 1.f));
             glDisable(GL_BLEND);
 
             glfwSwapBuffers(window);
