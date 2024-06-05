@@ -24,10 +24,17 @@ template <typename T> class ComponentSet {
     public:
         void linkEntity(unsigned int ID, T val) {
             entSet.insert(ID);
+            entVec.push_back(ID);
             memArr[ID] = val;
         }
         void unlinkEntity(unsigned int ID) {
             entSet.erase(ID);
+            for (auto it = entVec.begin(); it != entVec.end(); it++ ) {
+                if (*it == ID){
+                    entVec.erase(it);
+                    break;
+                }
+            }
         }
         T& getMem(unsigned int ID) {
             return memArr[ID];
@@ -80,12 +87,12 @@ public:
     void updateEntity(Entity e);
 
     // approx 4MB right here ...
-    ComponentSet<Transform*> cset_transform;
+    ComponentSet<Transform*> cset_transform; // can transform and transform be passed as stack allocated objects?
     ComponentSet<Model*> cset_model;
     ComponentSet<SkeletalModel*> cset_skmodel;
     ComponentSet<Transform*> cset_phystransform;
     ComponentSet<Animator*> cset_animator;
-    ComponentSet<Camera*> cset_camera;
+    ComponentSet<Camera*> cset_camera; // do we need this many camera pointers // only 2 cams rn
     ComponentSet<Shader> cset_shader;
     ComponentSet<btRigidBody*> cset_body;
     ComponentSet<std::vector<Wire*>> cset_wire;

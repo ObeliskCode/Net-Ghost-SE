@@ -18,18 +18,19 @@ ECS::ECS() {
 }
 
 ECS::~ECS() {
-	for (auto it = entMap.begin(); it != entMap.end(); it++) {
-        deleteEntity(it->first);
+	for (auto it = entVec.begin(); it != entVec.end(); it++) {
+        deleteEntity(*it);
 	}
 }
 
-// TODO: add safety checks to ECS!
+// TODO: add safety checks to ECS and vector iteration of entities!
 
 unsigned int ECS::createEntity() {
 	if (availableIDs.empty()) return NULL;
 	unsigned int id = availableIDs.front();
 	availableIDs.pop();
 	entMap[id] = Entity(id);
+	entVec.push_back(id);
 	return id;
 }
 void ECS::addShader(unsigned int ID, Shader sh) {
@@ -185,6 +186,12 @@ void ECS::deleteEntity(unsigned int ID) {
 		for (auto it = cset_wire.getMem(ID).begin(); it != cset_wire.getMem(ID).end(); it++ ) {
             delete *it;
 		}
+		for (auto it = entVec.begin(); it != entVec.end(); it++ ) {
+            if (*it == ID){
+                entVec.erase(it);
+                break;
+            }
+        }
 		cset_wire.getMem(ID).clear();
 		entMap.erase(ID);
 		availableIDs.push(ID);
@@ -192,7 +199,7 @@ void ECS::deleteEntity(unsigned int ID) {
 }
 
 void ECS::syncPhysics() {
-	for (auto it = cset_body.entSet.begin(); it != cset_body.entSet.end(); it++)
+	for (auto it = cset_body.entVec.begin(); it != cset_body.entVec.end(); it++)
 	{
         unsigned int ID = *it;
         btRigidBody* body = cset_body.getMem(ID);
@@ -350,9 +357,9 @@ void ECS::DrawEntities() {
 	linkCameraUniforms(globals.animProgram, *globals.camera);
 	linkCameraUniforms(globals.noTexAnimProgram, *globals.camera);
 
-	for (auto it = entMap.begin(); it != entMap.end(); it++){
-        unsigned int ID = it->first;
-        Entity e = it->second;
+	for (auto it = entVec.begin(); it != entVec.end(); it++){
+        unsigned int ID = *it;
+        Entity e = entMap[ID];
 
         if (!e.visible_flag) continue;
 
@@ -527,7 +534,7 @@ void ECS::DrawEntities() {
 */
 
 void ECS::advanceEntityAnimations(float delta) {
-	for (auto it = cset_animator.entSet.begin(); it != cset_animator.entSet.end(); it++)
+	for (auto it = cset_animator.entVec.begin(); it != cset_animator.entVec.end(); it++)
 	{
         unsigned int ID = *it;
         Animator* animPtr = cset_animator.getMem(ID);
@@ -536,7 +543,7 @@ void ECS::advanceEntityAnimations(float delta) {
 }
 
 void ECS::DrawEntityShadows() {
-	for (auto it = cset_skmodel.entSet.begin(); it != cset_skmodel.entSet.end(); it++)
+	for (auto it = cset_skmodel.entVec.begin(); it != cset_skmodel.entVec.end(); it++)
 	{
         unsigned int ID = *it;
         Entity e = getEntity(ID);
@@ -557,7 +564,7 @@ void ECS::DrawEntityShadows() {
 		}
 		skmdl->DrawShadow(globals.animShadowShader, finaltransform);
 	}
-	for (auto it = cset_model.entSet.begin(); it != cset_model.entSet.end(); it++)
+	for (auto it = cset_model.entVec.begin(); it != cset_model.entVec.end(); it++)
 	{
         unsigned int ID = *it;
         Entity e = getEntity(ID);
@@ -576,7 +583,7 @@ void ECS::DrawEntityShadows() {
 }
 
 void ECS::DrawEntityPointShadows() {
-    for (auto it = cset_skmodel.entSet.begin(); it != cset_skmodel.entSet.end(); it++)
+    for (auto it = cset_skmodel.entVec.begin(); it != cset_skmodel.entVec.end(); it++)
 	{
         unsigned int ID = *it;
         Entity e = getEntity(ID);
@@ -598,7 +605,7 @@ void ECS::DrawEntityPointShadows() {
 		}
 		skmdl->DrawShadow(globals.animPointShadowShader, finaltransform);
 	}
-	for (auto it = cset_model.entSet.begin(); it != cset_model.entSet.end(); it++)
+	for (auto it = cset_model.entVec.begin(); it != cset_model.entVec.end(); it++)
 	{
         unsigned int ID = *it;
         Entity e = getEntity(ID);
