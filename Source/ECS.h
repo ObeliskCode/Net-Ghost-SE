@@ -31,7 +31,7 @@ template <typename T> class ComponentMemory {
             for (auto it = entVec.begin(); it != entVec.end(); it++ ) {
                 if (*it == ID){
                     entVec.erase(it);
-                    break;
+                    break; // should we keep this for speed? fixes multiple insertions.
                 }
             }
         }
