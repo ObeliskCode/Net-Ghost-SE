@@ -25,11 +25,11 @@ public:
 
 private:
     // model data
-    std::vector<Mesh*> meshes;
+    std::vector<Mesh> meshes;
 
     void loadModel(std::string path);
     void processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> transformation, std::string directory, std::vector<Texture>& textures_loaded);
-    Mesh* processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory, std::vector<Texture>& textures_loaded);
+    Mesh processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory, std::vector<Texture>& textures_loaded);
     std::vector<Texture> loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type,
         std::string typeName, int slotInc, std::string directory, std::vector<Texture>& textures_loaded);
     glm::mat4 aiMat4toGLM(aiMatrix4x4t<float>& matrix);

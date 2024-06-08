@@ -5,7 +5,7 @@ Model::~Model() {
     std::vector<Texture> texWrangled;
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        auto& texs = meshes[i]->textures;
+        auto& texs = meshes[i].textures;
         for (unsigned int i = 0; i < texs.size(); i++)
         {
             Texture tex = texs[i];
@@ -18,10 +18,6 @@ Model::~Model() {
     for (unsigned int i = 0; i < texWrangled.size(); i++)
     {
         texWrangled[i].Delete();
-    }
-    for (unsigned int i = 0; i < meshes.size(); i++)
-    {
-        delete meshes[i];
     }
     meshes.clear();
 }
@@ -59,7 +55,7 @@ void Model::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> 
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene, transform, directory, textures_loaded));
+        meshes.push_back(std::move(processMesh(mesh, scene, transform, directory, textures_loaded)));
     }
     // then do the same for each of its children
     for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -68,7 +64,7 @@ void Model::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t<float> 
     }
 }
 
-Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory, std::vector<Texture>& textures_loaded)
+Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory, std::vector<Texture>& textures_loaded)
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -128,20 +124,20 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
 
-    return new Mesh(vertices, indices, textures, transform);
+    return std::move(Mesh(vertices, indices, textures, transform));
 }
 
 void Model::Draw(Shader& shader, Camera& camera,
     glm::mat4& transform, glm::mat4& ntransform){
     mat.linkShader(shader);
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i]->Draw(shader, camera, transform, ntransform);
+        meshes[i].Draw(shader, camera, transform, ntransform);
     }
 }
 
 void Model::DrawShadow(Shader& shader, glm::mat4& transform){
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i]->DrawShadow(shader, transform);
+        meshes[i].DrawShadow(shader, transform);
     }
 }
 
