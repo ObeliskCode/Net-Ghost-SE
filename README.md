@@ -72,4 +72,5 @@ compile by building target project
 ## Build Instructions (Linux) WIP
 To build on linux use the CodeBlocks Project (.cbp) in the 3D_OpenGL_Engine/ folder. 
 
-Also build libassimp.a and put in Libraries_linux/lib.
+Also build libassimp.a and put in Libraries_linux/lib along with installing boost to the boost folder.
+
