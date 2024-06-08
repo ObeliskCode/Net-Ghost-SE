@@ -43,6 +43,32 @@ template <typename T> class ComponentMemory {
         T memArr[MAX_ENTITIES];
 };
 
+template <typename T> class DynamicComponentMemory {
+public:
+    ~DynamicComponentMemory() {
+        delete[] memArr;
+    }
+    // never link an Entity Twice!
+    void linkEntity(unsigned int ID, T val) {
+        entVec.push_back(ID);
+        memArr[ID] = val;
+    }
+    void unlinkEntity(unsigned int ID) {
+        for (auto it = entVec.begin(); it != entVec.end(); it++) {
+            if (*it == ID) {
+                entVec.erase(it);
+                break; // should we keep this for speed? fixes multiple insertions.
+            }
+        }
+    }
+    T& getMem(unsigned int ID) {
+        return memArr[ID];
+    }
+    std::vector<unsigned int> entVec;
+private:
+    T* memArr = new T[MAX_ENTITIES];
+};
+
 class ECS {
 public:
     // defines an class operation that lets clients access its unique instance.
@@ -93,7 +119,7 @@ public:
     ComponentMemory<Camera*> cset_camera; // do we need this many camera pointers // only 2 cams rn
     ComponentMemory<Shader> cset_shader;
     ComponentMemory<btRigidBody*> cset_body;
-    ComponentMemory<std::vector<Wire*>> cset_wire;
+    DynamicComponentMemory<std::vector<Wire*>> cset_wire;
     // no wire component set ideally
 
     std::unordered_set<unsigned int> stencilSet;
