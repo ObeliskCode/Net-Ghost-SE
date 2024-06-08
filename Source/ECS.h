@@ -43,6 +43,29 @@ template <typename T> class ComponentMemory {
         T memArr[MAX_ENTITIES];
 };
 
+template <typename T> class ComponentMemoryMap {
+public:
+    // never link an Entity Twice!
+    void linkEntity(unsigned int ID, T val) {
+        entVec.push_back(ID);
+        memMap[ID] = val;
+    }
+    void unlinkEntity(unsigned int ID) {
+        for (auto it = entVec.begin(); it != entVec.end(); it++) {
+            if (*it == ID) {
+                entVec.erase(it);
+                break; // should we keep this for speed? fixes multiple insertions.
+            }
+        }
+    }
+    T& getMem(unsigned int ID) {
+        return memMap[ID];
+    }
+    std::vector<unsigned int> entVec;
+private:
+    std::unordered_map<unsigned int, T> memMap;
+};
+
 template <typename T> class DynamicComponentMemory {
 public:
     ~DynamicComponentMemory() {
@@ -112,13 +135,13 @@ public:
 
     // approx 4MB right here ...
     ComponentMemory<Transform*> cset_transform; // can transform and transform be passed as stack allocated objects?
-    ComponentMemory<Model*> cset_model;
-    ComponentMemory<SkeletalModel*> cset_skmodel;
-    ComponentMemory<Transform*> cset_phystransform;
-    ComponentMemory<Animator*> cset_animator;
-    ComponentMemory<Camera*> cset_camera; // do we need this many camera pointers // only 2 cams rn
-    ComponentMemory<Shader> cset_shader;
-    ComponentMemory<btRigidBody*> cset_body;
+    DynamicComponentMemory<Model*> cset_model;
+    DynamicComponentMemory<SkeletalModel*> cset_skmodel;
+    DynamicComponentMemory<Transform*> cset_phystransform;
+    DynamicComponentMemory<Animator*> cset_animator;
+    ComponentMemoryMap<Camera*> cset_camera; // do we need this many camera pointers // only 2 cams rn
+    ComponentMemoryMap<Shader> cset_shader;
+    DynamicComponentMemory<btRigidBody*> cset_body;
     DynamicComponentMemory<std::vector<Wire*>> cset_wire;
     // no wire component set ideally
 
