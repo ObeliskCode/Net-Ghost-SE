@@ -58,7 +58,8 @@ cd BULLET_DIR
 cmake .
 open BULLET_PHYSICS.sln
 change build target to release
-Edit C/C++->Code Generation so that the compiled runtime library is set to Multi-threaded/MT
+edit C/C++->Code Generation on target project so that the compiled runtime library is set to Multi-threaded/MT (or desired lib type)
+compile by building target project
 ```
 5. install Boost to Libraries/boost_x_xx_x [https://www.boost.org/]
 6. install glm, copy /glm to Libraries/include/ [https://github.com/g-truc/glm] (included)
