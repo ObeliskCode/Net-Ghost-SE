@@ -53,12 +53,12 @@ cp lib/Debug/assimp-vcxxx-mtd.lib OBELISK_DIR/Libraries/lib/assimp-vcxxx-mtd.lib
 ```
 4. Install Bullet Physics [https://github.com/bulletphysics/bullet3] to Libraries (included)
 ```bash
-#Click on build_visual_studio_vr_pybullet_double.bat and open build3/vs2010/0_Bullet3Solution.sln
-#When asked, convert the projects to a newer version of Visual Studio.
-#Change Build to Release x64
-#Edit C/C++->Code Generation so that Runtime Library is set to Multi-threaded/MT
-#Right Click and Build only projects BulletCollision,BulletDynamics & LinearMath
-#Copy lib files to Libraries/lib/ and source folder to Libraries/include/ (files within lib/ and src/ folders)
+git clone https://github.com/bulletphysics/bullet3.git
+cd BULLET_DIR
+cmake .
+open BULLET_PHYSICS.sln
+change build target to release
+Edit C/C++->Code Generation so that the compiled runtime library is set to Multi-threaded/MT
 ```
 5. install Boost to Libraries/boost_x_xx_x [https://www.boost.org/]
 6. install glm, copy /glm to Libraries/include/ [https://github.com/g-truc/glm] (included)
