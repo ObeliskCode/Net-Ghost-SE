@@ -23,6 +23,12 @@ public:
 	GLuint ID;
 	// undefined behavior if using default constructor obj!
 	VBO() {};
+	VBO(VBO&& other) {
+        VBO::ID = std::move(other.ID);
+	}
+	VBO& operator=(VBO&& other){
+        VBO::ID = std::move(other.ID);
+	}
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	VBO(std::vector<Vertex>& vertices);
 

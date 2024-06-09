@@ -14,6 +14,12 @@ public:
 	GLuint ID;
 	// Constructor that generates a VAO ID
 	VAO();
+	VAO(VAO&& other) {
+        VAO::ID = std::move(other.ID);
+	}
+	VAO& operator=(VAO&& other){
+        VAO::ID = std::move(other.ID);
+	}
 
 	// Links a VBO Attribute such as a position or color to the VAO
 	void LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);

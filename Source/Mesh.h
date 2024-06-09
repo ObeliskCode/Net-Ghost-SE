@@ -27,10 +27,13 @@ public:
         Mesh::vertices = std::move(other.vertices);
         Mesh::indices = std::move(other.indices);
         Mesh::textures = std::move(other.textures);
-        Mesh::model = std::move(model);
-        Mesh::m_VAO = std::move(m_VAO);
-        Mesh::m_VBO = std::move(m_VBO);
-        Mesh::m_EBO = std::move(m_EBO);
+        Mesh::model = other.model;
+        Mesh::m_VAO = std::move(other.m_VAO);
+        other.m_VAO = VAO();
+        Mesh::m_VBO = std::move(other.m_VBO);
+        other.m_VBO = VBO();
+        Mesh::m_EBO = std::move(other.m_EBO);
+        other.m_EBO = EBO();
     }
 	~Mesh();
 

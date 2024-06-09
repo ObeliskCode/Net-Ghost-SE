@@ -14,6 +14,12 @@ public:
 	GLuint ID;
 	// undefined behavior if using default constructor obj!
 	EBO() {};
+	EBO(EBO&& other) {
+        EBO::ID = std::move(other.ID);
+	}
+	EBO& operator=(EBO&& other){
+        EBO::ID = std::move(other.ID);
+	}
 	// Constructor that generates a Elements Buffer Object and links it to indices
 	EBO(std::vector<GLuint>& indices);
 
