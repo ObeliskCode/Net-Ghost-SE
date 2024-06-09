@@ -140,7 +140,7 @@ public:
     DynamicComponentMemory<SkeletalModel*> cset_skmodel;
     DynamicComponentMemory<Transform*> cset_phystransform;
     DynamicComponentMemory<Animator*> cset_animator;
-    DynamicComponentMemory<Camera*> cset_camera; // do we need this many camera pointers // only 2 cams rn
+    DynamicComponentMemory<Camera*> cset_camera; // we can change this to hold shorts then have short be camID!
     DynamicComponentMemory<Shader> cset_shader;
     DynamicComponentMemory<btRigidBody*> cset_body;
     DynamicComponentMemory<std::vector<Wire*>> cset_wire;
