@@ -27,7 +27,7 @@ public:
         Mesh::vertices = std::move(other.vertices);
         Mesh::indices = std::move(other.indices);
         Mesh::textures = std::move(other.textures);
-        Mesh::model = other.model;
+        Mesh::model = std::move(other.model);
         Mesh::m_VAO = std::move(other.m_VAO);
         other.m_VAO = VAO();
         Mesh::m_VBO = std::move(other.m_VBO);

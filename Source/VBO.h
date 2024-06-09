@@ -57,6 +57,13 @@ public:
 	GLuint ID;
 	// undefined behavior if using default constructor obj!
     SkeletalVBO() {};
+    SkeletalVBO(SkeletalVBO&& other) {
+        SkeletalVBO::ID = std::move(other.ID);
+	}
+	SkeletalVBO& operator=(SkeletalVBO&& other){
+        SkeletalVBO::ID = std::move(other.ID);
+	}
+
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	SkeletalVBO(std::vector<SkeletalVertex>& vertices);
 

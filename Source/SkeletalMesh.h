@@ -23,6 +23,18 @@ public:
 	EBO m_EBO;
 
 	SkeletalMesh(std::vector <SkeletalVertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& model);
+	SkeletalMesh(SkeletalMesh&& other) {
+        SkeletalMesh::vertices = std::move(other.vertices);
+        SkeletalMesh::indices = std::move(other.indices);
+        SkeletalMesh::textures = std::move(other.textures);
+        SkeletalMesh::model = std::move(other.model);
+        SkeletalMesh::m_VAO = std::move(other.m_VAO);
+        other.m_VAO = SkeletalVAO();
+        SkeletalMesh::m_VBO = std::move(other.m_VBO);
+        other.m_VBO = SkeletalVBO();
+        SkeletalMesh::m_EBO = std::move(other.m_EBO);
+        other.m_EBO = EBO();
+    }
 	~SkeletalMesh();
 
 	void Draw

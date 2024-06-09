@@ -5,7 +5,7 @@ SkeletalModel::~SkeletalModel() {
     std::vector<Texture> texWrangled;
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
-        auto& texs = meshes[i]->textures;
+        auto& texs = meshes[i].textures;
         for (unsigned int i = 0; i < texs.size(); i++)
         {
             Texture tex = texs[i];
@@ -18,10 +18,6 @@ SkeletalModel::~SkeletalModel() {
     for (unsigned int i = 0; i < texWrangled.size(); i++)
     {
         texWrangled[i].Delete();
-    }
-    for (unsigned int i = 0; i < meshes.size(); i++)
-    {
-        delete meshes[i];
     }
     meshes.clear();
 }
@@ -60,7 +56,7 @@ void SkeletalModel::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.push_back(processMesh(mesh, scene, transform, directory, textures_loaded));
+        meshes.push_back(std::move(processMesh(mesh, scene, transform, directory, textures_loaded)));
     }
     // then do the same for each of its children
     for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -177,7 +173,7 @@ void SkeletalModel::ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& ve
     }
 }
 
-SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory, std::vector<Texture>& textures_loaded)
+SkeletalMesh SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>& transformation, std::string directory, std::vector<Texture>& textures_loaded)
 {
     std::vector<SkeletalVertex> vertices;
     std::vector<unsigned int> indices;
@@ -245,7 +241,7 @@ SkeletalMesh* SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiM
     ExtractBoneWeightForVertices(vertices, mesh, scene);
     testBoneData(vertices);
 
-    return new SkeletalMesh(vertices, indices, textures, transform);
+    return std::move(SkeletalMesh(vertices, indices, textures, transform));
 }
 
 void SkeletalModel::Draw(Shader& shader, Camera& camera,
@@ -254,14 +250,14 @@ void SkeletalModel::Draw(Shader& shader, Camera& camera,
     for (unsigned int i = 0; i < meshes.size(); i++) {
         //std::cerr << "mesh ptr: " << meshes[i] << std::endl;
         //if (i == 0) continue;
-        meshes[i]->Draw(shader, camera, transform, ntransform);
+        meshes[i].Draw(shader, camera, transform, ntransform);
     }
 }
 
 
 void SkeletalModel::DrawShadow(Shader& shader, glm::mat4& transform){
     for (unsigned int i = 0; i < meshes.size(); i++) {
-        meshes[i]->DrawShadow(shader, transform);
+        meshes[i].DrawShadow(shader, transform);
     }
 }
 
