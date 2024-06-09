@@ -43,6 +43,7 @@ template <typename T> class ComponentMemory {
         T memArr[MAX_ENTITIES];
 };
 
+/* deprecate?
 template <typename T> class ComponentMemoryMap {
 public:
     // never link an Entity Twice!
@@ -64,7 +65,7 @@ public:
     std::vector<unsigned int> entVec;
 private:
     std::unordered_map<unsigned int, T> memMap;
-};
+};*/
 
 template <typename T> class DynamicComponentMemory {
 public:
@@ -139,8 +140,8 @@ public:
     DynamicComponentMemory<SkeletalModel*> cset_skmodel;
     DynamicComponentMemory<Transform*> cset_phystransform;
     DynamicComponentMemory<Animator*> cset_animator;
-    ComponentMemoryMap<Camera*> cset_camera; // do we need this many camera pointers // only 2 cams rn
-    ComponentMemoryMap<Shader> cset_shader;
+    DynamicComponentMemory<Camera*> cset_camera; // do we need this many camera pointers // only 2 cams rn
+    DynamicComponentMemory<Shader> cset_shader;
     DynamicComponentMemory<btRigidBody*> cset_body;
     DynamicComponentMemory<std::vector<Wire*>> cset_wire;
     // no wire component set ideally
