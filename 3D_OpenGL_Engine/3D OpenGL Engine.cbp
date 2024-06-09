@@ -175,9 +175,6 @@
 		<Unit filename="../Source/ECS.h">
 			<Option target="Release x64" />
 		</Unit>
-		<Unit filename="../Source/Entity.cpp">
-			<Option target="Release x64" />
-		</Unit>
 		<Unit filename="../Source/Entity.h">
 			<Option target="Release x64" />
 		</Unit>
