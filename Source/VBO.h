@@ -27,7 +27,8 @@ public:
         VBO::ID = std::move(other.ID);
 	}
 	VBO& operator=(VBO&& other){
-        VBO::ID = std::move(other.ID);
+        this->ID = std::move(other.ID);
+		return *this;
 	}
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	VBO(std::vector<Vertex>& vertices);
@@ -61,7 +62,8 @@ public:
         SkeletalVBO::ID = std::move(other.ID);
 	}
 	SkeletalVBO& operator=(SkeletalVBO&& other){
-        SkeletalVBO::ID = std::move(other.ID);
+        this->ID = std::move(other.ID);
+		return *this;
 	}
 
 	// Constructor that generates a Vertex Buffer Object and links it to vertices

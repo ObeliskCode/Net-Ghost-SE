@@ -18,7 +18,8 @@ public:
         EBO::ID = std::move(other.ID);
 	}
 	EBO& operator=(EBO&& other){
-        EBO::ID = std::move(other.ID);
+        this->ID = std::move(other.ID);
+		return *this;
 	}
 	// Constructor that generates a Elements Buffer Object and links it to indices
 	EBO(std::vector<GLuint>& indices);
