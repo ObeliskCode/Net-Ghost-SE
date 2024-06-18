@@ -1,6 +1,8 @@
 #ifndef DAEMON_H
 #define DAEMON_H
 
+#include <thread>
+
 // gross class (to be refactored), breaks if you include it in files you include above!
 class Daemon {
 public:
@@ -17,8 +19,20 @@ public:
         instance = nullptr;
     }
 
+    std::thread Daemon;
+    std::channel
+
+
+    std::vector<thread> Workers;
+
+    void pollDaemon();
+    void pollWorker();
+
+    //may return 0 when not able to detect
+    const auto m_processor_count = std::thread::hardware_concurrency();
+
 private:
-    Daemon() { } // no public constructor
+    Daemon(); // no public constructor
     ~Daemon() = default; // no public destructor
     static Daemon* instance; // declaration class variable
 
