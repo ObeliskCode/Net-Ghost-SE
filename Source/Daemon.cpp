@@ -24,6 +24,9 @@ Daemon::Daemon() {
 Daemon::~Daemon() {
     threadStopped = true;
     daemon.join();
+    for (int i = 0; i < Workers.size(); i++) {
+        Workers[i].join();
+    }
 }
 
 void Daemon::pollDaemon() {
