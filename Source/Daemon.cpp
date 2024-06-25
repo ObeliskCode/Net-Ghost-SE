@@ -10,11 +10,13 @@ Daemon::Daemon() {
     }
 
     daemon = std::thread(&Daemon::pollDaemon);
+    buses.push_back(std::vector<unsigned int, void*>());
 
     const auto poolCt = workerCt - 1;
 
     for (int i = 0; i < poolCt; i++) {
         Workers.push_back(std::thread(&Daemon::pollWorker));
+        buses.push_back(std::vector<unsigned int, void*>());
     }
 
 }

@@ -24,7 +24,7 @@ public:
     std::thread daemon;
     std::vector<std::thread> Workers;
 
-    std::vector<std::vector<int,void*>> buses;
+    std::vector<std::vector<unsigned int,void*>> buses;
 
     void pollDaemon();
     void pollWorker();
