@@ -20,9 +20,11 @@ public:
         instance = nullptr;
     }
 
+    std::atomic_bool threadStopped;
     std::thread daemon;
-
     std::vector<std::thread> Workers;
+
+    std::vector<std::vector<int,void*>> buses;
 
     void pollDaemon();
     void pollWorker();

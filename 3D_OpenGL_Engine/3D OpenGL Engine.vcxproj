@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Audio.cpp" />
+    <ClCompile Include="..\Source\Daemon.cpp" />
     <ClCompile Include="..\Source\dr_wav.c" />
     <ClCompile Include="..\Source\ECS.cpp" />
     <ClCompile Include="..\Source\Globals.cpp" />
@@ -183,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Audio.h" />
+    <ClInclude Include="..\Source\Daemon.h" />
     <ClInclude Include="..\Source\dr_wav.h" />
     <ClInclude Include="..\Source\Light.h" />
     <ClInclude Include="..\Source\LightSystem.h" />
