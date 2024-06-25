@@ -34,7 +34,7 @@ public:
 
 private:
     Daemon(); // no public constructor
-    ~Daemon() = default; // no public destructor
+    ~Daemon(); // no public destructor
     static Daemon* instance; // declaration class variable
 
 };

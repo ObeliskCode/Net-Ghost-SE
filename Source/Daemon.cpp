@@ -21,6 +21,11 @@ Daemon::Daemon() {
 
 }
 
+Daemon::~Daemon() {
+    threadStopped = true;
+    daemon.join();
+}
+
 void Daemon::pollDaemon() {
 	while (!threadStopped) {
 
