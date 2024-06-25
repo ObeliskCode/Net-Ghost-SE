@@ -7,6 +7,7 @@
 
 #include "Mesh.h"
 #include "Material.h"
+#include <unordered_set>
 
 class Model
 {

@@ -163,6 +163,12 @@
 		<Unit filename="../Source/Camera.h">
 			<Option target="Release x64" />
 		</Unit>
+		<Unit filename="../Source/Daemon.cpp">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="../Source/Daemon.h">
+			<Option target="Release x64" />
+		</Unit>
 		<Unit filename="../Source/EBO.cpp">
 			<Option target="Release x64" />
 		</Unit>

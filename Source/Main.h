@@ -20,10 +20,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/stats.hpp>
-#include <boost/accumulators/statistics/sum.hpp>
-
 #include "Scene.h"
 
 GLFWwindow* initApp();
