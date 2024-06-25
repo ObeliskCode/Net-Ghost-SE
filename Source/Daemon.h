@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <vector>
+#include <tuple>
 
 // gross class (to be refactored), breaks if you include it in files you include above!
 class Daemon {
@@ -20,11 +21,12 @@ public:
         instance = nullptr;
     }
 
-    std::atomic_bool threadStopped;
+    std::atomic_bool threadStopped = true;
     std::thread daemon;
     std::vector<std::thread> Workers;
 
-    std::vector<std::vector<unsigned int,void*>> buses;
+    std::vector<std::vector<std::tuple<unsigned int, void*>>> busin;
+    std::vector<std::vector<std::tuple<unsigned int, void*>>> busout;
 
     void pollDaemon();
     void pollWorker();

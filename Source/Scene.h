@@ -17,6 +17,7 @@
 
 #include "btBulletDynamicsCommon.h"
 
+#include "Daemon.h"
 #include "Globals.h"
 #include "Shader.h"
 #include "Audio.h"
@@ -92,6 +93,7 @@ class Scene {
         virtual int cleanup() = 0;
 
         ECS &ecs = ECS::get();
+        Daemon& dae = Daemon::get();
         GUI &gui = GUI::get();
         Globals &globals = Globals::get();
         LightSystem &lightsys = LightSystem::get();
@@ -201,6 +203,7 @@ class MainMenu : public Scene {
             Physics::destruct();
             Globals::destruct();
             Input::destruct();
+            Daemon::destruct();
             return 1;
         }
 
@@ -372,6 +375,7 @@ class FoldAnim : public Scene {
             Physics::destruct();
             Globals::destruct();
             Input::destruct(); // do i ever need to destruct this one?
+            Daemon::destruct();
             return 1;
         }
 
@@ -1236,6 +1240,7 @@ class TestRoom : public Scene {
             Physics::destruct();
             Globals::destruct();
             Input::destruct();
+            Daemon::destruct();
             return 1;
         }
 
