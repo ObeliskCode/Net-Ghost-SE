@@ -4,10 +4,10 @@ Daemon::Daemon() {
     const auto workerCt = m_processor_count - 1;
 }
 
-Daemon::pollDaemon() {
+void Daemon::pollDaemon() {
 
 }
 
-Daemon::pollWorker() {
+void Daemon::pollWorker() {
 
 }
