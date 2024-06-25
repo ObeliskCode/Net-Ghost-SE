@@ -21,7 +21,7 @@ public:
         instance = nullptr;
     }
 
-    std::atomic_bool threadStopped = true;
+    std::atomic_bool threadStopped = false;
     std::thread daemon;
     std::vector<std::thread> Workers;
 

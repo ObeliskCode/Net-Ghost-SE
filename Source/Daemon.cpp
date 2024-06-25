@@ -1,5 +1,7 @@
 #include "Daemon.h"
 
+Daemon* Daemon::instance = nullptr; // definition class variable
+
 // rules: multi-threaded work is always batched IO & multi-threaded work is mostly sequential anyway.
 
 Daemon::Daemon() {
