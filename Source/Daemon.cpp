@@ -12,15 +12,15 @@ Daemon::Daemon() {
     }
 
     daemon = std::thread(&Daemon::pollDaemon, this);
-    busin.push_back(std::vector<std::tuple<unsigned int, void*>>());
-    busout.push_back(std::vector<std::tuple<unsigned int, void*>>());
+    busin.push_back(std::vector<std::tuple<std::tuple<short, short>, void*>>());
+    busout.push_back(std::vector<std::tuple<std::tuple<short, short>, void*>>());
 
     unsigned int poolCt = workerCt - 1;
 
-    for (int i = 0; i < poolCt; i++) {
-        Workers.push_back(std::thread(&Daemon::pollWorker, this));
-        busin.push_back(std::vector<std::tuple<unsigned int, void*>>());
-        busout.push_back(std::vector<std::tuple<unsigned int, void*>>());
+    for (unsigned int i = 0; i < poolCt; i++) {
+        Workers.push_back(std::thread(&Daemon::pollWorker, this, i));
+        busin.push_back(std::vector<std::tuple<std::tuple<short, short>, void*>>());
+        busout.push_back(std::vector<std::tuple<std::tuple<short, short>, void*>>());
     }
 
 }
@@ -40,7 +40,8 @@ void Daemon::pollDaemon() {
 	}
 }
 
-void Daemon::pollWorker() {
+void Daemon::pollWorker(unsigned int workerCt) {
+    unsigned int busIndex = workerCt + 1;
     while (!threadStopped) {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(5));

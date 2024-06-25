@@ -25,11 +25,18 @@ public:
     std::thread daemon;
     std::vector<std::thread> Workers;
 
-    std::vector<std::vector<std::tuple<unsigned int, void*>>> busin;
-    std::vector<std::vector<std::tuple<unsigned int, void*>>> busout;
+    std::vector<std::tuple<short, void*>> chunkin;
+    std::vector<std::tuple<short, void*>> chunkout;
+
+    std::vector<std::vector<std::tuple<std::tuple<short, short>, void*>>> busin;
+    std::vector<std::vector<std::tuple<std::tuple<short, short>, void*>>> busout;
 
     void pollDaemon();
-    void pollWorker();
+    void pollWorker(unsigned int workerCt);
+
+    void* blockingPipe(std::tuple<short, void*>);
+    short sendPipe(std::tuple<short, void*>);
+    void* recPipe(short ID);
 
     //may return 0 when not able to detect
     unsigned int m_processor_count = std::thread::hardware_concurrency();
