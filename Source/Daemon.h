@@ -34,9 +34,9 @@ public:
     void pollDaemon();
     void pollWorker(unsigned int workerCt);
 
-    void* blockingPipe(std::tuple<short, void*>);
-    short sendPipe(std::tuple<short, void*>);
-    void* recPipe(short ID);
+    void* blockingChunk(std::tuple<short, void*>);
+    short sendChunk(std::tuple<short, void*>);
+    void* recChunk(short ID);
 
     //may return 0 when not able to detect
     unsigned int m_processor_count = std::thread::hardware_concurrency();
