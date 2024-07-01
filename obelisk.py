@@ -326,7 +326,7 @@ if len(os.listdir(models_dir)) <= 1:  ## .gitignore :)
 if '--windows' in sys.argv:
 	cmd = ['/tmp/obelisk.exe']
 else:
-	cmd = ['/tmp/obelisk']
+	cmd = ['gdb', '/tmp/obelisk']
 print(cmd)
 
 
