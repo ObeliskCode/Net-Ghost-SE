@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <unordered_map> 
+#include <unordered_map>
 #include <glm/glm.hpp>
 #include <assimp/scene.h>
 #include <Bone.h>
@@ -64,7 +64,7 @@ public:
 
 	~Skeleton() = default;
 
-	void addAnimation(const std::string animationPath, SkeletalModel* model) 
+	void addAnimation(const std::string animationPath, SkeletalModel* model)
 	{
 		Assimp::Importer importer;
 		std::string path = "models/" + animationPath;
@@ -101,7 +101,7 @@ private:
 		int size = animation->mNumChannels;
 
 		// we should do this only once otherwise get up-to-date private member infoMap instead
-		auto& boneInfoMap = model.GetBoneInfoMap();//getting m_BoneInfoMap from Model class 
+		auto& boneInfoMap = model.GetBoneInfoMap();//getting m_BoneInfoMap from Model class
 		int& boneCount = model.GetBoneCount(); //getting the m_BoneCounter from Model class
 
 		//reading channels(bones engaged in an animation and their keyframes)

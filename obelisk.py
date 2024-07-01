@@ -193,11 +193,13 @@ if not os.path.isfile(glew):
 	print(cmd)
 	subprocess.check_call(cmd)
 
-
-if not os.path.isdir('/usr/include/assimp'):
-	cmd = 'sudo apt-get install libassimp-dev'
-	print(cmd)
-	subprocess.check_call(cmd)
+if os.path.isdir('./Libraries_linux/include/assimp'):
+	#TODO build assimp from Libraries_linux/Libraries
+else:
+	if not os.path.isdir('/usr/include/assimp'):
+		cmd = 'sudo apt-get install libassimp-dev'
+		print(cmd)
+		subprocess.check_call(cmd)
 
 
 if not os.path.isdir('/usr/include/bullet'):
