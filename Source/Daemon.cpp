@@ -36,7 +36,6 @@ Daemon::~Daemon() {
 void Daemon::pollDaemon() {
 	while (!threadStopped) {
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 	}
 }
 
@@ -44,6 +43,5 @@ void Daemon::pollWorker(unsigned int workerCt) {
     unsigned int busIndex = workerCt + 1;
     while (!threadStopped) {
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 }
