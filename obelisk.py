@@ -193,13 +193,10 @@ if not os.path.isfile(glew):
 	print(cmd)
 	subprocess.check_call(cmd)
 
-if os.path.isdir('./Libraries_linux/include/assimp'):
-	#TODO build assimp from Libraries_linux/Libraries
-else:
-	if not os.path.isdir('/usr/include/assimp'):
-		cmd = 'sudo apt-get install libassimp-dev'
-		print(cmd)
-		subprocess.check_call(cmd)
+if not os.path.isdir('/usr/include/assimp'):
+	cmd = 'sudo apt-get install libassimp-dev'
+	print(cmd)
+	subprocess.check_call(cmd)
 
 
 if not os.path.isdir('/usr/include/bullet'):
@@ -328,7 +325,8 @@ if len(os.listdir(models_dir)) <= 1:  ## .gitignore :)
 if '--windows' in sys.argv:
 	cmd = ['/tmp/obelisk.exe']
 else:
-	cmd = ['gdb', '/tmp/obelisk']
+	#cmd = ['gdb', '/tmp/obelisk']
+	cmd = ['/tmp/obelisk']
 print(cmd)
 
 
