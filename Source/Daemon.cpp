@@ -12,16 +12,20 @@ Daemon::Daemon() {
         return;
     }
 
+    for (unsigned int i = 1; i <= SHORT_ID_MAX; i++) {
+		availableIDs.push(i);
+	}
+
     daemon = std::thread(&Daemon::pollDaemon, this);
     op_in.push_back(std::vector<std::tuple<void* (*)(void*), void*>>());
-    op_out.push_back(std::vector<std::tuple<short, void*>>());
+    op_out.push_back(std::vector<std::tuple<unsigned short, void*>>());
 
     unsigned int poolCt = workerCt - 1;
 
     for (unsigned int i = 0; i < poolCt; i++) {
         Workers.push_back(std::thread(&Daemon::pollWorker, this, i));
         op_in.push_back(std::vector<std::tuple<void* (*)(void*), void*>>());
-        op_out.push_back(std::vector<std::tuple<short, void*>>());
+        op_out.push_back(std::vector<std::tuple<unsigned short, void*>>());
     }
 
 }
@@ -46,8 +50,10 @@ void Daemon::pollDaemon() {
             /* do dispatch */
             OpFunc OF = std::get<0>(t);
             void* data = std::get<1>(t);
+            if (availableIDs.empty()) std::terminate();
+
             // lock bus_in & bus_out completely
-            OF.PID = OF.Dispatch(data,Daemon::op_in,Daemon::op_out);
+            OF.Dispatch(data,op_in,op_out);
             // unlock bus_in & bus_out completely
 
             /* do MT operations */
@@ -56,7 +62,9 @@ void Daemon::pollDaemon() {
             data_out_mutex.lock();
             // aggregate data for package
             void** dl;
+
             void* package = OF.Package(dl,OF.dataCt);
+            data_out.push_back(std::tuple<unsigned short,void*>(OF.PID, package));
             data_out_mutex.unlock();
         } else {
             data_in_mutex.unlock();
@@ -77,13 +85,15 @@ void Daemon::pollWorker(unsigned int workerCt) {
 }
 
 void* Daemon::blockingProcess(OpFunc of, void* data){
+    if (single_threaded) return nullptr;
+    // push datafunc tuple to data_in
 
-}
+    // somehow get PID of process
 
-unsigned short Daemon::sendProcess(OpFunc of, void* data){
+    // check for packaged results in data_out
+    while (true) {
 
-}
-
-void* Daemon::recProcess(unsigned short PID){
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    }
 
 }

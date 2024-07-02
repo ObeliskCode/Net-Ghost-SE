@@ -4,15 +4,18 @@
 #include <thread>
 #include <vector>
 #include <tuple>
+#include <queue>
+
+#define SHORT_ID_MAX 65000
 
 typedef std::vector<std::vector<std::tuple<void* (*)(void*), void*>>>& OP_IN_VEC_REF;
-typedef std::vector<std::vector<std::tuple<short, void*>>>& OP_OUT_VEC_REF;
+typedef std::vector<std::vector<std::tuple<unsigned short, void*>>>& OP_OUT_VEC_REF;
 
 class OpFunc {
     public:
     unsigned short PID = 0;
     unsigned short dataCt;
-    unsigned short (*Dispatch)(void*, OP_IN_VEC_REF, OP_OUT_VEC_REF);
+    void (*Dispatch)(void*, OP_IN_VEC_REF, OP_OUT_VEC_REF);
     void* (*Operate)(void*);
     void* (*Package)(void**, unsigned short);
 };
@@ -22,8 +25,8 @@ class BB3DFunc : public OpFunc {
     BB3DFunc(unsigned short ct) {
         dataCt = ct;
     }
-    unsigned short (*Dispatch)(void*, OP_IN_VEC_REF, OP_OUT_VEC_REF) = [](void* data, OP_IN_VEC_REF op_in, OP_OUT_VEC_REF op_out) -> unsigned short {
-        return 0;
+    void (*Dispatch)(void*, OP_IN_VEC_REF, OP_OUT_VEC_REF) = [](void* data, OP_IN_VEC_REF op_in, OP_OUT_VEC_REF op_out) {
+        return;
     };
 
     void* (*Operate)(void*) = [](void* data) -> void* {
@@ -60,20 +63,22 @@ public:
 
     std::vector<std::tuple<OpFunc, void*>> data_in;
     std::mutex data_in_mutex;
-    std::vector<std::tuple<short, void*>> data_out;
+    std::vector<std::tuple<unsigned short, void*>> data_out;
     std::mutex data_out_mutex;
 
     std::vector<std::vector<std::tuple<void* (*)(void*), void*>>> op_in;
     std::mutex op_in_mutex[32];
-    std::vector<std::vector<std::tuple<short, void*>>> op_out;
+    std::vector<std::vector<std::tuple<unsigned short, void*>>> op_out;
     std::mutex op_out_mutex[32];
 
     void pollDaemon();
     void pollWorker(unsigned int workerCt);
 
     void* blockingProcess(OpFunc, void*);
-    unsigned short sendProcess(OpFunc, void*);
-    void* recProcess(unsigned short);
+    //unsigned short sendProcess(OpFunc, void*);
+    //void* recProcess(unsigned short);
+
+    std::queue<unsigned int> availableIDs;
 
     //may return 0 when not able to detect
     unsigned int m_processor_count = std::thread::hardware_concurrency();
