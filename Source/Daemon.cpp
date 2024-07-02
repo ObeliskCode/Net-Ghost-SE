@@ -54,16 +54,22 @@ void Daemon::pollDaemon() {
             OF.PID = availableIDs.front();
             availableIDs.pop();
 
-            // lock bus_in & bus_out completely
+            for (int i = 0; i < op_in.size(); i++){
+                op_in_mutex[i].lock();
+            }
+
             OF.Dispatch(data,op_in,op_out);
-            // unlock bus_in & bus_out completely
+
+            for (int i = 0; i < op_in.size(); i++){
+                op_in_mutex[i].unlock();
+            }
 
             /* do MT operations */
 
             /* Package Data to be receieved by recProcess */
             data_out_mutex.lock();
-            // aggregate data for package
             void** dl;
+            // aggregate data for package
 
             void* package = OF.Package(dl,OF.dataCt);
             data_out.push_back(std::tuple<unsigned short,void*>(OF.PID, package));
