@@ -5,11 +5,14 @@
 #include <vector>
 #include <tuple>
 
+typedef std::vector<std::vector<std::tuple<void* (*)(void*), void*>>>& OP_IN_VEC;
+typedef std::vector<std::vector<std::tuple<short, void*>>>& OP_OUT_VEC;
+
 class OpFunc {
     public:
-    unsigned short ID = 0;
+    unsigned short PID = 0;
     unsigned short dataCt;
-    unsigned short (*Dispatch)(void*);
+    unsigned short (*Dispatch)(void*, OP_IN_VEC, OP_OUT_VEC);
     void* (*Operate)(void*);
     void* (*Package)(void**);
 };
@@ -19,7 +22,7 @@ class BB3DFunc : public OpFunc {
     BB3DFunc(unsigned short ct) {
         dataCt = ct;
     }
-    unsigned short (*Dispatch)(void*) = [](void* data) -> unsigned short {
+    unsigned short (*Dispatch)(void*, OP_IN_VEC, OP_OUT_VEC) = [](void* data, OP_IN_VEC op_in, OP_OUT_VEC op_out) -> unsigned short {
         return 0;
     };
 
