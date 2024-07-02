@@ -39,14 +39,23 @@ void Daemon::pollDaemon() {
 
         data_in_mutex.lock();
         if (data_in.size() > 0){
-            // take data and opFunc and delete off data_in
+            /* pop first element off stack*/
+            const auto t = data_in[0];
+            data_in.erase(0);
             data_in_mutex.unlock();
-            // do dispatch
+            
+            /* do dispatch */
+            OpFunc OF = std::get<0>(t);
+            void* data = std::get<1>(t);
+            // lock bus_in & bus_out completely
+            OF.Dispatch(data);
+            // unlock bus_in & bus_out completely
+            
+            /* do MT operations */
 
-            // do operations
-
+            /* Package Data to be receieved by recProcess */
             data_out_mutex.lock();
-            // Packaging
+            
             data_out_mutex.unlock();
         } else {
             data_in_mutex.unlock();
@@ -60,7 +69,7 @@ void Daemon::pollWorker(unsigned int workerCt) {
     unsigned int busIndex = workerCt + 1;
     while (!threadStopped) {
 
-        // do operations
+        /* do MT operations */
 
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
