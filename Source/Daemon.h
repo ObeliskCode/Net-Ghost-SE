@@ -14,7 +14,7 @@ class OpFunc {
     unsigned short dataCt;
     unsigned short (*Dispatch)(void*, OP_IN_VEC_REF, OP_OUT_VEC_REF);
     void* (*Operate)(void*);
-    void* (*Package)(void**);
+    void* (*Package)(void**, unsigned short);
 };
 
 class BB3DFunc : public OpFunc {
@@ -30,7 +30,7 @@ class BB3DFunc : public OpFunc {
         return nullptr;
     };
 
-    void* (*Package)(void**) = [](void** data) -> void* {
+    void* (*Package)(void**, unsigned short) = [](void** data, unsigned short dataCt) -> void* {
         return nullptr;
     };
 
@@ -71,9 +71,9 @@ public:
     void pollDaemon();
     void pollWorker(unsigned int workerCt);
 
-    void* blockingProcess(std::tuple<OpFunc, void*>);
-    unsigned short sendProcess(std::tuple<OpFunc, void*>);
-    void* recProcess(unsigned short ID);
+    void* blockingProcess(OpFunc, void*);
+    unsigned short sendProcess(OpFunc, void*);
+    void* recProcess(unsigned short);
 
     //may return 0 when not able to detect
     unsigned int m_processor_count = std::thread::hardware_concurrency();

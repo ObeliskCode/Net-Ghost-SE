@@ -36,7 +36,6 @@ Daemon::~Daemon() {
 
 void Daemon::pollDaemon() {
 	while (!threadStopped) {
-
         data_in_mutex.lock();
         if (data_in.size() > 0){
             /* pop first element off stack*/
@@ -48,15 +47,16 @@ void Daemon::pollDaemon() {
             OpFunc OF = std::get<0>(t);
             void* data = std::get<1>(t);
             // lock bus_in & bus_out completely
-            unsigned short pid = OF.Dispatch(data,Daemon::op_in,Daemon::op_out);
+            OF.PID = OF.Dispatch(data,Daemon::op_in,Daemon::op_out);
             // unlock bus_in & bus_out completely
-            OF.PID = pid;
 
             /* do MT operations */
 
             /* Package Data to be receieved by recProcess */
             data_out_mutex.lock();
-
+            // aggregate data for package
+            void** dl;
+            void* package = OF.Package(dl,OF.dataCt);
             data_out_mutex.unlock();
         } else {
             data_in_mutex.unlock();
@@ -76,14 +76,14 @@ void Daemon::pollWorker(unsigned int workerCt) {
     }
 }
 
-void* Daemon::blockingProcess(std::tuple<OpFunc, void*>){
+void* Daemon::blockingProcess(OpFunc of, void* data){
 
 }
 
-unsigned short Daemon::sendProcess(std::tuple<OpFunc, void*>){
+unsigned short Daemon::sendProcess(OpFunc of, void* data){
 
 }
 
-void* Daemon::recProcess(unsigned short ID){
+void* Daemon::recProcess(unsigned short PID){
 
 }
