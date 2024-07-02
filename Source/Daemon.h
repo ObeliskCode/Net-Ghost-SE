@@ -10,6 +10,7 @@
 
 typedef std::vector<std::vector<std::tuple<void* (*)(void*), void*>>>& OP_IN_VEC_REF;
 typedef std::vector<std::vector<std::tuple<unsigned short, void*>>>& OP_OUT_VEC_REF;
+typedef void* (*OP)(void*);
 
 class OpFunc {
     public:
@@ -66,7 +67,7 @@ public:
     std::vector<std::tuple<unsigned short, void*>> data_out;
     std::mutex data_out_mutex;
 
-    std::vector<std::vector<std::tuple<void* (*)(void*), void*>>> op_in;
+    std::vector<std::vector<std::tuple<OP, void*>>> op_in;
     std::mutex op_in_mutex[32];
     std::vector<std::vector<std::tuple<unsigned short, void*>>> op_out;
     std::mutex op_out_mutex[32];
@@ -78,7 +79,7 @@ public:
     //unsigned short sendProcess(OpFunc, void*);
     //void* recProcess(unsigned short);
 
-    std::queue<unsigned int> availableIDs;
+    std::queue<unsigned short> availableIDs;
 
     //may return 0 when not able to detect
     unsigned int m_processor_count = std::thread::hardware_concurrency();

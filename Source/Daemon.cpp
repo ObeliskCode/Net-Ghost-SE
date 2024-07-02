@@ -12,19 +12,19 @@ Daemon::Daemon() {
         return;
     }
 
-    for (unsigned int i = 1; i <= SHORT_ID_MAX; i++) {
+    for (unsigned short i = 1; i <= SHORT_ID_MAX; i++) {
 		availableIDs.push(i);
 	}
 
     daemon = std::thread(&Daemon::pollDaemon, this);
-    op_in.push_back(std::vector<std::tuple<void* (*)(void*), void*>>());
+    op_in.push_back(std::vector<std::tuple<OP, void*>>());
     op_out.push_back(std::vector<std::tuple<unsigned short, void*>>());
 
     unsigned int poolCt = workerCt - 1;
 
     for (unsigned int i = 0; i < poolCt; i++) {
         Workers.push_back(std::thread(&Daemon::pollWorker, this, i));
-        op_in.push_back(std::vector<std::tuple<void* (*)(void*), void*>>());
+        op_in.push_back(std::vector<std::tuple<OP, void*>>());
         op_out.push_back(std::vector<std::tuple<unsigned short, void*>>());
     }
 
@@ -51,6 +51,8 @@ void Daemon::pollDaemon() {
             OpFunc OF = std::get<0>(t);
             void* data = std::get<1>(t);
             if (availableIDs.empty()) std::terminate();
+            OF.PID = availableIDs.front();
+            availableIDs.pop();
 
             // lock bus_in & bus_out completely
             OF.Dispatch(data,op_in,op_out);
