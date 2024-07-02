@@ -5,6 +5,17 @@
 #include <vector>
 #include <tuple>
 
+class OpFunc {
+    OpFunc(unsigned int OpCode){
+        //TODO??
+    }
+    unsigned short ID;
+    unsigned short dataCt;
+    unsigned short (*Dispatch)(void*);
+    void* (*Operate)(void*);
+    void* (*Package)(void**);
+};
+
 // gross class (to be refactored), breaks if you include it in files you include above!
 class Daemon {
 public:
@@ -27,7 +38,7 @@ public:
     std::thread daemon;
     std::vector<std::thread> Workers;
 
-    std::vector<std::tuple<void* (*)(void*), void*>> data_in;
+    std::vector<std::tuple<OpFunc, void*>> data_in;
     std::vector<std::tuple<short, void*>> data_out;
 
     std::vector<std::vector<std::tuple<void* (*)(void*), void*>>> op_in;
@@ -38,9 +49,9 @@ public:
     void pollDaemon();
     void pollWorker(unsigned int workerCt);
 
-    void* blockingChunk(std::tuple<void* (*)(void*), void*>);
-    short sendChunk(std::tuple<void* (*)(void*), void*>);
-    void* recChunk(short ID);
+    void* blockingChunk(std::tuple<OpFunc, void*>);
+    unsigned short sendChunk(std::tuple<OpFunc, void*>);
+    void* recChunk(unsigned short ID);
 
     //may return 0 when not able to detect
     unsigned int m_processor_count = std::thread::hardware_concurrency();
