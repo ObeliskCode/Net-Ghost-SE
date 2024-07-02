@@ -21,21 +21,25 @@ public:
         instance = nullptr;
     }
 
+    bool single_threaded = false;
+
     std::atomic_bool threadStopped = false;
     std::thread daemon;
     std::vector<std::thread> Workers;
 
-    std::vector<std::tuple<short, void*>> chunkin;
-    std::vector<std::tuple<short, void*>> chunkout;
+    std::vector<std::tuple<void* (*)(void*), void*>> data_in;
+    std::vector<std::tuple<short, void*>> data_out;
 
-    std::vector<std::vector<std::tuple<std::tuple<short, short>, void*>>> busin;
-    std::vector<std::vector<std::tuple<std::tuple<short, short>, void*>>> busout;
+    std::vector<std::vector<std::tuple<void* (*)(void*), void*>>> op_in;
+    std::vector<std::mutex> op_in_mutex;
+    std::vector<std::vector<std::tuple<short, void*>>> op_out;
+    std::vector<std::mutex> op_out_mutex;
 
     void pollDaemon();
     void pollWorker(unsigned int workerCt);
 
-    void* blockingChunk(std::tuple<short, void*>);
-    short sendChunk(std::tuple<short, void*>);
+    void* blockingChunk(std::tuple<void* (*)(void*), void*>);
+    short sendChunk(std::tuple<void* (*)(void*), void*>);
     void* recChunk(short ID);
 
     //may return 0 when not able to detect
