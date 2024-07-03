@@ -9,8 +9,10 @@
 #define SHORT_ID_MAX 65000
 
 typedef void* (*OP)(void*);
-typedef std::vector<std::tuple<OP, void*>> OP_IN;
-typedef std::vector<std::tuple<unsigned short, void*>> OP_OUT;
+typedef std::tuple<OP, void*> OP_TUPLE_IN;
+typedef std::tuple<unsigned short, void*> OP_TUPLE_OUT;
+typedef std::vector<OP_TUPLE_IN> OP_IN;
+typedef std::vector<OP_TUPLE_OUT> OP_OUT;
 typedef std::vector<OP_IN> OP_IN_VEC;
 typedef std::vector<OP_OUT> OP_OUT_VEC;
 typedef OP_IN_VEC& OP_IN_VEC_REF;

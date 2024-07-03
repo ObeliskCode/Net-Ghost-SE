@@ -43,7 +43,7 @@ void Daemon::pollDaemon() {
         data_in_mutex.lock();
         if (data_in.size() > 0){
             /* pop first element off stack*/
-            const auto t = data_in[0];
+            const DATA_IN t = data_in[0];
             data_in.erase(data_in.begin());
             data_in_mutex.unlock();
 
@@ -65,11 +65,31 @@ void Daemon::pollDaemon() {
             }
 
             /* do MT operations */
+            // for parity reasons we lock op_in_mutex[0]
+            op_in_mutex[0].lock();
+
+                for (auto it = op_in[0].begin(); it != op_in[0].end(); it++){
+                    const OP_TUPLE_IN t = *it;
+                    op_in[0].erase(it);
+
+                    OP operation = std::get<0>(t);
+                    void* datum = std::get<1>(t);
+
+                    void* result = operation(datum);
+
+                    op_out_mutex[0].lock();
+                    op_out[0].push_back(OP_TUPLE_OUT(OF.PID, result))
+                    op_out_mutex[0].unlock();
+                }
+
+            op_in_mutex[0].unlock();            
 
             /* Package Data to be receieved by recProcess */
             data_out_mutex.lock();
             void** dl;
+            op_out_mutex[0].lock()
             // aggregate data for package
+            op_out_mutex[0].unlock();
 
             void* package = OF.Package(dl,OF.dataCt);
             data_out.push_back(DATA_OUT(OF.PID, package));
