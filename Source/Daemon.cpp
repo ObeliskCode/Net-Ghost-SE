@@ -17,15 +17,15 @@ Daemon::Daemon() {
 	}
 
     daemon = std::thread(&Daemon::pollDaemon, this);
-    op_in.push_back(std::vector<std::tuple<OP, void*>>());
-    op_out.push_back(std::vector<std::tuple<unsigned short, void*>>());
+    op_in.push_back(OP_IN());
+    op_out.push_back(OP_OUT());
 
     unsigned int poolCt = workerCt - 1;
 
     for (unsigned int i = 0; i < poolCt; i++) {
         Workers.push_back(std::thread(&Daemon::pollWorker, this, i));
-        op_in.push_back(std::vector<std::tuple<OP, void*>>());
-        op_out.push_back(std::vector<std::tuple<unsigned short, void*>>());
+        op_in.push_back(OP_IN());
+        op_out.push_back(OP_OUT());
     }
 
 }
@@ -72,7 +72,7 @@ void Daemon::pollDaemon() {
             // aggregate data for package
 
             void* package = OF.Package(dl,OF.dataCt);
-            data_out.push_back(std::tuple<unsigned short,void*>(OF.PID, package));
+            data_out.push_back(DATA_OUT(OF.PID, package));
             data_out_mutex.unlock();
         } else {
             data_in_mutex.unlock();

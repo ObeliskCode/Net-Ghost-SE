@@ -8,9 +8,13 @@
 
 #define SHORT_ID_MAX 65000
 
-typedef std::vector<std::vector<std::tuple<void* (*)(void*), void*>>>& OP_IN_VEC_REF;
-typedef std::vector<std::vector<std::tuple<unsigned short, void*>>>& OP_OUT_VEC_REF;
 typedef void* (*OP)(void*);
+typedef std::vector<std::tuple<OP, void*>> OP_IN;
+typedef std::vector<std::tuple<unsigned short, void*>> OP_OUT;
+typedef std::vector<OP_IN> OP_IN_VEC;
+typedef std::vector<OP_OUT> OP_OUT_VEC;
+typedef OP_IN_VEC& OP_IN_VEC_REF;
+typedef OP_OUT_VEC& OP_OUT_VEC_REF;
 
 class OpFunc {
     public:
@@ -20,6 +24,11 @@ class OpFunc {
     void* (*Operate)(void*);
     void* (*Package)(void**, unsigned short);
 };
+
+typedef std::tuple<OpFunc, void*> DATA_IN;
+typedef std::tuple<unsigned short, void*> DATA_OUT;
+typedef std::vector<DATA_IN> DATA_IN_VEC;
+typedef std::vector<DATA_OUT> DATA_OUT_VEC;
 
 class BB3DFunc : public OpFunc {
     public:
@@ -62,14 +71,14 @@ public:
     std::thread daemon;
     std::vector<std::thread> Workers;
 
-    std::vector<std::tuple<OpFunc, void*>> data_in;
+    DATA_IN_VEC data_in;
     std::mutex data_in_mutex;
-    std::vector<std::tuple<unsigned short, void*>> data_out;
+    DATA_OUT_VEC data_out;
     std::mutex data_out_mutex;
 
-    std::vector<std::vector<std::tuple<OP, void*>>> op_in;
+    OP_IN_VEC op_in;
     std::mutex op_in_mutex[32];
-    std::vector<std::vector<std::tuple<unsigned short, void*>>> op_out;
+    OP_OUT_VEC op_out;
     std::mutex op_out_mutex[32];
 
     void pollDaemon();
