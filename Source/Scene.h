@@ -512,6 +512,10 @@ class TestRoom : public Scene {
 
         int loadResources(GLFWwindow* window) override {
 
+            int* data = new int[20];
+            void* ret = dae.blockingProcess(TestFunc(20), data);
+            int* retList = (int*)ret;
+
             textProgram = Shader("textVert.glsl", "textFrag.glsl");
 
             renderScene();

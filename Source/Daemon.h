@@ -22,7 +22,7 @@ class OpFunc {
     public:
     unsigned short PID = 0;
     unsigned short dataCt;
-    void (*Dispatch)(void*, OP_IN_VEC_REF, OP_OUT_VEC_REF);
+    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF, OP_OUT_VEC_REF);
     void* (*Operate)(void*);
     void* (*Package)(void**, unsigned short);
 };
@@ -37,7 +37,33 @@ class BB3DFunc : public OpFunc {
     BB3DFunc(unsigned short ct) {
         dataCt = ct;
     }
-    void (*Dispatch)(void*, OP_IN_VEC_REF, OP_OUT_VEC_REF) = [](void* data, OP_IN_VEC_REF op_in, OP_OUT_VEC_REF op_out) {
+    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF, OP_OUT_VEC_REF) = [](void* data, OpFunc OF, OP_IN_VEC_REF op_in, OP_OUT_VEC_REF op_out) {
+        return;
+    };
+
+    void* (*Operate)(void*) = [](void* data) -> void* {
+        return nullptr;
+    };
+
+    void* (*Package)(void**, unsigned short) = [](void** data, unsigned short dataCt) -> void* {
+        return nullptr;
+    };
+
+};
+
+class TestFunc : public OpFunc {
+    public:
+    TestFunc(unsigned short ct) {
+        dataCt = ct;
+    }
+    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF, OP_OUT_VEC_REF) = [](void* data, OpFunc OF, OP_IN_VEC_REF op_in, OP_OUT_VEC_REF op_out) {
+        const auto clamp = op_in.size();
+        unsigned short curWorker = 0;
+        for(int i = 0; i < OF.dataCt; i++){
+            op_in[curWorker].push_back(OP_TUPLE_IN(OF.Operate, OF.PID, data));
+            curWorker++;
+            if (curWorker >= clamp) curWorker = 0;
+        }
         return;
     };
 
