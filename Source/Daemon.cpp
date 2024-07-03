@@ -55,6 +55,7 @@ void Daemon::pollDaemon() {
                 op_in_mutex[i].lock();
             }
 
+            // dispatch function could be templated out!
             OF.Dispatch(data,op_in,op_out);
 
             for (int i = 0; i < op_in.size(); i++){
