@@ -50,9 +50,6 @@ void Daemon::pollDaemon() {
             /* do dispatch */
             OpFunc OF = std::get<0>(t);
             void* data = std::get<1>(t);
-            if (availableIDs.empty()) std::terminate();
-            OF.PID = availableIDs.front();
-            availableIDs.pop();
 
             for (int i = 0; i < op_in.size(); i++){
                 op_in_mutex[i].lock();
@@ -73,26 +70,33 @@ void Daemon::pollDaemon() {
                     op_in[0].erase(it);
 
                     OP operation = std::get<0>(t);
-                    void* datum = std::get<1>(t);
+                    void* datum = std::get<2>(t);
 
                     void* result = operation(datum);
 
                     op_out_mutex[0].lock();
-                    op_out[0].push_back(OP_TUPLE_OUT(OF.PID, result))
+                    op_out[0].push_back(OP_TUPLE_OUT(std::get<1>(t), result));
                     op_out_mutex[0].unlock();
                 }
 
-            op_in_mutex[0].unlock();            
+            op_in_mutex[0].unlock();
 
             /* Package Data to be receieved by recProcess */
             data_out_mutex.lock();
             void** dl;
-            op_out_mutex[0].lock()
-            // aggregate data for package
-            op_out_mutex[0].unlock();
 
+            for (int i = 0; i < op_out.size(); i++){
+                op_out_mutex[i].lock();
+            }
+            // TODO: aggregate data for package
+            for (int i = 0; i < op_out.size(); i++){
+                op_out_mutex[i].lock();
+            }
+
+            // TODO: change Package func API!
             void* package = OF.Package(dl,OF.dataCt);
             data_out.push_back(DATA_OUT(OF.PID, package));
+
             data_out_mutex.unlock();
         } else {
             data_in_mutex.unlock();
@@ -106,7 +110,23 @@ void Daemon::pollWorker(unsigned int workerCt) {
     unsigned int busIndex = workerCt + 1;
     while (!threadStopped) {
 
-        /* do MT operations */
+            op_in_mutex[busIndex].lock();
+
+                for (auto it = op_in[0].begin(); it != op_in[0].end(); it++){
+                    const OP_TUPLE_IN t = *it;
+                    op_in[0].erase(it);
+
+                    OP operation = std::get<0>(t);
+                    void* datum = std::get<2>(t);
+
+                    void* result = operation(datum);
+
+                    op_out_mutex[0].lock();
+                    op_out[0].push_back(OP_TUPLE_OUT(std::get<1>(t), result));
+                    op_out_mutex[0].unlock();
+                }
+
+            op_in_mutex[busIndex].unlock();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
@@ -115,11 +135,25 @@ void Daemon::pollWorker(unsigned int workerCt) {
 void* Daemon::blockingProcess(OpFunc of, void* data){
     if (single_threaded) return nullptr;
     // push datafunc tuple to data_in
-
-    // somehow get PID of process
+    if (availableIDs.empty()) std::terminate();
+    of.PID = availableIDs.front();
+    availableIDs.pop();
+    data_in_mutex.lock();
+    data_in.push_back(DATA_IN(of, data));
+    data_in_mutex.unlock();
 
     // check for packaged results in data_out
     while (true) {
+        // encapsulate with atomic bool check here..
+        data_out_mutex.lock();
+            for (auto it = data_out.begin(); it != data_out.end(); it++){
+                DATA_OUT t = *it;
+                if (of.PID == std::get<0>(t)){
+                    data_out_mutex.unlock();
+                    return std::get<1>(t);
+                }
+            }
+        data_out_mutex.unlock();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
