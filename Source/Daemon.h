@@ -62,7 +62,7 @@ class TestFunc : public OpFunc {
         unsigned short curWorker = 0;
         int* cast = (int*)data;
         for(int i = 0; i < OF.dataCt; i++){
-            op_in[curWorker].push_back(OP_TUPLE_IN(OF.Operate, OF.PID, i, cast));
+            op_in[curWorker].push_back(OP_TUPLE_IN(OF.Operate, OF.PID, i, (void*)cast));
             cast++;
             curWorker++;
             if (curWorker >= clamp) curWorker = 0;

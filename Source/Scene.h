@@ -512,7 +512,6 @@ class TestRoom : public Scene {
 
         int loadResources(GLFWwindow* window) override {
 
-            /*
             int* data = new int[20];
             for(int i = 0; i < 20; i++){
                 data[i] = i;
@@ -522,7 +521,7 @@ class TestRoom : public Scene {
             int* retList = (int*)ret;
             for(int i = 0; i < 20; i++){
                 std::cout << std::to_string(retList[i]) << std::endl;
-            }*/
+            }
 
             textProgram = Shader("textVert.glsl", "textFrag.glsl");
 

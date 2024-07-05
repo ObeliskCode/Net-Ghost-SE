@@ -86,12 +86,17 @@ void Daemon::pollDaemon() {
 
             /* Package Data to be receieved by recProcess */
             data_out_mutex.lock();
-            void** dl;
+            void** dl = new void*[OF.dataCt];
 
             for (int i = 0; i < op_out.size(); i++){
                 op_out_mutex[i].lock();
             }
-            // TODO: aggregate data for package
+            bool packaging = true;
+            while(packaging){
+                //TODO!
+
+                std::this_thread::sleep_for(std::chrono::milliseconds(5));
+            }
             for (int i = 0; i < op_out.size(); i++){
                 op_out_mutex[i].lock();
             }
@@ -112,24 +117,24 @@ void Daemon::pollDaemon() {
 void Daemon::pollWorker(unsigned int workerCt) {
     unsigned int busIndex = workerCt + 1;
     while (!threadStopped) {
-            op_in_mutex[busIndex].lock();
+        op_in_mutex[busIndex].lock();
 
-                for (auto it = op_in[busIndex].begin(); it != op_in[busIndex].end(); it++){
-                    const OP_TUPLE_IN t = *it;
-                    op_in[busIndex].erase(it);
+            for (auto it = op_in[busIndex].begin(); it != op_in[busIndex].end(); it++){
+                const OP_TUPLE_IN t = *it;
+                op_in[busIndex].erase(it);
 
-                    OP operation = std::get<0>(t);
-                    unsigned int idx = std::get<2>(t);
-                    void* datum = std::get<3>(t);
+                OP operation = std::get<0>(t);
+                unsigned int idx = std::get<2>(t);
+                void* datum = std::get<3>(t);
 
-                    void* result = operation(datum);
+                void* result = operation(datum);
 
-                    op_out_mutex[busIndex].lock();
-                    op_out[busIndex].push_back(OP_TUPLE_OUT(std::get<1>(t), idx, result));
-                    op_out_mutex[busIndex].unlock();
-                }
+                op_out_mutex[busIndex].lock();
+                op_out[busIndex].push_back(OP_TUPLE_OUT(std::get<1>(t), idx, result));
+                op_out_mutex[busIndex].unlock();
+            }
 
-            op_in_mutex[busIndex].unlock();
+        op_in_mutex[busIndex].unlock();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
