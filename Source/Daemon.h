@@ -5,12 +5,13 @@
 #include <vector>
 #include <tuple>
 #include <queue>
+#include <iostream>
 
 #define SHORT_ID_MAX 65000
 
 typedef void* (*OP)(void*);
-typedef std::tuple<OP, unsigned short, void*> OP_TUPLE_IN;
-typedef std::tuple<unsigned short, void*> OP_TUPLE_OUT;
+typedef std::tuple<OP, unsigned short, unsigned int, void*> OP_TUPLE_IN;
+typedef std::tuple<unsigned short, unsigned int, void*> OP_TUPLE_OUT;
 typedef std::vector<OP_TUPLE_IN> OP_IN;
 typedef std::vector<OP_TUPLE_OUT> OP_OUT;
 typedef std::vector<OP_IN> OP_IN_VEC;
@@ -59,8 +60,10 @@ class TestFunc : public OpFunc {
     void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF, OP_OUT_VEC_REF) = [](void* data, OpFunc OF, OP_IN_VEC_REF op_in, OP_OUT_VEC_REF op_out) {
         const auto clamp = op_in.size();
         unsigned short curWorker = 0;
+        int* cast = (int*)data;
         for(int i = 0; i < OF.dataCt; i++){
-            op_in[curWorker].push_back(OP_TUPLE_IN(OF.Operate, OF.PID, data));
+            op_in[curWorker].push_back(OP_TUPLE_IN(OF.Operate, OF.PID, i, cast));
+            cast++;
             curWorker++;
             if (curWorker >= clamp) curWorker = 0;
         }
@@ -68,11 +71,22 @@ class TestFunc : public OpFunc {
     };
 
     void* (*Operate)(void*) = [](void* data) -> void* {
-        return nullptr;
+        int* res = new int;
+        int* cast = (int*)data;
+        int object = *cast;
+        int output = object + 4;
+        *res = output;
+        return res;
     };
 
     void* (*Package)(void**, unsigned short) = [](void** data, unsigned short dataCt) -> void* {
-        return nullptr;
+        int* ret = new int[dataCt];
+        for(int i = 0; i < dataCt; i++){
+            auto cast = (int*)data[i];
+            ret[i] = *cast;
+            delete cast;
+        }
+        return ret;
     };
 
 };

@@ -6,6 +6,7 @@ Daemon* Daemon::instance = nullptr; // definition class variable
 
 Daemon::Daemon() {
     const auto workerCt = m_processor_count - 1;
+    std::cout << "workerCt " << workerCt << std::endl;
 
     if (workerCt <= 0) {
         single_threaded = true;
@@ -16,17 +17,17 @@ Daemon::Daemon() {
 		availableIDs.push(i);
 	}
 
-    daemon = std::thread(&Daemon::pollDaemon, this);
     op_in.push_back(OP_IN());
     op_out.push_back(OP_OUT());
 
     unsigned int poolCt = workerCt - 1;
 
     for (unsigned int i = 0; i < poolCt; i++) {
-        Workers.push_back(std::thread(&Daemon::pollWorker, this, i));
         op_in.push_back(OP_IN());
         op_out.push_back(OP_OUT());
+        Workers.push_back(std::thread(&Daemon::pollWorker, this, i));
     }
+    daemon = std::thread(&Daemon::pollDaemon, this);
 
 }
 
@@ -71,12 +72,13 @@ void Daemon::pollDaemon() {
                     op_in[0].erase(it);
 
                     OP operation = std::get<0>(t);
-                    void* datum = std::get<2>(t);
+                    unsigned int idx = std::get<2>(t);
+                    void* datum = std::get<3>(t);
 
                     void* result = operation(datum);
 
                     op_out_mutex[0].lock();
-                    op_out[0].push_back(OP_TUPLE_OUT(std::get<1>(t), result));
+                    op_out[0].push_back(OP_TUPLE_OUT(std::get<1>(t), idx, result));
                     op_out_mutex[0].unlock();
                 }
 
@@ -110,21 +112,21 @@ void Daemon::pollDaemon() {
 void Daemon::pollWorker(unsigned int workerCt) {
     unsigned int busIndex = workerCt + 1;
     while (!threadStopped) {
-
             op_in_mutex[busIndex].lock();
 
-                for (auto it = op_in[0].begin(); it != op_in[0].end(); it++){
+                for (auto it = op_in[busIndex].begin(); it != op_in[busIndex].end(); it++){
                     const OP_TUPLE_IN t = *it;
-                    op_in[0].erase(it);
+                    op_in[busIndex].erase(it);
 
                     OP operation = std::get<0>(t);
-                    void* datum = std::get<2>(t);
+                    unsigned int idx = std::get<2>(t);
+                    void* datum = std::get<3>(t);
 
                     void* result = operation(datum);
 
-                    op_out_mutex[0].lock();
-                    op_out[0].push_back(OP_TUPLE_OUT(std::get<1>(t), result));
-                    op_out_mutex[0].unlock();
+                    op_out_mutex[busIndex].lock();
+                    op_out[busIndex].push_back(OP_TUPLE_OUT(std::get<1>(t), idx, result));
+                    op_out_mutex[busIndex].unlock();
                 }
 
             op_in_mutex[busIndex].unlock();
@@ -150,6 +152,7 @@ void* Daemon::blockingProcess(OpFunc of, void* data){
             for (auto it = data_out.begin(); it != data_out.end(); it++){
                 DATA_OUT t = *it;
                 if (of.PID == std::get<0>(t)){
+                    data_out.erase(it);
                     data_out_mutex.unlock();
                     return std::get<1>(t);
                 }
