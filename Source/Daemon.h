@@ -23,7 +23,7 @@ class OpFunc {
     public:
     unsigned short PID = 0;
     unsigned short dataCt;
-    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF, OP_OUT_VEC_REF);
+    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF);
     void* (*Operate)(void*);
     void* (*Package)(void**, unsigned short);
 };
@@ -38,7 +38,7 @@ class BB3DFunc : public OpFunc {
     BB3DFunc(unsigned short ct) {
         dataCt = ct;
     }
-    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF, OP_OUT_VEC_REF) = [](void* data, OpFunc OF, OP_IN_VEC_REF op_in, OP_OUT_VEC_REF op_out) {
+    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF) = [](void* data, OpFunc OF, OP_IN_VEC_REF op_in) {
         return;
     };
 
@@ -57,7 +57,7 @@ class TestFunc : public OpFunc {
     TestFunc(unsigned short ct) {
         dataCt = ct;
     }
-    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF, OP_OUT_VEC_REF) = [](void* data, OpFunc OF, OP_IN_VEC_REF op_in, OP_OUT_VEC_REF op_out) {
+    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF) = [](void* data, OpFunc OF, OP_IN_VEC_REF op_in) {
         const auto clamp = op_in.size();
         unsigned short curWorker = 0;
         int* cast = (int*)data;
@@ -82,9 +82,8 @@ class TestFunc : public OpFunc {
     void* (*Package)(void**, unsigned short) = [](void** data, unsigned short dataCt) -> void* {
         int* ret = new int[dataCt];
         for(int i = 0; i < dataCt; i++){
-            auto cast = (int*)data[i];
+            int* cast = (int*)data[i];
             ret[i] = *cast;
-            delete cast;
         }
         return ret;
     };

@@ -512,16 +512,17 @@ class TestRoom : public Scene {
 
         int loadResources(GLFWwindow* window) override {
 
+            /*
             int* data = new int[20];
             for(int i = 0; i < 20; i++){
                 data[i] = i;
                 std::cout << std::to_string(data[i]) << std::endl;
             }
-            void* ret = dae.blockingProcess(TestFunc(20), data);
+            void* ret = dae.blockingProcess(TestFunc(20), (void*)data);
             int* retList = (int*)ret;
             for(int i = 0; i < 20; i++){
                 std::cout << std::to_string(retList[i]) << std::endl;
-            }
+            }*/
 
             textProgram = Shader("textVert.glsl", "textFrag.glsl");
 

@@ -57,7 +57,7 @@ void Daemon::pollDaemon() {
             }
 
             // dispatch function could be templated out!
-            OF.Dispatch(data, OF, op_in,op_out);
+            OF.Dispatch(data, OF, op_in);
 
             for (int i = 0; i < op_in.size(); i++){
                 op_in_mutex[i].unlock();
@@ -88,18 +88,36 @@ void Daemon::pollDaemon() {
             data_out_mutex.lock();
             void** dl = new void*[OF.dataCt];
 
-            for (int i = 0; i < op_out.size(); i++){
-                op_out_mutex[i].lock();
-            }
             bool packaging = true;
-            while(packaging){
-                //TODO!
+            unsigned int packingCt = 0;
 
+            while(packaging){
+                for (int i = 0; i < op_out.size(); i++){
+                    op_out_mutex[i].lock();
+                }
+
+                for (auto it = op_out.begin(); it != op_out.end(); it++){
+                    OP_OUT ops = *it;
+                    for (auto it = ops.begin(); it != ops.end(); it++){
+                        OP_TUPLE_OUT opt = *it;
+                        unsigned short pid = std::get<0>(opt);
+                        if (pid == OF.PID){
+                            unsigned int idx = std::get<1>(opt);
+                            void* res = std::get<2>(opt);
+                            dl[idx] = res;
+                            ops.erase(it);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < op_out.size(); i++){
+                    op_out_mutex[i].lock();
+                }
+
+                if (packingCt == OF.dataCt) break;
                 std::this_thread::sleep_for(std::chrono::milliseconds(5));
             }
-            for (int i = 0; i < op_out.size(); i++){
-                op_out_mutex[i].lock();
-            }
+
 
             // TODO: change Package func API!
             void* package = OF.Package(dl,OF.dataCt);
