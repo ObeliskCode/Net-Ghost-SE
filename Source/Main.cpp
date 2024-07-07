@@ -4,14 +4,16 @@
 
 // FINAL GRAHPICS TODO: screen-space shadows & frustrum culling & updated rendering pipeline (deferred/forward+) & MT rendering
 
-int main(int argc, char **argv) {
-    if (argc > 1){
-        std::cout << argv[1] << std::endl;
-    }
-	GLFWwindow* window = initApp();
+int main(int argc, char **argv)
+{
+	if (argc > 1)
+	{
+		std::cout << argv[1] << std::endl;
+	}
+	GLFWwindow *window = initApp();
 
-	TestRoom* dp = new TestRoom();
-	Scene* bp = dp;
+	TestRoom *dp = new TestRoom();
+	Scene *bp = dp;
 	bp->setupCallbacks(window);
 	bp->loadResources(window);
 
@@ -32,13 +34,15 @@ int main(int argc, char **argv) {
 	double delta;
 
 	/* Main Game Loop */
-	while (!glfwWindowShouldClose(window)) {
+	while (!glfwWindowShouldClose(window))
+	{
 		crntTime = glfwGetTime();
 
 		/* FPS counter */
 		timeDiff = crntTime - prevTime;
 		counter++;
-		if (timeDiff >= 1.0) {
+		if (timeDiff >= 1.0)
+		{
 			std::string FPS = std::to_string((1.0 / timeDiff) * counter);
 			std::string ms = std::to_string((timeDiff / counter) * 1000);
 			std::string newTitle = "Obelisk Engine - " + FPS + "FPS / " + ms + "ms";
@@ -55,42 +59,44 @@ int main(int argc, char **argv) {
 		thisTick = glfwGetTime();
 		delta = thisTick - lastTick;
 
-		if (delta >= deltaTime) {
+		if (delta >= deltaTime)
+		{
 			lastTick = thisTick;
-            bp->tick(window, delta);
+			bp->tick(window, delta);
 		}
 
-        bp->drawFrame(window, frameTime);
+		bp->drawFrame(window, frameTime);
 	}
 
 	bp->cleanup();
 
 	glfwTerminate();
 	return 0;
-
 }
 
-
-GLFWwindow* initApp() {
+GLFWwindow *initApp()
+{
 
 	glfwInit();
 
-	GLFWwindow* window = glfwCreateWindow(Globals::get().screenWidth, Globals::get().screenHeight, "Obelisk Engine", NULL, NULL); // windowed
-	//GLFWwindow* window = glfwCreateWindow(Globals::get().screenWidth, Globals::get().screenHeight, "Obelisk Engine", glfwGetPrimaryMonitor(), NULL); // fullscreen
-	if (window == NULL) {
+	GLFWwindow *window = glfwCreateWindow(Globals::get().screenWidth, Globals::get().screenHeight, "Obelisk Engine", NULL, NULL); // windowed
+	// GLFWwindow* window = glfwCreateWindow(Globals::get().screenWidth, Globals::get().screenHeight, "Obelisk Engine", glfwGetPrimaryMonitor(), NULL); // fullscreen
+	if (window == NULL)
+	{
 		printf("Failed to create GLFW window!\n");
 		return nullptr;
 	}
 
 	glfwMakeContextCurrent(window);
 
-	if (GLEW_OK != glewInit()) {
+	if (GLEW_OK != glewInit())
+	{
 		printf("Failed to initialize GLEW!.\n");
 		return nullptr;
 	}
 
-	//refresh rate
-	//glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0,0, Globals::get().screenWidth, Globals::get().screenHeight, 120);
+	// refresh rate
+	// glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0,0, Globals::get().screenWidth, Globals::get().screenHeight, 120);
 
 	// enable depth buffer
 	glEnable(GL_DEPTH_TEST);
@@ -108,7 +114,7 @@ GLFWwindow* initApp() {
 	glEnable(GL_MULTISAMPLE);
 
 	// default gamma correction
-	//glEnable(GL_FRAMEBUFFER_SRGB);
+	// glEnable(GL_FRAMEBUFFER_SRGB);
 
 	// enable smooth shading vs flat
 	glShadeModel(GL_SMOOTH);
@@ -120,7 +126,7 @@ GLFWwindow* initApp() {
 
 	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 
-	//disable vsync if enabled
+	// disable vsync if enabled
 	glfwSwapInterval(0);
 
 	// enable transparency function
@@ -130,4 +136,3 @@ GLFWwindow* initApp() {
 
 	return window;
 }
-

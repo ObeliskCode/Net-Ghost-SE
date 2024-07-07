@@ -1,19 +1,19 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-//#define BUILD_LINUX
+// #define BUILD_LINUX
 #define BUILD_WINDOWS
 
 #ifdef BUILD_WINDOWS
-//#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // remove console on windows??
+// #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // remove console on windows??
 #endif
 
 #ifdef BUILD_WINDOWS
-#pragma comment(lib,"opengl32.lib")
-#pragma comment(lib,"glu32.lib")
-#pragma comment(lib,"glfw3.lib")
-#pragma comment(lib,"glew32s.lib")
-#pragma comment(lib,"glew32.lib")
+#pragma comment(lib, "opengl32.lib")
+#pragma comment(lib, "glu32.lib")
+#pragma comment(lib, "glfw3.lib")
+#pragma comment(lib, "glew32s.lib")
+#pragma comment(lib, "glew32.lib")
 #endif
 
 #define GLEW_STATIC
@@ -22,6 +22,6 @@
 
 #include "Scene.h"
 
-GLFWwindow* initApp();
+GLFWwindow *initApp();
 
 #endif
