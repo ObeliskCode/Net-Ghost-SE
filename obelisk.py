@@ -208,7 +208,7 @@ if not os.path.isdir("/usr/include/freetype2"):
     subprocess.check_call(cmd)
 
 obelisk_so = "/tmp/obelisk.so"
-old_test = "--old-test" in sys.argv
+gen_main = "--gen-main" in sys.argv
 
 BPLATE = """
 ....
@@ -227,9 +227,9 @@ def genmain():
         ]
     )
 
-    for arg in sys.argv:
-        if arg.endswith(".dae"):
-            "auto something = assimp.load(%s);" % arg
+    # for arg in sys.argv:
+    #    if arg.endswith(".dae"):
+    #        "auto something = assimp.load(%s);" % arg
 
     o.append("}")
     o = "\n".join(o)
@@ -244,13 +244,13 @@ def build():
     for file in os.listdir(srcdir):
 
         if file == "Main.cpp":
-            if old_test:
-                main = file
-            else:
+            if gen_main:
                 open("/tmp/gen.main.cpp", "wb").write(genmain().encode("utf-8"))
                 main = "/tmp/gen.main.cpp"
                 file = main
-        if not old_test and file == "Main.h":
+            else:
+                main = file
+        if gen_main and file == "Main.h":
             continue
         print(file)
         if file.endswith(".c"):
