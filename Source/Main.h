@@ -1,8 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-// #define BUILD_LINUX
-#define BUILD_WINDOWS
+// #define BUILD_WINDOWS
 
 #ifdef BUILD_WINDOWS
 // #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // remove console on windows??
