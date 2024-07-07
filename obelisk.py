@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-## Happy 24th B-Day Noel,
 ## from Brett June 23, 2024
-## version 5
 
 
 ## this script is run from the Obelisk-Engine folder
@@ -252,7 +250,7 @@ def build():
                 open("/tmp/gen.main.cpp", "wb").write(genmain().encode("utf-8"))
                 main = "/tmp/gen.main.cpp"
                 file = main
-        if not old_test and file == "Scene.cpp":
+        if not old_test and file == "Main.h":
             continue
         print(file)
         if file.endswith(".c"):
