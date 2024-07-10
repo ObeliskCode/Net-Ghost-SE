@@ -10,20 +10,20 @@
 #define SHORT_ID_MAX 65000
 
 typedef void* (*OP)(void*);
-typedef std::tuple<OP, unsigned short, unsigned int, void*> OP_TUPLE_IN;
-typedef std::tuple<unsigned short, unsigned int, void*> OP_TUPLE_OUT;
-typedef std::vector<OP_TUPLE_IN> OP_IN;
-typedef std::vector<OP_TUPLE_OUT> OP_OUT;
+typedef std::tuple<OP, unsigned short, unsigned int, void*> OP_IN;
+typedef std::tuple<unsigned short, unsigned int, void*> OP_OUT;
 typedef std::vector<OP_IN> OP_IN_VEC;
 typedef std::vector<OP_OUT> OP_OUT_VEC;
-typedef OP_IN_VEC& OP_IN_VEC_REF;
-typedef OP_OUT_VEC& OP_OUT_VEC_REF;
+typedef std::vector<OP_IN_VEC> OP_IN_VEC_2D;
+typedef std::vector<OP_OUT_VEC> OP_OUT_VEC_2D;
+typedef OP_IN_VEC_2D& OP_IN_VEC_2D_REF;
+typedef OP_OUT_VEC_2D& OP_OUT_VEC_2D_REF;
 
 class OpFunc {
     public:
     unsigned short PID = 0;
     unsigned short dataCt;
-    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF);
+    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_2D_REF);
     void* (*Operate)(void*);
     void* (*Package)(void**, unsigned short);
 };
@@ -38,7 +38,7 @@ class BB3DFunc : public OpFunc {
     BB3DFunc(unsigned short ct) {
         dataCt = ct;
     }
-    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF) = [](void* data, OpFunc OF, OP_IN_VEC_REF op_in) {
+    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_2D_REF) = [](void* data, OpFunc OF, OP_IN_VEC_2D_REF op_in) {
         return;
     };
 
@@ -57,12 +57,12 @@ class TestFunc : public OpFunc {
     TestFunc(unsigned short ct) {
         dataCt = ct;
     }
-    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_REF) = [](void* data, OpFunc OF, OP_IN_VEC_REF op_in) {
+    void (*Dispatch)(void*, OpFunc, OP_IN_VEC_2D_REF) = [](void* data, OpFunc OF, OP_IN_VEC_2D_REF op_in) {
         const auto clamp = op_in.size();
         unsigned short curWorker = 0;
         int* cast = (int*)data;
         for(int i = 0; i < OF.dataCt; i++){
-            op_in[curWorker].push_back(OP_TUPLE_IN(OF.Operate, OF.PID, i, (void*)cast));
+            op_in[curWorker].push_back(OP_IN(OF.Operate, OF.PID, i, (void*)cast));
             cast++;
             curWorker++;
             if (curWorker >= clamp) curWorker = 0;
@@ -112,15 +112,15 @@ public:
     std::thread daemon;
     std::vector<std::thread> Workers;
 
-    DATA_IN_VEC data_in;
+    DATA_IN_VEC data_in_vec;
     std::mutex data_in_mutex;
-    DATA_OUT_VEC data_out;
+    DATA_OUT_VEC data_out_vec;
     std::mutex data_out_mutex;
 
-    OP_IN_VEC op_in;
-    std::mutex op_in_mutex[32];
-    OP_OUT_VEC op_out;
-    std::mutex op_out_mutex[32];
+    OP_IN_VEC_2D op_in_vec2d;
+    std::mutex op_in_vec_mutex[32];
+    OP_OUT_VEC_2D op_out_vec2d;
+    std::mutex op_out_vec_mutex[32];
 
     void pollDaemon();
     void pollWorker(unsigned int workerCt);
