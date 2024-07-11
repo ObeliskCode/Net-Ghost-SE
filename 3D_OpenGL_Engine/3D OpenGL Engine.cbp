@@ -214,9 +214,6 @@
 		<Unit filename="../Source/Main.cpp">
 			<Option target="Release x64" />
 		</Unit>
-		<Unit filename="../Source/Main.h">
-			<Option target="Release x64" />
-		</Unit>
 		<Unit filename="../Source/Material.h">
 			<Option target="Release x64" />
 		</Unit>
@@ -263,6 +260,9 @@
 			<Option target="Release x64" />
 		</Unit>
 		<Unit filename="../Source/QuadRenderer.h">
+			<Option target="Release x64" />
+		</Unit>
+		<Unit filename="../Source/Run.h">
 			<Option target="Release x64" />
 		</Unit>
 		<Unit filename="../Source/Scene.h">
