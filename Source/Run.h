@@ -84,6 +84,10 @@ GLFWwindow *initApp()
     return window;
 }
 
+// two functions queueScene and endScene?
+
+// FINAL GRAHPICS TODO: screen-space shadows & frustrum culling & updated rendering pipeline (deferred/forward+) & MT rendering
+
 int run()
 {
     GLFWwindow *window = initApp();
