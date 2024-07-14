@@ -2,7 +2,7 @@
 # Skeleton Code provided by Brett
 
 ## this script is run from the Obelisk-Engine folder
-## Linux only build script, windows not tested
+## Linux only build script, windows build not tested
 
 import os, sys, subprocess
 
