@@ -4,6 +4,15 @@
 ## this script is run from the Obelisk-Engine folder
 ## Linux only build script, windows build not tested
 
+## Build Flags
+#
+# --windows [default:linux] - compile target for windows
+# --gdb [default:disabled] - enables cmd debugger
+# --gen-main [default:disabled] - generates c++ from python
+#
+##
+
+
 import os, sys, subprocess
 
 if "--windows" in sys.argv:
