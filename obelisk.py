@@ -2,10 +2,8 @@
 # Skeleton Code provided by Brett
 
 ## this script is run from the Obelisk-Engine folder
-## git clone --depth 1 https://github.com/n6garcia/Obelisk-Engine.git
 
 import os, sys, subprocess
-
 
 if "--windows" in sys.argv:
     os.system("rm /tmp/*.o /tmp/*.exe")
@@ -35,7 +33,7 @@ assert os.path.isdir(srcdir)
 
 
 hacks = [
-    "-I/usr/include/bullet",  ## this is the workaround for ISSUE 1
+    "-I/usr/include/bullet",  ## this is the hack/workaround for bullet
 ]
 
 includes = [
