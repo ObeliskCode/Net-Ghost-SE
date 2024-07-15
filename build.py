@@ -122,25 +122,13 @@ def genmain():
     o = []
 
     BPLATE = """
-    Daemon &dae = Daemon::get();
-    int* data = new int[20];
-    for(int i = 0; i < 20; i++){
-        data[i] = i;
-        std::cout << std::to_string(data[i]) << std::endl;
-    }
-    void* ret = dae.blockingProcess(TestFunc(20), (void*)data);
-    int* retList = (int*)ret;
-    for(int i = 0; i < 20; i++){
-        std::cout << std::to_string(retList[i]) << std::endl;
-    }
+    return run();
     """
 
     o.extend(
         [
-            '#include "Daemon.h',
-            "#include <ostream>",
-            "#include <string>",
-            "void main(){",
+            '#include "Run.h"',
+            "int main(int argc, char **argv) {",
             BPLATE,
         ]
     )
@@ -168,8 +156,6 @@ def build():
                 file = main
             else:
                 main = file
-        if gen_main and file == "Main.h":
-            continue
         print(file)
         if file.endswith(".c"):
             ## this is just for drwave
