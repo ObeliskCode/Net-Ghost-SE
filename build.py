@@ -15,6 +15,8 @@
 
 import os, sys, subprocess
 
+## SETUP / INSTALL ##
+
 if "--windows" in sys.argv:
     os.system("rm /tmp/*.o /tmp/*.exe")
 
@@ -110,20 +112,34 @@ if not os.path.isdir("/usr/include/freetype2"):
     subprocess.check_call(cmd)
 
 obelisk_so = "/tmp/obelisk.so"
+
+## BUILD CODE ##
+
 gen_main = "--gen-main" in sys.argv
-
-BPLATE = """
-....
-
-"""
 
 
 def genmain():
     o = []
 
+    BPLATE = """
+    Daemon &dae = Daemon::get();
+    int* data = new int[20];
+    for(int i = 0; i < 20; i++){
+        data[i] = i;
+        std::cout << std::to_string(data[i]) << std::endl;
+    }
+    void* ret = dae.blockingProcess(TestFunc(20), (void*)data);
+    int* retList = (int*)ret;
+    for(int i = 0; i < 20; i++){
+        std::cout << std::to_string(retList[i]) << std::endl;
+    }
+    """
+
     o.extend(
         [
-            '#include "Scene.h',
+            '#include "Daemon.h',
+            "#include <ostream>",
+            "#include <string>",
             "void main(){",
             BPLATE,
         ]
@@ -160,7 +176,6 @@ def build():
             ofile = "/tmp/%s.o" % file
             obfiles.append(ofile)
             # if os.path.isfile(ofile):
-            #    ## FASTER
             #    continue
             cpps.append(file)
             cmd = [
@@ -179,7 +194,6 @@ def build():
             ofile = "/tmp/%s.o" % file
             obfiles.append(ofile)
             # if os.path.isfile(ofile):
-            #    ## FASTER
             #    continue
             cpps.append(file)
             cmd = [
@@ -237,14 +251,14 @@ def build():
     subprocess.check_call(cmd)
 
 
-# if not os.path.isfile(obelisk_so):
-# 	build()
-build()
+## BUILDING / RUNNING ##
 
+build()
 
 asset_dir = os.path.abspath("./3D_OpenGL_Engine")
 assert os.path.isdir(asset_dir)
 
+# possibly install models if needed
 models_dir = os.path.join(asset_dir, "models")
 if len(os.listdir(models_dir)) <= 1:  ## .gitignore :)
     cmd = "git clone --depth 1 https://github.com/n6garcia/Obelisk-Models.git"
@@ -260,7 +274,6 @@ else:
     cmd = ["/tmp/obelisk"]
 
 print(cmd)
-
 
 subprocess.check_call(cmd, cwd=asset_dir)
 # sys.exit()
