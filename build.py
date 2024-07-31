@@ -131,10 +131,6 @@ def genmain():
         ]
     )
 
-    # for arg in sys.argv:
-    #    if arg.endswith(".dae"):
-    #        "auto something = assimp.load(%s);" % arg
-
     o.append("}")
     o = "\n".join(o)
     return o
@@ -142,7 +138,6 @@ def genmain():
 
 def build():
     cpps = []
-    main = None
     obfiles = []
 
     for file in os.listdir(srcdir):
@@ -150,30 +145,7 @@ def build():
         if file == "Main.cpp":
             if gen_main:
                 open("/tmp/gen.main.cpp", "wb").write(genmain().encode("utf-8"))
-                main = "/tmp/gen.main.cpp"
-                file = main
-            else:
-                main = file
-            ofile = "/tmp/%s.o" % file
-            obfiles.append(ofile)
-            # if os.path.isfile(ofile):
-            #    continue
-            cpps.append(file)
-            cmd = [
-                #'g++',
-                CC,
-                "-std=c++20",
-                "-c",  ## do not call the linker
-                "-fPIC",  ## position indepenent code
-                "-o",
-                ofile,
-                os.path.join(srcdir, file),
-            ]
-            cmd += libs
-            cmd += includes
-            cmd += hacks
-            print(cmd)
-            subprocess.check_call(cmd)
+                file = "/tmp/gen.main.cpp"
         if file.endswith(".c"):
             ## this is just for drwave
             ofile = "/tmp/%s.o" % file
@@ -220,21 +192,20 @@ def build():
     ## finally call the linker,
     ## note: there's better linkers we could use here, like gold and mold
 
-    if "--windows" not in sys.argv:
-        cmd = (
-            [
-                #'ld',
-                "g++",
-                "-shared",
-                "-o",
-                "/tmp/obelisk.so",
-            ]
-            + obfiles
-            + libs
-        )
+    cmd = (
+        [
+            #'ld',
+            "g++",
+            "-shared",
+            "-o",
+            "/tmp/obelisk.so",
+        ]
+        + obfiles
+        + libs
+    )
 
-        print(cmd)
-        subprocess.check_call(cmd)
+    print(cmd)
+    subprocess.check_call(cmd)
 
     exe = "/tmp/obelisk"
     if "--windows" in sys.argv:
