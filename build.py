@@ -114,6 +114,37 @@ obelisk_so = "/tmp/obelisk.so"
 ## BUILD CODE ##
 
 gen_main = "--gen-main" in sys.argv
+test_main = "--test-main" in sys.argv
+
+
+def testmain():
+    o = []
+
+    BPLATE = """
+    int* data = new int[20];
+    for(int i = 0; i < 20; i++){
+        data[i] = i;
+        std::cout << std::to_string(data[i]) << std::endl;
+    }
+    void* ret = dae.blockingProcess(TestFunc(20), (void*)data);
+    int* retList = (int*)ret;
+    for(int i = 0; i < 20; i++){
+        std::cout << std::to_string(retList[i]) << std::endl;
+    }
+    """
+
+    o.extend(
+        [
+            '#include "Run.h"',
+            '#include "Daemon.h"',
+            "int main(int argc, char **argv) {",
+            BPLATE,
+        ]
+    )
+
+    o.append("}")
+    o = "\n".join(o)
+    return o
 
 
 def genmain():
@@ -145,6 +176,29 @@ def build():
         if file == "Main.cpp":
             if gen_main:
                 open("/tmp/gen.main.cpp", "wb").write(genmain().encode("utf-8"))
+                file = "/tmp/gen.main.cpp"
+                ofile = "%s.o" % file
+                obfiles.append(ofile)
+                # if os.path.isfile(ofile):
+                #    continue
+                cpps.append(file)
+                cmd = [
+                    #'g++',
+                    CC,
+                    "-std=c++20",
+                    "-c",  ## do not call the linker
+                    "-fPIC",  ## position indepenent code
+                    "-o",
+                    ofile,
+                    os.path.join(srcdir, file),
+                ]
+                cmd += libs
+                cmd += includes
+                cmd += hacks
+                print(cmd)
+                subprocess.check_call(cmd)
+            elif test_main:
+                open("/tmp/gen.main.cpp", "wb").write(testmain().encode("utf-8"))
                 file = "/tmp/gen.main.cpp"
                 ofile = "%s.o" % file
                 obfiles.append(ofile)
