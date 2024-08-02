@@ -146,7 +146,49 @@ def build():
             if gen_main:
                 open("/tmp/gen.main.cpp", "wb").write(genmain().encode("utf-8"))
                 file = "/tmp/gen.main.cpp"
-        if file.endswith(".c"):
+                ofile = "%s.o" % file
+                obfiles.append(ofile)
+                # if os.path.isfile(ofile):
+                #    continue
+                cpps.append(file)
+                cmd = [
+                    #'g++',
+                    CC,
+                    "-std=c++20",
+                    "-c",  ## do not call the linker
+                    "-fPIC",  ## position indepenent code
+                    "-o",
+                    ofile,
+                    os.path.join(srcdir, file),
+                ]
+                cmd += libs
+                cmd += includes
+                cmd += hacks
+                print(cmd)
+                subprocess.check_call(cmd)
+            else:
+                ofile = "/tmp/%s.o" % file
+                obfiles.append(ofile)
+                # if os.path.isfile(ofile):
+                #    continue
+                cpps.append(file)
+                cmd = [
+                    #'g++',
+                    CC,
+                    "-std=c++20",
+                    "-c",  ## do not call the linker
+                    "-fPIC",  ## position indepenent code
+                    "-o",
+                    ofile,
+                    os.path.join(srcdir, file),
+                ]
+                cmd += libs
+                cmd += includes
+                cmd += hacks
+                print(cmd)
+                subprocess.check_call(cmd)
+
+        elif file.endswith(".c"):
             ## this is just for drwave
             ofile = "/tmp/%s.o" % file
             obfiles.append(ofile)
