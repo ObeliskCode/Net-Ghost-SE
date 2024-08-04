@@ -175,8 +175,8 @@ def build():
 
         if file == "Main.cpp":
             if gen_main:
-                open("/tmp/gen.main.cpp", "wb").write(genmain().encode("utf-8"))
-                file = "/tmp/gen.main.cpp"
+                open("/tmp/gen.oe.main.cpp", "wb").write(genmain().encode("utf-8"))
+                file = "/tmp/gen.oe.main.cpp"
                 ofile = "%s.o" % file
                 obfiles.append(ofile)
                 # if os.path.isfile(ofile):
@@ -198,8 +198,8 @@ def build():
                 print(cmd)
                 subprocess.check_call(cmd)
             elif test_main:
-                open("/tmp/gen.main.cpp", "wb").write(testmain().encode("utf-8"))
-                file = "/tmp/gen.main.cpp"
+                open("/tmp/gen.oe.main.cpp", "wb").write(testmain().encode("utf-8"))
+                file = "/tmp/gen.oe.main.cpp"
                 ofile = "%s.o" % file
                 obfiles.append(ofile)
                 # if os.path.isfile(ofile):
