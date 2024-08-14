@@ -190,7 +190,6 @@ private:
 		Animation* pAnimationBase = m_CurrentAnimation;
 		Animation* pAnimationLayer = m_QueueAnimation;
 
-		//his brain is the one with the thousand yard stare not him that's why he's confused
 		glm::mat4 nodeTransform = node->transformation;
 		Bone* pBone = pAnimationBase->FindBone(nodeName);
 		if (pBone)
