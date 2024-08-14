@@ -5,6 +5,8 @@ Obelisk Engine is a lightweight C++ 3D Game Engine designed solely for the OpenG
 ```bash
 python build.py
 ```
+## Features Implemented 
+#### Animated 3D models, Animation Blending, Particle System, Rigid Body Physics, Advanced Lighting, Directional/Point Shadows, Object Highlighting (Stencil Testing), Entity Component System, GUI, MultiThreaded Audio (OpenAL)
 
 ## Libraries Included
 - GLEW & GLFW (OpenGL Software Implementation)
@@ -15,8 +17,6 @@ python build.py
 - GLM
 - Assimp (Open Asset Import Library)
 - Other Header Only Libraries
-## Features Implemented 
-#### Animated 3D models, Animation Blending, Particle System, Rigid Body Physics, Advanced Lighting, Directional/Point Shadows, Object Highlighting (Stencil Testing), Entity Component System, GUI, MultiThreaded Audio (OpenAL)
 
 ## Controls
 WASD: Camera movement / walk,
