@@ -19,22 +19,13 @@ python build.py
 #### Animated 3D models, Animation Blending, Particle System, Rigid Body Physics, Advanced Lighting, Directional/Point Shadows, Object Highlighting (Stencil Testing), Entity Component System, GUI, MultiThreaded Audio (OpenAL)
 
 ## Controls
-WASD: Camera movement / walk
-
-Space: Jump (when controlling rigid body)
-
-Z: Lock camera to rigid body
-
-X: Lock/Unlock cursor for mouse panning
-
-O: toggle draw wires
-
-P: Emit smoke particles
-
-E: Select Physics Object
-
-LEFT/RIGHT ARROW KEYS: Decrease/Increase interpolation between animations
-
-F9: windowed
-
+WASD: Camera movement / walk,
+Space: Jump (when controlling rigid body),
+Z: Lock camera to rigid body,
+X: Lock/Unlock cursor for mouse panning,
+O: toggle draw wires,
+P: Emit smoke particles,
+E: Select Physics Object,
+LEFT/RIGHT ARROW KEYS: Decrease/Increase interpolation between animations,
+F9: windowed,
 F10: fullscreen
