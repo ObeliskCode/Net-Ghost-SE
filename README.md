@@ -1,5 +1,5 @@
 # Net Ghost Science Engine (Linux)
-Net Ghost Engine is a lightweight C++ 3D Game Engine designed solely for the OpenGL API. The libraries included by Net Ghost Engine offer a feature complete C++ enviroment for making almost any video game feature now and in the future for MIT licensable projects. The Game Engine is designed for a Game I hope to release. The Game I hope to release has an incredibly low graphics target so I hope to make an Engine which has little to no over-engineering and can handle any modern OpenGL feature efficiently. I hope that my project helps people stray away from over-engineered and over-priced messes like Unity and see that low-level graphics programming is actually quite easy. Net Ghost Engine ultimately strives to have as few black boxes as possible for OpenGL Game Development.
+Net Ghost Engine is a lightweight C++ 3D Game Engine designed solely for the OpenGL API. The libraries included by Net Ghost Engine offer a feature complete C++ enviroment for making almost any video game feature now and in the future for MIT licensable projects. The Engine is being built to support artificial intelligence tooling built into the engine. I plan to develop a cmd only version of NGSE for 0 overhead in training image based artificial intelligence.
 
 ## BUILD INSTRUCTIONS
 ```bash
