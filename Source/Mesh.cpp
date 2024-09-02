@@ -1,6 +1,20 @@
 #include "Mesh.h"
 #include <glm/gtx/string_cast.hpp>
 
+Mesh::Mesh(std::vector<Vertex> verts, std::vector<GLuint> indices){
+	this->vertices = verts;
+	this->indices  = indices;
+	m_VAO.Bind();
+	m_VBO = VBO(this->vertices);
+	m_EBO = EBO(this->indices);
+	m_VAO.LinkAttrib(m_VBO, 0, 3, GL_FLOAT, sizeof(Vertex), (void*)0); // pos
+	m_VAO.LinkAttrib(m_VBO, 1, 3, GL_FLOAT, sizeof(Vertex), (void*)(3 * sizeof(float))); // normal
+	m_VAO.LinkAttrib(m_VBO, 2, 2, GL_FLOAT, sizeof(Vertex), (void*)(6 * sizeof(float))); // texUV
+	m_VAO.Unbind();
+	m_VBO.Unbind(); // VBO already unbinded by LinkAttrib()
+	m_EBO.Unbind();
+}
+
 Mesh::Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& model) {
 
 	Mesh::vertices = vertices;
