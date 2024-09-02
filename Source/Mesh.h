@@ -22,19 +22,20 @@ public:
 	VBO m_VBO;
 	EBO m_EBO;
 
+	Mesh(std::vector<Vertex> verts, std::vector<GLuint> indices);
 	Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& model);
-    Mesh(Mesh&& other) {
-        Mesh::vertices = std::move(other.vertices);
-        Mesh::indices = std::move(other.indices);
-        Mesh::textures = std::move(other.textures);
-        Mesh::model = std::move(other.model);
-        Mesh::m_VAO = std::move(other.m_VAO);
-        other.m_VAO = VAO();
-        Mesh::m_VBO = std::move(other.m_VBO);
-        other.m_VBO = VBO();
-        Mesh::m_EBO = std::move(other.m_EBO);
-        other.m_EBO = EBO();
-    }
+	Mesh(Mesh&& other) {
+		Mesh::vertices = std::move(other.vertices);
+		Mesh::indices = std::move(other.indices);
+		Mesh::textures = std::move(other.textures);
+		Mesh::model = std::move(other.model);
+		Mesh::m_VAO = std::move(other.m_VAO);
+		other.m_VAO = VAO();
+		Mesh::m_VBO = std::move(other.m_VBO);
+		other.m_VBO = VBO();
+		Mesh::m_EBO = std::move(other.m_EBO);
+		other.m_EBO = EBO();
+	}
 	~Mesh();
 
 	void Draw
