@@ -203,6 +203,18 @@ extern "C" void netghost_update(){
 
 '''
 
+def minify(f):
+	glsl = open(os.path.join(shaders_dir, f)).read()
+	o = []
+	for ln in glsl.splitlines():
+		if ln.strip().startswith('//'): continue
+		if '//' in ln:
+			print('WARN: inline comment in GLSL', ln)
+			ln = ln.split('//')[0]
+		o.append(ln)
+
+	return ' '.join(o)
+
 def genmain():
 	o = [
 		'#define GLEW_STATIC',
@@ -213,7 +225,34 @@ def genmain():
 		NGHOST_GLFW,
 		NGHOST_UPDATE,
 	]
-	o = "\n".join(o)
+	shaders = {}
+	for file in os.listdir(shaders_dir):
+		if 'Vert' in file:
+			tag = file.split('Vert')[0]
+			if tag not in shaders: shaders[tag] = {}
+			shaders[tag]['vert']=file
+		elif 'Frag' in file:
+			tag = file.split('Frag')[0]
+			if tag not in shaders: shaders[tag] = {}
+			shaders[tag]['frag']=file
+		elif 'Geom' in file:
+			tag = file.split('Geom')[0]
+			if tag not in shaders: shaders[tag] = {}
+			shaders[tag]['geom']=file
+
+	init_shaders = ['extern "C" void netghost_init_shaders(){']
+	for tag in shaders:
+		s = shaders[tag]
+		if 'vert' in s and 'frag' in s:
+			o.append('Shader *shader_%s;' % tag)
+			init_shaders += [
+				'shader_%s = new Shader();' % tag,
+				'shader_%s->set_vshader("%s");' % (tag, minify(s['vert'])),
+				'shader_%s->set_fshader("%s");' % (tag, minify(s['frag'])),
+			]
+	init_shaders.append('}')
+
+	o = "\n".join(o + init_shaders)
 	return o
 
 

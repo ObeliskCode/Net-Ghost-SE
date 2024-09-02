@@ -14,6 +14,32 @@ std::string get_file_contents(const char* filename) {
 	throw(errno);
 }
 
+void Shader::set_vshader(std::string s){
+	const char* vs = s.c_str();
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertexShader, 1, &vs, NULL);
+	glCompileShader(vertexShader);
+	checkCompileErrors(vertexShader, "VERTEX");
+	this->vid = vertexShader;
+}
+
+void Shader::set_fshader(std::string s){
+	const char* fs = s.c_str();
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader, 1, &fs, NULL);
+	glCompileShader(fragmentShader);
+	checkCompileErrors(fragmentShader, "FRAGMENT");
+	this->fid = fragmentShader;
+}
+
+void Shader::compile(){
+	ID = glCreateProgram();
+	glAttachShader(ID, this->vid);
+	glAttachShader(ID, this->fid);
+	glLinkProgram(ID);
+	checkCompileErrors(ID, "PROGRAM");
+}
+
 Shader::Shader(std::string vertexFile, std::string fragmentFile) {
 
 	std::string vertPath = ("shaders/" + vertexFile);
