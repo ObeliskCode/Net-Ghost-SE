@@ -11,7 +11,7 @@
 ##
 
 
-import os, sys, subprocess, ctypes
+import os, sys, subprocess, ctypes, time
 
 ## SETUP / INSTALL ##
 
@@ -109,60 +109,76 @@ if not os.path.isdir("/usr/include/freetype2"):
 	print(cmd)
 	subprocess.check_call(cmd)
 
-obelisk_so = "/tmp/obelisk.so"
 
-## BUILD CODE ##
-
-gen_main = "--gen-main" in sys.argv
-test_main = "--test-main" in sys.argv
-
-
-def testmain():
-	o = []
-
-	BPLATE = """
-	int* data = new int[20];
-	for(int i = 0; i < 20; i++){
-		data[i] = i;
-		std::cout << std::to_string(data[i]) << std::endl;
+NGHOST_GLFW = '''
+extern "C" void netghost_window_close(){
+	glfwTerminate();
+}
+extern "C" void netghost_window_init(int w, int h) {
+	glfwInit();
+	window = glfwCreateWindow(w, h, "NetGhost", NULL, NULL); // windowed
+	if (window == NULL) {
+		printf("Failed to create GLFW window!\\n");
+		return;
 	}
-	void* ret = dae.blockingProcess(TestFunc(20), (void*)data);
-	int* retList = (int*)ret;
-	for(int i = 0; i < 20; i++){
-		std::cout << std::to_string(retList[i]) << std::endl;
+	glfwMakeContextCurrent(window);
+	if (GLEW_OK != glewInit()){
+		printf("Failed to initialize GLEW!.\\n");
+		return;
 	}
-	"""
 
-	o.extend(
-		[
-			'#include "Run.h"',
-			'#include "Daemon.h"',
-			"int main(int argc, char **argv) {",
-			BPLATE,
-		]
-	)
+	// enable depth buffer
+	glEnable(GL_DEPTH_TEST);
 
-	o.append("}")
-	o = "\n".join(o)
-	return o
+	// emable stencil test
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glStencilMask(0xFF);
+
+	// enable 8x MSAA
+	glfwWindowHint(GLFW_SAMPLES, 8);
+	glEnable(GL_MULTISAMPLE);
+
+	// enable smooth shading vs flat
+	glShadeModel(GL_SMOOTH);
+
+	// Enable Culling
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CW);
+
+	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+
+	// disable vsync if enabled
+	glfwSwapInterval(0);
+
+	// enable transparency function
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_BLEND);
+
+}
+
+'''
+
+NGHOST_UPDATE = '''
+
+
+'''
 
 def genmain():
-	o = []
-
-	BPLATE = """
-	return run();
-	"""
-
-	o.extend(
-		[
-			'#include "Run.h"',
-			"int main(int argc, char **argv) {",
-			BPLATE,
-		]
-	)
-
-	o.append("}")
+	o = [
+		'#define GLEW_STATIC',
+		'#include <GL/glew.h>',
+		'#include <GLFW/glfw3.h>',
+		'#include "Scene.h"',
+		'GLFWwindow *window;',
+		NGHOST_GLFW,
+		NGHOST_UPDATE,
+	]
 	o = "\n".join(o)
 	return o
 
@@ -248,10 +264,16 @@ def build(shared=True):
 	subprocess.check_call(cmd)
 	return exe
 
+def bind_lib(lib):
+	lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
 
 def test_python():
 	lib = build()
-	print(lib.main)
+	print(lib.netghost_window_init)
+	bind_lib(lib)
+	lib.netghost_window_init(320, 240)
+	time.sleep(5)
+	lib.netghost_window_close()
 
 def test_exe():
 	exe = build(shared=False)
