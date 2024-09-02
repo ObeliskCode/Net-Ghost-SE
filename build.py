@@ -6,7 +6,6 @@
 #
 # --windows [default:linux] - compile target for windows
 # --gdb [default:disabled] - enables cmd debugger
-# --gen-main [default:disabled] - generates c++ from python
 #
 ##
 
@@ -109,6 +108,21 @@ if not os.path.isdir("/usr/include/freetype2"):
 	print(cmd)
 	subprocess.check_call(cmd)
 
+NGHOST_HEADER = '''
+GLFWwindow *window;
+Scene *bp;
+double crntTime = 0.0;
+double timeStart = -1.0;
+double prevTime = timeStart;
+double timeDiff;
+unsigned int counter = 0;
+double lastFrame = timeStart;
+double deltaTime = 1.0 / 188.0;
+double frameTime = 0.0f;
+double lastTick = timeStart;
+double thisTick = 0.0;
+double delta;
+'''
 
 NGHOST_GLFW = '''
 extern "C" void netghost_window_close(){
@@ -129,43 +143,63 @@ extern "C" void netghost_window_init(int w, int h) {
 
 	// enable depth buffer
 	glEnable(GL_DEPTH_TEST);
-
 	// emable stencil test
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-
 	glStencilFunc(GL_ALWAYS, 0, 0xFF);
 	glStencilMask(0xFF);
-
 	// enable 8x MSAA
 	glfwWindowHint(GLFW_SAMPLES, 8);
 	glEnable(GL_MULTISAMPLE);
-
 	// enable smooth shading vs flat
 	glShadeModel(GL_SMOOTH);
-
 	// Enable Culling
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	glFrontFace(GL_CW);
-
 	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-
 	// disable vsync if enabled
 	glfwSwapInterval(0);
-
 	// enable transparency function
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_BLEND);
 
+	timeStart = glfwGetTime();
 }
 
 '''
 
 NGHOST_UPDATE = '''
+extern "C" void netghost_update(){
+	crntTime = glfwGetTime();
 
+	/* FPS counter */
+	timeDiff = crntTime - prevTime;
+	counter++;
+	if (timeDiff >= 1.0)
+	{
+		std::string FPS = std::to_string((1.0 / timeDiff) * counter);
+		std::string ms = std::to_string((timeDiff / counter) * 1000);
+		std::string newTitle = "Obelisk Engine - " + FPS + "FPS / " + ms + "ms";
+		glfwSetWindowTitle(window, newTitle.c_str());
+		prevTime = crntTime;
+		counter = 0;
+	}
+
+	glfwPollEvents(); // get inputs
+	frameTime = crntTime - lastFrame;
+	lastFrame = crntTime;
+	thisTick = glfwGetTime();
+	delta = thisTick - lastTick;
+	if (delta >= deltaTime){
+		lastTick = thisTick;
+		bp->tick(window, delta);
+	}
+	bp->drawFrame(window, frameTime);
+
+}
 
 '''
 
@@ -175,7 +209,7 @@ def genmain():
 		'#include <GL/glew.h>',
 		'#include <GLFW/glfw3.h>',
 		'#include "Scene.h"',
-		'GLFWwindow *window;',
+		NGHOST_HEADER,
 		NGHOST_GLFW,
 		NGHOST_UPDATE,
 	]
@@ -270,6 +304,7 @@ def bind_lib(lib):
 def test_python():
 	lib = build()
 	print(lib.netghost_window_init)
+	print(lib.netghost_update)
 	bind_lib(lib)
 	lib.netghost_window_init(320, 240)
 	time.sleep(5)
