@@ -21,6 +21,17 @@ if '--wasm' in sys.argv and not os.path.isdir('./emsdk'):
 
 EMCC = os.path.abspath('./emsdk/upstream/emscripten/emcc')
 
+if not os.path.isdir('./blender') or '--blender-install' in sys.argv:
+	cmd = 'git clone --depth 1 https://github.com/blender/blender.git'
+	print(cmd)
+	subprocess.check_call(cmd.split())
+	#cmd = 'python3 ./blender/build_files/utils/make_update.py --use-linux-libraries' #compiled on Rocky8 and huge!
+	cmd = 'python3 ./blender/build_files/utils/make_update.py --no-libraries'
+	print(cmd)
+	subprocess.check_call(cmd.split(), cwd='./blender')
+	#subprocess.check_call(['make', 'update'], cwd='./blender')
+	subprocess.check_call(['make'], cwd='./blender')
+
 
 BLENDER = 'blender'
 
