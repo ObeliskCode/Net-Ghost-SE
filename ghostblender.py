@@ -74,6 +74,14 @@ def netghost2json():
 				txt = getattr(ob, 'netghost_script'+str(i))
 				if txt:
 					dump[ob.name]['scripts'].append( txt.as_string() )
+			if ob.keys():
+				dump[ob.name]['props'] = {}
+				props = {}
+				for k in ob.keys():
+					if type(ob[k]) is float:  ## GOTCHA, there is other blender DNA/RNA hacks here
+						props[k]= ob[k]
+				if props:
+					dump[ob.name]['props'] = props
 
 	print(dump)
 	return json.dumps(dump)
@@ -144,13 +152,20 @@ std::cout << "object transform-flag=" << self.transform_flag << std::endl;
 
 '''
 
+TEST2 = TEST1 + '''
+
+std::cout << "object blender-prop myprop=" << myprop << std::endl;
+myprop += 0.1;
+
+'''
 
 
 def test():
 	txt = bpy.data.texts.new(name='my.c++.py')
-	txt.from_string(TEST1)
-	bpy.data.objects['Cube'].netghost_script0 = txt
-
+	txt.from_string(TEST2)
+	ob = bpy.data.objects['Cube']
+	ob.netghost_script0 = txt
+	ob['myprop'] = 1.0
 
 
 
