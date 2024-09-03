@@ -3,7 +3,9 @@
 #include <vector>
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include <assimp/scene.h>
+#ifndef NOASS
+	#include <assimp/scene.h>
+#endif
 #include <Bone.h>
 #include <functional>
 #include <SkeletalModel.h>
