@@ -26,10 +26,10 @@ public:
 	void DrawShadow(Shader& shader, glm::mat4& transform);
 
 	Material mat; // this mat here may have to stay
-
-private:
 	// model data
 	std::vector<Mesh> meshes;
+
+private:
 
 	void loadModel(std::string path);
 #ifndef NOASS
