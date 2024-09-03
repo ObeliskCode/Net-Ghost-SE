@@ -353,7 +353,7 @@ def genmain():
 
 	draw_loop = [
 		'extern "C" void netghost_redraw(){',
-		#'	Entity e;',
+		'	Entity self;',
 
 	]
 
@@ -372,6 +372,8 @@ def genmain():
 			subprocess.check_call(cmd)
 			meshes = json.loads(open('/tmp/__b2netghost__.json').read())
 		for n in meshes:
+			print(meshes[n])
+
 			verts = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['verts'] ]
 			norms = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['normals'] ]
 
@@ -385,18 +387,13 @@ def genmain():
 			]
 			if 'scripts' in meshes[n] and meshes[n]['scripts']:
 				draw_loop.append('	self = ECS::get().getEntity(__ID__%s);' % n)
+				for cpp in meshes[n]['scripts']:
+					draw_loop.append(cpp)
 
-			print(meshes[n])
 
-			## because Vertex is template magic, we can't do static const stuff with it?
-			#verts = ['Vertex(%sf,%sf,%sf)' % tuple(vec) for vec in meshes[n]['verts'] ]
 			indices = [str(i) for i in meshes[n]['indices'] ]
 
 			init_meshes += [
-				#'auto _verts_%s = std::vector<Vertex>{%s};' % (n, ','.join(verts)),
-				#'static std::vector<Vertex> _verts_%s = {%s};' % (n, ','.join(verts)),
-				#'static std::vector<Vertex> _verts_%s = {%s};' % (n, ','.join(verts)),
-				#'std::vector<Vertex> _verts_%s(_arr_%s, _arr_%s + sizeof(_arr_%s) / sizeof(_arr_%s[0]) );' % (n,n,n,n,n),
 
 				'	std::vector<Vertex> _verts_%s;' % n,
 				'	for (auto i=0; i<%s; i++){' % len(verts),
