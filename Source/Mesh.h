@@ -24,6 +24,7 @@ public:
 
 	Mesh(std::vector<Vertex> verts, std::vector<GLuint> indices);
 	Mesh(std::vector <Vertex>& vertices, std::vector <GLuint>& indices, std::vector <Texture>& textures, glm::mat4& model);
+/*
 	Mesh(Mesh&& other) {
 		Mesh::vertices = std::move(other.vertices);
 		Mesh::indices = std::move(other.indices);
@@ -36,6 +37,7 @@ public:
 		Mesh::m_EBO = std::move(other.m_EBO);
 		other.m_EBO = EBO();
 	}
+*/
 	~Mesh();
 
 	void Draw
