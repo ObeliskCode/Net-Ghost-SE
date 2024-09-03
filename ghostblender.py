@@ -139,14 +139,19 @@ class NetGhostWorldPanel(bpy.types.Panel):
 TEST1 = '''
 
 std::cout << "hello GHOST" << std::endl;
+std::cout << "object ID=" << self.m_id << std::endl;
+std::cout << "object transform-flag=" << self.transform_flag << std::endl;
 
 '''
+
 
 
 def test():
 	txt = bpy.data.texts.new(name='my.c++.py')
 	txt.from_string(TEST1)
 	bpy.data.objects['Cube'].netghost_script0 = txt
+
+
 
 
 
