@@ -23,6 +23,7 @@ Model::~Model() {
 }
 
 void Model::from_memory(std::string data){
+	#ifndef NOASS
 	Assimp::Importer import;
 	const aiScene* scene = import.ReadFileFromMemory(data.c_str(), data.size(), aiProcess_Triangulate);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
@@ -31,8 +32,10 @@ void Model::from_memory(std::string data){
 	}
 	aiMatrix4x4t<float> identity = aiMatrix4x4t<float>();
 	std::vector<Texture> textures_loaded;
+	#endif
 }
 
+#ifndef NOASS
 void Model::loadModel(std::string path)
 {
 	Assimp::Importer import;
@@ -137,6 +140,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, aiMatrix4x4t<float>&
 
 	return std::move(Mesh(vertices, indices, textures, transform));
 }
+#endif
 
 void Model::Draw(Shader& shader, Camera& camera,
 	glm::mat4& transform, glm::mat4& ntransform){
@@ -157,6 +161,7 @@ void Model::DrawShadow(Shader& shader, glm::mat4& transform){
 
 // BUG: .type member becomes corrupted when leaving loadMaterialTexture
 // not really sure why adding int slotInc(rement) makes this work perfectly, was having issue where specular sampler was overriding diffuse sampler
+#ifndef NOASS
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type, std::string typeName, int slotInc, std::string directory, std::vector<Texture>& textures_loaded)
 {
 	std::vector<Texture> textures;
@@ -215,3 +220,4 @@ glm::mat4 Model::aiMat4toGLM(aiMatrix4x4t<float>& matrix) {
 
 	return m;
 }
+#endif
