@@ -47,7 +47,7 @@ for i in range(MAX_SCRIPTS_PER_OBJECT):
 	setattr(
 		bpy.types.Object, 
 		'netghost_script' + str(i), 
-		bpy.props.PointerProperty(name='NetGhost C++ Script', type=bpy.types.Text)
+		bpy.props.PointerProperty(name='script%s'%i, type=bpy.types.Text)
 	)
 
 
@@ -77,4 +77,42 @@ def netghost2json():
 
 	print(dump)
 	return json.dumps(dump)
+
+@bpy.utils.register_class
+class NetGhostScriptsPanel(bpy.types.Panel):
+	bl_idname = 'OBJECT_PT_NetGhost_Scripts_Panel'
+	bl_label = 'NetGhost Scripts'
+	bl_space_type = 'PROPERTIES'
+	bl_region_type = 'WINDOW'
+	bl_context = 'object'
+
+	def draw(self, context):
+		self.layout.label(text='Attach C++ Scripts')
+		foundUnassignedScript = False
+		for i in range(MAX_SCRIPTS_PER_OBJECT):
+			hasProperty = getattr(context.active_object, 'netghost_script' + str(i)) != None
+			if hasProperty or not foundUnassignedScript:
+				self.layout.prop(context.active_object, 'netghost_script' + str(i))
+			if not foundUnassignedScript:
+				foundUnassignedScript = not hasProperty
+
+TEST1 = '''
+
+std::cout << "hello GHOST" << std::endl;
+
+'''
+
+
+
+def test():
+	txt = bpy.data.texts.new(name='my.c++.py')
+	txt.from_string(TEST1)
+	bpy.data.objects['Cube'].netghost_script0 = txt
+
+
+
+
+
+if __name__=='__main__':
+	test()
 
