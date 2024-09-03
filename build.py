@@ -404,12 +404,19 @@ def build(shared=True, assimp=False, wasm=False):
 	if wasm:
 		cmd = [
 			"emcc", '--no-entry',
+			'-s', 'ENVIRONMENT=web',
+			'-s', 'AUTO_JS_LIBRARIES',
+			'-s', 'MINIMAL_RUNTIME=2',
+			'-s', 'USE_BULLET=1',
+			'-s', 'USE_FREETYPE=1',
+			'-s', 'USE_GLFW=3',
+			'-s', 'NO_FILESYSTEM=1',
 			"-o",
-			"/tmp/netghost.wasm",
+			"/tmp/netghost.html",
 			] + obfiles + libs
 		print(cmd)
 		subprocess.check_call(cmd)
-		return "/tmp/netghost.wasm"
+		return "/tmp/netghost.html"
 
 	## finally call the linker,
 	## note: there's better linkers we could use here, like gold and mold
