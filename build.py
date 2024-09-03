@@ -6,21 +6,26 @@ import os, sys, subprocess, ctypes, time, json
 # --windows [default:linux] - compile target for windows
 # --gdb [default:disabled] - enables cmd debugger
 # --wasm  - Emscripten WASM WEBGL
-# --debug-shaders
-# --blender-install - helper to install blender on Ubuntu and Fedora
+#
 ##
 
+__thisdir = os.path.split(os.path.abspath(__file__))[0]
+EMSDK = os.path.join(__thisdir, 'emsdk')
 
+def emsdk_update():
+	subprocess.check_call(['git', 'pull'], cwd=EMSDK)
+	subprocess.check_call(['./emsdk', 'install', 'latest'], cwd=EMSDK)
+	subprocess.check_call(['./emsdk', 'activate', 'latest'], cwd=EMSDK)
 
-if '--wasm' in sys.argv and not os.path.isdir('./emsdk'):
+if '--wasm' in sys.argv and not os.path.isdir( EMSDK ):
 	cmd = ['git', 'clone', '--depth', '1', 'https://github.com/emscripten-core/emsdk.git']
 	print(cmd)
 	subprocess.check_call(cmd)
-	subprocess.check_call(['git', 'pull'], cwd='./emsdk')
-	subprocess.check_call(['./emsdk', 'install', 'latest'], cwd='./emsdk')
-	subprocess.check_call(['./emsdk', 'activate', 'latest'], cwd='./emsdk')
+	emsdk_update()
 
-EMCC = os.path.abspath('./emsdk/upstream/emscripten/emcc')
+EMCC = os.path.join(EMSDK, 'upstream/emscripten/emcc')
+if not EMCC and '--wasm' in sys.argv:
+	emsdk_update()
 
 if '--blender-install' in sys.argv:
 	if '--blender-git' in sys.argv:
@@ -105,14 +110,10 @@ else:
 	C = "gcc"
 
 
-srcdir = os.path.abspath("./Source")
+srcdir = os.path.join(__thisdir,"Source")
 assert os.path.isdir(srcdir)
-
-asset_dir = os.path.abspath("./Resources")
-if not os.path.isdir(asset_dir):
-	asset_dir = os.path.abspath("./3D_OpenGL_Engine")
+asset_dir = os.path.join(__thisdir, "Resources")
 assert os.path.isdir(asset_dir)
-
 shaders_dir = os.path.join(asset_dir, 'shaders')
 assert os.path.isdir(shaders_dir)
 
@@ -341,7 +342,7 @@ def genmain():
 
 	blends = []
 	for arg in sys.argv:
-		if arg.endswith('.blend'): blends.append(arg)
+		if arg.endswith( ('.blend', '.json') ): blends.append(arg)
 
 	init_meshes = [
 		'extern "C" void netghost_init_meshes(){',
@@ -354,12 +355,15 @@ def genmain():
 		## exports just the default Cube
 		blends.append(None)
 	for blend in blends:
-		cmd = [BLENDER]
-		if blend: cmd.append(blend)
-		cmd += ['--background', '--python', '/tmp/__b2netghost__.py']
-		print(cmd)
-		subprocess.check_call(cmd)
-		meshes = json.loads(open('/tmp/__b2netghost__.json').read())
+		if blend.endswith('.json'):
+			meshes = json.loads(open(blend).read())
+		else:
+			cmd = [BLENDER]
+			if blend: cmd.append(blend)
+			cmd += ['--background', '--python', '/tmp/__b2netghost__.py']
+			print(cmd)
+			subprocess.check_call(cmd)
+			meshes = json.loads(open('/tmp/__b2netghost__.json').read())
 		for n in meshes:
 			verts = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['verts'] ]
 			norms = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['normals'] ]
