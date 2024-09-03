@@ -413,6 +413,7 @@ public:
 private:
 };
 
+#ifndef NOASS
 class TestRoom : public Scene
 {
 public:
@@ -1329,5 +1330,6 @@ public:
 
 private:
 };
+#endif
 
 #endif
