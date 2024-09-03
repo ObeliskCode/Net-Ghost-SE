@@ -96,6 +96,46 @@ class NetGhostScriptsPanel(bpy.types.Panel):
 			if not foundUnassignedScript:
 				foundUnassignedScript = not hasProperty
 
+@bpy.utils.register_class
+class NetGhostExport(bpy.types.Operator):
+	bl_idname = 'netghost.export'
+	bl_label = 'Export EXE'
+	@classmethod
+	def poll (cls, context): return True
+	def execute (self, context):
+		tmpj = '/tmp/b2ghost.json'
+		open(tmpj,'w').write( netghost2json() )
+		cmd = ['python3', './build.py', tmpj]
+		print(cmd)
+		subprocess.check_call(cmd)
+		return {'FINISHED'}
+
+@bpy.utils.register_class
+class NetGhostExportWasm(bpy.types.Operator):
+	bl_idname = 'netghost.export_wasm'
+	bl_label = 'Export WASM'
+	@classmethod
+	def poll (cls, context): return True
+	def execute (self, context):
+		tmpj = '/tmp/b2ghost.json'
+		open(tmpj,'w').write( netghost2json() )
+		cmd = ['python3', './build.py', '--wasm', tmpj]
+		print(cmd)
+		subprocess.check_call(cmd)
+		return {'FINISHED'}
+
+
+@bpy.utils.register_class
+class NetGhostWorldPanel(bpy.types.Panel):
+	bl_idname = 'WORLD_PT_NetGhostWorld_Panel'
+	bl_label = 'NetGhost Export'
+	bl_space_type = 'PROPERTIES'
+	bl_region_type = 'WINDOW'
+	bl_context = 'world'
+	def draw(self, context):
+		self.layout.operator('netghost.export_wasm', icon='CONSOLE')
+		self.layout.operator('netghost.export', icon='CONSOLE')
+
 TEST1 = '''
 
 std::cout << "hello GHOST" << std::endl;
@@ -103,13 +143,10 @@ std::cout << "hello GHOST" << std::endl;
 '''
 
 
-
 def test():
 	txt = bpy.data.texts.new(name='my.c++.py')
 	txt.from_string(TEST1)
 	bpy.data.objects['Cube'].netghost_script0 = txt
-
-
 
 
 
