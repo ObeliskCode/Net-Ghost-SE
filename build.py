@@ -241,6 +241,8 @@ def genmain():
 		'#include <GL/glew.h>',
 		'#include <GLFW/glfw3.h>',
 		'#include "Scene.h"',
+		#'#include "VBO.h"',
+		'struct __vertex__{float x; float y; float z;};',
 		NGHOST_HEADER,
 		NGHOST_GLFW,
 		NGHOST_UPDATE,
@@ -276,7 +278,7 @@ def genmain():
 	for arg in sys.argv:
 		if arg.endswith('.blend'): blends.append(arg)
 
-	init_meshes = []
+	init_meshes = ['extern "C" void netghost_init_meshes(){']
 	open('/tmp/__b2netghost__.py','w').write(BLENDER_EXPORTER)
 	if not blends:
 		## exports just the default Cube
@@ -289,15 +291,36 @@ def genmain():
 		subprocess.check_call(cmd)
 		meshes = json.loads(open('/tmp/__b2netghost__.json').read())
 		for n in meshes:
+			verts = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['verts'] ]
+
 			o.append('Mesh *mesh_%s;' % n)
+			o.append('static const __vertex__ _arr_%s[%s] = {%s};' % (n, len(verts), ','.join(verts)))
+
 			print(meshes[n])
-			verts = ['{%s,%s,%s}' % tuple(vec) for vec in meshes[n]['verts'] ]
+
+			## because Vertex is template magic, we can't do static const stuff with it?
+			#verts = ['Vertex(%sf,%sf,%sf)' % tuple(vec) for vec in meshes[n]['verts'] ]
 			indices = [str(i) for i in meshes[n]['indices'] ]
+
 			init_meshes += [
-				'auto _verts_%s = std::vector<Vert>{%s}' % (n, ','.join(verts)),
-				'auto _indices_%s = std::vector<GLuint>{%s}' % (n, ','.join(indices)),
+				#'auto _verts_%s = std::vector<Vertex>{%s};' % (n, ','.join(verts)),
+				#'static std::vector<Vertex> _verts_%s = {%s};' % (n, ','.join(verts)),
+				#'static std::vector<Vertex> _verts_%s = {%s};' % (n, ','.join(verts)),
+				#'std::vector<Vertex> _verts_%s(_arr_%s, _arr_%s + sizeof(_arr_%s) / sizeof(_arr_%s[0]) );' % (n,n,n,n,n),
+
+				'std::vector<Vertex> _verts_%s;' % n,
+				'for (auto i=0; i<%s; i++){' % len(verts),
+				'	auto x = _arr_%s[i].x;' % n,
+				'	auto y = _arr_%s[i].y;' % n,
+				'	auto z = _arr_%s[i].z;' % n,
+				'	auto v = glm::vec3(x,y,z);',
+				'	_verts_%s.push_back(Vertex(v) );' % n,
+				'}',
+				'static const auto _indices_%s = std::vector<GLuint>{%s};' % (n, ','.join(indices)),
 				'mesh_%s = new Mesh(_verts_%s, _indices_%s);' % (n,n,n),
 			]
+
+	init_meshes.append('}')
 
 
 	o = "\n".join(o + init_shaders + init_meshes)
@@ -395,6 +418,7 @@ def test_python():
 	bind_lib(lib)
 	lib.netghost_window_init(320, 240)
 	lib.netghost_init_shaders()
+	lib.netghost_init_meshes()
 	time.sleep(5)
 	lib.netghost_window_close()
 
