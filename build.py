@@ -10,9 +10,27 @@
 ##
 
 
-import os, sys, subprocess, ctypes, time
+import os, sys, subprocess, ctypes, time, json
+BLENDER = 'blender'
 
-## SETUP / INSTALL ##
+BLENDER_EXPORTER = '''
+import bpy, json
+dump = {}
+for ob in bpy.data.objects:
+	if ob.type=='MESH':
+		print('dumping mesh:', ob)
+		dump[ob.name] = {
+			'verts': [(v.co.x,v.co.y,v.co.z) for v in ob.data.vertices],
+			'indices':[]
+		}
+		for face in ob.data.polygons:
+			for i in range(3):
+				dump[ob.name]['indices'].append(face.vertices[i])
+print(dump)
+open('/tmp/__b2netghost__.json','w').write(json.dumps(dump))
+
+'''
+
 
 if "--windows" in sys.argv:
 	os.system("rm /tmp/*.o /tmp/*.exe")
@@ -259,21 +277,28 @@ def genmain():
 		if arg.endswith('.blend'): blends.append(arg)
 
 	init_meshes = []
+	open('/tmp/__b2netghost__.py','w').write(BLENDER_EXPORTER)
 	if not blends:
-		## export just the default Cube
-		cmd = [BLENDER, '--python', '/tmp/__b2netghost__.py']
+		## exports just the default Cube
+		blends.append(None)
+	for blend in blends:
+		cmd = [BLENDER]
+		if blend: cmd.append(blend)
+		cmd += ['--background', '--python', '/tmp/__b2netghost__.py']
 		print(cmd)
 		subprocess.check_call(cmd)
 		meshes = json.loads(open('/tmp/__b2netghost__.json').read())
 		for n in meshes:
 			o.append('Mesh *mesh_%s;' % n)
-			verts = ['{%s,%s,%s}' % vec for vec in meshes[n]['verts'] ]
-			verts = [str(i) for i in meshes[n]['indices'] ]
+			print(meshes[n])
+			verts = ['{%s,%s,%s}' % tuple(vec) for vec in meshes[n]['verts'] ]
+			indices = [str(i) for i in meshes[n]['indices'] ]
 			init_meshes += [
 				'auto _verts_%s = std::vector<Vert>{%s}' % (n, ','.join(verts)),
 				'auto _indices_%s = std::vector<GLuint>{%s}' % (n, ','.join(indices)),
 				'mesh_%s = new Mesh(_verts_%s, _indices_%s);' % (n,n,n),
 			]
+
 
 	o = "\n".join(o + init_shaders + init_meshes)
 	return o
