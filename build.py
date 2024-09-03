@@ -19,7 +19,7 @@ if '--wasm' in sys.argv and not os.path.isdir('./emsdk'):
 	subprocess.check_call(['./emsdk', 'install', 'latest'], cwd='./emsdk')
 	subprocess.check_call(['./emsdk', 'activate', 'latest'], cwd='./emsdk')
 
-EMCC = os.path.join('./emsdk/upstream/emscripten/emcc')
+EMCC = os.path.abspath('./emsdk/upstream/emscripten/emcc')
 
 
 BLENDER = 'blender'
@@ -227,7 +227,9 @@ extern "C" void netghost_update(){
 		std::string FPS = std::to_string((1.0 / timeDiff) * counter);
 		std::string ms = std::to_string((timeDiff / counter) * 1000);
 		std::string newTitle = "Obelisk Engine - " + FPS + "FPS / " + ms + "ms";
+#ifndef EMSCRIPTEN
 		glfwSetWindowTitle(window, newTitle.c_str());
+#endif
 		prevTime = crntTime;
 		counter = 0;
 	}
@@ -413,11 +415,15 @@ def build(shared=True, assimp=False, wasm=False):
 	if wasm:
 		cmd = [
 			EMCC, '--no-entry',
+			#'-s', 'ERROR_ON_UNDEFINED_SYMBOLS=0',
+			'-s', 'SINGLE_FILE',
 			'-s', 'ENVIRONMENT=web',
+			'-s', 'WASM=1',
 			'-s', 'AUTO_JS_LIBRARIES',
-			'-s', 'MINIMAL_RUNTIME=2',
+			#'-s', 'MINIMAL_RUNTIME=2',  ## not compatible with glfw
 			'-s', 'USE_BULLET=1',
 			'-s', 'USE_FREETYPE=1',
+			'-s', 'USE_WEBGL2=1', 
 			'-s', 'USE_GLFW=3',
 			'-s', 'NO_FILESYSTEM=1',
 			"-o",
@@ -486,6 +492,10 @@ def test_exe():
 def test_wasm():
 	lib = build(wasm=True)
 	os.system('ls -lh %s' % lib)
+	import webbrowser
+	## this is required because some browsers will not open files in /tmp
+	os.system('cp -v %s ~/Desktop/netghost.html' % lib)
+	webbrowser.open(os.path.expanduser('~/Desktop/netghost.html'))
 
 
 if __name__=='__main__':
