@@ -316,6 +316,7 @@ def genmain():
 		'extern "C" void netghost_init_meshes(){',
 		'	Transform *trf;',
 		'	Model *mdl;',
+		'	unsigned int entID;',
 	]
 	open('/tmp/__b2netghost__.py','w').write(BLENDER_EXPORTER)
 	if not blends:
@@ -373,6 +374,14 @@ def genmain():
 				'	mdl = new Model();',
 				## this probably should be a pointer to the mesh, not a copy.  using std::move here breaks the shareablity of the Mesh with other models
 				'	mdl->meshes.push_back(*mesh_%s);' % n,
+
+				'	entID = ECS::get().createEntity();',
+
+				'	ECS::get().addModel(entID, mdl);',
+				'	ECS::get().addShader(entID, *shader_wire);',
+				#'ECS::get().addCamera(entID, globals.camera);
+				'	ECS::get().addTransform(entID, trf);',
+
 			]
 
 	init_meshes.append('}')
