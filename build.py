@@ -37,7 +37,9 @@ else:
 srcdir = os.path.abspath("./Source")
 assert os.path.isdir(srcdir)
 
-asset_dir = os.path.abspath("./3D_OpenGL_Engine")
+asset_dir = os.path.abspath("./Resources")
+if not os.path.isdir(asset_dir):
+	asset_dir = os.path.abspath("./3D_OpenGL_Engine")
 assert os.path.isdir(asset_dir)
 
 shaders_dir = os.path.join(asset_dir, 'shaders')
@@ -211,9 +213,9 @@ def minify(f):
 		if '//' in ln:
 			print('WARN: inline comment in GLSL', ln)
 			ln = ln.split('//')[0]
-		o.append(ln)
+		o.append(ln.strip())
 
-	return ' '.join(o)
+	return '\\n'.join(o)
 
 def genmain():
 	o = [
@@ -252,7 +254,28 @@ def genmain():
 			]
 	init_shaders.append('}')
 
-	o = "\n".join(o + init_shaders)
+	blends = []
+	for arg in sys.argv:
+		if arg.endswith('.blend'): blends.append(arg)
+
+	init_meshes = []
+	if not blends:
+		## export just the default Cube
+		cmd = [BLENDER, '--python', '/tmp/__b2netghost__.py']
+		print(cmd)
+		subprocess.check_call(cmd)
+		meshes = json.loads(open('/tmp/__b2netghost__.json').read())
+		for n in meshes:
+			o.append('Mesh *mesh_%s;' % n)
+			verts = ['{%s,%s,%s}' % vec for vec in meshes[n]['verts'] ]
+			verts = [str(i) for i in meshes[n]['indices'] ]
+			init_meshes += [
+				'auto _verts_%s = std::vector<Vert>{%s}' % (n, ','.join(verts)),
+				'auto _indices_%s = std::vector<GLuint>{%s}' % (n, ','.join(indices)),
+				'mesh_%s = new Mesh(_verts_%s, _indices_%s);' % (n,n,n),
+			]
+
+	o = "\n".join(o + init_shaders + init_meshes)
 	return o
 
 
@@ -346,6 +369,7 @@ def test_python():
 	print(lib.netghost_update)
 	bind_lib(lib)
 	lib.netghost_window_init(320, 240)
+	lib.netghost_init_shaders()
 	time.sleep(5)
 	lib.netghost_window_close()
 
