@@ -5,7 +5,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <assimp/scene.h>
+#ifndef NOASS
+	#include <assimp/scene.h>
+#endif
 
 #include "stb_image.h"
 #include "Shader.h"
@@ -19,8 +21,9 @@ public:
 	std::string path;
 
 	Texture(const char* image, std::string texType, GLuint slot);
+#ifndef NOASS
 	Texture(const aiTexture* aiTex, std::string texType, GLuint slot);
-
+#endif
 	void print();
 	void texUnit(Shader& shader, const char* uniform);
 	void Bind();
