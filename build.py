@@ -371,6 +371,15 @@ def genmain():
 			print(cmd)
 			subprocess.check_call(cmd)
 			meshes = json.loads(open('/tmp/__b2netghost__.json').read())
+
+		allprops = {}
+		for n in meshes:
+			if 'props' in meshes[n]:
+				for k in meshes[n]['props']:
+					if k not in allprops:
+						allprops[k]=1
+						draw_loop.append('float %s;' % k)
+
 		for n in meshes:
 			print(meshes[n])
 
@@ -382,13 +391,30 @@ def genmain():
 			o.append('static const __vertex__ _narr_%s[%s] = {%s};' % (n, len(norms), ','.join(norms)))
 			o.append('unsigned short __ID__%s;' % n)
 
+			if 'props' in meshes[n]:
+				for k in meshes[n]['props']:
+					val = meshes[n]['props'][k]
+					o.append('float %s_prop_%s = %s;' %(n, k, val))
+
 			draw_loop += [
 				'	ECS::get().DrawEntity(__ID__%s);' % n,
 			]
 			if 'scripts' in meshes[n] and meshes[n]['scripts']:
 				draw_loop.append('	self = ECS::get().getEntity(__ID__%s);' % n)
+
+				if 'props' in meshes[n]:
+					for k in meshes[n]['props']:
+						## gets global and sets to local
+						draw_loop.append('%s = %s_prop_%s;' %(k, n, k))
+
+
 				for cpp in meshes[n]['scripts']:
 					draw_loop.append(cpp)
+
+				if 'props' in meshes[n]:
+					for k in meshes[n]['props']:
+						## sets global to local
+						draw_loop.append('%s_prop_%s = %s;' %(n, k, k))
 
 
 			indices = [str(i) for i in meshes[n]['indices'] ]
