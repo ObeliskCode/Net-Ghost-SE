@@ -12,8 +12,8 @@ class EBO
 public:
 	// ID reference of Elements Buffer Object
 	GLuint ID;
-	// undefined behavior if using default constructor obj!
 	EBO() {};
+/*
 	EBO(EBO&& other) {
         EBO::ID = std::move(other.ID);
 	}
@@ -21,6 +21,7 @@ public:
         this->ID = std::move(other.ID);
 		return *this;
 	}
+*/
 	// Constructor that generates a Elements Buffer Object and links it to indices
 	EBO(std::vector<GLuint>& indices);
 

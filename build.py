@@ -26,18 +26,25 @@ BLENDER = 'blender'
 
 BLENDER_EXPORTER = '''
 import bpy, json
+
 dump = {}
 for ob in bpy.data.objects:
 	if ob.type=='MESH':
 		print('dumping mesh:', ob)
 		dump[ob.name] = {
+			'pos'  : list(ob.location),
+			'rot'  : list(ob.rotation_euler),
+			'scl'  : list(ob.scale),
 			'verts': [(v.co.x,v.co.y,v.co.z) for v in ob.data.vertices],
 			'normals': [(v.normal.x, v.normal.y, v.normal.z) for v in ob.data.vertices],
 			'indices':[]
 		}
+		if ob.parent:
+			dump[ob.name]['parent'] = ob.parent.name
 		for face in ob.data.polygons:
 			for i in range(3):
 				dump[ob.name]['indices'].append(face.vertices[i])
+
 print(dump)
 open('/tmp/__b2netghost__.json','w').write(json.dumps(dump))
 
@@ -305,7 +312,12 @@ def genmain():
 	for arg in sys.argv:
 		if arg.endswith('.blend'): blends.append(arg)
 
-	init_meshes = ['extern "C" void netghost_init_meshes(){']
+	init_meshes = [
+		'extern "C" void netghost_init_meshes(){',
+		'	Transform *trf;',
+		'	Model *mdl;',
+		'	unsigned int entID;',
+	]
 	open('/tmp/__b2netghost__.py','w').write(BLENDER_EXPORTER)
 	if not blends:
 		## exports just the default Cube
@@ -354,6 +366,22 @@ def genmain():
 				'	}',
 				'	static const auto _indices_%s = std::vector<GLuint>{%s};' % (n, ','.join(indices)),
 				'	mesh_%s = new Mesh(_verts_%s, _indices_%s);' % (n,n,n),
+				'	trf = new Transform();',
+				'	trf->setTranslation(glm::vec3(%sf, %sf, %sf));' % tuple(meshes[n]['pos']),
+				'	trf->setScale(glm::vec3(%sf, %sf, %sf));' % tuple(meshes[n]['scl']),
+				'	trf->setRotation(glm::vec3(%sf, %sf, %sf));' % tuple(meshes[n]['rot']),
+
+				'	mdl = new Model();',
+				## this probably should be a pointer to the mesh, not a copy.  using std::move here breaks the shareablity of the Mesh with other models
+				'	mdl->meshes.push_back(*mesh_%s);' % n,
+
+				'	entID = ECS::get().createEntity();',
+
+				'	ECS::get().addModel(entID, mdl);',
+				'	ECS::get().addShader(entID, *shader_wire);',
+				#'ECS::get().addCamera(entID, globals.camera);
+				'	ECS::get().addTransform(entID, trf);',
+
 			]
 
 	init_meshes.append('}')
@@ -363,7 +391,7 @@ def genmain():
 	return o
 
 
-def build(shared=True, assimp=False, wasm=False):
+def build(shared=True, assimp=False, wasm=False, debug_shaders=False):
 	cpps = []
 	obfiles = []
 	for file in os.listdir(srcdir):
@@ -400,6 +428,8 @@ def build(shared=True, assimp=False, wasm=False):
 			]
 			if not assimp:
 				cmd.append('-DNOASS')
+			if debug_shaders:
+				cmd.append('-DDEBUG_SHADERS')
 			cmd += includes
 			cmd += hacks
 			print(cmd)
@@ -412,6 +442,8 @@ def build(shared=True, assimp=False, wasm=False):
 	cmd = [CC, "-std=c++20", "-c", "-fPIC",  "-o",tmpo, tmp_main]
 	if not assimp:
 		cmd.append('-DNOASS')
+	if debug_shaders:
+		cmd.append('-DDEBUG_SHADERS')
 
 	cmd += includes
 	cmd += hacks
@@ -474,7 +506,7 @@ def bind_lib(lib):
 	lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
 
 def test_python():
-	lib = build()
+	lib = build( debug_shaders=True )
 	print(lib.netghost_window_init)
 	print(lib.netghost_update)
 	bind_lib(lib)

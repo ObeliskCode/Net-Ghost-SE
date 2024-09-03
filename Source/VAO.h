@@ -14,6 +14,7 @@ public:
 	GLuint ID;
 	// Constructor that generates a VAO ID
 	VAO();
+/*
 	VAO(VAO&& other) {
         VAO::ID = std::move(other.ID);
 	}
@@ -21,7 +22,7 @@ public:
         this->ID = std::move(other.ID);
 		return *this;
 	}
-
+*/
 	// Links a VBO Attribute such as a position or color to the VAO
 	void LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
 	// Binds the VAO
@@ -40,6 +41,7 @@ public:
 	GLuint ID;
 	// Constructor that generates a VAO ID
 	SkeletalVAO();
+/*
 	SkeletalVAO(SkeletalVAO&& other) {
         SkeletalVAO::ID = std::move(other.ID);
 	}
@@ -47,7 +49,7 @@ public:
         this->ID = std::move(other.ID);
 		return *this;
 	}
-
+*/
 	// Links a VBO Attribute such as a position or color to the VAO
 	void LinkAttrib(SkeletalVBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset);
 	// Binds the VAO
