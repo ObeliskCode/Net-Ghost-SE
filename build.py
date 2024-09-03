@@ -107,6 +107,10 @@ libs = [
 	"-lGLEW",
 	"-lglfw",
 	"-lopenal",
+]
+
+if not '--wasm' in sys.argv:
+	libs += [
 	"-lfreetype",
 	"-lBulletDynamics",
 	"-lBulletCollision",
@@ -115,7 +119,7 @@ libs = [
 	"-lm",
 	"-lc",
 	"-lstdc++",
-]
+	]
 
 glew = "/usr/include/GL/glew.h"
 if not os.path.isfile(glew):
@@ -325,7 +329,9 @@ def genmain():
 				'	auto y = _arr_%s[i].y;' % n,
 				'	auto z = _arr_%s[i].z;' % n,
 				'	auto v = glm::vec3(x,y,z);',
-				'	_verts_%s.push_back(Vertex(v) );' % n,
+				'	auto norms = glm::vec3(0,0,0);',  ## TODO
+				'	auto uv = glm::vec2(0,0);',  ## TODO
+				'	_verts_%s.push_back(Vertex{v,norms,uv});' % n,
 				'}',
 				'static const auto _indices_%s = std::vector<GLuint>{%s};' % (n, ','.join(indices)),
 				'mesh_%s = new Mesh(_verts_%s, _indices_%s);' % (n,n,n),
@@ -338,7 +344,7 @@ def genmain():
 	return o
 
 
-def build(shared=True, assimp=False):
+def build(shared=True, assimp=False, wasm=False):
 	cpps = []
 	obfiles = []
 	for file in os.listdir(srcdir):
@@ -394,6 +400,16 @@ def build(shared=True, assimp=False):
 	subprocess.check_call(cmd)
 
 	os.system("ls -lh /tmp/*.o")
+
+	if wasm:
+		cmd = [
+			"emcc", '--no-entry',
+			"-o",
+			"/tmp/netghost.wasm",
+			] + obfiles + libs
+		print(cmd)
+		subprocess.check_call(cmd)
+		return "/tmp/netghost.wasm"
 
 	## finally call the linker,
 	## note: there's better linkers we could use here, like gold and mold
@@ -451,7 +467,14 @@ def test_exe():
 
 	subprocess.check_call(cmd, cwd=asset_dir)
 
+def test_wasm():
+	lib = build(wasm=True)
+	os.system('ls -lh %s' % lib)
+
 
 if __name__=='__main__':
-	test_python()
+	if '--wasm' in sys.argv:
+		test_wasm()
+	else:
+		test_python()
 
