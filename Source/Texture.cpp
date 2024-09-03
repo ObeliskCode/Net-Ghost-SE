@@ -1,5 +1,6 @@
 #include "Texture.h"
 
+#ifndef NOASS
 // not working not used
 Texture::Texture(const aiTexture* aiTex, std::string texType, GLuint slot) {
 
@@ -52,6 +53,7 @@ Texture::Texture(const aiTexture* aiTex, std::string texType, GLuint slot) {
 	//unbind texture
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+#endif
 
 Texture::Texture(const char* image, std::string texType, GLuint slot)
 {

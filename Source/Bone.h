@@ -3,7 +3,9 @@
 /* Container for bone data */
 
 #include <vector>
-#include <assimp/scene.h>
+#ifndef NOASS
+	#include <assimp/scene.h>
+#endif
 #include <list>
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -30,6 +32,7 @@ struct KeyScale
 class Bone
 {
 public:
+#ifndef NOASS
 	Bone(const std::string& name, int ID, const aiNodeAnim* channel)
 		:
 		m_Name(name),
@@ -75,6 +78,7 @@ public:
 			m_Scales.push_back(data);
 		}
 	}
+#endif
 
 	void Update(float animationTime)
 	{
@@ -180,6 +184,8 @@ private:
 		return glm::scale(glm::mat4(1.0f), finalScale);
 	}
 
+#ifndef NOASS
+
 	glm::vec3 GetGLMVec(const aiVector3D& vec)
 	{
 		return glm::vec3(vec.x, vec.y, vec.z);
@@ -189,6 +195,7 @@ private:
 	{
 		return glm::quat(pOrientation.w, pOrientation.x, pOrientation.y, pOrientation.z);
 	}
+#endif
 
 	std::vector<KeyPosition> m_Positions;
 	std::vector<KeyRotation> m_Rotations;

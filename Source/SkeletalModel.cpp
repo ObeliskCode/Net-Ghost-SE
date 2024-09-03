@@ -22,6 +22,7 @@ SkeletalModel::~SkeletalModel() {
     meshes.clear();
 }
 
+#ifndef NOASS
 void SkeletalModel::loadModel(std::string path)
 {
     Assimp::Importer import;
@@ -64,6 +65,7 @@ void SkeletalModel::processNode(aiNode* node, const aiScene* scene, aiMatrix4x4t
         processNode(node->mChildren[i], scene, transform, directory, textures_loaded);
     }
 }
+#endif
 
 void SetVertexBoneDataToDefault(SkeletalVertex& vertex)
 {
@@ -135,7 +137,7 @@ void testBoneData(std::vector<SkeletalVertex>& vertices)
     if (ct != 0) std::cerr << "WARNING: " << ct << " vertices have malformed/null bone weights" << std::endl;
 }
 
-
+#ifndef NOASS
 void SkeletalModel::ExtractBoneWeightForVertices(std::vector<SkeletalVertex>& vertices, aiMesh* mesh, const aiScene* scene)
 {
     auto& boneInfoMap = m_BoneInfoMap;
@@ -243,6 +245,7 @@ SkeletalMesh SkeletalModel::processMesh(aiMesh* mesh, const aiScene* scene, aiMa
 
     return std::move(SkeletalMesh(vertices, indices, textures, transform));
 }
+#endif
 
 void SkeletalModel::Draw(Shader& shader, Camera& camera,
     glm::mat4& transform, glm::mat4& ntransform) {
@@ -263,7 +266,7 @@ void SkeletalModel::DrawShadow(Shader& shader, glm::mat4& transform){
 
 // POSSIBLY CHANGE type in Texture from string to aiTextureType?
 
-
+#ifndef NOASS
 // BUG: .type member becomes corrupted when leaving loadMaterialTexture
 // not really sure why adding int slotInc(rement) makes this work perfectly, was having issue where specular sampler was overriding diffuse sampler
 std::vector<Texture> SkeletalModel::loadMaterialTextures(aiMaterial* mat, const aiScene* scene, aiTextureType type, std::string typeName, int slotInc, std::string directory, std::vector<Texture>& textures_loaded)
@@ -324,3 +327,5 @@ glm::mat4 SkeletalModel::aiMat4toGLM(aiMatrix4x4t<float>& matrix) {
 
     return m;
 }
+
+#endif

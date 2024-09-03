@@ -1,18 +1,48 @@
 #!/usr/bin/python3
-
-## LINUX ONLY
+import os, sys, subprocess, ctypes, time, json
 
 ## Build Flags
 #
 # --windows [default:linux] - compile target for windows
 # --gdb [default:disabled] - enables cmd debugger
+# --wasm  - Emscripten WASM WEBGL
 #
 ##
 
 
-import os, sys, subprocess, ctypes, time
 
-## SETUP / INSTALL ##
+if '--wasm' in sys.argv and not os.path.isdir('./emsdk'):
+	cmd = ['git', 'clone', '--depth', '1', 'https://github.com/emscripten-core/emsdk.git']
+	print(cmd)
+	subprocess.check_call(cmd)
+	subprocess.check_call(['git', 'pull'], cwd='./emsdk')
+	subprocess.check_call(['./emsdk', 'install', 'latest'], cwd='./emsdk')
+	subprocess.check_call(['./emsdk', 'activate', 'latest'], cwd='./emsdk')
+
+EMCC = os.path.abspath('./emsdk/upstream/emscripten/emcc')
+
+
+BLENDER = 'blender'
+
+BLENDER_EXPORTER = '''
+import bpy, json
+dump = {}
+for ob in bpy.data.objects:
+	if ob.type=='MESH':
+		print('dumping mesh:', ob)
+		dump[ob.name] = {
+			'verts': [(v.co.x,v.co.y,v.co.z) for v in ob.data.vertices],
+			'normals': [(v.normal.x, v.normal.y, v.normal.z) for v in ob.data.vertices],
+			'indices':[]
+		}
+		for face in ob.data.polygons:
+			for i in range(3):
+				dump[ob.name]['indices'].append(face.vertices[i])
+print(dump)
+open('/tmp/__b2netghost__.json','w').write(json.dumps(dump))
+
+'''
+
 
 if "--windows" in sys.argv:
 	os.system("rm /tmp/*.o /tmp/*.exe")
@@ -28,6 +58,9 @@ if "--windows" in sys.argv:
 	if not os.path.isfile(os.path.join("/usr/bin/", CC)):
 		cmd = "sudo apt-get install mingw-w64 gcc-multilib g++-multilib"
 		subprocess.check_call(cmd.split())
+elif '--wasm' in sys.argv:
+	CC = EMCC
+	C  = EMCC
 
 else:
 	CC = "g++"
@@ -37,7 +70,9 @@ else:
 srcdir = os.path.abspath("./Source")
 assert os.path.isdir(srcdir)
 
-asset_dir = os.path.abspath("./3D_OpenGL_Engine")
+asset_dir = os.path.abspath("./Resources")
+if not os.path.isdir(asset_dir):
+	asset_dir = os.path.abspath("./3D_OpenGL_Engine")
 assert os.path.isdir(asset_dir)
 
 shaders_dir = os.path.join(asset_dir, 'shaders')
@@ -51,6 +86,12 @@ includes = [
 	"-I" + srcdir,
 	"-I/usr/include/freetype2",
 ]
+
+if '--wasm' in sys.argv:
+	includes += [
+		'-I/tmp',
+	]
+	os.system('cp -Rv /usr/include/glm /tmp/.')
 
 
 def fake_includes():
@@ -76,6 +117,10 @@ libs = [
 	"-lGLEW",
 	"-lglfw",
 	"-lopenal",
+]
+
+if not '--wasm' in sys.argv:
+	libs += [
 	"-lfreetype",
 	"-lBulletDynamics",
 	"-lBulletCollision",
@@ -84,7 +129,7 @@ libs = [
 	"-lm",
 	"-lc",
 	"-lstdc++",
-]
+	]
 
 glew = "/usr/include/GL/glew.h"
 if not os.path.isfile(glew):
@@ -183,7 +228,9 @@ extern "C" void netghost_update(){
 		std::string FPS = std::to_string((1.0 / timeDiff) * counter);
 		std::string ms = std::to_string((timeDiff / counter) * 1000);
 		std::string newTitle = "Obelisk Engine - " + FPS + "FPS / " + ms + "ms";
+#ifndef EMSCRIPTEN
 		glfwSetWindowTitle(window, newTitle.c_str());
+#endif
 		prevTime = crntTime;
 		counter = 0;
 	}
@@ -211,9 +258,9 @@ def minify(f):
 		if '//' in ln:
 			print('WARN: inline comment in GLSL', ln)
 			ln = ln.split('//')[0]
-		o.append(ln)
+		o.append(ln.strip())
 
-	return ' '.join(o)
+	return '\\n'.join(o)
 
 def genmain():
 	o = [
@@ -221,6 +268,8 @@ def genmain():
 		'#include <GL/glew.h>',
 		'#include <GLFW/glfw3.h>',
 		'#include "Scene.h"',
+		#'#include "VBO.h"',
+		'struct __vertex__{float x; float y; float z;};',
 		NGHOST_HEADER,
 		NGHOST_GLFW,
 		NGHOST_UPDATE,
@@ -246,17 +295,75 @@ def genmain():
 		if 'vert' in s and 'frag' in s:
 			o.append('Shader *shader_%s;' % tag)
 			init_shaders += [
-				'shader_%s = new Shader();' % tag,
-				'shader_%s->set_vshader("%s");' % (tag, minify(s['vert'])),
-				'shader_%s->set_fshader("%s");' % (tag, minify(s['frag'])),
+				'	shader_%s = new Shader();' % tag,
+				'	shader_%s->set_vshader("%s");' % (tag, minify(s['vert'])),
+				'	shader_%s->set_fshader("%s");' % (tag, minify(s['frag'])),
 			]
 	init_shaders.append('}')
 
-	o = "\n".join(o + init_shaders)
+	blends = []
+	for arg in sys.argv:
+		if arg.endswith('.blend'): blends.append(arg)
+
+	init_meshes = ['extern "C" void netghost_init_meshes(){']
+	open('/tmp/__b2netghost__.py','w').write(BLENDER_EXPORTER)
+	if not blends:
+		## exports just the default Cube
+		blends.append(None)
+	for blend in blends:
+		cmd = [BLENDER]
+		if blend: cmd.append(blend)
+		cmd += ['--background', '--python', '/tmp/__b2netghost__.py']
+		print(cmd)
+		subprocess.check_call(cmd)
+		meshes = json.loads(open('/tmp/__b2netghost__.json').read())
+		for n in meshes:
+			verts = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['verts'] ]
+			norms = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['normals'] ]
+
+			o.append('Mesh *mesh_%s;' % n)
+			o.append('static const __vertex__ _arr_%s[%s] = {%s};' % (n, len(verts), ','.join(verts)))
+			o.append('static const __vertex__ _narr_%s[%s] = {%s};' % (n, len(norms), ','.join(norms)))
+
+			print(meshes[n])
+
+			## because Vertex is template magic, we can't do static const stuff with it?
+			#verts = ['Vertex(%sf,%sf,%sf)' % tuple(vec) for vec in meshes[n]['verts'] ]
+			indices = [str(i) for i in meshes[n]['indices'] ]
+
+			init_meshes += [
+				#'auto _verts_%s = std::vector<Vertex>{%s};' % (n, ','.join(verts)),
+				#'static std::vector<Vertex> _verts_%s = {%s};' % (n, ','.join(verts)),
+				#'static std::vector<Vertex> _verts_%s = {%s};' % (n, ','.join(verts)),
+				#'std::vector<Vertex> _verts_%s(_arr_%s, _arr_%s + sizeof(_arr_%s) / sizeof(_arr_%s[0]) );' % (n,n,n,n,n),
+
+				'	std::vector<Vertex> _verts_%s;' % n,
+				'	for (auto i=0; i<%s; i++){' % len(verts),
+				'		auto x = _arr_%s[i].x;' % n,
+				'		auto y = _arr_%s[i].y;' % n,
+				'		auto z = _arr_%s[i].z;' % n,
+				'		auto v = glm::vec3(x,y,z);',
+
+				'		x = _narr_%s[i].x;' % n,
+				'		y = _narr_%s[i].y;' % n,
+				'		z = _narr_%s[i].z;' % n,
+				'		auto norms = glm::vec3(x,y,z);',
+
+				'		auto uv = glm::vec2(0,0);',  ## TODO
+				'		_verts_%s.push_back(Vertex{v,norms,uv});' % n,
+				'	}',
+				'	static const auto _indices_%s = std::vector<GLuint>{%s};' % (n, ','.join(indices)),
+				'	mesh_%s = new Mesh(_verts_%s, _indices_%s);' % (n,n,n),
+			]
+
+	init_meshes.append('}')
+
+
+	o = "\n".join(o + init_shaders + init_meshes)
 	return o
 
 
-def build(shared=True):
+def build(shared=True, assimp=False, wasm=False):
 	cpps = []
 	obfiles = []
 	for file in os.listdir(srcdir):
@@ -291,6 +398,8 @@ def build(shared=True):
 				ofile,
 				os.path.join(srcdir, file),
 			]
+			if not assimp:
+				cmd.append('-DNOASS')
 			cmd += includes
 			cmd += hacks
 			print(cmd)
@@ -301,12 +410,36 @@ def build(shared=True):
 	obfiles.append(tmpo)
 	open(tmp_main,'w').write(genmain())
 	cmd = [CC, "-std=c++20", "-c", "-fPIC",  "-o",tmpo, tmp_main]
+	if not assimp:
+		cmd.append('-DNOASS')
+
 	cmd += includes
 	cmd += hacks
 	print(cmd)
 	subprocess.check_call(cmd)
 
 	os.system("ls -lh /tmp/*.o")
+
+	if wasm:
+		cmd = [
+			EMCC, '--no-entry',
+			#'-s', 'ERROR_ON_UNDEFINED_SYMBOLS=0',
+			'-s', 'SINGLE_FILE',
+			'-s', 'ENVIRONMENT=web',
+			'-s', 'WASM=1',
+			'-s', 'AUTO_JS_LIBRARIES',
+			#'-s', 'MINIMAL_RUNTIME=2',  ## not compatible with glfw
+			'-s', 'USE_BULLET=1',
+			'-s', 'USE_FREETYPE=1',
+			'-s', 'USE_WEBGL2=1', 
+			'-s', 'USE_GLFW=3',
+			'-s', 'NO_FILESYSTEM=1',
+			"-o",
+			"/tmp/netghost.html",
+			] + obfiles + libs
+		print(cmd)
+		subprocess.check_call(cmd)
+		return "/tmp/netghost.html"
 
 	## finally call the linker,
 	## note: there's better linkers we could use here, like gold and mold
@@ -346,20 +479,13 @@ def test_python():
 	print(lib.netghost_update)
 	bind_lib(lib)
 	lib.netghost_window_init(320, 240)
+	lib.netghost_init_shaders()
+	lib.netghost_init_meshes()
 	time.sleep(5)
 	lib.netghost_window_close()
 
 def test_exe():
 	exe = build(shared=False)
-
-	# possibly install models if needed
-	#models_dir = os.path.join(asset_dir, "models")
-	#if len(os.listdir(models_dir)) <= 1:  ## .gitignore :)
-	#    cmd = "git clone --depth 1 https://github.com/n6garcia/Obelisk-Models.git"
-	#    print(cmd)
-	#    subprocess.check_call(cmd.split(), cwd=models_dir)
-	#    os.system("mv -v %s/Obelisk-Models/* %s/." % (models_dir, models_dir))
-
 	if "--windows" in sys.argv:
 		cmd = ["/tmp/obelisk.exe"]
 	elif "--gdb" in sys.argv:
@@ -371,7 +497,18 @@ def test_exe():
 
 	subprocess.check_call(cmd, cwd=asset_dir)
 
+def test_wasm():
+	lib = build(wasm=True)
+	os.system('ls -lh %s' % lib)
+	import webbrowser
+	## this is required because some browsers will not open files in /tmp
+	os.system('cp -v %s ~/Desktop/netghost.html' % lib)
+	webbrowser.open(os.path.expanduser('~/Desktop/netghost.html'))
+
 
 if __name__=='__main__':
-	test_python()
+	if '--wasm' in sys.argv:
+		test_wasm()
+	else:
+		test_python()
 

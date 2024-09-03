@@ -3,7 +3,9 @@
 #include <vector>
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include <assimp/scene.h>
+#ifndef NOASS
+	#include <assimp/scene.h>
+#endif
 #include <Bone.h>
 #include <functional>
 #include <SkeletalModel.h>
@@ -41,6 +43,9 @@ struct Animation {
 class Skeleton
 {
 public:
+	~Skeleton() = default;
+
+#ifndef NOASS
 	Skeleton(const std::string animationPath, SkeletalModel* model)
 	{
 		Assimp::Importer importer;
@@ -62,7 +67,6 @@ public:
 		}
 	}
 
-	~Skeleton() = default;
 
 	void addAnimation(const std::string animationPath, SkeletalModel* model)
 	{
@@ -82,6 +86,7 @@ public:
 			if (animation->mNumMorphMeshChannels != 0) std::cerr << "UNSUPPORTED ANIMATION KEYS! mNumMorphMeshChannels: " << animation->mNumMorphMeshChannels << std::endl;
 		}
 	}
+#endif
 
 	Animation* GetAnimation(unsigned int index)
 	{
@@ -96,6 +101,7 @@ public:
 	}
 
 private:
+#ifndef NOASS
 	void ReadBones(Animation newAnim, const aiAnimation* animation, SkeletalModel& model)
 	{
 		int size = animation->mNumChannels;
@@ -144,7 +150,6 @@ private:
 		}
 	}
 
-
 	glm::mat4 aiMat4toGLM(const aiMatrix4x4t<float>& matrix) {
 
 		glm::mat4 m = glm::mat4(0.0f);
@@ -170,6 +175,7 @@ private:
 
 		return m;
 	}
+#endif
 
 	std::vector<Animation> m_Animations;
 	AssimpNodeData m_RootNode;
