@@ -338,7 +338,7 @@ def genmain():
 	return o
 
 
-def build(shared=True):
+def build(shared=True, assimp=False):
 	cpps = []
 	obfiles = []
 	for file in os.listdir(srcdir):
@@ -373,6 +373,8 @@ def build(shared=True):
 				ofile,
 				os.path.join(srcdir, file),
 			]
+			if not assimp:
+				cmd.append('-DNOASS')
 			cmd += includes
 			cmd += hacks
 			print(cmd)
@@ -383,6 +385,9 @@ def build(shared=True):
 	obfiles.append(tmpo)
 	open(tmp_main,'w').write(genmain())
 	cmd = [CC, "-std=c++20", "-c", "-fPIC",  "-o",tmpo, tmp_main]
+	if not assimp:
+		cmd.append('-DNOASS')
+
 	cmd += includes
 	cmd += hacks
 	print(cmd)
