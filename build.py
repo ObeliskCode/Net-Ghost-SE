@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 
-## LINUX ONLY
+## LINUX INSTALL
+#  sudo apt-get install emscripten
 
 ## Build Flags
 #
 # --windows [default:linux] - compile target for windows
 # --gdb [default:disabled] - enables cmd debugger
+# --wasm  - Emscripten WASM WEBGL
 #
 ##
 
@@ -46,6 +48,9 @@ if "--windows" in sys.argv:
 	if not os.path.isfile(os.path.join("/usr/bin/", CC)):
 		cmd = "sudo apt-get install mingw-w64 gcc-multilib g++-multilib"
 		subprocess.check_call(cmd.split())
+elif '--wasm' in sys.argv:
+	CC = 'emcc'
+	C  = 'emcc'
 
 else:
 	CC = "g++"
@@ -71,6 +76,12 @@ includes = [
 	"-I" + srcdir,
 	"-I/usr/include/freetype2",
 ]
+
+if '--wasm' in sys.argv:
+	includes += [
+		'-I/tmp',
+	]
+	os.system('cp -Rv /usr/include/glm /tmp/.')
 
 
 def fake_includes():
@@ -424,15 +435,6 @@ def test_python():
 
 def test_exe():
 	exe = build(shared=False)
-
-	# possibly install models if needed
-	#models_dir = os.path.join(asset_dir, "models")
-	#if len(os.listdir(models_dir)) <= 1:  ## .gitignore :)
-	#    cmd = "git clone --depth 1 https://github.com/n6garcia/Obelisk-Models.git"
-	#    print(cmd)
-	#    subprocess.check_call(cmd.split(), cwd=models_dir)
-	#    os.system("mv -v %s/Obelisk-Models/* %s/." % (models_dir, models_dir))
-
 	if "--windows" in sys.argv:
 		cmd = ["/tmp/obelisk.exe"]
 	elif "--gdb" in sys.argv:
