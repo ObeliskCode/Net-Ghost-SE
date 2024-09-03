@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-
-## LINUX INSTALL
-#  sudo apt-get install emscripten
+import os, sys, subprocess, ctypes, time, json
 
 ## Build Flags
 #
@@ -12,7 +10,18 @@
 ##
 
 
-import os, sys, subprocess, ctypes, time, json
+
+if '--wasm' in sys.argv and not os.path.isdir('./emsdk'):
+	cmd = ['git', 'clone', '--depth', '1', 'https://github.com/emscripten-core/emsdk.git']
+	print(cmd)
+	subprocess.check_call(cmd)
+	subprocess.check_call(['git', 'pull'], cwd='./emsdk')
+	subprocess.check_call(['./emsdk', 'install', 'latest'], cwd='./emsdk')
+	subprocess.check_call(['./emsdk', 'activate', 'latest'], cwd='./emsdk')
+
+EMCC = os.path.join('./emsdk/upstream/emscripten/emcc')
+
+
 BLENDER = 'blender'
 
 BLENDER_EXPORTER = '''
@@ -49,8 +58,8 @@ if "--windows" in sys.argv:
 		cmd = "sudo apt-get install mingw-w64 gcc-multilib g++-multilib"
 		subprocess.check_call(cmd.split())
 elif '--wasm' in sys.argv:
-	CC = 'emcc'
-	C  = 'emcc'
+	CC = EMCC
+	C  = EMCC
 
 else:
 	CC = "g++"
@@ -403,7 +412,7 @@ def build(shared=True, assimp=False, wasm=False):
 
 	if wasm:
 		cmd = [
-			"emcc", '--no-entry',
+			EMCC, '--no-entry',
 			'-s', 'ENVIRONMENT=web',
 			'-s', 'AUTO_JS_LIBRARIES',
 			'-s', 'MINIMAL_RUNTIME=2',
