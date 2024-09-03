@@ -32,6 +32,7 @@ for ob in bpy.data.objects:
 		print('dumping mesh:', ob)
 		dump[ob.name] = {
 			'verts': [(v.co.x,v.co.y,v.co.z) for v in ob.data.vertices],
+			'normals': [(v.normal.x, v.normal.y, v.normal.z) for v in ob.data.vertices],
 			'indices':[]
 		}
 		for face in ob.data.polygons:
@@ -294,9 +295,9 @@ def genmain():
 		if 'vert' in s and 'frag' in s:
 			o.append('Shader *shader_%s;' % tag)
 			init_shaders += [
-				'shader_%s = new Shader();' % tag,
-				'shader_%s->set_vshader("%s");' % (tag, minify(s['vert'])),
-				'shader_%s->set_fshader("%s");' % (tag, minify(s['frag'])),
+				'	shader_%s = new Shader();' % tag,
+				'	shader_%s->set_vshader("%s");' % (tag, minify(s['vert'])),
+				'	shader_%s->set_fshader("%s");' % (tag, minify(s['frag'])),
 			]
 	init_shaders.append('}')
 
@@ -318,9 +319,11 @@ def genmain():
 		meshes = json.loads(open('/tmp/__b2netghost__.json').read())
 		for n in meshes:
 			verts = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['verts'] ]
+			norms = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['normals'] ]
 
 			o.append('Mesh *mesh_%s;' % n)
 			o.append('static const __vertex__ _arr_%s[%s] = {%s};' % (n, len(verts), ','.join(verts)))
+			o.append('static const __vertex__ _narr_%s[%s] = {%s};' % (n, len(norms), ','.join(norms)))
 
 			print(meshes[n])
 
@@ -334,18 +337,23 @@ def genmain():
 				#'static std::vector<Vertex> _verts_%s = {%s};' % (n, ','.join(verts)),
 				#'std::vector<Vertex> _verts_%s(_arr_%s, _arr_%s + sizeof(_arr_%s) / sizeof(_arr_%s[0]) );' % (n,n,n,n,n),
 
-				'std::vector<Vertex> _verts_%s;' % n,
-				'for (auto i=0; i<%s; i++){' % len(verts),
-				'	auto x = _arr_%s[i].x;' % n,
-				'	auto y = _arr_%s[i].y;' % n,
-				'	auto z = _arr_%s[i].z;' % n,
-				'	auto v = glm::vec3(x,y,z);',
-				'	auto norms = glm::vec3(0,0,0);',  ## TODO
-				'	auto uv = glm::vec2(0,0);',  ## TODO
-				'	_verts_%s.push_back(Vertex{v,norms,uv});' % n,
-				'}',
-				'static const auto _indices_%s = std::vector<GLuint>{%s};' % (n, ','.join(indices)),
-				'mesh_%s = new Mesh(_verts_%s, _indices_%s);' % (n,n,n),
+				'	std::vector<Vertex> _verts_%s;' % n,
+				'	for (auto i=0; i<%s; i++){' % len(verts),
+				'		auto x = _arr_%s[i].x;' % n,
+				'		auto y = _arr_%s[i].y;' % n,
+				'		auto z = _arr_%s[i].z;' % n,
+				'		auto v = glm::vec3(x,y,z);',
+
+				'		x = _narr_%s[i].x;' % n,
+				'		y = _narr_%s[i].y;' % n,
+				'		z = _narr_%s[i].z;' % n,
+				'		auto norms = glm::vec3(x,y,z);',
+
+				'		auto uv = glm::vec2(0,0);',  ## TODO
+				'		_verts_%s.push_back(Vertex{v,norms,uv});' % n,
+				'	}',
+				'	static const auto _indices_%s = std::vector<GLuint>{%s};' % (n, ','.join(indices)),
+				'	mesh_%s = new Mesh(_verts_%s, _indices_%s);' % (n,n,n),
 			]
 
 	init_meshes.append('}')
