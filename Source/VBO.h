@@ -21,8 +21,8 @@ class VBO
 public:
 	// Reference ID of the Vertex Buffer Object
 	GLuint ID;
-	// undefined behavior if using default constructor obj!
 	VBO() {};
+/*
 	VBO(VBO&& other) {
         VBO::ID = std::move(other.ID);
 	}
@@ -30,6 +30,7 @@ public:
         this->ID = std::move(other.ID);
 		return *this;
 	}
+*/
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	VBO(std::vector<Vertex>& vertices);
 
@@ -57,15 +58,16 @@ public:
 	// Reference ID of the Vertex Buffer Object
 	GLuint ID;
 	// undefined behavior if using default constructor obj!
-    SkeletalVBO() {};
-    SkeletalVBO(SkeletalVBO&& other) {
+    	SkeletalVBO() {};
+/*
+	SkeletalVBO(SkeletalVBO&& other) {
         SkeletalVBO::ID = std::move(other.ID);
 	}
 	SkeletalVBO& operator=(SkeletalVBO&& other){
         this->ID = std::move(other.ID);
 		return *this;
 	}
-
+*/
 	// Constructor that generates a Vertex Buffer Object and links it to vertices
 	SkeletalVBO(std::vector<SkeletalVertex>& vertices);
 
