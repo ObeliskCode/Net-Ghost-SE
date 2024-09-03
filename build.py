@@ -350,12 +350,19 @@ def genmain():
 		'	Model *mdl;',
 		'	unsigned int entID;',
 	]
+
+	draw_loop = [
+		'extern "C" void netghost_redraw(){',
+		#'	Entity e;',
+
+	]
+
 	open('/tmp/__b2netghost__.py','w').write(BLENDER_EXPORTER)
 	if not blends:
 		## exports just the default Cube
 		blends.append(None)
 	for blend in blends:
-		if blend.endswith('.json'):
+		if blend and blend.endswith('.json'):
 			meshes = json.loads(open(blend).read())
 		else:
 			cmd = [BLENDER]
@@ -371,6 +378,13 @@ def genmain():
 			o.append('Mesh *mesh_%s;' % n)
 			o.append('static const __vertex__ _arr_%s[%s] = {%s};' % (n, len(verts), ','.join(verts)))
 			o.append('static const __vertex__ _narr_%s[%s] = {%s};' % (n, len(norms), ','.join(norms)))
+			o.append('unsigned short __ID__%s;' % n)
+
+			draw_loop += [
+				'	ECS::get().DrawEntity(__ID__%s);' % n,
+			]
+			if 'scripts' in meshes[n] and meshes[n]['scripts']:
+				draw_loop.append('	self = ECS::get().getEntity(__ID__%s);' % n)
 
 			print(meshes[n])
 
@@ -411,7 +425,7 @@ def genmain():
 				'	mdl->meshes.push_back(*mesh_%s);' % n,
 
 				'	entID = ECS::get().createEntity();',
-
+				'	__ID__%s = (unsigned short)entID;' % n,
 				'	ECS::get().addModel(entID, mdl);',
 				'	ECS::get().addShader(entID, *shader_wire);',
 				#'ECS::get().addCamera(entID, globals.camera);
@@ -420,9 +434,10 @@ def genmain():
 			]
 
 	init_meshes.append('}')
+	draw_loop.append('}')
 
 
-	o = "\n".join(o + init_shaders + init_meshes)
+	o = "\n".join(o + init_shaders + init_meshes + draw_loop)
 	return o
 
 
