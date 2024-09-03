@@ -3,7 +3,9 @@
 /* Container for bone data */
 
 #include <vector>
-#include <assimp/scene.h>
+#ifndef NOASS
+	#include <assimp/scene.h>
+#endif
 #include <list>
 #include <glm/glm.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
