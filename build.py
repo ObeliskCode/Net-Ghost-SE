@@ -6,7 +6,8 @@ import os, sys, subprocess, ctypes, time, json
 # --windows [default:linux] - compile target for windows
 # --gdb [default:disabled] - enables cmd debugger
 # --wasm  - Emscripten WASM WEBGL
-#
+# --debug-shaders
+# --blender-install - helper to install blender on Ubuntu and Fedora
 ##
 
 
@@ -21,22 +22,36 @@ if '--wasm' in sys.argv and not os.path.isdir('./emsdk'):
 
 EMCC = os.path.abspath('./emsdk/upstream/emscripten/emcc')
 
-if not os.path.isdir('./blender') or '--blender-install' in sys.argv:
-	cmd = 'git clone --depth 1 https://github.com/blender/blender.git'
-	print(cmd)
-	subprocess.check_call(cmd.split())
-	#cmd = 'python3 ./blender/build_files/utils/make_update.py --use-linux-libraries' #compiled on Rocky8 and huge!
-	cmd = 'python3 ./blender/build_files/utils/make_update.py --no-libraries'
-	print(cmd)
-	subprocess.check_call(cmd.split(), cwd='./blender')
-	#subprocess.check_call(['make', 'update'], cwd='./blender')
-	subprocess.check_call(['make'], cwd='./blender')
+if '--blender-install' in sys.argv:
+	if '--blender-git' in sys.argv:
+		if not os.path.isdir('./blender'):
+			cmd = 'git clone --depth 1 https://github.com/blender/blender.git'
+			print(cmd)
+			subprocess.check_call(cmd.split())
+		cmd = 'python3 ./blender/build_files/utils/make_update.py --no-libraries'
+		print(cmd)
+		subprocess.check_call(cmd.split(), cwd='./blender')
+		subprocess.check_call(['make'], cwd='./blender')
+	elif 'fedora' in os.uname().nodename:
+		os.system('sudo dnf install blender')
+	else:
+		os.system('sudo apt install blender')
 
 
 BLENDER = 'blender'
 
 BLENDER_EXPORTER = '''
 import bpy, json
+
+## NetGhost Blender DNA/RNA
+MAX_SCRIPTS_PER_OBJECT = 8
+for i in range(MAX_SCRIPTS_PER_OBJECT):
+	setattr(
+		bpy.types.Object, 
+		'netghost_script' + str(i), 
+		bpy.props.PointerProperty(name='NetGhost C++ Script', type=bpy.types.Text)
+	)
+
 
 dump = {}
 for ob in bpy.data.objects:
@@ -48,13 +63,18 @@ for ob in bpy.data.objects:
 			'scl'  : list(ob.scale),
 			'verts': [(v.co.x,v.co.y,v.co.z) for v in ob.data.vertices],
 			'normals': [(v.normal.x, v.normal.y, v.normal.z) for v in ob.data.vertices],
-			'indices':[]
+			'indices':[],
+			'scripts':[],
 		}
 		if ob.parent:
 			dump[ob.name]['parent'] = ob.parent.name
 		for face in ob.data.polygons:
 			for i in range(3):
 				dump[ob.name]['indices'].append(face.vertices[i])
+		for i in range(MAX_SCRIPTS_PER_OBJECT):
+			txt = getattr(ob, 'netghost_script'+str(i))
+			if txt:
+				dump[ob.name]['scripts'].append( txt.as_string() )
 
 print(dump)
 open('/tmp/__b2netghost__.json','w').write(json.dumps(dump))
@@ -402,7 +422,7 @@ def genmain():
 	return o
 
 
-def build(shared=True, assimp=False, wasm=False, debug_shaders=False):
+def build(shared=True, assimp=False, wasm=False, debug_shaders='--debug-shaders' in sys.argv):
 	cpps = []
 	obfiles = []
 	for file in os.listdir(srcdir):
@@ -517,7 +537,7 @@ def bind_lib(lib):
 	lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
 
 def test_python():
-	lib = build( debug_shaders=True )
+	lib = build()
 	print(lib.netghost_window_init)
 	print(lib.netghost_update)
 	bind_lib(lib)
