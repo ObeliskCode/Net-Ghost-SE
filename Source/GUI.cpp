@@ -1,7 +1,7 @@
 #include "GUI.h"
 
 GUI* GUI::instance = nullptr; // definition class variable
-extern unsigned char *__netghost_font__;
+extern unsigned char __netghost_font__[];
 extern unsigned int   __netghost_font_size__;
 
 GUI::GUI() {
