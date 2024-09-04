@@ -7,6 +7,8 @@ import os, sys, subprocess, ctypes, time, json
 # --gdb [default:disabled] - enables cmd debugger
 # --wasm  - Emscripten WASM WEBGL
 #
+## Install Notes:
+#  fedora: sudo dnf install glfw-devel openal-devel glm-devel
 ##
 
 __thisdir = os.path.split(os.path.abspath(__file__))[0]
@@ -131,25 +133,37 @@ if not '--wasm' in sys.argv:
 
 glew = "/usr/include/GL/glew.h"
 if not os.path.isfile(glew):
-	cmd = "sudo apt-get install libglew-dev"
+	if 'fedora' in os.uname().nodename:
+		cmd = "sudo dnf install glew-devel"
+	else:
+		cmd = "sudo apt-get install libglew-dev"
 	print(cmd)
-	subprocess.check_call(cmd)
+	subprocess.check_call(cmd.split())
 
 if not os.path.isdir("/usr/include/assimp"):
-	cmd = "sudo apt-get install libassimp-dev"
+	if 'fedora' in os.uname().nodename:
+		cmd = "sudo dnf install assimp-devel"
+	else:
+		cmd = "sudo apt-get install libassimp-dev"
 	print(cmd)
-	subprocess.check_call(cmd)
+	subprocess.check_call(cmd.split())
 
 
 if not os.path.isdir("/usr/include/bullet"):
-	cmd = "sudo apt-get install libbullet-dev libopenal-dev"
+	if 'fedora' in os.uname().nodename:
+		cmd = "sudo dnf install bullet-devel"
+	else:
+		cmd = "sudo apt-get install libbullet-dev libopenal-dev"
 	print(cmd)
-	subprocess.check_call(cmd)
+	subprocess.check_call(cmd.split())
 
 if not os.path.isdir("/usr/include/freetype2"):
-	cmd = "sudo apt-get install libfreetype-dev"
+	if 'fedora' in os.uname().nodename:
+		cmd = "sudo dnf install freetype-devel"
+	else:
+		cmd = "sudo apt-get install libfreetype-dev"
 	print(cmd)
-	subprocess.check_call(cmd)
+	subprocess.check_call(cmd.split())
 
 NGHOST_HEADER = '''
 GLFWwindow *window;
