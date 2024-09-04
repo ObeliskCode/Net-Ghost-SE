@@ -249,7 +249,10 @@ extern "C" void netghost_update(){
 '''
 
 def minify(f):
-	glsl = open(os.path.join(shaders_dir, f)).read()
+	if f.endswith('.glsl'):
+		glsl = open(os.path.join(shaders_dir, f)).read()
+	else:
+		glsl = f
 	o = []
 	for ln in glsl.splitlines():
 		if ln.strip().startswith('//'): continue
@@ -272,20 +275,32 @@ def genmain():
 		NGHOST_GLFW,
 		NGHOST_UPDATE,
 	]
+
+	blends = []
 	shaders = {}
-	for file in os.listdir(shaders_dir):
-		if 'Vert' in file:
-			tag = file.split('Vert')[0]
-			if tag not in shaders: shaders[tag] = {}
-			shaders[tag]['vert']=file
-		elif 'Frag' in file:
-			tag = file.split('Frag')[0]
-			if tag not in shaders: shaders[tag] = {}
-			shaders[tag]['frag']=file
-		elif 'Geom' in file:
-			tag = file.split('Geom')[0]
-			if tag not in shaders: shaders[tag] = {}
-			shaders[tag]['geom']=file
+	user_shader = 0
+	for arg in sys.argv:
+		if arg.endswith( ('.blend', '.json') ): blends.append(arg)
+		if arg.endswith('.json'):
+			## check if there are any shaders
+			info = json.loads(open(arg).read())
+			if info['shaders']:
+				shaders.update( info['shaders'] )
+
+	if not shaders:
+		for file in os.listdir(shaders_dir):
+			if 'Vert' in file:
+				tag = file.split('Vert')[0]
+				if tag not in shaders: shaders[tag] = {}
+				shaders[tag]['vert']=file
+			elif 'Frag' in file:
+				tag = file.split('Frag')[0]
+				if tag not in shaders: shaders[tag] = {}
+				shaders[tag]['frag']=file
+			elif 'Geom' in file:
+				tag = file.split('Geom')[0]
+				if tag not in shaders: shaders[tag] = {}
+				shaders[tag]['geom']=file
 
 	init_shaders = ['extern "C" void netghost_init_shaders(){']
 	for tag in shaders:
@@ -299,9 +314,6 @@ def genmain():
 			]
 	init_shaders.append('}')
 
-	blends = []
-	for arg in sys.argv:
-		if arg.endswith( ('.blend', '.json') ): blends.append(arg)
 
 	init_meshes = [
 		'extern "C" void netghost_init_meshes(){',
@@ -321,15 +333,16 @@ def genmain():
 		blends.append(None)
 	for blend in blends:
 		if blend and blend.endswith('.json'):
-			meshes = json.loads(open(blend).read())
+			info = json.loads(open(blend).read())
 		else:
 			cmd = [BLENDER]
 			if blend: cmd.append(blend)
 			cmd += ['--background', '--python', './ghostblender.py', '--', '--dump']
 			print(cmd)
 			subprocess.check_call(cmd)
-			meshes = json.loads(open('/tmp/dump.json').read())
+			info = json.loads(open('/tmp/dump.json').read())
 
+		meshes = info['objects']
 		allprops = {}
 		for n in meshes:
 			if 'props' in meshes[n]:
@@ -408,11 +421,14 @@ def genmain():
 				'	entID = ECS::get().createEntity();',
 				'	__ID__%s = (unsigned short)entID;' % n,
 				'	ECS::get().addModel(entID, mdl);',
-				'	ECS::get().addShader(entID, *shader_wire);',
+				#'	ECS::get().addShader(entID, *shader_wire);',
 				#'ECS::get().addCamera(entID, globals.camera);
 				'	ECS::get().addTransform(entID, trf);',
 
 			]
+			if 'shader' in meshes[n]:
+				sname = meshes[n]['shader']
+				init_meshes.append('ECS::get().addShader(entID, *shader_%s);' % sname)
 
 	init_meshes.append('}')
 	draw_loop.append('}')
@@ -544,8 +560,8 @@ def test_python():
 	lib.netghost_window_init(320, 240)
 	lib.netghost_init_shaders()
 	lib.netghost_init_meshes()
-	time.sleep(5)
-	lib.netghost_window_close()
+	#time.sleep(5)
+	#lib.netghost_window_close()
 
 def test_exe():
 	exe = build(shared=False)
