@@ -277,6 +277,7 @@ def minify(f):
 
 	return '\\n'.join(o)
 
+
 def genmain():
 	o = [
 		'#define GLEW_STATIC',
@@ -290,6 +291,7 @@ def genmain():
 		NGHOST_UPDATE,
 	]
 
+	font = None
 	blends = []
 	shaders = {}
 	user_shader = 0
@@ -300,6 +302,19 @@ def genmain():
 			info = json.loads(open(arg).read())
 			if info['shaders']:
 				shaders.update( info['shaders'] )
+		if arg.endswith('.ttf'):
+			font = open(arg,'rb').read()
+
+	if not font:
+		defont = os.path.join(asset_dir,'fonts/arial.ttf')
+		assert os.path.isfile(defont)
+		print('using default font:', defont)
+		font = open(defont,'rb').read()
+
+	o += [
+		'unsigned char __netghost_font__[] = {%s};' % ','.join(str(b) for b in font),
+		'unsigned int   __netghost_font_size__ = %s;' % len(font),
+	]
 
 	if not shaders:
 		for file in os.listdir(shaders_dir):
