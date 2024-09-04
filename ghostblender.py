@@ -41,9 +41,9 @@ if not bpy:
 assert bpy
 import json
 
-__thisdir = os.path.split(os.path.abspath(__file__))[0]
+_thisdir = os.path.split(os.path.abspath(__file__))[0]
 if '--debug' in sys.argv:
-	builder_script = os.path.join(__thisdir, 'build.py')
+	builder_script = os.path.join(_thisdir, 'build.py')
 	print('builder_script:', builder_script)
 	assert os.path.isfile(builder_script)
 
@@ -210,8 +210,8 @@ class NetGhostExport(bpy.types.Operator):
 		tmpj = '/tmp/b2ghost.json'
 		open(tmpj,'w').write( netghost2json() )
 		cmd = ['python3', './build.py', tmpj]
-		print(cmd)
-		subprocess.check_call(cmd, cwd=__thisdir)
+		print(cmd, _thisdir)
+		subprocess.check_call(cmd, cwd=_thisdir)
 		return {'FINISHED'}
 
 @bpy.utils.register_class
@@ -224,8 +224,8 @@ class NetGhostExportWasm(bpy.types.Operator):
 		tmpj = '/tmp/b2ghost.json'
 		open(tmpj,'w').write( netghost2json() )
 		cmd = ['python3', './build.py', '--wasm', tmpj]
-		print(cmd)
-		subprocess.check_call(cmd, cwd=__thisdir)
+		print(cmd, _thisdir)
+		subprocess.check_call(cmd, cwd=_thisdir)
 		return {'FINISHED'}
 
 
