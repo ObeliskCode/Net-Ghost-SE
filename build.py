@@ -339,6 +339,11 @@ def genmain():
 	draw_loop = [
 		'extern "C" void netghost_redraw(){',
 		'	Entity self;',
+		'	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);',
+		'	glEnable(GL_BLEND);',
+		'	GUI::get().RenderText(*shader_text, "Hello World", 10, 10, 0.75f, glm::vec3(1.f, 1.f, 1.f));',
+		'	glDisable(GL_BLEND);',
+		'	glfwSwapBuffers(window);',
 
 	]
 
@@ -574,6 +579,9 @@ def test_python():
 	lib.netghost_window_init(320, 240)
 	lib.netghost_init_shaders()
 	lib.netghost_init_meshes()
+	while True:
+		lib.netghost_redraw()
+
 	#time.sleep(5)
 	#lib.netghost_window_close()
 
