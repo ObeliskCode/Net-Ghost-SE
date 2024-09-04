@@ -45,47 +45,6 @@ if '--blender-install' in sys.argv:
 
 BLENDER = 'blender'
 
-BLENDER_EXPORTER = '''
-import bpy, json
-
-## NetGhost Blender DNA/RNA
-MAX_SCRIPTS_PER_OBJECT = 8
-for i in range(MAX_SCRIPTS_PER_OBJECT):
-	setattr(
-		bpy.types.Object, 
-		'netghost_script' + str(i), 
-		bpy.props.PointerProperty(name='NetGhost C++ Script', type=bpy.types.Text)
-	)
-
-
-dump = {}
-for ob in bpy.data.objects:
-	if ob.type=='MESH':
-		print('dumping mesh:', ob)
-		dump[ob.name] = {
-			'pos'  : list(ob.location),
-			'rot'  : list(ob.rotation_euler),
-			'scl'  : list(ob.scale),
-			'verts': [(v.co.x,v.co.y,v.co.z) for v in ob.data.vertices],
-			'normals': [(v.normal.x, v.normal.y, v.normal.z) for v in ob.data.vertices],
-			'indices':[],
-			'scripts':[],
-		}
-		if ob.parent:
-			dump[ob.name]['parent'] = ob.parent.name
-		for face in ob.data.polygons:
-			for i in range(3):
-				dump[ob.name]['indices'].append(face.vertices[i])
-		for i in range(MAX_SCRIPTS_PER_OBJECT):
-			txt = getattr(ob, 'netghost_script'+str(i))
-			if txt:
-				dump[ob.name]['scripts'].append( txt.as_string() )
-
-print(dump)
-open('/tmp/__b2netghost__.json','w').write(json.dumps(dump))
-
-'''
-
 
 if "--windows" in sys.argv:
 	os.system("rm /tmp/*.o /tmp/*.exe")
@@ -357,7 +316,6 @@ def genmain():
 
 	]
 
-	open('/tmp/__b2netghost__.py','w').write(BLENDER_EXPORTER)
 	if not blends:
 		## exports just the default Cube
 		blends.append(None)
@@ -367,10 +325,10 @@ def genmain():
 		else:
 			cmd = [BLENDER]
 			if blend: cmd.append(blend)
-			cmd += ['--background', '--python', '/tmp/__b2netghost__.py']
+			cmd += ['--background', '--python', './ghostblender.py', '--', '--dump']
 			print(cmd)
 			subprocess.check_call(cmd)
-			meshes = json.loads(open('/tmp/__b2netghost__.json').read())
+			meshes = json.loads(open('/tmp/dump.json').read())
 
 		allprops = {}
 		for n in meshes:
