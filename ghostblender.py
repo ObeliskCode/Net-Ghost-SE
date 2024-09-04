@@ -50,9 +50,17 @@ for i in range(MAX_SCRIPTS_PER_OBJECT):
 		bpy.props.PointerProperty(name='script%s'%i, type=bpy.types.Text)
 	)
 
+bpy.types.Object.netghost_script_init = bpy.props.PointerProperty(name='script init', type=bpy.types.Text)
+
+bpy.types.Object.netghost_glsl_vertex = bpy.props.PointerProperty(name='vertex shader', type=bpy.types.Text)
+bpy.types.Object.netghost_glsl_fragment = bpy.props.PointerProperty(name='fragment shader', type=bpy.types.Text)
+
 
 def netghost2json():
 	dump = {}
+	shaders  = {}
+	vshaders = {}
+	fshaders = {}
 	for ob in bpy.data.objects:
 		if ob.type=='MESH':
 			print('dumping mesh:', ob)
@@ -65,6 +73,28 @@ def netghost2json():
 				'indices':[],
 				'scripts':[],
 			}
+			if ob.netghost_glsl_vertex:
+				txt = ob.netghost_glsl_vertex
+				if txt.name not in vshaders:
+					vshaders[txt.name] = txt.as_string()
+				dump[ob.name]['vshader'] = txt.name
+			if ob.netghost_glsl_fragment:
+				txt = ob.netghost_glsl_fragment
+				if txt.name not in fshaders:
+					fshaders[txt.name] = txt.as_string()
+				dump[ob.name]['fshader'] = txt.name
+
+			if ob.netghost_glsl_vertex and ob.netghost_glsl_fragment:
+				sname = ob.netghost_glsl_vertex.name + ob.netghost_glsl_fragment.name
+				sname = sname.replace('.','_').replace('-','_').replace('+','_')
+				if sname not in shaders:
+					shaders[sname] = {
+						'vert': ob.netghost_glsl_vertex.as_string(),
+						'frag': ob.netghost_glsl_fragment.as_string(),
+					}
+				dump[ob.name]['shader'] = sname
+
+
 			if ob.parent:
 				dump[ob.name]['parent'] = ob.parent.name
 			for face in ob.data.polygons:
@@ -84,7 +114,21 @@ def netghost2json():
 					dump[ob.name]['props'] = props
 
 	print(dump)
-	return json.dumps(dump)
+	return json.dumps({'objects':dump, 'vshaders':vshaders, 'fshaders':fshaders, 'shaders':shaders})
+
+@bpy.utils.register_class
+class NetGhostGLSLPanel(bpy.types.Panel):
+	bl_idname = 'OBJECT_PT_NetGhost_GLSL_Panel'
+	bl_label = 'NetGhost GLSL'
+	bl_space_type = 'PROPERTIES'
+	bl_region_type = 'WINDOW'
+	bl_context = 'object'
+
+	def draw(self, context):
+		if not context.active_object: return
+		self.layout.label(text='Attach GLSL Shaders')
+		self.layout.prop(context.active_object, 'netghost_glsl_vertex')
+		self.layout.prop(context.active_object, 'netghost_glsl_fragment')
 
 @bpy.utils.register_class
 class NetGhostScriptsPanel(bpy.types.Panel):
@@ -95,7 +139,10 @@ class NetGhostScriptsPanel(bpy.types.Panel):
 	bl_context = 'object'
 
 	def draw(self, context):
+		if not context.active_object: return
 		self.layout.label(text='Attach C++ Scripts')
+		self.layout.prop(context.active_object, 'netghost_script_init')
+
 		foundUnassignedScript = False
 		for i in range(MAX_SCRIPTS_PER_OBJECT):
 			hasProperty = getattr(context.active_object, 'netghost_script' + str(i)) != None
@@ -159,6 +206,24 @@ myprop += 0.1;
 
 '''
 
+TEST_GLSL_VERT = '''
+#version 330 core
+layout (location = 0) in vec3 aPos;
+uniform mat4 camMatrix;
+uniform mat4 transform;
+void main(){
+	gl_Position = camMatrix * transform * vec4(aPos, 1.0);
+}
+'''
+
+TEST_GLSL_FRAG = '''
+#version 330 core
+out vec4 FragmentColor;
+void main(){
+	FragmentColor = vec4(1.0f,1.0f,1.0f,1.0f);
+}
+'''
+
 
 def test():
 	txt = bpy.data.texts.new(name='my.c++.py')
@@ -167,9 +232,21 @@ def test():
 	ob.netghost_script0 = txt
 	ob['myprop'] = 1.0
 
+	txt = bpy.data.texts.new(name='my-vshader.glsl.py')
+	txt.from_string(TEST_GLSL_VERT)
+	ob.netghost_glsl_vertex = txt
+
+	txt = bpy.data.texts.new(name='my-fshader.glsl.py')
+	txt.from_string(TEST_GLSL_FRAG)
+	ob.netghost_glsl_fragment = txt
 
 
 
 if __name__=='__main__':
-	test()
+	if '--dump' in sys.argv:
+		tmpj = '/tmp/dump.json'
+		open(tmpj,'w').write( netghost2json() )
+
+	elif '--test' in sys.argv:
+		test()
 

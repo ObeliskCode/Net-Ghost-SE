@@ -7,6 +7,8 @@ import os, sys, subprocess, ctypes, time, json
 # --gdb [default:disabled] - enables cmd debugger
 # --wasm  - Emscripten WASM WEBGL
 #
+## Install Notes:
+#  fedora: sudo dnf install glfw-devel openal-devel glm-devel
 ##
 
 __thisdir = os.path.split(os.path.abspath(__file__))[0]
@@ -44,47 +46,6 @@ if '--blender-install' in sys.argv:
 
 
 BLENDER = 'blender'
-
-BLENDER_EXPORTER = '''
-import bpy, json
-
-## NetGhost Blender DNA/RNA
-MAX_SCRIPTS_PER_OBJECT = 8
-for i in range(MAX_SCRIPTS_PER_OBJECT):
-	setattr(
-		bpy.types.Object, 
-		'netghost_script' + str(i), 
-		bpy.props.PointerProperty(name='NetGhost C++ Script', type=bpy.types.Text)
-	)
-
-
-dump = {}
-for ob in bpy.data.objects:
-	if ob.type=='MESH':
-		print('dumping mesh:', ob)
-		dump[ob.name] = {
-			'pos'  : list(ob.location),
-			'rot'  : list(ob.rotation_euler),
-			'scl'  : list(ob.scale),
-			'verts': [(v.co.x,v.co.y,v.co.z) for v in ob.data.vertices],
-			'normals': [(v.normal.x, v.normal.y, v.normal.z) for v in ob.data.vertices],
-			'indices':[],
-			'scripts':[],
-		}
-		if ob.parent:
-			dump[ob.name]['parent'] = ob.parent.name
-		for face in ob.data.polygons:
-			for i in range(3):
-				dump[ob.name]['indices'].append(face.vertices[i])
-		for i in range(MAX_SCRIPTS_PER_OBJECT):
-			txt = getattr(ob, 'netghost_script'+str(i))
-			if txt:
-				dump[ob.name]['scripts'].append( txt.as_string() )
-
-print(dump)
-open('/tmp/__b2netghost__.json','w').write(json.dumps(dump))
-
-'''
 
 
 if "--windows" in sys.argv:
@@ -172,25 +133,37 @@ if not '--wasm' in sys.argv:
 
 glew = "/usr/include/GL/glew.h"
 if not os.path.isfile(glew):
-	cmd = "sudo apt-get install libglew-dev"
+	if 'fedora' in os.uname().nodename:
+		cmd = "sudo dnf install glew-devel"
+	else:
+		cmd = "sudo apt-get install libglew-dev"
 	print(cmd)
-	subprocess.check_call(cmd)
+	subprocess.check_call(cmd.split())
 
 if not os.path.isdir("/usr/include/assimp"):
-	cmd = "sudo apt-get install libassimp-dev"
+	if 'fedora' in os.uname().nodename:
+		cmd = "sudo dnf install assimp-devel"
+	else:
+		cmd = "sudo apt-get install libassimp-dev"
 	print(cmd)
-	subprocess.check_call(cmd)
+	subprocess.check_call(cmd.split())
 
 
 if not os.path.isdir("/usr/include/bullet"):
-	cmd = "sudo apt-get install libbullet-dev libopenal-dev"
+	if 'fedora' in os.uname().nodename:
+		cmd = "sudo dnf install bullet-devel"
+	else:
+		cmd = "sudo apt-get install libbullet-dev libopenal-dev"
 	print(cmd)
-	subprocess.check_call(cmd)
+	subprocess.check_call(cmd.split())
 
 if not os.path.isdir("/usr/include/freetype2"):
-	cmd = "sudo apt-get install libfreetype-dev"
+	if 'fedora' in os.uname().nodename:
+		cmd = "sudo dnf install freetype-devel"
+	else:
+		cmd = "sudo apt-get install libfreetype-dev"
 	print(cmd)
-	subprocess.check_call(cmd)
+	subprocess.check_call(cmd.split())
 
 NGHOST_HEADER = '''
 GLFWwindow *window;
@@ -290,7 +263,10 @@ extern "C" void netghost_update(){
 '''
 
 def minify(f):
-	glsl = open(os.path.join(shaders_dir, f)).read()
+	if f.endswith('.glsl'):
+		glsl = open(os.path.join(shaders_dir, f)).read()
+	else:
+		glsl = f
 	o = []
 	for ln in glsl.splitlines():
 		if ln.strip().startswith('//'): continue
@@ -313,20 +289,32 @@ def genmain():
 		NGHOST_GLFW,
 		NGHOST_UPDATE,
 	]
+
+	blends = []
 	shaders = {}
-	for file in os.listdir(shaders_dir):
-		if 'Vert' in file:
-			tag = file.split('Vert')[0]
-			if tag not in shaders: shaders[tag] = {}
-			shaders[tag]['vert']=file
-		elif 'Frag' in file:
-			tag = file.split('Frag')[0]
-			if tag not in shaders: shaders[tag] = {}
-			shaders[tag]['frag']=file
-		elif 'Geom' in file:
-			tag = file.split('Geom')[0]
-			if tag not in shaders: shaders[tag] = {}
-			shaders[tag]['geom']=file
+	user_shader = 0
+	for arg in sys.argv:
+		if arg.endswith( ('.blend', '.json') ): blends.append(arg)
+		if arg.endswith('.json'):
+			## check if there are any shaders
+			info = json.loads(open(arg).read())
+			if info['shaders']:
+				shaders.update( info['shaders'] )
+
+	if not shaders:
+		for file in os.listdir(shaders_dir):
+			if 'Vert' in file:
+				tag = file.split('Vert')[0]
+				if tag not in shaders: shaders[tag] = {}
+				shaders[tag]['vert']=file
+			elif 'Frag' in file:
+				tag = file.split('Frag')[0]
+				if tag not in shaders: shaders[tag] = {}
+				shaders[tag]['frag']=file
+			elif 'Geom' in file:
+				tag = file.split('Geom')[0]
+				if tag not in shaders: shaders[tag] = {}
+				shaders[tag]['geom']=file
 
 	init_shaders = ['extern "C" void netghost_init_shaders(){']
 	for tag in shaders:
@@ -340,9 +328,6 @@ def genmain():
 			]
 	init_shaders.append('}')
 
-	blends = []
-	for arg in sys.argv:
-		if arg.endswith( ('.blend', '.json') ): blends.append(arg)
 
 	init_meshes = [
 		'extern "C" void netghost_init_meshes(){',
@@ -357,21 +342,21 @@ def genmain():
 
 	]
 
-	open('/tmp/__b2netghost__.py','w').write(BLENDER_EXPORTER)
 	if not blends:
 		## exports just the default Cube
 		blends.append(None)
 	for blend in blends:
 		if blend and blend.endswith('.json'):
-			meshes = json.loads(open(blend).read())
+			info = json.loads(open(blend).read())
 		else:
 			cmd = [BLENDER]
 			if blend: cmd.append(blend)
-			cmd += ['--background', '--python', '/tmp/__b2netghost__.py']
+			cmd += ['--background', '--python', './ghostblender.py', '--', '--dump']
 			print(cmd)
 			subprocess.check_call(cmd)
-			meshes = json.loads(open('/tmp/__b2netghost__.json').read())
+			info = json.loads(open('/tmp/dump.json').read())
 
+		meshes = info['objects']
 		allprops = {}
 		for n in meshes:
 			if 'props' in meshes[n]:
@@ -450,11 +435,14 @@ def genmain():
 				'	entID = ECS::get().createEntity();',
 				'	__ID__%s = (unsigned short)entID;' % n,
 				'	ECS::get().addModel(entID, mdl);',
-				'	ECS::get().addShader(entID, *shader_wire);',
+				#'	ECS::get().addShader(entID, *shader_wire);',
 				#'ECS::get().addCamera(entID, globals.camera);
 				'	ECS::get().addTransform(entID, trf);',
 
 			]
+			if 'shader' in meshes[n]:
+				sname = meshes[n]['shader']
+				init_meshes.append('ECS::get().addShader(entID, *shader_%s);' % sname)
 
 	init_meshes.append('}')
 	draw_loop.append('}')
@@ -586,8 +574,8 @@ def test_python():
 	lib.netghost_window_init(320, 240)
 	lib.netghost_init_shaders()
 	lib.netghost_init_meshes()
-	time.sleep(5)
-	lib.netghost_window_close()
+	#time.sleep(5)
+	#lib.netghost_window_close()
 
 def test_exe():
 	exe = build(shared=False)
