@@ -50,9 +50,16 @@ for i in range(MAX_SCRIPTS_PER_OBJECT):
 		bpy.props.PointerProperty(name='script%s'%i, type=bpy.types.Text)
 	)
 
+bpy.types.Object.netghost_script_init = bpy.props.PointerProperty(name='script init', type=bpy.types.Text)
+
+bpy.types.Object.netghost_glsl_vertex = bpy.props.PointerProperty(name='vertex shader', type=bpy.types.Text)
+bpy.types.Object.netghost_glsl_fragment = bpy.props.PointerProperty(name='fragment shader', type=bpy.types.Text)
+
 
 def netghost2json():
 	dump = {}
+	vshaders = {}
+	fshaders = {}
 	for ob in bpy.data.objects:
 		if ob.type=='MESH':
 			print('dumping mesh:', ob)
@@ -65,6 +72,17 @@ def netghost2json():
 				'indices':[],
 				'scripts':[],
 			}
+			if ob.netghost_glsl_vertex:
+				txt = ob.netghost_glsl_vertex
+				if txt.name not in vshaders:
+					vshaders[txt.name] = txt.as_string()
+				dump[ob.name]['vshader'] = txt.name
+			if ob.netghost_glsl_fragment:
+				txt = ob.netghost_glsl_fragment
+				if txt.name not in fshaders:
+					fshaders[txt.name] = txt.as_string()
+				dump[ob.name]['fshader'] = txt.name
+
 			if ob.parent:
 				dump[ob.name]['parent'] = ob.parent.name
 			for face in ob.data.polygons:
@@ -171,5 +189,10 @@ def test():
 
 
 if __name__=='__main__':
-	test()
+	if '--dump' in sys.argv:
+		tmpj = '/tmp/dump.json'
+		open(tmpj,'w').write( netghost2json() )
+
+	else:
+		test()
 
