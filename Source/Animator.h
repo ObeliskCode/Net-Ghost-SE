@@ -5,8 +5,10 @@
 #include <glm/gtx/string_cast.hpp>
 #include <map>
 #include <vector>
-#include <assimp/scene.h>
-#include <assimp/Importer.hpp>
+#ifndef NOASS
+	#include <assimp/scene.h>
+	#include <assimp/Importer.hpp>
+#endif
 #include <Skeleton.h>
 #include <Bone.h>
 

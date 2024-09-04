@@ -9,34 +9,54 @@ import os, sys, subprocess, ctypes, time, json
 #
 ##
 
+__thisdir = os.path.split(os.path.abspath(__file__))[0]
+EMSDK = os.path.join(__thisdir, 'emsdk')
 
+def emsdk_update():
+	subprocess.check_call(['git', 'pull'], cwd=EMSDK)
+	subprocess.check_call(['./emsdk', 'install', 'latest'], cwd=EMSDK)
+	subprocess.check_call(['./emsdk', 'activate', 'latest'], cwd=EMSDK)
 
-if '--wasm' in sys.argv and not os.path.isdir('./emsdk'):
+if '--wasm' in sys.argv and not os.path.isdir( EMSDK ):
 	cmd = ['git', 'clone', '--depth', '1', 'https://github.com/emscripten-core/emsdk.git']
 	print(cmd)
 	subprocess.check_call(cmd)
-	subprocess.check_call(['git', 'pull'], cwd='./emsdk')
-	subprocess.check_call(['./emsdk', 'install', 'latest'], cwd='./emsdk')
-	subprocess.check_call(['./emsdk', 'activate', 'latest'], cwd='./emsdk')
+	emsdk_update()
 
-EMCC = os.path.abspath('./emsdk/upstream/emscripten/emcc')
+EMCC = os.path.join(EMSDK, 'upstream/emscripten/emcc')
+if not EMCC and '--wasm' in sys.argv:
+	emsdk_update()
 
-if not os.path.isdir('./blender') or '--blender-install' in sys.argv:
-	cmd = 'git clone --depth 1 https://github.com/blender/blender.git'
-	print(cmd)
-	subprocess.check_call(cmd.split())
-	#cmd = 'python3 ./blender/build_files/utils/make_update.py --use-linux-libraries' #compiled on Rocky8 and huge!
-	cmd = 'python3 ./blender/build_files/utils/make_update.py --no-libraries'
-	print(cmd)
-	subprocess.check_call(cmd.split(), cwd='./blender')
-	#subprocess.check_call(['make', 'update'], cwd='./blender')
-	subprocess.check_call(['make'], cwd='./blender')
+if '--blender-install' in sys.argv:
+	if '--blender-git' in sys.argv:
+		if not os.path.isdir('./blender'):
+			cmd = 'git clone --depth 1 https://github.com/blender/blender.git'
+			print(cmd)
+			subprocess.check_call(cmd.split())
+		cmd = 'python3 ./blender/build_files/utils/make_update.py --no-libraries'
+		print(cmd)
+		subprocess.check_call(cmd.split(), cwd='./blender')
+		subprocess.check_call(['make'], cwd='./blender')
+	elif 'fedora' in os.uname().nodename:
+		os.system('sudo dnf install blender')
+	else:
+		os.system('sudo apt install blender')
 
 
 BLENDER = 'blender'
 
 BLENDER_EXPORTER = '''
 import bpy, json
+
+## NetGhost Blender DNA/RNA
+MAX_SCRIPTS_PER_OBJECT = 8
+for i in range(MAX_SCRIPTS_PER_OBJECT):
+	setattr(
+		bpy.types.Object, 
+		'netghost_script' + str(i), 
+		bpy.props.PointerProperty(name='NetGhost C++ Script', type=bpy.types.Text)
+	)
+
 
 dump = {}
 for ob in bpy.data.objects:
@@ -48,13 +68,18 @@ for ob in bpy.data.objects:
 			'scl'  : list(ob.scale),
 			'verts': [(v.co.x,v.co.y,v.co.z) for v in ob.data.vertices],
 			'normals': [(v.normal.x, v.normal.y, v.normal.z) for v in ob.data.vertices],
-			'indices':[]
+			'indices':[],
+			'scripts':[],
 		}
 		if ob.parent:
 			dump[ob.name]['parent'] = ob.parent.name
 		for face in ob.data.polygons:
 			for i in range(3):
 				dump[ob.name]['indices'].append(face.vertices[i])
+		for i in range(MAX_SCRIPTS_PER_OBJECT):
+			txt = getattr(ob, 'netghost_script'+str(i))
+			if txt:
+				dump[ob.name]['scripts'].append( txt.as_string() )
 
 print(dump)
 open('/tmp/__b2netghost__.json','w').write(json.dumps(dump))
@@ -85,14 +110,10 @@ else:
 	C = "gcc"
 
 
-srcdir = os.path.abspath("./Source")
+srcdir = os.path.join(__thisdir,"Source")
 assert os.path.isdir(srcdir)
-
-asset_dir = os.path.abspath("./Resources")
-if not os.path.isdir(asset_dir):
-	asset_dir = os.path.abspath("./3D_OpenGL_Engine")
+asset_dir = os.path.join(__thisdir, "Resources")
 assert os.path.isdir(asset_dir)
-
 shaders_dir = os.path.join(asset_dir, 'shaders')
 assert os.path.isdir(shaders_dir)
 
@@ -321,7 +342,7 @@ def genmain():
 
 	blends = []
 	for arg in sys.argv:
-		if arg.endswith('.blend'): blends.append(arg)
+		if arg.endswith( ('.blend', '.json') ): blends.append(arg)
 
 	init_meshes = [
 		'extern "C" void netghost_init_meshes(){',
@@ -329,36 +350,76 @@ def genmain():
 		'	Model *mdl;',
 		'	unsigned int entID;',
 	]
+
+	draw_loop = [
+		'extern "C" void netghost_redraw(){',
+		'	Entity self;',
+
+	]
+
 	open('/tmp/__b2netghost__.py','w').write(BLENDER_EXPORTER)
 	if not blends:
 		## exports just the default Cube
 		blends.append(None)
 	for blend in blends:
-		cmd = [BLENDER]
-		if blend: cmd.append(blend)
-		cmd += ['--background', '--python', '/tmp/__b2netghost__.py']
-		print(cmd)
-		subprocess.check_call(cmd)
-		meshes = json.loads(open('/tmp/__b2netghost__.json').read())
+		if blend and blend.endswith('.json'):
+			meshes = json.loads(open(blend).read())
+		else:
+			cmd = [BLENDER]
+			if blend: cmd.append(blend)
+			cmd += ['--background', '--python', '/tmp/__b2netghost__.py']
+			print(cmd)
+			subprocess.check_call(cmd)
+			meshes = json.loads(open('/tmp/__b2netghost__.json').read())
+
+		allprops = {}
 		for n in meshes:
+			if 'props' in meshes[n]:
+				for k in meshes[n]['props']:
+					if k not in allprops:
+						allprops[k]=1
+						draw_loop.append('float %s;' % k)
+
+		for n in meshes:
+			print(meshes[n])
+
 			verts = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['verts'] ]
 			norms = ['{%sf,%sf,%sf}' % tuple(vec) for vec in meshes[n]['normals'] ]
 
 			o.append('Mesh *mesh_%s;' % n)
 			o.append('static const __vertex__ _arr_%s[%s] = {%s};' % (n, len(verts), ','.join(verts)))
 			o.append('static const __vertex__ _narr_%s[%s] = {%s};' % (n, len(norms), ','.join(norms)))
+			o.append('unsigned short __ID__%s;' % n)
 
-			print(meshes[n])
+			if 'props' in meshes[n]:
+				for k in meshes[n]['props']:
+					val = meshes[n]['props'][k]
+					o.append('float %s_prop_%s = %s;' %(n, k, val))
 
-			## because Vertex is template magic, we can't do static const stuff with it?
-			#verts = ['Vertex(%sf,%sf,%sf)' % tuple(vec) for vec in meshes[n]['verts'] ]
+			draw_loop += [
+				'	ECS::get().DrawEntity(__ID__%s);' % n,
+			]
+			if 'scripts' in meshes[n] and meshes[n]['scripts']:
+				draw_loop.append('	self = ECS::get().getEntity(__ID__%s);' % n)
+
+				if 'props' in meshes[n]:
+					for k in meshes[n]['props']:
+						## gets global and sets to local
+						draw_loop.append('%s = %s_prop_%s;' %(k, n, k))
+
+
+				for cpp in meshes[n]['scripts']:
+					draw_loop.append(cpp)
+
+				if 'props' in meshes[n]:
+					for k in meshes[n]['props']:
+						## sets global to local
+						draw_loop.append('%s_prop_%s = %s;' %(n, k, k))
+
+
 			indices = [str(i) for i in meshes[n]['indices'] ]
 
 			init_meshes += [
-				#'auto _verts_%s = std::vector<Vertex>{%s};' % (n, ','.join(verts)),
-				#'static std::vector<Vertex> _verts_%s = {%s};' % (n, ','.join(verts)),
-				#'static std::vector<Vertex> _verts_%s = {%s};' % (n, ','.join(verts)),
-				#'std::vector<Vertex> _verts_%s(_arr_%s, _arr_%s + sizeof(_arr_%s) / sizeof(_arr_%s[0]) );' % (n,n,n,n,n),
 
 				'	std::vector<Vertex> _verts_%s;' % n,
 				'	for (auto i=0; i<%s; i++){' % len(verts),
@@ -387,7 +448,7 @@ def genmain():
 				'	mdl->meshes.push_back(*mesh_%s);' % n,
 
 				'	entID = ECS::get().createEntity();',
-
+				'	__ID__%s = (unsigned short)entID;' % n,
 				'	ECS::get().addModel(entID, mdl);',
 				'	ECS::get().addShader(entID, *shader_wire);',
 				#'ECS::get().addCamera(entID, globals.camera);
@@ -396,13 +457,14 @@ def genmain():
 			]
 
 	init_meshes.append('}')
+	draw_loop.append('}')
 
 
-	o = "\n".join(o + init_shaders + init_meshes)
+	o = "\n".join(o + init_shaders + init_meshes + draw_loop)
 	return o
 
 
-def build(shared=True, assimp=False, wasm=False, debug_shaders=False):
+def build(shared=True, assimp=False, wasm=False, debug_shaders='--debug-shaders' in sys.argv):
 	cpps = []
 	obfiles = []
 	for file in os.listdir(srcdir):
@@ -517,7 +579,7 @@ def bind_lib(lib):
 	lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
 
 def test_python():
-	lib = build( debug_shaders=True )
+	lib = build()
 	print(lib.netghost_window_init)
 	print(lib.netghost_update)
 	bind_lib(lib)
