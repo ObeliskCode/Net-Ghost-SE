@@ -661,8 +661,19 @@ def test_wasm():
 
 
 if __name__=='__main__':
-	if '--wasm' in sys.argv:
-		test_wasm()
+	output = None
+	for arg in sys.argv:
+		if arg.startswith('--output='):
+			output = arg.split('=')[-1]
+
+	if output:
+		if '--wasm' in sys.argv:
+			lib = build(wasm=True)
+			open(output,'wb').write(open(lib,'rb').read())
+
 	else:
-		test_python()
+		if '--wasm' in sys.argv:
+			test_wasm()
+		else:
+			test_python()
 
