@@ -262,6 +262,32 @@ extern "C" void netghost_update(){
 
 '''
 
+NGHOST_MAIN_WEB = '''
+
+void downloadSucceeded(emscripten_fetch_t *fetch) {
+	printf("Finished downloading %llu bytes from URL %s.\\n", fetch->numBytes, fetch->url);
+	// The data is now available at fetch->data[0] through fetch->data[fetch->numBytes-1];
+	emscripten_fetch_close(fetch); // Free data associated with the fetch.
+}
+
+void downloadFailed(emscripten_fetch_t *fetch) {
+	printf("Downloading %s failed, HTTP failure status code: %d.\\n", fetch->url, fetch->status);
+	emscripten_fetch_close(fetch); // Also free data on failure.
+}
+
+
+int main(){
+	emscripten_fetch_attr_t attr;
+	emscripten_fetch_attr_init(&attr);
+	strcpy(attr.requestMethod, "GET");
+	attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
+	attr.onsuccess = downloadSucceeded;
+	attr.onerror = downloadFailed;
+	emscripten_fetch(&attr, "/Cube");
+}
+
+'''
+
 def minify(f):
 	if f.endswith('.glsl'):
 		glsl = open(os.path.join(shaders_dir, f)).read()
@@ -286,10 +312,21 @@ def genmain():
 		'#include "Scene.h"',
 		#'#include "VBO.h"',
 		'struct __vertex__{float x; float y; float z;};',
+	]
+	if '--wasm' in sys.argv:
+		o += [
+			'#include <stdio.h>',
+			'#include <string.h>',
+			'#include <emscripten/fetch.h>',
+		]
+
+	o += [
 		NGHOST_HEADER,
 		NGHOST_GLFW,
 		NGHOST_UPDATE,
 	]
+	if '--wasm' in sys.argv:
+		o.append(NGHOST_MAIN_WEB)
 
 	font = None
 	blends = []
@@ -359,7 +396,7 @@ def genmain():
 		'	GUI::get().RenderText(*shader_text, "Hello World", 10, 10, 0.75f, glm::vec3(1.f, 1.f, 1.f));',
 		'	glDisable(GL_BLEND);',
 		'	glfwSwapBuffers(window);',
-
+		'	glfwPollEvents();',
 	]
 
 	if not blends:
@@ -535,8 +572,9 @@ def build(shared=True, assimp=False, wasm=False, debug_shaders='--debug-shaders'
 
 	if wasm:
 		cmd = [
-			EMCC, '--no-entry',
+			EMCC, #'--no-entry',
 			#'-s', 'ERROR_ON_UNDEFINED_SYMBOLS=0',
+			'-s', 'FETCH',
 			'-s', 'SINGLE_FILE',
 			'-s', 'ENVIRONMENT=web',
 			'-s', 'WASM=1',
