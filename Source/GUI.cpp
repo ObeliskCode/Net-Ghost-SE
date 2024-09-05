@@ -1,6 +1,8 @@
 #include "GUI.h"
 
 GUI* GUI::instance = nullptr; // definition class variable
+extern unsigned char __netghost_font__[];
+extern unsigned int   __netghost_font_size__;
 
 GUI::GUI() {
 	FT_Library ft;
@@ -11,11 +13,20 @@ GUI::GUI() {
 	}
 
 	FT_Face face;
-	if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face))
-	{
-		std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
-		return;
-	}
+	#ifdef USE_EXTERN_FONTS
+		if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face))
+		{
+			std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+			return;
+		}
+	#else
+		if (FT_New_Memory_Face(ft, (FT_Byte*)__netghost_font__, __netghost_font_size__, 0, &face))
+		{
+			std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+			return;
+		}
+
+	#endif
 
 	FT_Set_Pixel_Sizes(face, 0, 48);
 

@@ -41,6 +41,13 @@ if not bpy:
 assert bpy
 import json
 
+_thisdir = os.path.split(os.path.abspath(__file__))[0]
+if '--debug' in sys.argv:
+	builder_script = os.path.join(_thisdir, 'build.py')
+	print('builder_script:', builder_script)
+	assert os.path.isfile(builder_script)
+
+
 ## NetGhost Blender DNA/RNA
 MAX_SCRIPTS_PER_OBJECT = 8
 for i in range(MAX_SCRIPTS_PER_OBJECT):
@@ -54,6 +61,22 @@ bpy.types.Object.netghost_script_init = bpy.props.PointerProperty(name='script i
 
 bpy.types.Object.netghost_glsl_vertex = bpy.props.PointerProperty(name='vertex shader', type=bpy.types.Text)
 bpy.types.Object.netghost_glsl_fragment = bpy.props.PointerProperty(name='fragment shader', type=bpy.types.Text)
+
+
+bpy.types.Object.netghost_spawnable = bpy.props.BoolProperty(name='spawnable')
+bpy.types.Object.netghost_owner = bpy.props.PointerProperty(name='owner', type=bpy.types.Text)
+bpy.types.Object.netghost_prefab = bpy.props.PointerProperty(name='prefab', type=bpy.types.Collection)
+
+bpy.types.Object.netghost_public = bpy.props.BoolProperty(name='PUBLIC')
+bpy.types.Object.netghost_public_r = bpy.props.BoolProperty(name='readable')
+bpy.types.Object.netghost_public_w = bpy.props.BoolProperty(name='writeable')
+bpy.types.Object.netghost_public_x = bpy.props.BoolProperty(name='executable')
+
+bpy.types.Object.netghost_fri = bpy.props.BoolProperty(name='FRIENDS')
+bpy.types.Object.netghost_fri_r = bpy.props.BoolProperty(name='readable')
+bpy.types.Object.netghost_fri_w = bpy.props.BoolProperty(name='writeable')
+bpy.types.Object.netghost_fri_x = bpy.props.BoolProperty(name='executable')
+
 
 
 def netghost2json():
@@ -117,6 +140,32 @@ def netghost2json():
 	return json.dumps({'objects':dump, 'vshaders':vshaders, 'fshaders':fshaders, 'shaders':shaders})
 
 @bpy.utils.register_class
+class NetGhostNetPanel(bpy.types.Panel):
+	bl_idname = 'OBJECT_PT_NetGhost_Net_Panel'
+	bl_label = 'NetGhost Network'
+	bl_space_type = 'PROPERTIES'
+	bl_region_type = 'WINDOW'
+	bl_context = 'object'
+
+	def draw(self, context):
+		if not context.active_object: return
+		self.layout.prop(context.active_object, 'netghost_spawnable')
+		self.layout.prop(context.active_object, 'netghost_owner')
+		self.layout.prop(context.active_object, 'netghost_prefab')
+		self.layout.prop(context.active_object, 'netghost_public')
+		if context.active_object.netghost_public:
+			self.layout.prop(context.active_object, 'netghost_public_r')
+			self.layout.prop(context.active_object, 'netghost_public_w')
+			self.layout.prop(context.active_object, 'netghost_public_x')
+
+		self.layout.prop(context.active_object, 'netghost_fri')
+		if context.active_object.netghost_fri:
+			self.layout.prop(context.active_object, 'netghost_fri_r')
+			self.layout.prop(context.active_object, 'netghost_fri_w')
+			self.layout.prop(context.active_object, 'netghost_fri_x')
+
+
+@bpy.utils.register_class
 class NetGhostGLSLPanel(bpy.types.Panel):
 	bl_idname = 'OBJECT_PT_NetGhost_GLSL_Panel'
 	bl_label = 'NetGhost GLSL'
@@ -161,8 +210,8 @@ class NetGhostExport(bpy.types.Operator):
 		tmpj = '/tmp/b2ghost.json'
 		open(tmpj,'w').write( netghost2json() )
 		cmd = ['python3', './build.py', tmpj]
-		print(cmd)
-		subprocess.check_call(cmd)
+		print(cmd, _thisdir)
+		subprocess.check_call(cmd, cwd=_thisdir)
 		return {'FINISHED'}
 
 @bpy.utils.register_class
@@ -175,8 +224,8 @@ class NetGhostExportWasm(bpy.types.Operator):
 		tmpj = '/tmp/b2ghost.json'
 		open(tmpj,'w').write( netghost2json() )
 		cmd = ['python3', './build.py', '--wasm', tmpj]
-		print(cmd)
-		subprocess.check_call(cmd)
+		print(cmd, _thisdir)
+		subprocess.check_call(cmd, cwd=_thisdir)
 		return {'FINISHED'}
 
 
