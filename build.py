@@ -197,7 +197,12 @@ extern "C" void netghost_window_init(int w, int h) {
 		printf("Failed to initialize GLEW!.\\n");
 		return;
 	}
-
+	std::cout << "window pointer:" << window << std::endl;
+	Globals::get().screenWidth=w;
+	Globals::get().screenHeight=h;
+	Globals::get().camera->setDims(w,h);
+	Globals::get().handCam->setDims(w,h);
+	glViewport(0, 0, w, h);
 	// enable depth buffer
 	glEnable(GL_DEPTH_TEST);
 	// emable stencil test
@@ -374,6 +379,7 @@ def genmain():
 		if 'vert' in s and 'frag' in s:
 			o.append('Shader *shader_%s;' % tag)
 			init_shaders += [
+				'	std::cout << "shader init: %s" << std::endl;' % tag,
 				'	shader_%s = new Shader();' % tag,
 				'	shader_%s->set_vshader("%s");' % (tag, minify(s['vert'])),
 				'	shader_%s->set_fshader("%s");' % (tag, minify(s['frag'])),
@@ -391,11 +397,11 @@ def genmain():
 	draw_loop = [
 		'extern "C" void netghost_redraw(){',
 		'	Entity self;',
+		'	glClearColor(1.0,0.5,0.5, 1.0);',
 		'	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);',
 		'	glEnable(GL_BLEND);',
 		'	GUI::get().RenderText(*shader_text, "Hello World", 10, 10, 0.75f, glm::vec3(1.f, 1.f, 1.f));',
 		'	glDisable(GL_BLEND);',
-		'	glfwSwapBuffers(window);',
 		'	glfwPollEvents();',
 	]
 
@@ -439,6 +445,7 @@ def genmain():
 					o.append('float %s_prop_%s = %s;' %(n, k, val))
 
 			draw_loop += [
+				'	std::cout << "drawing: %s" << std::endl;' % n,
 				'	ECS::get().DrawEntity(__ID__%s);' % n,
 			]
 			if 'scripts' in meshes[n] and meshes[n]['scripts']:
@@ -488,20 +495,23 @@ def genmain():
 				'	mdl = new Model();',
 				## this probably should be a pointer to the mesh, not a copy.  using std::move here breaks the shareablity of the Mesh with other models
 				'	mdl->meshes.push_back(*mesh_%s);' % n,
-
+				'	std::cout << "mesh init: %s" << std::endl;' % n,
 				'	entID = ECS::get().createEntity();',
 				'	__ID__%s = (unsigned short)entID;' % n,
 				'	ECS::get().addModel(entID, mdl);',
-				#'	ECS::get().addShader(entID, *shader_wire);',
-				#'ECS::get().addCamera(entID, globals.camera);
+				'	ECS::get().addCamera(entID, Globals::get().camera);',
 				'	ECS::get().addTransform(entID, trf);',
-
+				'	ECS::get().addWireFrame(entID, 3.0f, 4.0f, 6.0f);',
 			]
 			if 'shader' in meshes[n]:
 				sname = meshes[n]['shader']
 				init_meshes.append('ECS::get().addShader(entID, *shader_%s);' % sname)
+			else:
+				init_meshes.append('ECS::get().addShader(entID, *shader_wire);')
 
 	init_meshes.append('}')
+
+	draw_loop.append('	glfwSwapBuffers(window);')
 	draw_loop.append('}')
 
 
@@ -629,13 +639,17 @@ def test_python():
 	print(lib.netghost_window_init)
 	print(lib.netghost_update)
 	bind_lib(lib)
+	print('init_window')
 	lib.netghost_window_init(320, 240)
+	print('init_shaders')
 	lib.netghost_init_shaders()
+	print('init_meshes')
 	lib.netghost_init_meshes()
 	while True:
+		print('redraw')
 		lib.netghost_redraw()
+		time.sleep(1)
 
-	#time.sleep(5)
 	#lib.netghost_window_close()
 
 def test_exe():
