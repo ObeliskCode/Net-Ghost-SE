@@ -42,7 +42,7 @@ if not bpy:
 
 ## Imports ##
 assert bpy
-import json
+import mathutils, json
 from http.server import HTTPServer
 from http.server import BaseHTTPRequestHandler
 LOCALHOST_PORT = 8000
