@@ -418,6 +418,14 @@ def genmain():
 			print(cmd)
 			subprocess.check_call(cmd)
 			info = json.loads(open('/tmp/dump.json').read())
+		
+		cameras = info['cameras']
+		for n in cameras:
+			#todo
+
+		lights = info['lights']
+		for n in lights:
+			#todo
 
 		meshes = info['objects']
 		allprops = {}
