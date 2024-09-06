@@ -372,7 +372,6 @@ def genmain( gen_ctypes=None, gen_js=None ):
 	font = None
 	blends = []
 	shaders = {}
-	user_shader = 0
 	for arg in sys.argv:
 		if arg.endswith((".blend", ".json")):
 			blends.append(arg)
@@ -435,6 +434,8 @@ def genmain( gen_ctypes=None, gen_js=None ):
 		"	//unsigned int entID;",
 	]
 
+	user_js = []
+
 	if not blends:
 		## exports just the default Cube
 		blends.append(None)
@@ -451,6 +452,8 @@ def genmain( gen_ctypes=None, gen_js=None ):
 			info = json.loads(open("/tmp/dump.json").read())
 
 		shaders.update(info['shaders'])
+		if 'javascript' in info and info['javascript']:
+			user_js.append(info['javascript'])
 
 		cameras = info["cameras"]
 		for n in cameras:
@@ -502,13 +505,19 @@ def genmain( gen_ctypes=None, gen_js=None ):
 				'EMSCRIPTEN_KEEPALIVE',
 				'extern "C" void set_%s_pos(float x, float y, float z){' % n,
 				'   transform_%s->setTranslation(glm::vec3(x, y, z));' % n,
-				'}'
+				'}',
+				'EMSCRIPTEN_KEEPALIVE',
+				'extern "C" void set_%s_rot(float x, float y, float z){' % n,
+				'   transform_%s->setRotation(glm::vec3(x, y, z));' % n,
+				'}',
 			]
 			if gen_ctypes is not None:
 				gen_ctypes['set_%s_pos' % n] = [ctypes.c_float, ctypes.c_float, ctypes.c_float]
+				gen_ctypes['set_%s_rot' % n] = [ctypes.c_float, ctypes.c_float, ctypes.c_float]
 
 			if gen_js is not None:
 				gen_js['set_%s_pos' % n] = 'function (x,y,z){Module.ccall("set_%s_pos","number", ["number","number","number"],[x,y,z]);}' % n
+				gen_js['set_%s_rot' % n] = 'function (x,y,z){Module.ccall("set_%s_rot","number", ["number","number","number"],[x,y,z]);}' % n
 
 			draw_loop += [
 				'	std::cout << "drawing: %s" << std::endl;' % n,
@@ -613,6 +622,9 @@ def genmain( gen_ctypes=None, gen_js=None ):
 	draw_loop.append("	glfwSwapBuffers(window);")
 	draw_loop.append("}")
 
+	if user_js and gen_js:
+		gen_js['__ghostuser__'] = 'function(){%s;}' % ';'.join(user_js)
+
 	o = "\n".join(
 		o + helper_funcs + init_shaders + init_cameras + init_lights + init_meshes + draw_loop
 	)
@@ -697,6 +709,10 @@ def build(
 			'console.log("ghostnet: extern C functions: %s");' % ','.join( list(gen_js.keys()) ),
 			gen_js_wrapper( gen_js ),
 		]
+		if '__ghostuser__' in gen_js:
+			## call user scripts
+			js.append('setTimeout(ghostapi.__ghostuser__, 1000);')
+
 		open(jslib, 'w').write( '\n'.join(js) )
 		cmd = (
 			[
