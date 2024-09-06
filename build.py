@@ -405,6 +405,20 @@ def genmain():
 		'	glfwPollEvents();',
 	]
 
+	init_cameras = [
+		'extern "C" void netghost_init_cameras(){',
+		'	//Transform *trf;',
+		'	//Model *mdl;',
+		'	//unsigned int entID;',
+	]
+
+	init_lights = [
+		'extern "C" void netghost_init_lights(){',
+		'	//Transform *trf;',
+		'	//Model *mdl;',
+		'	//unsigned int entID;',
+	]
+
 	if not blends:
 		## exports just the default Cube
 		blends.append(None)
