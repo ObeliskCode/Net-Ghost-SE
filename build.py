@@ -366,8 +366,8 @@ def genmain( gen_ctypes=None, gen_js=None ):
 	if gen_ctypes is not None:
 		gen_ctypes['netghost_window_init'] = [ctypes.c_int, ctypes.c_int]
 	if gen_js is not None:
-		gen_js['netghost_window_init'] = 'function (x,y) Module.ccall("netghost_window_init", "number", ["number", "number"], [x,y]);'
-		gen_js['netghost_init_meshes'] = 'function () Module.ccall("netghost_init_meshes", "number", [], []);'
+		gen_js['netghost_window_init'] = 'function (x,y) {Module.ccall("netghost_window_init", "number", ["number", "number"], [x,y]);}'
+		gen_js['netghost_init_meshes'] = 'function () {Module.ccall("netghost_init_meshes", "number", [], []);}'
 
 	font = None
 	blends = []
@@ -506,6 +506,9 @@ def genmain( gen_ctypes=None, gen_js=None ):
 			]
 			if gen_ctypes is not None:
 				gen_ctypes['set_%s_pos' % n] = [ctypes.c_float, ctypes.c_float, ctypes.c_float]
+
+			if gen_js is not None:
+				gen_js['set_%s_pos' % n] = 'function (x,y,z){Module.ccall("set_%s_pos","number", ["number","number","number"],[x,y,z]);}' % n
 
 			draw_loop += [
 				'	std::cout << "drawing: %s" << std::endl;' % n,
@@ -689,7 +692,12 @@ def build(
 
 	if wasm:
 		jslib = '/tmp/ghostlib.js'
-		open(jslib, 'w').write( gen_js_wrapper( gen_js) )
+		js = [
+			'console.log("ghostnet: post wasm load stage");',
+			'console.log("ghostnet: extern C functions: %s");' % ','.join( list(gen_js.keys()) ),
+			gen_js_wrapper( gen_js ),
+		]
+		open(jslib, 'w').write( '\n'.join(js) )
 		cmd = (
 			[
 				EMCC,  #'--no-entry',
