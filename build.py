@@ -555,11 +555,13 @@ def genmain():
                 init_meshes.append("ECS::get().addShader(entID, *shader_wire);")
 
     init_meshes.append("}")
+	init_cameras.append("}")
+	init_lights.append("}")
 
     draw_loop.append("	glfwSwapBuffers(window);")
     draw_loop.append("}")
 
-    o = "\n".join(o + init_shaders + init_meshes + draw_loop)
+    o = "\n".join(o + init_shaders + init_cameras + init_lights + init_meshes + draw_loop)
     return o
 
 
