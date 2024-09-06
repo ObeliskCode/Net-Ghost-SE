@@ -318,6 +318,25 @@ def minify(f):
 
     return "\\n".join(o)
 
+def get_default_shaders():
+    shaders = {}
+    for file in os.listdir(shaders_dir):
+        if "Vert" in file:
+            tag = file.split("Vert")[0]
+            if tag not in shaders:
+                shaders[tag] = {}
+            shaders[tag]["vert"] = file
+        elif "Frag" in file:
+            tag = file.split("Frag")[0]
+            if tag not in shaders:
+                shaders[tag] = {}
+            shaders[tag]["frag"] = file
+        elif "Geom" in file:
+            tag = file.split("Geom")[0]
+            if tag not in shaders:
+                shaders[tag] = {}
+            shaders[tag]["geom"] = file
+    return shaders
 
 def genmain():
     o = [
@@ -369,36 +388,6 @@ def genmain():
         "unsigned int   __netghost_font_size__ = %s;" % len(font),
     ]
 
-    if not shaders:
-        for file in os.listdir(shaders_dir):
-            if "Vert" in file:
-                tag = file.split("Vert")[0]
-                if tag not in shaders:
-                    shaders[tag] = {}
-                shaders[tag]["vert"] = file
-            elif "Frag" in file:
-                tag = file.split("Frag")[0]
-                if tag not in shaders:
-                    shaders[tag] = {}
-                shaders[tag]["frag"] = file
-            elif "Geom" in file:
-                tag = file.split("Geom")[0]
-                if tag not in shaders:
-                    shaders[tag] = {}
-                shaders[tag]["geom"] = file
-
-    init_shaders = ['extern "C" void netghost_init_shaders(){']
-    for tag in shaders:
-        s = shaders[tag]
-        if "vert" in s and "frag" in s:
-            o.append("Shader *shader_%s;" % tag)
-            init_shaders += [
-                '	std::cout << "shader init: %s" << std::endl;' % tag,
-                "	shader_%s = new Shader();" % tag,
-                '	shader_%s->set_vshader("%s");' % (tag, minify(s["vert"])),
-                '	shader_%s->set_fshader("%s");' % (tag, minify(s["frag"])),
-            ]
-    init_shaders.append("}")
 
     init_meshes = [
         'extern "C" void netghost_init_meshes(){',
@@ -446,6 +435,8 @@ def genmain():
             print(cmd)
             subprocess.check_call(cmd)
             info = json.loads(open("/tmp/dump.json").read())
+
+        shaders.update(info['shaders'])
 
         cameras = info["cameras"]
         for n in cameras:
@@ -557,6 +548,30 @@ def genmain():
     init_meshes.append("}")
     init_cameras.append("}")
     init_lights.append("}")
+
+    if not shaders:
+    	## use all the default shaders in ./Resources/shaders/*.glsl
+    	shaders.update( get_default_shaders() )
+    else:
+    	# note: the text shader is minimal required for engine
+    	if 'text' not in shaders:
+    		## the user could define their own? our text shader probably should be called __text__
+    		shaders['text'] = get_default_shaders()['text']
+
+
+    init_shaders = ['extern "C" void netghost_init_shaders(){']
+    for tag in shaders:
+        s = shaders[tag]
+        if "vert" in s and "frag" in s:
+            o.append("Shader *shader_%s;" % tag)
+            init_shaders += [
+                '	std::cout << "shader init: %s" << std::endl;' % tag,
+                "	shader_%s = new Shader();" % tag,
+                '	shader_%s->set_vshader("%s");' % (tag, minify(s["vert"])),
+                '	shader_%s->set_fshader("%s");' % (tag, minify(s["frag"])),
+            ]
+    init_shaders.append("}")
+
 
     draw_loop.append("	glfwSwapBuffers(window);")
     draw_loop.append("}")
