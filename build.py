@@ -715,6 +715,10 @@ def test_python():
     lib.netghost_window_init(320, 240)
     print("init_shaders")
     lib.netghost_init_shaders()
+    print("init_cameras")
+    lib.netghost_init_cameras()
+    print("init_lights")
+    lib.netghost_init_lights()
     print("init_meshes")
     lib.netghost_init_meshes()
     while True:
