@@ -61,6 +61,8 @@ def try_run_server():
 
 def netghost2json():
     dump = {}
+    camdump = {}
+    lightdump = {}
     shaders = {}
     vshaders = {}
     fshaders = {}
@@ -127,6 +129,8 @@ def netghost2json():
     return json.dumps(
         {
             "objects": dump,
+            "cameras": camdump,
+            "lights": lightdump,
             "vshaders": vshaders,
             "fshaders": fshaders,
             "shaders": shaders,
