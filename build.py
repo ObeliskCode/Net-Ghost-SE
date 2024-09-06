@@ -223,8 +223,6 @@ extern "C" void netghost_window_init(int w, int h) {
 	// enable 8x MSAA
 	glfwWindowHint(GLFW_SAMPLES, 8);
 	glEnable(GL_MULTISAMPLE);
-	// enable smooth shading vs flat
-	glShadeModel(GL_SMOOTH);
 	// Enable Culling
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
