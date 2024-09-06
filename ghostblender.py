@@ -241,6 +241,24 @@ class netghost:
 		netghost.servers.append(d)
 		return klass
 
+	@staticmethod
+	def render(name, width=128, height=128):
+		for o in bpy.data.objects: o.hide_render=True
+		ob = bpy.data.objects[name]
+		ob.hide_render=False
+		bounds = get_object_bounds(ob)
+		print('rendering:', ob, bounds)
+		bpy.context.scene.render.filepath='/tmp/__netghost__.png'
+		bpy.context.scene.render.resolution_x = width
+		bpy.context.scene.render.resolution_y = height
+		cam = bpy.data.objects['Camera']
+		cam.location = bounds[0] - mathutils.Vector((0, bounds[1].y, 0))
+		cam.data.ortho_scale = max(bounds[1].x, bounds[1].z) * 2
+		bpy.ops.render.render(animation=False, write_still=True)
+		for o in bpy.data.objects: o.hide_render=False
+		return open(bpy.context.scene.render.filepath, 'rb').read()
+
+
 _timer = None
 @bpy.utils.register_class
 class HttpServerOperator(bpy.types.Operator):
@@ -435,6 +453,28 @@ class NetGhostWorldPanel(bpy.types.Panel):
 		self.layout.operator("netghost.export_wasm", icon="CONSOLE")
 		self.layout.operator("netghost.export", icon="CONSOLE")
 		self.layout.operator("netghost.simple_server", icon="CONSOLE")
+
+
+## from HolyBlender
+def get_object_bounds(obj) -> (mathutils.Vector, mathutils.Vector):
+	_min = mathutils.Vector((float('inf'), float('inf'), float('inf')))
+	_max = mathutils.Vector((float('-inf'), float('-inf'), float('-inf')))
+	## note: blender already has object bounds that is more acurate than below,
+	## because the blender cached bbox should take into account modifiers, see obj.dimensions
+	## https://blender.stackexchange.com/questions/8459/get-blender-x-y-z-and-bounding-box-with-script
+	## TODO, below is very slow on big meshes, this needs rewrite
+	if obj.type == 'MESH':
+		for vertex in obj.data.vertices:
+			_min.x = min((obj.matrix_world @ vertex.co).x, _min.x)
+			_min.y = min((obj.matrix_world @ vertex.co).y, _min.y)
+			_min.z = min((obj.matrix_world @ vertex.co).z, _min.z)
+			_max.x = max((obj.matrix_world @ vertex.co).x, _max.x)
+			_max.y = max((obj.matrix_world @ vertex.co).y, _max.y)
+			_max.z = max((obj.matrix_world @ vertex.co).z, _max.z)
+	else:
+		raise RuntimeError('not implemented type: %s' % obj.type)
+	return ((_min + _max) / 2, _max - _min)
+
 
 
 TEST1 = """
