@@ -1,3 +1,19 @@
+def blender_scene_view():
+	html = ['<!DOCTYPE html><html><head></head><body>']
+
+	html.append('<h1>objects:</h1><ul>')
+	for ob in bpy.data.objects:
+		html += [
+			'<li><a href="/bpy/data/objects/%s">%s</a> : %s</li>' % (ob.name, ob.name, ob.type),
+		]
+		if ob.type=='MESH':
+			html += [
+				'<li>render:<a href="/bpy/data/objects/%s.png">%s</a></li>' % (ob.name, ob.name),
+			]
+	html.append('</ul>')
+	html.append('</body></html>')
+	return '\n'.join(html)
+
 @netghost.http
 class BlenderServer(BaseHTTPRequestHandler):
 	def do_GET (self):
@@ -13,14 +29,13 @@ class BlenderServer(BaseHTTPRequestHandler):
 			if '__index__.html' in bpy.data.texts:
 				ret = bpy.data.texts['__index__.html'].as_string()
 			else:
-				for t in bpy.data.texts:
-					if t.name.endswith('.html'):
-						ret = t.as_string()
-						break
+				ret = blender_scene_view()
 		elif self.path.startswith('/bpy/data/objects/'):
 			name = self.path.split('/')[-1]
 			if name in bpy.data.objects:
 				ret = str(bpy.data.objects[name])
+			elif name.endswith('.png'):
+				ret = netghost.render(name[:-4])
 		elif os.path.isfile(self.path[1:]): # the .wasm file
 			ret = open(self.path[1:], 'rb').read()
 		elif self.path.endswith('.glb'):
