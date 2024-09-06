@@ -65,6 +65,10 @@ def netghost2json():
     vshaders = {}
     fshaders = {}
     for ob in bpy.data.objects:
+        if ob.type == "CAMERA":
+            print("dumping camera:", ob)
+        if ob.type == "LIGHT":
+            print("dumping light:", ob)
         if ob.type == "MESH":
             print("dumping mesh:", ob)
             dump[ob.name] = {
