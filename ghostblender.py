@@ -69,8 +69,17 @@ def netghost2json():
     for ob in bpy.data.objects:
         if ob.type == "CAMERA":
             print("dumping camera:", ob)
+            camdump[ob.name] = {
+                "pos": list(ob.location),
+                "rot": list(ob.rotation_euler),
+                "scripts": [],
+            }
         if ob.type == "LIGHT":
             print("dumping light:", ob)
+            lightdump[ob.name] = {
+                "pos": list(ob.location),
+                "scripts": [],
+            }
         if ob.type == "MESH":
             print("dumping mesh:", ob)
             dump[ob.name] = {
