@@ -541,15 +541,17 @@ def genmain( gen_ctypes=None ):
                 "		auto uv = glm::vec2(0,0);",  ## TODO
                 "		_verts_%s.push_back(Vertex{v,norms,uv});" % n,
                 "	}",
-                "	static const auto _indices_%s = std::vector<GLuint>{%s};"
-                % (n, ",".join(indices)),
+
+                "	static const auto _indices_%s = std::vector<GLuint>{%s};" % (n, ",".join(indices)),
+
                 "	mesh_%s = new Mesh(_verts_%s, _indices_%s);" % (n, n, n),
-                "	trf = new Transform();",
-                "	trf->setTranslation(glm::vec3(%sf, %sf, %sf));"
-                % tuple(meshes[n]["pos"]),
+                "	transform_%s = new Transform();" % n,
+                "   trf = transform_%s;" % n,
+                "	trf->setTranslation(glm::vec3(%sf, %sf, %sf));" % tuple(meshes[n]["pos"]),
                 "	trf->setScale(glm::vec3(%sf, %sf, %sf));" % tuple(meshes[n]["scl"]),
-                "	trf->setRotation(glm::vec3(%sf, %sf, %sf));"
-                % tuple(meshes[n]["rot"]),
+
+                "	trf->setRotation(glm::vec3(%sf, %sf, %sf));" % tuple(meshes[n]["rot"]),
+
                 "	mdl = new Model();",
                 ## this probably should be a pointer to the mesh, not a copy.  using std::move here breaks the shareablity of the Mesh with other models
                 "	mdl->meshes.push_back(*mesh_%s);" % n,
