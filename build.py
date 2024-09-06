@@ -339,7 +339,7 @@ def get_default_shaders():
 			shaders[tag]["geom"] = file
 	return shaders
 
-def genmain( gen_ctypes=None ):
+def genmain( gen_ctypes=None, gen_js=None ):
 	o = [
 		"#define GLEW_STATIC",
 		"#include <GL/glew.h>",
@@ -367,6 +367,9 @@ def genmain( gen_ctypes=None ):
 
 	if gen_ctypes is not None:
 		gen_ctypes['netghost_window_init'] = [ctypes.c_int, ctypes.c_int]
+	if gen_js is not None:
+		gen_js['netghost_window_init'] = 'function (x,y) Module.ccall("netghost_window_init", "number", ["number", "number"], [x,y]);'
+		gen_js['netghost_init_meshes'] = 'function () Module.ccall("netghost_init_meshes", "number", [], []);'
 
 	font = None
 	blends = []
@@ -619,6 +622,8 @@ def build(
 	shared=True, assimp=False, wasm=False, debug_shaders="--debug-shaders" in sys.argv,
 	gen_ctypes=False,
 ):
+	if wasm: gen_js = {}
+
 	cpps = []
 	obfiles = []
 	for file in os.listdir(srcdir):
@@ -667,7 +672,10 @@ def build(
 	tmp_main = "/tmp/__main__.cpp"
 	tmpo = tmp_main + ".o"
 	obfiles.append(tmpo)
-	open(tmp_main, "w").write(genmain( gen_ctypes=gen_ctypes))
+	if '--wasm' in sys.argv:
+		open(tmp_main, "w").write(genmain( gen_js=gen_js))
+	else:
+		open(tmp_main, "w").write(genmain( gen_ctypes=gen_ctypes))
 	cmd = [CC, "-std=c++20", "-c", "-fPIC", "-o", tmpo, tmp_main]
 	if not assimp:
 		cmd.append("-DNOASS")
@@ -682,31 +690,25 @@ def build(
 	os.system("ls -lh /tmp/*.o")
 
 	if wasm:
+		jslib = '/tmp/ghostlib.js'
+		open(jslib, 'w').write( gen_js_wrapper( gen_js) )
 		cmd = (
 			[
 				EMCC,  #'--no-entry',
 				#'-s', 'ERROR_ON_UNDEFINED_SYMBOLS=0',
-				"-s",
-				"FETCH",
-				"-s",
-				"SINGLE_FILE",
-				"-s",
-				"ENVIRONMENT=web",
-				"-s",
-				"WASM=1",
-				"-s",
-				"AUTO_JS_LIBRARIES",
+				'-sEXPORTED_RUNTIME_METHODS=ccall,cwrap',
+				'--post-js', jslib,
+				"-s","FETCH",
+				"-s","SINGLE_FILE",
+				"-s","ENVIRONMENT=web",
+				"-s","WASM=1",
+				"-s","AUTO_JS_LIBRARIES",
 				#'-s', 'MINIMAL_RUNTIME=2',  ## not compatible with glfw
-				"-s",
-				"USE_BULLET=1",
-				"-s",
-				"USE_FREETYPE=1",
-				"-s",
-				"USE_WEBGL2=1",
-				"-s",
-				"USE_GLFW=3",
-				"-s",
-				"NO_FILESYSTEM=1",
+				"-s","USE_BULLET=1",
+				"-s","USE_FREETYPE=1",
+				"-s","USE_WEBGL2=1",
+				"-s","USE_GLFW=3",
+				"-s","NO_FILESYSTEM=1",
 				"-o",
 				"/tmp/netghost.html",
 			]
@@ -750,6 +752,13 @@ def build(
 	subprocess.check_call(cmd)
 	return exe
 
+def gen_js_wrapper( info ):
+	js = ['var ghostapi = {']
+	for n in info:
+		js.append('	%s : %s,' % (n, info[n]))
+	js.append('}')
+	print('\n'.join(js))
+	return '\n'.join(js)
 
 def bind_lib(lib, cdefs):
 	#lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
