@@ -137,8 +137,7 @@ def netghost2json():
 					dump[ob.name]["props"] = props
 
 	print(dump)
-	return json.dumps(
-		{
+	info = 	{
 			"objects": dump,
 			"cameras": camdump,
 			"lights": lightdump,
@@ -146,7 +145,11 @@ def netghost2json():
 			"fshaders": fshaders,
 			"shaders": shaders,
 		}
-	)
+	if bpy.data.worlds[0].netghost_javascript:
+		js = bpy.data.worlds[0].netghost_javascript.as_string()
+		print(js)
+		info['javascript'] = js
+	return json.dumps(info)
 
 
 def test():
@@ -191,6 +194,9 @@ for i in range(MAX_SCRIPTS_PER_OBJECT):
 
 bpy.types.World.netghost_server = bpy.props.PointerProperty(
 	name="NetGhost Server", type=bpy.types.Text
+)
+bpy.types.World.netghost_javascript = bpy.props.PointerProperty(
+	name="NetGhost JavaScript", type=bpy.types.Text
 )
 
 
@@ -450,6 +456,7 @@ class NetGhostWorldPanel(bpy.types.Panel):
 
 	def draw(self, context):
 		self.layout.prop(context.world, "netghost_server")
+		self.layout.prop(context.world, "netghost_javascript")
 		self.layout.operator("netghost.export_wasm", icon="CONSOLE")
 		self.layout.operator("netghost.export", icon="CONSOLE")
 		self.layout.operator("netghost.simple_server", icon="CONSOLE")
