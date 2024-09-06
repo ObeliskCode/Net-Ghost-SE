@@ -193,6 +193,7 @@ NGHOST_GLFW = """
 extern "C" void netghost_window_close(){
 	glfwTerminate();
 }
+EMSCRIPTEN_KEEPALIVE
 extern "C" void netghost_window_init(int w, int h) {
 	glfwInit();
 	window = glfwCreateWindow(w, h, "NetGhost", NULL, NULL); // windowed
@@ -338,7 +339,7 @@ def get_default_shaders():
             shaders[tag]["geom"] = file
     return shaders
 
-def genmain():
+def genmain( gen_ctypes=None ):
     o = [
         "#define GLEW_STATIC",
         "#include <GL/glew.h>",
@@ -353,6 +354,8 @@ def genmain():
             "#include <string.h>",
             "#include <emscripten/fetch.h>",
         ]
+    else:
+        o.append('#define EMSCRIPTEN_KEEPALIVE')
 
     o += [
         NGHOST_HEADER,
@@ -361,6 +364,9 @@ def genmain():
     ]
     if "--wasm" in sys.argv:
         o.append(NGHOST_MAIN_WEB)
+
+    if gen_ctypes is not None:
+        gen_ctypes['netghost_window_init'] = [ctypes.c_int, ctypes.c_int]
 
     font = None
     blends = []
@@ -388,8 +394,11 @@ def genmain():
         "unsigned int   __netghost_font_size__ = %s;" % len(font),
     ]
 
+    helper_funcs = []
+
 
     init_meshes = [
+        'EMSCRIPTEN_KEEPALIVE',
         'extern "C" void netghost_init_meshes(){',
         "	Transform *trf;",
         "	Model *mdl;",
@@ -397,6 +406,7 @@ def genmain():
     ]
 
     draw_loop = [
+        'EMSCRIPTEN_KEEPALIVE',
         'extern "C" void netghost_redraw(){',
         "	Entity self;",
         "	glClearColor(1.0,0.5,0.5, 1.0);",
@@ -408,6 +418,7 @@ def genmain():
     ]
 
     init_cameras = [
+        'EMSCRIPTEN_KEEPALIVE',
         'extern "C" void netghost_init_cameras(){',
         "	//Transform *trf;",
         "	//Model *mdl;",
@@ -415,6 +426,7 @@ def genmain():
     ]
 
     init_lights = [
+        'EMSCRIPTEN_KEEPALIVE',
         'extern "C" void netghost_init_lights(){',
         "	//Transform *trf;",
         "	//Model *mdl;",
@@ -468,6 +480,7 @@ def genmain():
             norms = ["{%sf,%sf,%sf}" % tuple(vec) for vec in meshes[n]["normals"]]
 
             o.append("Mesh *mesh_%s;" % n)
+            o.append("Transform *transform_%s;" % n)
             o.append(
                 "static const __vertex__ _arr_%s[%s] = {%s};"
                 % (n, len(verts), ",".join(verts))
@@ -482,6 +495,15 @@ def genmain():
                 for k in meshes[n]["props"]:
                     val = meshes[n]["props"][k]
                     o.append("float %s_prop_%s = %s;" % (n, k, val))
+
+            helper_funcs += [
+                'EMSCRIPTEN_KEEPALIVE',
+                'extern "C" void set_%s_pos(float x, float y, float z){' % n,
+                '   transform_%s->setTranslation(glm::vec3(x, y, z));' % n,
+                '}'
+            ]
+            if gen_ctypes is not None:
+                gen_ctypes['set_%s_pos' % n] = [ctypes.c_float, ctypes.c_float, ctypes.c_float]
 
             draw_loop += [
                 '	std::cout << "drawing: %s" << std::endl;' % n,
@@ -559,7 +581,10 @@ def genmain():
     		shaders['text'] = get_default_shaders()['text']
 
 
-    init_shaders = ['extern "C" void netghost_init_shaders(){']
+    init_shaders = [
+        'EMSCRIPTEN_KEEPALIVE',
+        'extern "C" void netghost_init_shaders(){',
+    ]
     for tag in shaders:
         s = shaders[tag]
         if "vert" in s and "frag" in s:
@@ -577,13 +602,14 @@ def genmain():
     draw_loop.append("}")
 
     o = "\n".join(
-        o + init_shaders + init_cameras + init_lights + init_meshes + draw_loop
+        o + helper_funcs + init_shaders + init_cameras + init_lights + init_meshes + draw_loop
     )
     return o
 
 
 def build(
-    shared=True, assimp=False, wasm=False, debug_shaders="--debug-shaders" in sys.argv
+    shared=True, assimp=False, wasm=False, debug_shaders="--debug-shaders" in sys.argv,
+    gen_ctypes=False,
 ):
     cpps = []
     obfiles = []
@@ -633,7 +659,7 @@ def build(
     tmp_main = "/tmp/__main__.cpp"
     tmpo = tmp_main + ".o"
     obfiles.append(tmpo)
-    open(tmp_main, "w").write(genmain())
+    open(tmp_main, "w").write(genmain( gen_ctypes=gen_ctypes))
     cmd = [CC, "-std=c++20", "-c", "-fPIC", "-o", tmpo, tmp_main]
     if not assimp:
         cmd.append("-DNOASS")
@@ -717,15 +743,21 @@ def build(
     return exe
 
 
-def bind_lib(lib):
-    lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
-
+def bind_lib(lib, cdefs):
+    #lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
+    for n in cdefs:
+        func = getattr(lib, n)
+        print('binding %s: args = %s ptr =%s' %(n,cdefs[n], func))
+        func.argtypes = tuple(cdefs[n])
 
 def test_python():
-    lib = build()
+    from random import random
+    gctypes = {}
+    lib = build( gen_ctypes=gctypes )
+
     print(lib.netghost_window_init)
     print(lib.netghost_update)
-    bind_lib(lib)
+    bind_lib(lib, gctypes)
     print("init_window")
     lib.netghost_window_init(320, 240)
     print("init_shaders")
@@ -739,6 +771,8 @@ def test_python():
     while True:
         print("redraw")
         lib.netghost_redraw()
+        if 'set_Cube_pos' in gctypes:
+            lib.set_Cube_pos(random(), random(), random())
         time.sleep(1)
 
     # lib.netghost_window_close()
