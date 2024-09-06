@@ -399,6 +399,30 @@ class NetGhostExportWasm(bpy.types.Operator):
 
 
 @bpy.utils.register_class
+class NetGhostExportWasm(bpy.types.Operator):
+	bl_idname = "netghost.simple_server"
+	bl_label = "Simple HTTP Server"
+
+	@classmethod
+	def poll(cls, context):
+		return True
+
+	def execute(self, context):
+		if not netghost.servers:
+			## load simple default server
+			scope = globals()
+			simple = open(os.path.join(_thisdir,'Resources/simple_server.py')).read()
+			print(simple)
+			exec(simple, scope, scope)
+			assert len(netghost.servers)
+
+		import webbrowser
+		webbrowser.open("http://localhost:8000/")
+		return {"FINISHED"}
+
+
+
+@bpy.utils.register_class
 class NetGhostWorldPanel(bpy.types.Panel):
 	bl_idname = "WORLD_PT_NetGhostWorld_Panel"
 	bl_label = "NetGhost Export"
@@ -410,6 +434,7 @@ class NetGhostWorldPanel(bpy.types.Panel):
 		self.layout.prop(context.world, "netghost_server")
 		self.layout.operator("netghost.export_wasm", icon="CONSOLE")
 		self.layout.operator("netghost.export", icon="CONSOLE")
+		self.layout.operator("netghost.simple_server", icon="CONSOLE")
 
 
 TEST1 = """
