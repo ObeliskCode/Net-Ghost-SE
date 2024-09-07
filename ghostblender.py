@@ -282,10 +282,10 @@ class netghost:
 		return open(tmp, 'rb').read()
 
 	@staticmethod
-	def basisu( input, output, compression=3 ):
+	def basisu( input, mode="KTX2", compression=3 ):
 		cmd = [BASISU]
 		tmp = input
-		if output.endswith('.ktx2'):
+		if mode=="KTX2":
 			cmd.append('-ktx2')
 			tmp = input[:-4] + '.ktx2'
 		else:
@@ -295,8 +295,9 @@ class netghost:
 		assert compression <= 5
 		cmd.append('-comp_level')
 		cmd.append(str(compression))
+		cmd.append(input)
 		print(cmd)
-		subprocess.check_call(cmd)
+		subprocess.check_call(cmd, cwd='/tmp')
 		return open(tmp,'rb').read()
 
 
