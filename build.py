@@ -456,8 +456,14 @@ def genmain( gen_ctypes=None, gen_js=None ):
 		# [Todo] translate this into init_cameras!
 		refcode = """
 		{
-			globals.rotX = 1;
-			globals.rotY = 1;
+				glm::vec3 pos = glm::vec3(x, y, z);
+				globals.camera->setPosition(pos);
+
+		}
+
+		{
+			globals.rotX = r;
+			globals.rotY = w;
 				
 			// rotate rotx
 			globals.camera->setOrientation(glm::rotate(globals.camera->getOrientation(), (float)globals.rotX, globals.camera->getUp()));
