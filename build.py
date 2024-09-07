@@ -55,6 +55,18 @@ if "--blender-install" in sys.argv:
 
 BLENDER = "blender"
 
+if '--monogame' in sys.argv:
+	if not os.path.isdir('./MonoGame'):
+		cmd = 'git clone https://github.com/MonoGame/MonoGame.git --depth=1'
+		print(cmd)
+		subprocess.check_call(cmd.split())
+		cmd = 'git submodule update --init --progress'
+		print(cmd)
+		subprocess.check_call(cmd.split(), cwd='./MonoGame')
+		cmd = ['bash', './build.sh']
+		print(cmd)
+		subprocess.check_call(cmd, cwd='./MonoGame')
+
 
 if "--windows" in sys.argv:
 	os.system("rm /tmp/*.o /tmp/*.exe")
