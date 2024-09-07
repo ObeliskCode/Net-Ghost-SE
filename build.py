@@ -93,6 +93,7 @@ hacks = [
 includes = [
 	"-I" + srcdir,
 	"-I/usr/include/freetype2",
+	"-I"+os.path.join(__thisdir,'basis_universal/transcoder')
 ]
 
 if "--wasm" in sys.argv:
@@ -337,7 +338,7 @@ def get_default_shaders():
 			shaders[tag]["geom"] = file
 	return shaders
 
-def genmain( gen_ctypes=None, gen_js=None ):
+def genmain( gen_ctypes=None, gen_js=None, basis_universal=True ):
 	o = [
 		"#define GLEW_STATIC",
 		"#include <GL/glew.h>",
@@ -346,6 +347,11 @@ def genmain( gen_ctypes=None, gen_js=None ):
 		#'#include "VBO.h"',
 		"struct __vertex__{float x; float y; float z;};",
 	]
+	if basis_universal:
+		o += [
+			'#include "basisu.h"',
+			'#include "basisu_transcoder.h"',
+		]
 	if "--wasm" in sys.argv:
 		o += [
 			"#include <stdio.h>",
