@@ -421,17 +421,13 @@ def genmain( gen_ctypes=None, gen_js=None ):
 	init_cameras = [
 		'EMSCRIPTEN_KEEPALIVE',
 		'extern "C" void netghost_init_cameras(){',
-		"	//Transform *trf;",
-		"	//Model *mdl;",
-		"	//unsigned int entID;",
+		"	//[function start]",
 	]
 
 	init_lights = [
 		'EMSCRIPTEN_KEEPALIVE',
 		'extern "C" void netghost_init_lights(){',
-		"	//Transform *trf;",
-		"	//Model *mdl;",
-		"	//unsigned int entID;",
+		"	//[function start]",
 	]
 
 	user_js = []
@@ -458,15 +454,17 @@ def genmain( gen_ctypes=None, gen_js=None ):
 		cameras = info["cameras"]
 		for n in cameras:
 			init_cameras += [
-				'	//std::cout << "drawing: %s" << std::endl;' % n,
-				"	//ECS::get().DrawEntity(__ID__%s);" % n,
+				'	//[Code Start %s]' % n,
+				"	",
+				"	//[Code End %s]" % n,
 			]
 
 		lights = info["lights"]
 		for n in lights:
 			init_lights += [
-				'	//std::cout << "drawing: %s" << std::endl;' % n,
-				"	//ECS::get().DrawEntity(__ID__%s);" % n,
+				'	//[Code Start %s]' % n,
+				"	",
+				"	//[Code End %s]" % n,
 			]
 
 		meshes = info["objects"]
