@@ -452,6 +452,44 @@ def genmain( gen_ctypes=None, gen_js=None ):
 			user_js.append(info['javascript'])
 
 		cameras = info["cameras"]
+
+		# [Todo] translate this into init_cameras!
+		refcode = """
+		            if (globals.cursorLocked == true)
+            {
+
+                float sensitivity = 1.0f; // mouse sens
+
+                double deltaAngle = 0.0005; // base angle we move in
+
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+                double xMiddle = (double)globals.screenWidth / 2.0;
+                double yMiddle = (double)globals.screenHeight / 2.0;
+
+                double xOffset = xMiddle - xpos;
+                double yOffset = yMiddle - ypos;
+
+                globals.rotX += xOffset * sensitivity * deltaAngle;
+                globals.rotY += yOffset * sensitivity * deltaAngle;
+
+                glfwSetCursorPos(window, xMiddle, yMiddle);
+            }
+
+                    // double ts = glfwGetTime();
+        { // mouse panning
+            globals.camera->setOrientation(glm::rotate(globals.camera->getOrientation(), (float)globals.rotX, globals.camera->getUp()));
+
+            glm::vec3 perpendicular = glm::normalize(glm::cross(globals.camera->getOrientation(), globals.camera->getUp()));
+            // Clamps rotY so it doesn't glitch when looking directly up or down
+            if (!((globals.rotY > 0 && globals.camera->getOrientation().y > 0.99f) || (globals.rotY < 0 && globals.camera->getOrientation().y < -0.99f)))
+                globals.camera->setOrientation(glm::rotate(globals.camera->getOrientation(), (float)globals.rotY, perpendicular));
+
+            globals.rotX = 0.0;
+            globals.rotY = 0.0;
+        }
+
+		"""
 		for n in cameras:
 			init_cameras += [
 				'	//[Code Start %s]' % n,
