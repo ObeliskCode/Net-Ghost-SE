@@ -60,12 +60,21 @@ if '--monogame' in sys.argv:
 		cmd = 'git clone https://github.com/MonoGame/MonoGame.git --depth=1'
 		print(cmd)
 		subprocess.check_call(cmd.split())
-		cmd = 'git submodule update --init --progress'
+		cmd = 'git submodule update --init --progress --depth 1'
 		print(cmd)
 		subprocess.check_call(cmd.split(), cwd='./MonoGame')
 		cmd = ['bash', './build.sh']
 		print(cmd)
 		subprocess.check_call(cmd, cwd='./MonoGame')
+	else:
+		monogame_dir = './MonoGame/MonoGame.Framework'
+		for cs in os.listdir(monogame_dir):
+			if cs.endswith('.cs'):
+				cso = '/tmp/%s.dll' % os.path.split(cs)[-1]
+				cmd = ['mcs', os.path.join(monogame_dir,cs), '-target:library', '--out:'+cso]
+				print(cmd)
+				subprocess.check_call(cmd)
+
 
 
 if "--windows" in sys.argv:
