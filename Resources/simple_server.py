@@ -6,9 +6,9 @@ def blender_scene_view():
 		html += [
 			'<li><a href="/bpy/data/objects/%s">%s</a> : %s</li>' % (ob.name, ob.name, ob.type),
 		]
-		if ob.type=='MESH':
+		if ob.type=='MESH' and not ob.parent:
 			html += [
-				'<li>render:<a href="/bpy/data/objects/%s.png">%s</a></li>' % (ob.name, ob.name),
+				'<li><img src="/bpy/data/objects/%s.png"/></li>' % ob.name,
 			]
 	html.append('</ul>')
 	html.append('</body></html>')
