@@ -235,8 +235,15 @@ class netghost:
 
 	@staticmethod
 	def render(name, width=128, height=128, zoom=3):
-		for o in bpy.data.objects: o.hide_render=True
 		ob = bpy.data.objects[name]
+		if ob.type=='EMPTY':
+			if ob.empty_display_type=='IMAGE':
+				return open(ob.data.filepath,'rb').read()
+			## TODO render collections
+			return ''
+		for o in bpy.data.objects:
+			if o.type=='LIGHT': continue
+			o.hide_render=True
 		ob.hide_render=False
 		bounds = get_object_bounds(ob)
 		print('rendering:', ob, bounds)
@@ -252,7 +259,11 @@ class netghost:
 		cam.data.type = 'ORTHO'
 		bpy.ops.render.render(animation=False, write_still=True)
 		for o in bpy.data.objects: o.hide_render=False
-		return open(bpy.context.scene.render.filepath, 'rb').read()
+		tmp = '/tmp/tmp.png'
+		cmd = ['convert', bpy.context.scene.render.filepath, '-fuzz', '80%', '-trim', '+repage', tmp]
+		print(cmd)
+		subprocess.check_call(cmd)
+		return open(tmp, 'rb').read()
 
 
 _timer = None
