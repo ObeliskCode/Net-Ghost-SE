@@ -9,6 +9,7 @@ def blender_scene_view():
 		if ob.type=='MESH' and not ob.parent:
 			html += [
 				'<li><img src="/bpy/data/objects/%s.png"/></li>' % ob.name,
+				'<li><a href="/bpy/data/objects/%s.ktx2"/>KTX2</a></li>' % ob.name,
 			]
 		elif ob.type=='EMPTY' and ob.empty_display_type=='IMAGE' and ob.data:
 			## a basic sprite image
@@ -42,6 +43,12 @@ class BlenderServer(BaseHTTPRequestHandler):
 				ret = str(bpy.data.objects[name])
 			elif name.endswith('.png'):
 				ret = netghost.render(name[:-4])
+			elif name.endswith('.ktx2'):
+				ret = netghost.render(name[:-5])
+				iput = '/tmp/__basisu__.png'
+				open(iput, 'wb').write(ret)
+				ret = netghost.basisu( iput )  ## defaults to KTX2
+
 		elif os.path.isfile(self.path[1:]): # the .wasm file
 			ret = open(self.path[1:], 'rb').read()
 		elif self.path.endswith('.glb'):
