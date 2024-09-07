@@ -715,10 +715,14 @@ def build(
 
 	if wasm:
 		jslib = '/tmp/ghostlib.js'
+		basisu_webgl = os.path.join(__thisdir, 'webgl/texture/')
+		assert os.path.isdir(basisu_webgl)
 		js = [
 			'console.log("ghostnet: post wasm load stage");',
 			'console.log("ghostnet: extern C functions: %s");' % ','.join( list(gen_js.keys()) ),
 			gen_js_wrapper( gen_js ),
+			open(os.path.join(basisu_webgl, 'renderer.js')).read(),
+			open(os.path.join(basisu_webgl, 'dxt-to-rgb565.js')).read(),
 		]
 		if '__ghostuser__' in gen_js:
 			## call user scripts
