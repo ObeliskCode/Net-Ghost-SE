@@ -650,7 +650,7 @@ def genmain( gen_ctypes=None, gen_js=None, basis_universal=True ):
 
 def build(
 	shared=True, assimp=False, wasm=False, debug_shaders="--debug-shaders" in sys.argv,
-	gen_ctypes=False,
+	gen_ctypes=False, basis_universal=True,
 ):
 	if wasm: gen_js = {}
 
@@ -698,6 +698,14 @@ def build(
 			cmd += hacks
 			print(cmd)
 			subprocess.check_call(cmd)
+
+	if basis_universal:
+		buo = '/tmp/basis_universal.o'
+		cmd = [CC, "-std=c++20", "-c", "-fPIC", "-o", buo, os.path.join(__thisdir,'basis_universal/transcoder/basisu_transcoder.cpp')]
+		cmd += includes
+		print(cmd)
+		subprocess.check_call(cmd)
+		obfiles.append(buo)
 
 	tmp_main = "/tmp/__main__.cpp"
 	tmpo = tmp_main + ".o"
