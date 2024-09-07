@@ -453,29 +453,6 @@ def genmain( gen_ctypes=None, gen_js=None ):
 
 		cameras = info["cameras"]
 
-		# [Todo] translate this into init_cameras!
-		refcode = """
-		{
-				glm::vec3 pos = glm::vec3(x, y, z);
-				globals.camera->setPosition(pos);
-
-		}
-
-		{
-			globals.rotX = r;
-			globals.rotY = w;
-				
-			// rotate rotx
-			globals.camera->setOrientation(glm::rotate(globals.camera->getOrientation(), (float)globals.rotX, globals.camera->getUp()));
-
-			// rotate roty
-			glm::vec3 perpendicular = glm::normalize(glm::cross(globals.camera->getOrientation(), globals.camera->getUp()));
-			// Clamps rotY so it doesn't glitch when looking directly up or down
-			if (!((globals.rotY > 0 && globals.camera->getOrientation().y > 0.99f) || (globals.rotY < 0 && globals.camera->getOrientation().y < -0.99f)))
-				globals.camera->setOrientation(glm::rotate(globals.camera->getOrientation(), (float)globals.rotY, perpendicular));
-		}
-
-		"""
 		for n in cameras:
 			init_cameras += [
 				'	//[Code Start %s]' % n,
@@ -487,7 +464,13 @@ def genmain( gen_ctypes=None, gen_js=None ):
 		for n in lights:
 			init_lights += [
 				'	//[Code Start %s]' % n,
-				"	",
+				"	globals.camera->setPosition(glm::vec3(x, y, z));",
+				"	globals.rotX = r;",
+				"	globals.rotY = w;",
+				"	globals.camera->setOrientation(glm::rotate(globals.camera->getOrientation(), (float)globals.rotX, globals.camera->getUp()));",
+				"	glm::vec3 perpendicular = glm::normalize(glm::cross(globals.camera->getOrientation(), globals.camera->getUp()));",
+				"	if (!((globals.rotY > 0 && globals.camera->getOrientation().y > 0.99f) || (globals.rotY < 0 && globals.camera->getOrientation().y < -0.99f))){",
+				"		globals.camera->setOrientation(glm::rotate(globals.camera->getOrientation(), (float)globals.rotY, perpendicular));}",
 				"	//[Code End %s]" % n,
 			]
 
