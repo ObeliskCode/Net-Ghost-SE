@@ -42,23 +42,9 @@ if not bpy:
 
 ## Imports ##
 assert bpy
-import mathutils, json
+import math, mathutils, json
 from http.server import HTTPServer
 from http.server import BaseHTTPRequestHandler
-LOCALHOST_PORT = 8000
-
-
-def try_run_server():
-	global _SERVER_
-	if _SERVER_:
-		print("server is already running?")
-	s = BLENDER_SERVER
-	if bpy.data.worlds[0].holyserver:
-		s = bpy.data.worlds[0].holyserver.as_string()
-
-	scope = globals()
-	exec(s, scope, scope)
-	_SERVER_ = True
 
 
 def netghost2json():
@@ -248,18 +234,22 @@ class netghost:
 		return klass
 
 	@staticmethod
-	def render(name, width=128, height=128):
+	def render(name, width=128, height=128, zoom=3):
 		for o in bpy.data.objects: o.hide_render=True
 		ob = bpy.data.objects[name]
 		ob.hide_render=False
 		bounds = get_object_bounds(ob)
 		print('rendering:', ob, bounds)
+		bpy.context.scene.render.film_transparent = True
+		bpy.context.scene.render.image_settings.color_mode = 'RGBA'
 		bpy.context.scene.render.filepath='/tmp/__netghost__.png'
-		bpy.context.scene.render.resolution_x = width
-		bpy.context.scene.render.resolution_y = height
+		bpy.context.scene.render.resolution_x = width * zoom
+		bpy.context.scene.render.resolution_y = height * zoom
 		cam = bpy.data.objects['Camera']
 		cam.location = bounds[0] - mathutils.Vector((0, bounds[1].y, 0))
-		cam.data.ortho_scale = max(bounds[1].x, bounds[1].z) * 2
+		cam.rotation_euler = [math.pi/2, 0,0]
+		cam.data.ortho_scale = max(bounds[1].x, bounds[1].z) * zoom
+		cam.data.type = 'ORTHO'
 		bpy.ops.render.render(animation=False, write_still=True)
 		for o in bpy.data.objects: o.hide_render=False
 		return open(bpy.context.scene.render.filepath, 'rb').read()
