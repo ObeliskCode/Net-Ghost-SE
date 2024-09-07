@@ -147,6 +147,7 @@ libs = [
 	"-lGLEW",
 	"-lglfw",
 	"-lopenal",
+	"-lzstd", # fixes linker error on Linux 6.8.0-41 [Noel]
 ]
 
 if not "--wasm" in sys.argv:
