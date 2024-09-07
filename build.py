@@ -462,15 +462,21 @@ def genmain( gen_ctypes=None, gen_js=None ):
 
 		lights = info["lights"]
 		for n in lights:
+			x = 0.0
+			y = 0.0
+			z = 0.0
+			r = 0.0
+			w = 0.0
+			# not working yet
 			init_lights += [
 				'	//[Code Start %s]' % n,
-				"	globals.camera->setPosition(glm::vec3(x, y, z));",
-				"	globals.rotX = r;",
-				"	globals.rotY = w;",
-				"	globals.camera->setOrientation(glm::rotate(globals.camera->getOrientation(), (float)globals.rotX, globals.camera->getUp()));",
-				"	glm::vec3 perpendicular = glm::normalize(glm::cross(globals.camera->getOrientation(), globals.camera->getUp()));",
-				"	if (!((globals.rotY > 0 && globals.camera->getOrientation().y > 0.99f) || (globals.rotY < 0 && globals.camera->getOrientation().y < -0.99f))){",
-				"		globals.camera->setOrientation(glm::rotate(globals.camera->getOrientation(), (float)globals.rotY, perpendicular));}",
+				"	//Globals.camera->setPosition(glm::vec3(%s, %s, %s));" % (x, y, z),
+				"	//Globals.rotX = %s;" % r,
+				"	//Globals.rotY = %s;" % w,
+				"	//Globals.camera->setOrientation(glm::rotate(Globals.camera->getOrientation(), (float)Globals.rotX, Globals.camera->getUp()));",
+				"	//glm::vec3 perpendicular = glm::normalize(glm::cross(Globals.camera->getOrientation(), Globals.camera->getUp()));",
+				"	//if (!((Globals.rotY > 0 && Globals.camera->getOrientation().y > 0.99f) || (Globals.rotY < 0 && Globals.camera->getOrientation().y < -0.99f))){",
+				"		//Globals.camera->setOrientation(glm::rotate(Globals.camera->getOrientation(), (float)Globals.rotY, perpendicular));}",
 				"	//[Code End %s]" % n,
 			]
 
