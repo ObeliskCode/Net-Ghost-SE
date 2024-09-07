@@ -10,6 +10,12 @@ def blender_scene_view():
 			html += [
 				'<li><img src="/bpy/data/objects/%s.png"/></li>' % ob.name,
 			]
+		elif ob.type=='EMPTY' and ob.empty_display_type=='IMAGE' and ob.data:
+			## a basic sprite image
+			html += [
+				'<li><img src="/bpy/data/objects/%s.png"/></li>' % ob.name,
+			]
+
 	html.append('</ul>')
 	html.append('</body></html>')
 	return '\n'.join(html)
