@@ -55,6 +55,18 @@ if "--blender-install" in sys.argv:
 
 BLENDER = "blender"
 
+if '--monogame' in sys.argv:
+	if not os.path.isdir('./MonoGame'):
+		cmd = 'git clone https://github.com/MonoGame/MonoGame.git --depth=1'
+		print(cmd)
+		subprocess.check_call(cmd.split())
+		cmd = 'git submodule update --init --progress'
+		print(cmd)
+		subprocess.check_call(cmd.split(), cwd='./MonoGame')
+		cmd = ['bash', './build.sh']
+		print(cmd)
+		subprocess.check_call(cmd, cwd='./MonoGame')
+
 
 if "--windows" in sys.argv:
 	os.system("rm /tmp/*.o /tmp/*.exe")
@@ -93,6 +105,7 @@ hacks = [
 includes = [
 	"-I" + srcdir,
 	"-I/usr/include/freetype2",
+	"-I"+os.path.join(__thisdir,'basis_universal/transcoder')
 ]
 
 if "--wasm" in sys.argv:
@@ -337,7 +350,7 @@ def get_default_shaders():
 			shaders[tag]["geom"] = file
 	return shaders
 
-def genmain( gen_ctypes=None, gen_js=None ):
+def genmain( gen_ctypes=None, gen_js=None, basis_universal=True ):
 	o = [
 		"#define GLEW_STATIC",
 		"#include <GL/glew.h>",
@@ -346,6 +359,11 @@ def genmain( gen_ctypes=None, gen_js=None ):
 		#'#include "VBO.h"',
 		"struct __vertex__{float x; float y; float z;};",
 	]
+	if basis_universal:
+		o += [
+			'#include "basisu.h"',
+			'#include "basisu_transcoder.h"',
+		]
 	if "--wasm" in sys.argv:
 		o += [
 			"#include <stdio.h>",
@@ -644,7 +662,7 @@ def genmain( gen_ctypes=None, gen_js=None ):
 
 def build(
 	shared=True, assimp=False, wasm=False, debug_shaders="--debug-shaders" in sys.argv,
-	gen_ctypes=False,
+	gen_ctypes=False, basis_universal=True,
 ):
 	if wasm: gen_js = {}
 
@@ -693,6 +711,14 @@ def build(
 			print(cmd)
 			subprocess.check_call(cmd)
 
+	if basis_universal:
+		buo = '/tmp/basis_universal.o'
+		cmd = [CC, "-std=c++20", "-c", "-fPIC", "-o", buo, os.path.join(__thisdir,'basis_universal/transcoder/basisu_transcoder.cpp')]
+		cmd += includes
+		print(cmd)
+		subprocess.check_call(cmd)
+		obfiles.append(buo)
+
 	tmp_main = "/tmp/__main__.cpp"
 	tmpo = tmp_main + ".o"
 	obfiles.append(tmpo)
@@ -715,10 +741,16 @@ def build(
 
 	if wasm:
 		jslib = '/tmp/ghostlib.js'
+		basisu_webgl = os.path.join(__thisdir, 'basis_universal/webgl/texture/')
+		assert os.path.isdir(basisu_webgl)
 		js = [
 			'console.log("ghostnet: post wasm load stage");',
 			'console.log("ghostnet: extern C functions: %s");' % ','.join( list(gen_js.keys()) ),
 			gen_js_wrapper( gen_js ),
+			open(os.path.join(basisu_webgl, 'renderer.js')).read(),
+			open(os.path.join(basisu_webgl, 'dxt-to-rgb565.js')).read(),
+			'ghostapi.dxtToRgb565 = dxtToRgb565;',
+			'ghostapi.basisu_renderer = Renderer;',
 		]
 		if '__ghostuser__' in gen_js:
 			## call user scripts

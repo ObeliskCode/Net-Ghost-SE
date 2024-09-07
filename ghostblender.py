@@ -47,6 +47,22 @@ from http.server import HTTPServer
 from http.server import BaseHTTPRequestHandler
 
 
+## Libs ##
+BUDIR = os.path.join(_thisdir,'basis_universal')
+
+if not os.path.isdir(BUDIR):
+	cmd = 'git clone --depth 1 https://github.com/BinomialLLC/basis_universal.git'
+	print(cmd)
+	subprocess.check_call(cmd.split())
+	buildir = os.path.join(BUDIR, 'build')
+	os.mkdir(buildir)
+	subprocess.check_call(['cmake', BUDIR], cwd=buildir)
+	subprocess.check_call(['make'], cwd=buildir)
+
+BASISU = os.path.join(BUDIR, 'bin/basisu')
+assert os.path.isfile(BASISU)
+
+
 def netghost2json():
 	dump = {}
 	camdump = {}
@@ -264,6 +280,25 @@ class netghost:
 		print(cmd)
 		subprocess.check_call(cmd)
 		return open(tmp, 'rb').read()
+
+	@staticmethod
+	def basisu( input, mode="KTX2", compression=3 ):
+		cmd = [BASISU]
+		tmp = input
+		if mode=="KTX2":
+			cmd.append('-ktx2')
+			tmp = input[:-4] + '.ktx2'
+		else:
+			assert output.endswith('.basis')
+			cmd.append('-uastc')
+			tmp = input[:-4] + '.basis'
+		assert compression <= 5
+		cmd.append('-comp_level')
+		cmd.append(str(compression))
+		cmd.append(input)
+		print(cmd)
+		subprocess.check_call(cmd, cwd='/tmp')
+		return open(tmp,'rb').read()
 
 
 _timer = None
