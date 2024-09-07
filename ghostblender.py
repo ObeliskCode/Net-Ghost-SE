@@ -62,6 +62,7 @@ if not os.path.isdir(BUDIR):
 BASISU = os.path.join(BUDIR, 'bin/basisu')
 assert os.path.isfile(BASISU)
 
+
 def netghost2json():
 	dump = {}
 	camdump = {}
@@ -279,6 +280,24 @@ class netghost:
 		print(cmd)
 		subprocess.check_call(cmd)
 		return open(tmp, 'rb').read()
+
+	@staticmethod
+	def basisu( input, output, compression=3 ):
+		cmd = [BASISU]
+		tmp = input
+		if output.endswith('.ktx2'):
+			cmd.append('-ktx2')
+			tmp = input[:-4] + '.ktx2'
+		else:
+			assert output.endswith('.basis')
+			cmd.append('-uastc')
+			tmp = input[:-4] + '.basis'
+		assert compression <= 5
+		cmd.append('-comp_level')
+		cmd.append(str(compression))
+		print(cmd)
+		subprocess.check_call(cmd)
+		return open(tmp,'rb').read()
 
 
 _timer = None
