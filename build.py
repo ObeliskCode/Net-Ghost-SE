@@ -481,29 +481,28 @@ def genmain( gen_ctypes=None, gen_js=None, basis_universal=True ):
 		cameras = info["cameras"]
 
 		for n in cameras:
-			init_cameras += [
-				'	//[Code Start %s]' % n,
-				"	",
-				"	//[Code End %s]" % n,
-			]
-
-		lights = info["lights"]
-		for n in lights:
 			x = 0.0
 			y = 0.0
 			z = 0.0
 			r = 0.0
 			w = 0.0
-			# not working yet
+			init_cameras += [
+				'	//[Code Start %s]' % n,
+				"	/*Globals::get().camera->setPosition(glm::vec3(%s, %s, %s));" % (x, y, z),
+				"	Globals::get().rotX = %s;" % r,
+				"	Globals::get().rotY = %s;" % w,
+				"	Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotX, Globals::get().camera->getUp()));",
+				"	glm::vec3 perpendicular = glm::normalize(glm::cross(Globals::get().camera->getOrientation(), Globals::get().camera->getUp()));",
+				"	if (!((Globals::get().rotY > 0 && Globals::get().camera->getOrientation().y > 0.99f) || (Globals::get().rotY < 0 && Globals::get().camera->getOrientation().y < -0.99f))){",
+				"		Globals::get().camera->setOrientation(glm::rotate(Globals::get().camera->getOrientation(), (float)Globals::get().rotY, perpendicular));}*/",
+				"	//[Code End %s]" % n,
+			]
+
+		lights = info["lights"]
+		for n in lights:
 			init_lights += [
 				'	//[Code Start %s]' % n,
-				"	//Globals.camera->setPosition(glm::vec3(%s, %s, %s));" % (x, y, z),
-				"	//Globals.rotX = %s;" % r,
-				"	//Globals.rotY = %s;" % w,
-				"	//Globals.camera->setOrientation(glm::rotate(Globals.camera->getOrientation(), (float)Globals.rotX, Globals.camera->getUp()));",
-				"	//glm::vec3 perpendicular = glm::normalize(glm::cross(Globals.camera->getOrientation(), Globals.camera->getUp()));",
-				"	//if (!((Globals.rotY > 0 && Globals.camera->getOrientation().y > 0.99f) || (Globals.rotY < 0 && Globals.camera->getOrientation().y < -0.99f))){",
-				"		//Globals.camera->setOrientation(glm::rotate(Globals.camera->getOrientation(), (float)Globals.rotY, perpendicular));}",
+				"	",
 				"	//[Code End %s]" % n,
 			]
 
