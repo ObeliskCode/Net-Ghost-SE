@@ -67,13 +67,9 @@ if '--monogame' in sys.argv:
 		print(cmd)
 		subprocess.check_call(cmd, cwd='./MonoGame')
 	else:
-		monogame_dir = './MonoGame/MonoGame.Framework'
-		for cs in os.listdir(monogame_dir):
-			if cs.endswith('.cs'):
-				cso = '/tmp/%s.dll' % os.path.split(cs)[-1]
-				cmd = ['mcs', os.path.join(monogame_dir,cs), '-target:library', '--out:'+cso]
-				print(cmd)
-				subprocess.check_call(cmd)
+		cmd = [ 'dotnet', 'build', os.path.join(__thisdir, 'MonoGame', 'Build.sln'), '-o:/tmp/MonoGame.dll' ]
+		print(cmd)
+		subprocess.check_call(cmd)
 
 
 
