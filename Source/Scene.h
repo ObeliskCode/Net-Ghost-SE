@@ -95,6 +95,8 @@ public:
     virtual int drawFrame(GLFWwindow *window, double frameTime) = 0;
     virtual int cleanup() = 0;
 
+    // temporary remove this! [move out of scene class!]
+    /*
     ECS &ecs = ECS::get();
     Daemon &dae = Daemon::get();
     GUI &gui = GUI::get();
@@ -103,7 +105,7 @@ public:
     ParticleSystem &particlesys = ParticleSystem::get();
     Physics &physics = Physics::get();
     Input &input = Input::get();
-    Audio &audio = Audio::get();
+    Audio &audio = Audio::get();*/
 
     static void renderScene()
     {

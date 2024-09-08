@@ -39,8 +39,6 @@ def test_python():
 	gctypes = {}
 	lib = build( gen_ctypes=gctypes )
 
-	print(lib.netghost_window_init)
-	print(lib.netghost_update)
 	bind_lib(lib, gctypes)
 	print("init_window")
 	lib.netghost_window_init(320, 240)
@@ -78,9 +76,8 @@ def test_wasm():
 	webbrowser.open(os.path.expanduser("~/Desktop/netghost.html"))
 
 
-NGHOST_HEADER = """
+NGHOST_LOCAL_VARS = """
 GLFWwindow *window;
-Scene *bp;
 double crntTime = 0.0;
 double timeStart = -1.0;
 double prevTime = timeStart;
@@ -99,6 +96,8 @@ class GenScene : public Scene
 {
 public:
 	
+	Shader textProgram;
+
 	GenScene()
 	{
 		winFun = [](GLFWwindow *window, int width, int height)
@@ -176,24 +175,64 @@ public:
 
 	int cleanup() override
 	{
-		// careful with these! not well written![BROKEN ATM]
-		LightSystem::destruct();
-		ParticleSystem::destruct();
-		Audio::destruct();
-		GUI::destruct();
-		ECS::destruct();
-		Physics::destruct();
-		Globals::destruct();
-		Input::destruct();
-		Daemon::destruct();
 		return 1;
 	}
 
 private:
 };
 
-GenScene *dp = new GenScene();
-bp = dp;
+"""
+
+NGHOST_RUN = """
+extern "C" void netghost_run(){
+	GenScene *dp = new GenScene();
+	Scene *bp = dp;
+
+	bp->setupCallbacks(window);
+	bp->loadResources(window);
+
+	/* Main Game Loop */
+	while (!glfwWindowShouldClose(window))
+	{
+		crntTime = glfwGetTime();
+
+		/* FPS counter */
+		timeDiff = crntTime - prevTime;
+		counter++;
+
+		if (timeDiff >= 1.0)
+		{
+			std::string FPS = std::to_string((1.0 / timeDiff) * counter);
+			std::string ms = std::to_string((timeDiff / counter) * 1000);
+			std::string newTitle = "Obelisk Engine - " + FPS + "FPS / " + ms + "ms";
+	#ifndef EMSCRIPTEN
+			glfwSetWindowTitle(window, newTitle.c_str());
+	#endif
+			prevTime = crntTime;
+			counter = 0;
+		}
+
+		glfwPollEvents(); // get inputs
+
+		frameTime = crntTime - lastFrame;
+		lastFrame = crntTime;
+
+		thisTick = glfwGetTime();
+		delta = thisTick - lastTick;
+
+		if (delta >= deltaTime)
+		{
+			lastTick = thisTick;
+			bp->tick(window, delta);
+		}
+
+		bp->drawFrame(window, frameTime);
+	}
+
+	bp->cleanup();
+
+	glfwTerminate();
+}
 """
 
 NGHOST_GLFW = """
@@ -243,40 +282,6 @@ extern "C" void netghost_window_init(int w, int h) {
 	glDisable(GL_BLEND);
 
 	timeStart = glfwGetTime();
-}
-
-"""
-
-NGHOST_RUN = """
-extern "C" void netghost_run(){
-	crntTime = glfwGetTime();
-
-	/* FPS counter */
-	timeDiff = crntTime - prevTime;
-	counter++;
-	if (timeDiff >= 1.0)
-	{
-		std::string FPS = std::to_string((1.0 / timeDiff) * counter);
-		std::string ms = std::to_string((timeDiff / counter) * 1000);
-		std::string newTitle = "Obelisk Engine - " + FPS + "FPS / " + ms + "ms";
-#ifndef EMSCRIPTEN
-		glfwSetWindowTitle(window, newTitle.c_str());
-#endif
-		prevTime = crntTime;
-		counter = 0;
-	}
-
-	glfwPollEvents(); // get inputs
-	frameTime = crntTime - lastFrame;
-	lastFrame = crntTime;
-	thisTick = glfwGetTime();
-	delta = thisTick - lastTick;
-	if (delta >= deltaTime){
-		lastTick = thisTick;
-		bp->tick(window, delta);
-	}
-	bp->drawFrame(window, frameTime);
-
 }
 
 """
@@ -372,9 +377,10 @@ def genmain( gen_ctypes=None, gen_js=None, basis_universal=True ):
 		o.append('#define EMSCRIPTEN_KEEPALIVE')
 
 	o += [
-		NGHOST_HEADER,
+		NGHOST_DERIVED_SCENE,
+		NGHOST_LOCAL_VARS,
 		NGHOST_GLFW,
-		NGHOST_UPDATE,
+		NGHOST_RUN,
 	]
 	if "--wasm" in sys.argv:
 		o.append(NGHOST_MAIN_WEB)
