@@ -4,6 +4,61 @@ import os, sys, subprocess, ctypes, time, json
 ## Supported by: @ObeliskCode & @brentharts
 
 
+
+## @C++
+# initialize basic GLFW window context
+##
+NGHOST_GLFW = """
+extern "C" void netghost_window_close(){
+	glfwTerminate();
+}
+EMSCRIPTEN_KEEPALIVE
+extern "C" void netghost_window_init(int w, int h) {
+	glfwInit();
+	window = glfwCreateWindow(w, h, "NetGhost", NULL, NULL); // windowed
+	if (window == NULL) {
+		printf("Failed to create GLFW window!\\n");
+		return;
+	}
+	glfwMakeContextCurrent(window);
+	if (GLEW_OK != glewInit()){
+		printf("Failed to initialize GLEW!.\\n");
+		return;
+	}
+	std::cout << "window pointer:" << window << std::endl;
+	Globals::get().screenWidth=w;
+	Globals::get().screenHeight=h;
+	Globals::get().camera->setDims(w,h);
+	Globals::get().handCam->setDims(w,h);
+	glViewport(0, 0, w, h);
+	// enable depth buffer
+	glEnable(GL_DEPTH_TEST);
+	// emable stencil test
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glStencilFunc(GL_ALWAYS, 0, 0xFF);
+	glStencilMask(0xFF);
+	// enable 8x MSAA
+	glfwWindowHint(GLFW_SAMPLES, 8);
+	glEnable(GL_MULTISAMPLE);
+	// Enable Culling
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
+	glFrontFace(GL_CW);
+	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+	// disable vsync if enabled
+	glfwSwapInterval(0);
+	// enable transparency function
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_BLEND);
+
+	timeStart = glfwGetTime();
+}
+
+"""
+
 ## @C++
 # Setup simple local structures into global (stack) memory
 ##
@@ -21,6 +76,63 @@ double lastTick = timeStart;
 double thisTick = 0.0;
 double delta;
 """
+
+
+## @C++
+# starts the main C++ run loop to be interopted with (to be ported to zig!)
+##
+NGHOST_RUN = """
+extern "C" void netghost_run(){
+	GenScene *dp = new GenScene();
+	Scene *bp = dp;
+
+	bp->setupCallbacks(window);
+	bp->loadResources(window);
+
+	/* Main Game Loop */
+	while (!glfwWindowShouldClose(window))
+	{
+		crntTime = glfwGetTime();
+
+		/* FPS counter */
+		timeDiff = crntTime - prevTime;
+		counter++;
+
+		if (timeDiff >= 1.0)
+		{
+			std::string FPS = std::to_string((1.0 / timeDiff) * counter);
+			std::string ms = std::to_string((timeDiff / counter) * 1000);
+			std::string newTitle = "Obelisk Engine - " + FPS + "FPS / " + ms + "ms";
+	#ifndef EMSCRIPTEN
+			glfwSetWindowTitle(window, newTitle.c_str());
+	#endif
+			prevTime = crntTime;
+			counter = 0;
+		}
+
+		glfwPollEvents(); // get inputs
+
+		frameTime = crntTime - lastFrame;
+		lastFrame = crntTime;
+
+		thisTick = glfwGetTime();
+		delta = thisTick - lastTick;
+
+		if (delta >= deltaTime)
+		{
+			lastTick = thisTick;
+			bp->tick(window, delta);
+		}
+
+		bp->drawFrame(window, frameTime);
+	}
+
+	bp->cleanup();
+
+	glfwTerminate();
+}
+"""
+
 
 ## @C++
 # global definition of blender generated scene
@@ -118,116 +230,6 @@ private:
 """
 
 
-## @C++
-# starts the main C++ run loop to be interopted with (to be ported to zig!)
-##
-NGHOST_RUN = """
-extern "C" void netghost_run(){
-	GenScene *dp = new GenScene();
-	Scene *bp = dp;
-
-	bp->setupCallbacks(window);
-	bp->loadResources(window);
-
-	/* Main Game Loop */
-	while (!glfwWindowShouldClose(window))
-	{
-		crntTime = glfwGetTime();
-
-		/* FPS counter */
-		timeDiff = crntTime - prevTime;
-		counter++;
-
-		if (timeDiff >= 1.0)
-		{
-			std::string FPS = std::to_string((1.0 / timeDiff) * counter);
-			std::string ms = std::to_string((timeDiff / counter) * 1000);
-			std::string newTitle = "Obelisk Engine - " + FPS + "FPS / " + ms + "ms";
-	#ifndef EMSCRIPTEN
-			glfwSetWindowTitle(window, newTitle.c_str());
-	#endif
-			prevTime = crntTime;
-			counter = 0;
-		}
-
-		glfwPollEvents(); // get inputs
-
-		frameTime = crntTime - lastFrame;
-		lastFrame = crntTime;
-
-		thisTick = glfwGetTime();
-		delta = thisTick - lastTick;
-
-		if (delta >= deltaTime)
-		{
-			lastTick = thisTick;
-			bp->tick(window, delta);
-		}
-
-		bp->drawFrame(window, frameTime);
-	}
-
-	bp->cleanup();
-
-	glfwTerminate();
-}
-"""
-
-
-
-## @C++
-# initialize basic GLFW window context
-##
-NGHOST_GLFW = """
-extern "C" void netghost_window_close(){
-	glfwTerminate();
-}
-EMSCRIPTEN_KEEPALIVE
-extern "C" void netghost_window_init(int w, int h) {
-	glfwInit();
-	window = glfwCreateWindow(w, h, "NetGhost", NULL, NULL); // windowed
-	if (window == NULL) {
-		printf("Failed to create GLFW window!\\n");
-		return;
-	}
-	glfwMakeContextCurrent(window);
-	if (GLEW_OK != glewInit()){
-		printf("Failed to initialize GLEW!.\\n");
-		return;
-	}
-	std::cout << "window pointer:" << window << std::endl;
-	Globals::get().screenWidth=w;
-	Globals::get().screenHeight=h;
-	Globals::get().camera->setDims(w,h);
-	Globals::get().handCam->setDims(w,h);
-	glViewport(0, 0, w, h);
-	// enable depth buffer
-	glEnable(GL_DEPTH_TEST);
-	// emable stencil test
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glStencilFunc(GL_ALWAYS, 0, 0xFF);
-	glStencilMask(0xFF);
-	// enable 8x MSAA
-	glfwWindowHint(GLFW_SAMPLES, 8);
-	glEnable(GL_MULTISAMPLE);
-	// Enable Culling
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
-	glFrontFace(GL_CW);
-	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-	// disable vsync if enabled
-	glfwSwapInterval(0);
-	// enable transparency function
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDisable(GL_BLEND);
-
-	timeStart = glfwGetTime();
-}
-
-"""
 
 ## @C++
 # [Todo]
