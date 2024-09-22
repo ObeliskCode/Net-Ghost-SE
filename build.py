@@ -259,6 +259,221 @@ int main(){
 """
 
 
+## @C++
+# Emscripten rewrite of Net Ghost build
+##
+# https://gist.github.com/ousttrue/0f3a11d5d28e365b129fe08f18f4e141
+# https://github.com/glfw/glfw/blob/master/deps/linmath.h
+TEST_EMS = r'''
+// emcc main.cpp -o index.html -s USE_WEBGL2=1 -s USE_GLFW=3 -s WASM=1 -std=c++1z
+
+// base:  https://www.glfw.org/docs/latest/quick.html#quick_example
+// ref: https://gist.github.com/SuperV1234/5c5ad838fe5fe1bf54f9
+
+#include <functional>
+#include <vector>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#define GL_GLEXT_PROTOTYPES
+#define EGL_EGLEXT_PROTOTYPES
+#else
+#include <glad/glad.h>
+#endif
+#include <GLFW/glfw3.h>
+#include "linmath.h"
+#include <stdlib.h>
+#include <stdio.h>
+static const struct
+{
+	float x, y;
+	float r, g, b;
+} vertices[3] =
+	{
+		{-0.6f, -0.4f, 1.f, 0.f, 0.f},
+		{0.6f, -0.4f, 0.f, 1.f, 0.f},
+		{0.f, 0.6f, 0.f, 0.f, 1.f}};
+
+static const char *vertex_shader_text =
+	"uniform mat4 MVP;\n"
+	"attribute vec3 vCol;\n"
+	"attribute vec2 vPos;\n"
+	"varying vec3 color;\n"
+	"void main()\n"
+	"{\n"
+	"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
+	"    color = vCol;\n"
+	"}\n";
+
+static const char *fragment_shader_text =
+	"precision mediump float;\n"
+	"varying vec3 color;\n"
+	"void main()\n"
+	"{\n"
+	"    gl_FragColor = vec4(color, 1.0);\n"
+	"}\n";
+
+static void error_callback(int error, const char *description)
+{
+	fprintf(stderr, "Error: %s\n", description);
+}
+static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+std::function<void()> loop;
+void main_loop() { loop(); }
+
+void check_error(GLuint shader)
+{
+	GLint result;
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
+	if (result == GL_FALSE)
+	{
+		GLint log_length;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
+		std::vector<GLchar> log(log_length);
+
+		GLsizei length;
+		glGetShaderInfoLog(shader, log.size(), &length, log.data());
+
+		error_callback(0, log.data());
+	}
+}
+
+int main(void)
+{
+	GLint mvp_location, vpos_location, vcol_location;
+	glfwSetErrorCallback(error_callback);
+	if (!glfwInit())
+		exit(EXIT_FAILURE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	auto window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+	if (!window)
+	{
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+	glfwSetKeyCallback(window, key_callback);
+	glfwMakeContextCurrent(window);
+#ifdef __EMSCRIPTEN__
+#else
+	gladLoadGL();
+#endif
+	glfwSwapInterval(1);
+	// NOTE: OpenGL error checks have been omitted for brevity
+	GLuint vertex_buffer;
+	glGenBuffers(1, &vertex_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	auto vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
+	glCompileShader(vertex_shader);
+	check_error(vertex_shader);
+
+	auto fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
+	glCompileShader(fragment_shader);
+	check_error(fragment_shader);
+
+	auto program = glCreateProgram();
+	glAttachShader(program, vertex_shader);
+	glAttachShader(program, fragment_shader);
+	glLinkProgram(program);
+	mvp_location = glGetUniformLocation(program, "MVP");
+	vpos_location = glGetAttribLocation(program, "vPos");
+	vcol_location = glGetAttribLocation(program, "vCol");
+	glEnableVertexAttribArray(vpos_location);
+	glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
+						  sizeof(vertices[0]), (void *)0);
+	glEnableVertexAttribArray(vcol_location);
+	glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE,
+						  sizeof(vertices[0]), (void *)(sizeof(float) * 2));
+
+	loop = [&] {
+		float ratio;
+		int width, height;
+		mat4x4 m, p, mvp;
+		glfwGetFramebufferSize(window, &width, &height);
+		ratio = width / (float)height;
+		glViewport(0, 0, width, height);
+		glClear(GL_COLOR_BUFFER_BIT);
+		mat4x4_identity(m);
+		mat4x4_rotate_Z(m, m, (float)glfwGetTime());
+		mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
+		mat4x4_mul(mvp, p, m);
+		glUseProgram(program);
+		glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat *)mvp);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	};
+
+#ifdef __EMSCRIPTEN__
+	emscripten_set_main_loop(main_loop, 0, true);
+#else
+	while (!glfwWindowShouldClose(window))
+		main_loop();
+#endif
+
+	glfwDestroyWindow(window);
+	glfwTerminate();
+	exit(EXIT_SUCCESS);
+}
+
+'''
+
+
+
+## @GenMain
+#
+##
+def minify(f):
+	if f.endswith(".glsl"):
+		glsl = open(os.path.join(shaders_dir, f)).read()
+	else:
+		glsl = f
+	o = []
+	for ln in glsl.splitlines():
+		if ln.strip().startswith("//"):
+			continue
+		if "//" in ln:
+			print("WARN: inline comment in GLSL", ln)
+			ln = ln.split("//")[0]
+		o.append(ln.strip())
+
+	return "\\n".join(o)
+
+
+
+
+## @GenMain
+#
+##
+def get_default_shaders():
+	shaders = {}
+	for file in os.listdir(shaders_dir):
+		if "Vert" in file:
+			tag = file.split("Vert")[0]
+			if tag not in shaders:
+				shaders[tag] = {}
+			shaders[tag]["vert"] = file
+		elif "Frag" in file:
+			tag = file.split("Frag")[0]
+			if tag not in shaders:
+				shaders[tag] = {}
+			shaders[tag]["frag"] = file
+		elif "Geom" in file:
+			tag = file.split("Geom")[0]
+			if tag not in shaders:
+				shaders[tag] = {}
+			shaders[tag]["geom"] = file
+	return shaders
+
+
 
 ## @GenMain
 # Generate a new main scene with blender bindings
@@ -569,62 +784,6 @@ def genmain( gen_ctypes=None, gen_js=None, basis_universal=True ):
 	return o
 
 
-## @Build
-#
-##
-def minify(f):
-	if f.endswith(".glsl"):
-		glsl = open(os.path.join(shaders_dir, f)).read()
-	else:
-		glsl = f
-	o = []
-	for ln in glsl.splitlines():
-		if ln.strip().startswith("//"):
-			continue
-		if "//" in ln:
-			print("WARN: inline comment in GLSL", ln)
-			ln = ln.split("//")[0]
-		o.append(ln.strip())
-
-	return "\\n".join(o)
-
-
-
-
-## @Build
-#
-##
-def get_default_shaders():
-	shaders = {}
-	for file in os.listdir(shaders_dir):
-		if "Vert" in file:
-			tag = file.split("Vert")[0]
-			if tag not in shaders:
-				shaders[tag] = {}
-			shaders[tag]["vert"] = file
-		elif "Frag" in file:
-			tag = file.split("Frag")[0]
-			if tag not in shaders:
-				shaders[tag] = {}
-			shaders[tag]["frag"] = file
-		elif "Geom" in file:
-			tag = file.split("Geom")[0]
-			if tag not in shaders:
-				shaders[tag] = {}
-			shaders[tag]["geom"] = file
-	return shaders
-
-
-
-
-
-## @Build
-#
-##
-def emsdk_update():
-	subprocess.check_call(["git", "pull"], cwd=EMSDK)
-	subprocess.check_call(["./emsdk", "install", "latest"], cwd=EMSDK)
-	subprocess.check_call(["./emsdk", "activate", "latest"], cwd=EMSDK)
 
 
 ## @Build
@@ -869,7 +1028,7 @@ def test_wasm():
 ##
 def test_ems(output='/tmp/test-glfw.html'):
 	tmp = '/tmp/test-glfw.c++'
-	open(tmp, 'w').write(TEST_GLFW)
+	open(tmp, 'w').write(TEST_EMS)
 	cmd = [
 		EMCC, '-o', output, 
 		'-std=c++1z', 
@@ -888,178 +1047,19 @@ def test_ems(output='/tmp/test-glfw.html'):
 	subprocess.check_call(cmd)
 
 
-## @C++
-# Emscripten rewrite of Net Ghost build
+
+## @Environment
+#
 ##
-# https://gist.github.com/ousttrue/0f3a11d5d28e365b129fe08f18f4e141
-# https://github.com/glfw/glfw/blob/master/deps/linmath.h
-TEST_GLFW = r'''
-// emcc main.cpp -o index.html -s USE_WEBGL2=1 -s USE_GLFW=3 -s WASM=1 -std=c++1z
-
-// base:  https://www.glfw.org/docs/latest/quick.html#quick_example
-// ref: https://gist.github.com/SuperV1234/5c5ad838fe5fe1bf54f9
-
-#include <functional>
-#include <vector>
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#define GL_GLEXT_PROTOTYPES
-#define EGL_EGLEXT_PROTOTYPES
-#else
-#include <glad/glad.h>
-#endif
-#include <GLFW/glfw3.h>
-#include "linmath.h"
-#include <stdlib.h>
-#include <stdio.h>
-static const struct
-{
-	float x, y;
-	float r, g, b;
-} vertices[3] =
-	{
-		{-0.6f, -0.4f, 1.f, 0.f, 0.f},
-		{0.6f, -0.4f, 0.f, 1.f, 0.f},
-		{0.f, 0.6f, 0.f, 0.f, 1.f}};
-
-static const char *vertex_shader_text =
-	"uniform mat4 MVP;\n"
-	"attribute vec3 vCol;\n"
-	"attribute vec2 vPos;\n"
-	"varying vec3 color;\n"
-	"void main()\n"
-	"{\n"
-	"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
-	"    color = vCol;\n"
-	"}\n";
-
-static const char *fragment_shader_text =
-	"precision mediump float;\n"
-	"varying vec3 color;\n"
-	"void main()\n"
-	"{\n"
-	"    gl_FragColor = vec4(color, 1.0);\n"
-	"}\n";
-
-static void error_callback(int error, const char *description)
-{
-	fprintf(stderr, "Error: %s\n", description);
-}
-static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
-{
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
-
-std::function<void()> loop;
-void main_loop() { loop(); }
-
-void check_error(GLuint shader)
-{
-	GLint result;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
-	if (result == GL_FALSE)
-	{
-		GLint log_length;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
-		std::vector<GLchar> log(log_length);
-
-		GLsizei length;
-		glGetShaderInfoLog(shader, log.size(), &length, log.data());
-
-		error_callback(0, log.data());
-	}
-}
-
-int main(void)
-{
-	GLint mvp_location, vpos_location, vcol_location;
-	glfwSetErrorCallback(error_callback);
-	if (!glfwInit())
-		exit(EXIT_FAILURE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	auto window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
-	if (!window)
-	{
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-	glfwSetKeyCallback(window, key_callback);
-	glfwMakeContextCurrent(window);
-#ifdef __EMSCRIPTEN__
-#else
-	gladLoadGL();
-#endif
-	glfwSwapInterval(1);
-	// NOTE: OpenGL error checks have been omitted for brevity
-	GLuint vertex_buffer;
-	glGenBuffers(1, &vertex_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	auto vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex_shader, 1, &vertex_shader_text, NULL);
-	glCompileShader(vertex_shader);
-	check_error(vertex_shader);
-
-	auto fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment_shader, 1, &fragment_shader_text, NULL);
-	glCompileShader(fragment_shader);
-	check_error(fragment_shader);
-
-	auto program = glCreateProgram();
-	glAttachShader(program, vertex_shader);
-	glAttachShader(program, fragment_shader);
-	glLinkProgram(program);
-	mvp_location = glGetUniformLocation(program, "MVP");
-	vpos_location = glGetAttribLocation(program, "vPos");
-	vcol_location = glGetAttribLocation(program, "vCol");
-	glEnableVertexAttribArray(vpos_location);
-	glVertexAttribPointer(vpos_location, 2, GL_FLOAT, GL_FALSE,
-						  sizeof(vertices[0]), (void *)0);
-	glEnableVertexAttribArray(vcol_location);
-	glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE,
-						  sizeof(vertices[0]), (void *)(sizeof(float) * 2));
-
-	loop = [&] {
-		float ratio;
-		int width, height;
-		mat4x4 m, p, mvp;
-		glfwGetFramebufferSize(window, &width, &height);
-		ratio = width / (float)height;
-		glViewport(0, 0, width, height);
-		glClear(GL_COLOR_BUFFER_BIT);
-		mat4x4_identity(m);
-		mat4x4_rotate_Z(m, m, (float)glfwGetTime());
-		mat4x4_ortho(p, -ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-		mat4x4_mul(mvp, p, m);
-		glUseProgram(program);
-		glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat *)mvp);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	};
-
-#ifdef __EMSCRIPTEN__
-	emscripten_set_main_loop(main_loop, 0, true);
-#else
-	while (!glfwWindowShouldClose(window))
-		main_loop();
-#endif
-
-	glfwDestroyWindow(window);
-	glfwTerminate();
-	exit(EXIT_SUCCESS);
-}
-
-'''
-
-
+def emsdk_update():
+	subprocess.check_call(["git", "pull"], cwd=EMSDK)
+	subprocess.check_call(["./emsdk", "install", "latest"], cwd=EMSDK)
+	subprocess.check_call(["./emsdk", "activate", "latest"], cwd=EMSDK)
 
 ## @Environment
 # Call the OS specific install tools for build libraries
 ##
+
 
 __thisdir = os.path.split(os.path.abspath(__file__))[0]
 EMSDK = os.path.join(__thisdir, "emsdk")
