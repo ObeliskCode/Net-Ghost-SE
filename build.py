@@ -4,78 +4,6 @@ import os, sys, subprocess, ctypes, time, json
 ## Supported by: @ObeliskCode & @brentharts
 
 
-# [Todo]
-__thisdir = os.path.split(os.path.abspath(__file__))[0]
-EMSDK = os.path.join(__thisdir, "emsdk")
-
-# [Todo]
-def emsdk_update():
-	subprocess.check_call(["git", "pull"], cwd=EMSDK)
-	subprocess.check_call(["./emsdk", "install", "latest"], cwd=EMSDK)
-	subprocess.check_call(["./emsdk", "activate", "latest"], cwd=EMSDK)
-
-# [Todo]
-def gen_js_wrapper( info ):
-	js = ['var ghostapi = {']
-	for n in info:
-		js.append('	%s : %s,' % (n, info[n]))
-	js.append('}')
-	print('\n'.join(js))
-	return '\n'.join(js)
-
-# [Todo]
-def bind_lib(lib, cdefs):
-	#lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
-	for n in cdefs:
-		func = getattr(lib, n)
-		print('binding %s: args = %s ptr =%s' %(n,cdefs[n], func))
-		func.argtypes = tuple(cdefs[n])
-
-# [Todo]
-def test_python():
-	from random import random
-	gctypes = {}
-	lib = build( gen_ctypes=gctypes )
-
-	bind_lib(lib, gctypes)
-	print("init_window")
-	lib.netghost_window_init(320, 240)
-	print("init_shaders")
-	lib.netghost_init_shaders()
-	print("init_cameras")
-	lib.netghost_init_cameras()
-	print("init_lights")
-	lib.netghost_init_lights()
-	print("init_meshes")
-	lib.netghost_init_meshes()
-	lib.netghost_run()
-
-# [Todo]
-def test_exe():
-	exe = build(shared=False)
-	if "--windows" in sys.argv:
-		cmd = ["/tmp/obelisk.exe"]
-	elif "--gdb" in sys.argv:
-		cmd = ["gdb", "/tmp/obelisk"]
-	else:
-		cmd = ["/tmp/obelisk"]
-
-	print(cmd)
-
-	subprocess.check_call(cmd, cwd=asset_dir)
-
-
-# [Todo]
-def test_wasm():
-	lib = build(wasm=True)
-	os.system("ls -lh %s" % lib)
-	import webbrowser
-
-	## this is required because some browsers will not open files in /tmp
-	os.system("cp -v %s ~/Desktop/netghost.html" % lib)
-	webbrowser.open(os.path.expanduser("~/Desktop/netghost.html"))
-
-
 ## @C++
 # Setup simple local structures into global (stack) memory
 ##
@@ -329,48 +257,6 @@ int main(){
 }
 
 """
-
-
-# [Todo]
-def minify(f):
-	if f.endswith(".glsl"):
-		glsl = open(os.path.join(shaders_dir, f)).read()
-	else:
-		glsl = f
-	o = []
-	for ln in glsl.splitlines():
-		if ln.strip().startswith("//"):
-			continue
-		if "//" in ln:
-			print("WARN: inline comment in GLSL", ln)
-			ln = ln.split("//")[0]
-		o.append(ln.strip())
-
-	return "\\n".join(o)
-
-
-
-# [Todo]
-def get_default_shaders():
-	shaders = {}
-	for file in os.listdir(shaders_dir):
-		if "Vert" in file:
-			tag = file.split("Vert")[0]
-			if tag not in shaders:
-				shaders[tag] = {}
-			shaders[tag]["vert"] = file
-		elif "Frag" in file:
-			tag = file.split("Frag")[0]
-			if tag not in shaders:
-				shaders[tag] = {}
-			shaders[tag]["frag"] = file
-		elif "Geom" in file:
-			tag = file.split("Geom")[0]
-			if tag not in shaders:
-				shaders[tag] = {}
-			shaders[tag]["geom"] = file
-	return shaders
-
 
 
 
@@ -683,184 +569,74 @@ def genmain( gen_ctypes=None, gen_js=None, basis_universal=True ):
 	return o
 
 
+## @Build
+#
+##
+def minify(f):
+	if f.endswith(".glsl"):
+		glsl = open(os.path.join(shaders_dir, f)).read()
+	else:
+		glsl = f
+	o = []
+	for ln in glsl.splitlines():
+		if ln.strip().startswith("//"):
+			continue
+		if "//" in ln:
+			print("WARN: inline comment in GLSL", ln)
+			ln = ln.split("//")[0]
+		o.append(ln.strip())
+
+	return "\\n".join(o)
+
+
 
 
 ## @Build
-# Call the OS specific install tools for build libraries
+#
 ##
-def enviroment_os_calls():
-
-	if "--wasm" in sys.argv and not os.path.isdir(EMSDK):
-		cmd = [
-			"git",
-			"clone",
-			"--depth",
-			"1",
-			"https://github.com/emscripten-core/emsdk.git",
-		]
-		print(cmd)
-		subprocess.check_call(cmd)
-		emsdk_update()
-
-	EMCC = os.path.join(EMSDK, "upstream/emscripten/emcc")
-	if not EMCC and "--wasm" in sys.argv:
-		emsdk_update()
-
-	if "--blender-install" in sys.argv:
-		if "--blender-git" in sys.argv:
-			if not os.path.isdir("./blender"):
-				cmd = "git clone --depth 1 https://github.com/blender/blender.git"
-				print(cmd)
-				subprocess.check_call(cmd.split())
-			cmd = "python3 ./blender/build_files/utils/make_update.py --no-libraries"
-			print(cmd)
-			subprocess.check_call(cmd.split(), cwd="./blender")
-			subprocess.check_call(["make"], cwd="./blender")
-		elif "fedora" in os.uname().nodename:
-			os.system("sudo dnf install blender")
-		else:
-			os.system("sudo apt install blender")
-
-
-	BLENDER = "blender"
-
-	if '--monogame' in sys.argv:
-		if not os.path.isdir('./MonoGame'):
-			cmd = 'git clone https://github.com/MonoGame/MonoGame.git --depth=1'
-			print(cmd)
-			subprocess.check_call(cmd.split())
-			cmd = 'git submodule update --init --progress --depth 1'
-			print(cmd)
-			subprocess.check_call(cmd.split(), cwd='./MonoGame')
-			cmd = ['bash', './build.sh']
-			print(cmd)
-			subprocess.check_call(cmd, cwd='./MonoGame')
-		else:
-			cmd = [ 'dotnet', 'build', os.path.join(__thisdir, 'MonoGame', 'Build.sln'), '-o:/tmp/MonoGame.dll' ]
-			print(cmd)
-			subprocess.check_call(cmd)
+def get_default_shaders():
+	shaders = {}
+	for file in os.listdir(shaders_dir):
+		if "Vert" in file:
+			tag = file.split("Vert")[0]
+			if tag not in shaders:
+				shaders[tag] = {}
+			shaders[tag]["vert"] = file
+		elif "Frag" in file:
+			tag = file.split("Frag")[0]
+			if tag not in shaders:
+				shaders[tag] = {}
+			shaders[tag]["frag"] = file
+		elif "Geom" in file:
+			tag = file.split("Geom")[0]
+			if tag not in shaders:
+				shaders[tag] = {}
+			shaders[tag]["geom"] = file
+	return shaders
 
 
 
-	if "--windows" in sys.argv:
-		os.system("rm /tmp/*.o /tmp/*.exe")
-
-		## https://stackoverflow.com/questions/43864159/mutex-is-not-a-member-of-std-in-mingw-5-3-0
-		## TODO, not use std::mutex? seems like the only issue using win32 instead os posix
-		# CC  = 'i686-w64-mingw32-g++-win32'
-		# C   = 'i686-w64-mingw32-gcc-win32'
-
-		CC = "i686-w64-mingw32-g++-posix"
-		C = "i686-w64-mingw32-gcc-posix"
-
-		if not os.path.isfile(os.path.join("/usr/bin/", CC)):
-			cmd = "sudo apt-get install mingw-w64 gcc-multilib g++-multilib"
-			subprocess.check_call(cmd.split())
-	elif "--wasm" in sys.argv:
-		CC = EMCC
-		C = EMCC
-
-	else:
-		CC = "g++"
-		C = "gcc"
 
 
-	srcdir = os.path.join(__thisdir, "Source")
-	assert os.path.isdir(srcdir)
-	asset_dir = os.path.join(__thisdir, "Resources")
-	assert os.path.isdir(asset_dir)
-	shaders_dir = os.path.join(asset_dir, "shaders")
-	assert os.path.isdir(shaders_dir)
-
-	hacks = [
-		"-I/usr/include/bullet",  ## this is the hack/workaround for bullet
-	]
-
-	includes = [
-		"-I" + srcdir,
-		"-I/usr/include/freetype2",
-		"-I"+os.path.join(__thisdir,'basis_universal/transcoder')
-	]
-
-	if "--wasm" in sys.argv:
-		includes += [
-			"-I/tmp",
-		]
-		os.system("cp -Rv /usr/include/glm /tmp/.")
+## @Build
+#
+##
+def emsdk_update():
+	subprocess.check_call(["git", "pull"], cwd=EMSDK)
+	subprocess.check_call(["./emsdk", "install", "latest"], cwd=EMSDK)
+	subprocess.check_call(["./emsdk", "activate", "latest"], cwd=EMSDK)
 
 
-	def fake_includes():
-		if os.path.isdir("/tmp/fake"):
-			return
-		os.system("mkdir /tmp/fake/")
-		os.system("cp -Rv /usr/include/GL /tmp/fake/.")
-		os.system("cp -Rv /usr/include/GLFW /tmp/fake/.")
-		os.system("cp -Rv /usr/include/glm /tmp/fake/.")
-		os.system("cp -Rv /usr/include/assimp /tmp/fake/.")
-		os.system("cp -Rv /usr/include/boost /tmp/fake/.")
-		os.system("cp -Rv /usr/include/AL /tmp/fake/.")
-
-
-	if "--windows" in sys.argv:
-		# includes += ['-I/usr/include']
-		includes += ["-lopengl32", "-I/tmp/fake"]
-		fake_includes()
-
-	libs = [
-		"-lGL",
-		"-lGLU",
-		"-lGLEW",
-		"-lglfw",
-		"-lopenal",
-		"-lzstd", # fixes linker error on Linux 6.8.0-41 [Noel]
-	]
-
-	if not "--wasm" in sys.argv:
-		libs += [
-			"-lfreetype",
-			"-lBulletDynamics",
-			"-lBulletCollision",
-			"-lLinearMath",
-			"-lassimp",
-			"-lm",
-			"-lc",
-			"-lstdc++",
-		]
-
-	glew = "/usr/include/GL/glew.h"
-	if not os.path.isfile(glew):
-		if "fedora" in os.uname().nodename:
-			cmd = "sudo dnf install glew-devel"
-		else:
-			cmd = "sudo apt-get install libglew-dev"
-		print(cmd)
-		subprocess.check_call(cmd.split())
-
-	if not os.path.isdir("/usr/include/assimp"):
-		if "fedora" in os.uname().nodename:
-			cmd = "sudo dnf install assimp-devel"
-		else:
-			cmd = "sudo apt-get install libassimp-dev"
-		print(cmd)
-		subprocess.check_call(cmd.split())
-
-
-	if not os.path.isdir("/usr/include/bullet"):
-		if "fedora" in os.uname().nodename:
-			cmd = "sudo dnf install bullet-devel"
-		else:
-			cmd = "sudo apt-get install libbullet-dev libopenal-dev"
-		print(cmd)
-		subprocess.check_call(cmd.split())
-
-	if not os.path.isdir("/usr/include/freetype2"):
-		if "fedora" in os.uname().nodename:
-			cmd = "sudo dnf install freetype-devel"
-		else:
-			cmd = "sudo apt-get install libfreetype-dev"
-		print(cmd)
-		subprocess.check_call(cmd.split())
-
+## @Build
+#
+##
+def gen_js_wrapper( info ):
+	js = ['var ghostapi = {']
+	for n in info:
+		js.append('	%s : %s,' % (n, info[n]))
+	js.append('}')
+	print('\n'.join(js))
+	return '\n'.join(js)
 
 
 ## @Build
@@ -870,8 +646,6 @@ def build(
 	shared=True, assimp=False, wasm=False, debug_shaders="--debug-shaders" in sys.argv,
 	gen_ctypes=False, basis_universal=True,
 ):
-
-	enviroment_os_calls()
 
 	if wasm: gen_js = {}
 
@@ -1027,6 +801,67 @@ def build(
 	return exe
 
 
+## @Test
+#
+##
+def bind_lib(lib, cdefs):
+	#lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
+	for n in cdefs:
+		func = getattr(lib, n)
+		print('binding %s: args = %s ptr =%s' %(n,cdefs[n], func))
+		func.argtypes = tuple(cdefs[n])
+
+
+## @Test
+#
+##
+def test_python():
+	from random import random
+	gctypes = {}
+	lib = build( gen_ctypes=gctypes )
+
+	bind_lib(lib, gctypes)
+	print("init_window")
+	lib.netghost_window_init(320, 240)
+	print("init_shaders")
+	lib.netghost_init_shaders()
+	print("init_cameras")
+	lib.netghost_init_cameras()
+	print("init_lights")
+	lib.netghost_init_lights()
+	print("init_meshes")
+	lib.netghost_init_meshes()
+	lib.netghost_run()
+
+
+## @Test
+#
+##
+def test_exe():
+	exe = build(shared=False)
+	if "--windows" in sys.argv:
+		cmd = ["/tmp/obelisk.exe"]
+	elif "--gdb" in sys.argv:
+		cmd = ["gdb", "/tmp/obelisk"]
+	else:
+		cmd = ["/tmp/obelisk"]
+
+	print(cmd)
+
+	subprocess.check_call(cmd, cwd=asset_dir)
+
+
+## @Test 
+#
+##
+def test_wasm():
+	lib = build(wasm=True)
+	os.system("ls -lh %s" % lib)
+	import webbrowser
+
+	## this is required because some browsers will not open files in /tmp
+	os.system("cp -v %s ~/Desktop/netghost.html" % lib)
+	webbrowser.open(os.path.expanduser("~/Desktop/netghost.html"))
 
 
 ## @Test
@@ -1056,8 +891,8 @@ def test_ems(output='/tmp/test-glfw.html'):
 ## @C++
 # Emscripten rewrite of Net Ghost build
 ##
-## https://gist.github.com/ousttrue/0f3a11d5d28e365b129fe08f18f4e141
-## https://github.com/glfw/glfw/blob/master/deps/linmath.h
+# https://gist.github.com/ousttrue/0f3a11d5d28e365b129fe08f18f4e141
+# https://github.com/glfw/glfw/blob/master/deps/linmath.h
 TEST_GLFW = r'''
 // emcc main.cpp -o index.html -s USE_WEBGL2=1 -s USE_GLFW=3 -s WASM=1 -std=c++1z
 
@@ -1219,6 +1054,188 @@ int main(void)
 }
 
 '''
+
+
+
+## @Environment
+# Call the OS specific install tools for build libraries
+##
+
+__thisdir = os.path.split(os.path.abspath(__file__))[0]
+EMSDK = os.path.join(__thisdir, "emsdk")
+
+if "--wasm" in sys.argv and not os.path.isdir(EMSDK):
+	cmd = [
+		"git",
+		"clone",
+		"--depth",
+		"1",
+		"https://github.com/emscripten-core/emsdk.git",
+	]
+	print(cmd)
+	subprocess.check_call(cmd)
+	emsdk_update()
+
+EMCC = os.path.join(EMSDK, "upstream/emscripten/emcc")
+if not EMCC and "--wasm" in sys.argv:
+	emsdk_update()
+
+if "--blender-install" in sys.argv:
+	if "--blender-git" in sys.argv:
+		if not os.path.isdir("./blender"):
+			cmd = "git clone --depth 1 https://github.com/blender/blender.git"
+			print(cmd)
+			subprocess.check_call(cmd.split())
+		cmd = "python3 ./blender/build_files/utils/make_update.py --no-libraries"
+		print(cmd)
+		subprocess.check_call(cmd.split(), cwd="./blender")
+		subprocess.check_call(["make"], cwd="./blender")
+	elif "fedora" in os.uname().nodename:
+		os.system("sudo dnf install blender")
+	else:
+		os.system("sudo apt install blender")
+
+
+BLENDER = "blender"
+
+if '--monogame' in sys.argv:
+	if not os.path.isdir('./MonoGame'):
+		cmd = 'git clone https://github.com/MonoGame/MonoGame.git --depth=1'
+		print(cmd)
+		subprocess.check_call(cmd.split())
+		cmd = 'git submodule update --init --progress --depth 1'
+		print(cmd)
+		subprocess.check_call(cmd.split(), cwd='./MonoGame')
+		cmd = ['bash', './build.sh']
+		print(cmd)
+		subprocess.check_call(cmd, cwd='./MonoGame')
+	else:
+		cmd = [ 'dotnet', 'build', os.path.join(__thisdir, 'MonoGame', 'Build.sln'), '-o:/tmp/MonoGame.dll' ]
+		print(cmd)
+		subprocess.check_call(cmd)
+
+
+
+if "--windows" in sys.argv:
+	os.system("rm /tmp/*.o /tmp/*.exe")
+
+	## https://stackoverflow.com/questions/43864159/mutex-is-not-a-member-of-std-in-mingw-5-3-0
+	## TODO, not use std::mutex? seems like the only issue using win32 instead os posix
+	# CC  = 'i686-w64-mingw32-g++-win32'
+	# C   = 'i686-w64-mingw32-gcc-win32'
+
+	CC = "i686-w64-mingw32-g++-posix"
+	C = "i686-w64-mingw32-gcc-posix"
+
+	if not os.path.isfile(os.path.join("/usr/bin/", CC)):
+		cmd = "sudo apt-get install mingw-w64 gcc-multilib g++-multilib"
+		subprocess.check_call(cmd.split())
+elif "--wasm" in sys.argv:
+	CC = EMCC
+	C = EMCC
+
+else:
+	CC = "g++"
+	C = "gcc"
+
+
+srcdir = os.path.join(__thisdir, "Source")
+assert os.path.isdir(srcdir)
+asset_dir = os.path.join(__thisdir, "Resources")
+assert os.path.isdir(asset_dir)
+shaders_dir = os.path.join(asset_dir, "shaders")
+assert os.path.isdir(shaders_dir)
+
+hacks = [
+	"-I/usr/include/bullet",  ## this is the hack/workaround for bullet
+]
+
+includes = [
+	"-I" + srcdir,
+	"-I/usr/include/freetype2",
+	"-I"+os.path.join(__thisdir,'basis_universal/transcoder')
+]
+
+if "--wasm" in sys.argv:
+	includes += [
+		"-I/tmp",
+	]
+	os.system("cp -Rv /usr/include/glm /tmp/.")
+
+
+def fake_includes():
+	if os.path.isdir("/tmp/fake"):
+		return
+	os.system("mkdir /tmp/fake/")
+	os.system("cp -Rv /usr/include/GL /tmp/fake/.")
+	os.system("cp -Rv /usr/include/GLFW /tmp/fake/.")
+	os.system("cp -Rv /usr/include/glm /tmp/fake/.")
+	os.system("cp -Rv /usr/include/assimp /tmp/fake/.")
+	os.system("cp -Rv /usr/include/boost /tmp/fake/.")
+	os.system("cp -Rv /usr/include/AL /tmp/fake/.")
+
+
+if "--windows" in sys.argv:
+	# includes += ['-I/usr/include']
+	includes += ["-lopengl32", "-I/tmp/fake"]
+	fake_includes()
+
+libs = [
+	"-lGL",
+	"-lGLU",
+	"-lGLEW",
+	"-lglfw",
+	"-lopenal",
+	"-lzstd", # fixes linker error on Linux 6.8.0-41 [Noel]
+]
+
+if not "--wasm" in sys.argv:
+	libs += [
+		"-lfreetype",
+		"-lBulletDynamics",
+		"-lBulletCollision",
+		"-lLinearMath",
+		"-lassimp",
+		"-lm",
+		"-lc",
+		"-lstdc++",
+	]
+
+glew = "/usr/include/GL/glew.h"
+if not os.path.isfile(glew):
+	if "fedora" in os.uname().nodename:
+		cmd = "sudo dnf install glew-devel"
+	else:
+		cmd = "sudo apt-get install libglew-dev"
+	print(cmd)
+	subprocess.check_call(cmd.split())
+
+if not os.path.isdir("/usr/include/assimp"):
+	if "fedora" in os.uname().nodename:
+		cmd = "sudo dnf install assimp-devel"
+	else:
+		cmd = "sudo apt-get install libassimp-dev"
+	print(cmd)
+	subprocess.check_call(cmd.split())
+
+
+if not os.path.isdir("/usr/include/bullet"):
+	if "fedora" in os.uname().nodename:
+		cmd = "sudo dnf install bullet-devel"
+	else:
+		cmd = "sudo apt-get install libbullet-dev libopenal-dev"
+	print(cmd)
+	subprocess.check_call(cmd.split())
+
+if not os.path.isdir("/usr/include/freetype2"):
+	if "fedora" in os.uname().nodename:
+		cmd = "sudo dnf install freetype-devel"
+	else:
+		cmd = "sudo apt-get install libfreetype-dev"
+	print(cmd)
+	subprocess.check_call(cmd.split())
+
+
 if __name__ == "__main__":
 	output = None
 	for arg in sys.argv:
