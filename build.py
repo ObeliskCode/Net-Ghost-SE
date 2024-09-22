@@ -4,6 +4,24 @@ import os, sys, subprocess, ctypes, time, json
 ## Supported by: @ObeliskCode & @brentharts
 
 
+## @C++
+# Setup simple local structures into global (stack) memory
+##
+NGHOST_LOCAL_VARS = """
+GLFWwindow *window;
+double crntTime = 0.0;
+double timeStart = -1.0;
+double prevTime = timeStart;
+double timeDiff;
+unsigned int counter = 0;
+double lastFrame = timeStart;
+double deltaTime = 1.0 / 188.0;
+double frameTime = 0.0f;
+double lastTick = timeStart;
+double thisTick = 0.0;
+double delta;
+"""
+
 
 ## @C++
 # initialize basic GLFW window context
@@ -57,24 +75,6 @@ extern "C" void netghost_window_init(int w, int h) {
 	timeStart = glfwGetTime();
 }
 
-"""
-
-## @C++
-# Setup simple local structures into global (stack) memory
-##
-NGHOST_LOCAL_VARS = """
-GLFWwindow *window;
-double crntTime = 0.0;
-double timeStart = -1.0;
-double prevTime = timeStart;
-double timeDiff;
-unsigned int counter = 0;
-double lastFrame = timeStart;
-double deltaTime = 1.0 / 188.0;
-double frameTime = 0.0f;
-double lastTick = timeStart;
-double thisTick = 0.0;
-double delta;
 """
 
 
