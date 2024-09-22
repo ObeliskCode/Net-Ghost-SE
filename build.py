@@ -1,24 +1,20 @@
 #!/usr/bin/python3
 import os, sys, subprocess, ctypes, time, json
 
-## Build Flags
-#
-# --windows [default:linux] - compile target for windows
-# --gdb [default:disabled] - enables cmd debugger
-# --wasm  - Emscripten WASM WEBGL
-#
-## Install Notes:
-#  fedora: sudo dnf install glfw-devel openal-devel glm-devel
-##
+## Supported by: @ObeliskCode & @brentharts
 
+
+# [Todo]
 __thisdir = os.path.split(os.path.abspath(__file__))[0]
 EMSDK = os.path.join(__thisdir, "emsdk")
 
+# [Todo]
 def emsdk_update():
 	subprocess.check_call(["git", "pull"], cwd=EMSDK)
 	subprocess.check_call(["./emsdk", "install", "latest"], cwd=EMSDK)
 	subprocess.check_call(["./emsdk", "activate", "latest"], cwd=EMSDK)
 
+# [Todo]
 def gen_js_wrapper( info ):
 	js = ['var ghostapi = {']
 	for n in info:
@@ -27,6 +23,7 @@ def gen_js_wrapper( info ):
 	print('\n'.join(js))
 	return '\n'.join(js)
 
+# [Todo]
 def bind_lib(lib, cdefs):
 	#lib.netghost_window_init.argtypes = [ctypes.c_int, ctypes.c_int]
 	for n in cdefs:
@@ -34,6 +31,7 @@ def bind_lib(lib, cdefs):
 		print('binding %s: args = %s ptr =%s' %(n,cdefs[n], func))
 		func.argtypes = tuple(cdefs[n])
 
+# [Todo]
 def test_python():
 	from random import random
 	gctypes = {}
@@ -52,6 +50,7 @@ def test_python():
 	lib.netghost_init_meshes()
 	lib.netghost_run()
 
+# [Todo]
 def test_exe():
 	exe = build(shared=False)
 	if "--windows" in sys.argv:
@@ -66,6 +65,7 @@ def test_exe():
 	subprocess.check_call(cmd, cwd=asset_dir)
 
 
+# [Todo]
 def test_wasm():
 	lib = build(wasm=True)
 	os.system("ls -lh %s" % lib)
@@ -76,6 +76,9 @@ def test_wasm():
 	webbrowser.open(os.path.expanduser("~/Desktop/netghost.html"))
 
 
+## @C++
+# Setup simple local structures into global (stack) memory
+##
 NGHOST_LOCAL_VARS = """
 GLFWwindow *window;
 double crntTime = 0.0;
@@ -91,6 +94,9 @@ double thisTick = 0.0;
 double delta;
 """
 
+## @C++
+# global definition of blender generated scene
+##
 NGHOST_DERIVED_SCENE = """
 class GenScene : public Scene
 {
@@ -183,6 +189,10 @@ private:
 
 """
 
+
+## @C++
+# starts the main C++ run loop to be interopted with (to be ported to zig!)
+##
 NGHOST_RUN = """
 extern "C" void netghost_run(){
 	GenScene *dp = new GenScene();
@@ -235,6 +245,11 @@ extern "C" void netghost_run(){
 }
 """
 
+
+
+## @C++
+# initialize basic GLFW window context
+##
 NGHOST_GLFW = """
 extern "C" void netghost_window_close(){
 	glfwTerminate();
@@ -286,6 +301,9 @@ extern "C" void netghost_window_init(int w, int h) {
 
 """
 
+## @C++
+# [Todo]
+##
 NGHOST_MAIN_WEB = """
 
 void downloadSucceeded(emscripten_fetch_t *fetch) {
@@ -313,6 +331,9 @@ int main(){
 """
 
 
+## @Build
+#
+##
 def minify(f):
 	if f.endswith(".glsl"):
 		glsl = open(os.path.join(shaders_dir, f)).read()
@@ -330,6 +351,10 @@ def minify(f):
 	return "\\n".join(o)
 
 
+
+## @Build
+#
+##
 def get_default_shaders():
 	shaders = {}
 	for file in os.listdir(shaders_dir):
@@ -353,6 +378,9 @@ def get_default_shaders():
 
 
 
+## @Build
+#
+##
 def genmain( gen_ctypes=None, gen_js=None, basis_universal=True ):
 	o = [
 		"#define GLEW_STATIC",
@@ -661,6 +689,9 @@ def genmain( gen_ctypes=None, gen_js=None, basis_universal=True ):
 
 
 
+## @Build
+#
+##
 if "--wasm" in sys.argv and not os.path.isdir(EMSDK):
 	cmd = [
 		"git",
@@ -834,7 +865,9 @@ if not os.path.isdir("/usr/include/freetype2"):
 
 
 
-
+## @Test
+#
+##
 def build(
 	shared=True, assimp=False, wasm=False, debug_shaders="--debug-shaders" in sys.argv,
 	gen_ctypes=False, basis_universal=True,
@@ -994,6 +1027,10 @@ def build(
 
 
 
+
+## @Test
+#
+##
 def test_glfw(output='/tmp/test-glfw.html'):
 	tmp = '/tmp/test-glfw.c++'
 	open(tmp, 'w').write(TEST_GLFW)
@@ -1014,6 +1051,10 @@ def test_glfw(output='/tmp/test-glfw.html'):
 	print(cmd)
 	subprocess.check_call(cmd)
 
+
+## @C++
+#
+##
 ## https://gist.github.com/ousttrue/0f3a11d5d28e365b129fe08f18f4e141
 ## https://github.com/glfw/glfw/blob/master/deps/linmath.h
 TEST_GLFW = r'''
