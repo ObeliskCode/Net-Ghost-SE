@@ -2,6 +2,19 @@
 import subprocess, sys, os
 _thisdir = os.path.split(os.path.abspath(__file__))[0]
 
+if "--blender-install" in sys.argv:
+	if "--blender-git" in sys.argv:
+		if not os.path.isdir("./blender"):
+			cmd = "git clone --depth 1 https://github.com/blender/blender.git"
+			print(cmd)
+			subprocess.check_call(cmd.split())
+		cmd = "python3 ./blender/build_files/utils/make_update.py --no-libraries"
+		print(cmd)
+		subprocess.check_call(cmd.split(), cwd="./blender")
+		subprocess.check_call(["make"], cwd="./blender")
+	else:
+		os.system("sudo apt install blender")
+
 try:
 	import bpy
 except:
