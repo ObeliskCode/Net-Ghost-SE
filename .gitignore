@@ -1,5 +1,6 @@
 .vs
 .vscode
-blender/
-emsdk/
-basis_universal/
+Tools/blender/
+Tools/c3/
+Tools/emsdk/
+Tools/basis_universal/

@@ -53,3 +53,31 @@ if not os.path.isfile(C3):
 
 print('c3c:', C3)
 assert os.path.isfile(C3)
+
+## @Environment
+#
+##
+def emsdk_update():
+	subprocess.check_call(["git", "pull"], cwd=EMSDK)
+	subprocess.check_call(["./emsdk", "install", "latest"], cwd=EMSDK)
+	subprocess.check_call(["./emsdk", "activate", "latest"], cwd=EMSDK)
+
+
+EMSDK = os.path.join(_thisdir, "emsdk")
+if "--install-wasm" in sys.argv and not os.path.isdir(EMSDK):
+	cmd = [
+		"git","clone","--depth","1",
+		"https://github.com/emscripten-core/emsdk.git",
+	]
+	print(cmd)
+	subprocess.check_call(cmd)
+	emsdk_update()
+
+if iswindows:
+	EMCC = os.path.join(EMSDK, "upstream/emscripten/emcc.exe")
+	WASM_OBJDUMP = os.path.join(EMSDK, "upstream/bin/llvm-objdump.exe")
+else:
+	EMCC = os.path.join(EMSDK, "upstream/emscripten/emcc")
+	WASM_OBJDUMP = os.path.join(EMSDK, "upstream/bin/llvm-objdump")
+if not EMCC and "--install-wasm" in sys.argv:
+	emsdk_update()
